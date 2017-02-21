@@ -1,0 +1,28 @@
+{
+  "name": "Bukubrow",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "minimum_chrome_version": "41.0.2272.76",
+  "description": "Synchronise your browser bookmarks with Buku",
+  "homepage_url": "https://github.com/samhh/bukubrow",
+  "browser_action": {
+    "default_icon": "icon-lock.png",
+    "default_popup": "content.html"
+  },
+  "permissions": [
+    "activeTab",
+    "nativeMessaging"
+  ],
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+B"
+      }
+    }
+  },
+  "applications": {
+    "gecko": {
+      "strict_min_version": "48.0"
+    }
+  }
+}

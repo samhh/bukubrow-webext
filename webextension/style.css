@@ -1,0 +1,12 @@
+.bukubrow-wrapper,
+.bukubrow-wrapper::before,
+.bukubrow-wrapper::after,
+.bukubrow-wrapper *,
+.bukubrow-wrapper *::before,
+.bukubrow-wrapper *::after {
+  box-sizing: border-box;
+}
+
+.bukubrow-wrapper {
+  background: red;
+}
