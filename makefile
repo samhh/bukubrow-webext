@@ -45,7 +45,7 @@ chrome:
 	${MAKE} prepare
 	${MAKE} webext
 	crxmake $(BUILD_DIR) ./key.pem
-	mv .build.crx release/chrome.crx-real
+	mv .build.crx release/chrome.crx
 	${MAKE} clean
 
 # Copy Firefox files to build dir and zip into release dir
