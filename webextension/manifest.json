@@ -6,7 +6,7 @@
   "description": "Synchronise your browser bookmarks with Buku",
   "homepage_url": "https://github.com/samhh/bukubrow",
   "browser_action": {
-    "default_icon": "icon-lock.png",
+    "default_icon": "assets/icon.png",
     "default_popup": "content.html"
   },
   "permissions": [

@@ -1,3 +1,8 @@
+# The use of `${MAKE} target` is to allow the reuse of targets and also ensure
+# explicit ordering
+# If this can be improved (this is my first time with makefiles), feel free to
+# submit an issue/PR
+
 SHELL := /usr/bin/env bash
 
 # Vars
@@ -17,7 +22,8 @@ clean:
 
 # Remove build and release dirs
 .PHONY: wipe
-wipe: clean
+wipe:
+	${MAKE} clean
 	rm -rf release
 
 # Copy all browser policies to build dir as filenames expected by installer
@@ -29,46 +35,51 @@ browser-policies:
 
 # Copy all platform-neutral webextension files to build dir
 .PHONY: webext
-webext: prepare
-	cp -r `ls $(WEBEXT_DIR) | grep -v "_" | sed 's/^/$(WEBEXT_DIR)\//'` $(BUILD_DIR)
+webext:
+	${MAKE} prepare
+	cp -r `ls $(WEBEXT_DIR) | grep -v '_' | sed 's/^/$(WEBEXT_DIR)\//'` $(BUILD_DIR)
+	cp -r assets $(BUILD_DIR)
 
 # Copy Chrome files to build dir and build into release dir
 .PHONY: chrome
-chrome: prepare chrome-real clean
-
-.PHONE: chrome-real
-chrome-real: webext
-	google-chrome --pack-extension=./webextension --pack-extension-key=./chrome-bukubrow.pem
-	mv chrome.crx release/bukubrow-chrome.crx
+chrome:
+	${MAKE} prepare
+	${MAKE} webext
+	crxmake $(BUILD_DIR) ./key.pem
+	mv .build.crx release/chrome.crx-real
+	${MAKE} clean
 
 # Copy Firefox files to build dir and zip into release dir
-.PHONE: firefox
-firefox: prepare firefox-real clean
-
-.PHONY: firefox-real
-firefox-real: webext
+.PHONY: firefox
+firefox:
+	${MAKE} prepare
+	${MAKE} webext
 	zip -j '$(RELEASE_DIR)/firefox' $(BUILD_DIR)/*
+	${MAKE} clean
 
 # Build for Linux and zip into release dir
 .PHONY: binary-linux-x64
-binary-linux-x64: prepare binary-linux-x64 clean
-
-.PHONY: binary-linux-x64-real
-binary-linux-x64-real: browser-policies
+binary-linux-x64:
+	${MAKE} prepare
+	${MAKE} browser-policies
 	# env GOOS=linux GOARCH=amd64 go build -i binary/bukubrow.go
 	# mv bukubrow $(BUILD_DIR)/bukubrow-linux-x64
-	# zip -j "$(RELEASE_DIR)/binary-linux-x64" $(BUILD_DIR)/* binary/install.sh
+	# zip -j '$(RELEASE_DIR)/binary-linux-x64' $(BUILD_DIR)/* binary/install.sh
 
 # Build for macOS and zip into release dir
 .PHONY: binary-darwin-x64
-binary-darwin-x64: prepare binary-darwin-x64-real clean
-
-.PHONY: binary-darwin-x64-real
-binary-darwin-x64-real: browser-policies
+binary-darwin-x64:
+	${MAKE} prepare
+	${MAKE} browser-policies
 	env GOOS=darwin GOARCH=amd64 go build -i binary/bukubrow.go
 	mv bukubrow $(BUILD_DIR)/bukubrow-darwin-x64
-	zip -j "$(RELEASE_DIR)/binary-darwin-x64" $(BUILD_DIR)/* binary/install.sh
+	zip -j '$(RELEASE_DIR)/binary-darwin-x64' $(BUILD_DIR)/* binary/install.sh
+	${MAKE} clean
 
 # Full release
 .PHONY: release
-release: firefox chrome binary-linux-x64 binary-darwin-x64
+release:
+	${MAKE} chrome
+	${MAKE} firefox
+	${MAKE} binary-linux-x64
+	${MAKE} binary-darwin-x64

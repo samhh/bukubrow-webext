@@ -31,3 +31,9 @@ Install the WebExtension from the relevant addon store.
 - Firefox: []()
 
 Alternatively, for Chrome and Chromium, you can download the .crx file directly from the [releases](https://github.com/samhh/Bukubrow/releases) page.
+
+## Building
+
+In order to build the .crx package for Chrome/Chromium you'll need one of [these](https://developer.chrome.com/extensions/crx#scripts) scripts. The makefile assumes it will be in your PATH under the name `crxmake`. It also assumes that you will have a private key in the project root directory under the name `key.pem`.
+
+You'll usually only need to run `make release`, however the makefile is modular and you can run individual builds on demand as well. It also contains helper commands such as `make clean` (remove `.build` dir) and `make wipe` (previous plus remove `release` dir).

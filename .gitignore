@@ -1,4 +1,10 @@
-# Misc
+# Sensitive
+*.pem
+
+# Build
 .build/
 release/
+*.crx
+
+# Misc
 .DS_Store
