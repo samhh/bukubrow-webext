@@ -52,16 +52,19 @@ echo ""
 # Set target dir from user input
 if [[ "$BROWSER" == "1" ]]; then
   BROWSER_NAME="Chrome"
+  BROWSER_HOST_FILENAME="chrome-host.json"
   TARGET_DIR="$TARGET_DIR_CHROME"
 fi
 
 if [[ "$BROWSER" == "2" ]]; then
   BROWSER_NAME="Chromium"
+  BROWSER_HOST_FILENAME="chrome-host.json"
   TARGET_DIR="$TARGET_DIR_CHROMIUM"
 fi
 
 if [[ "$BROWSER" == "3" ]]; then
   BROWSER_NAME="Firefox"
+  BROWSER_HOST_FILENAME="firefox-host.json"
   TARGET_DIR="$TARGET_DIR_FIREFOX"
 fi
 
@@ -71,13 +74,7 @@ echo "Installing $BROWSER_NAME host config"
 mkdir -p "$TARGET_DIR"
 
 # Copy manifest host config file
-if [ "$BROWSER" == "1" ] || [ "$BROWSER" == "2" ] || [ "$BROWSER" == "4" ]; then
-  cp "$DIR/chrome-host.json" "$TARGET_DIR/$APP_NAME.json"
-	mkdir -p "$TARGET_DIR"/../policies/managed/
-	cp "$DIR/chrome-policy.json" "$TARGET_DIR"/../policies/managed/"$APP_NAME.json"
-else
-  cp "$DIR/firefox-host.json" "$TARGET_DIR_FIREFOX/$APP_NAME.json"
-fi
+cp "$DIR/$BROWSER_HOST_FILENAME" "$TARGET_DIR/$APP_NAME.json"
 
 # Replace path to host
 sed -i -e "s/%%replace%%/$ESCAPED_HOST_FILE/" "$TARGET_DIR/$APP_NAME.json"

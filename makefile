@@ -26,10 +26,9 @@ wipe:
 	${MAKE} clean
 	rm -rf release
 
-# Copy all browser policies to build dir as filenames expected by installer
-.PHONY: browser-policies
-browser-policies:
-	cp $(WEBEXT_DIR)/_chrome/policy.json $(BUILD_DIR)/chrome-policy.json
+# Copy all browser host configs to build dir as filenames expected by installer
+.PHONY: browser-hosts
+browser-hosts:
 	cp $(WEBEXT_DIR)/_chrome/host.json $(BUILD_DIR)/chrome-host.json
 	cp $(WEBEXT_DIR)/_firefox/host.json $(BUILD_DIR)/firefox-host.json
 
@@ -61,7 +60,7 @@ firefox:
 .PHONY: binary-linux-x64
 binary-linux-x64:
 	${MAKE} prepare
-	${MAKE} browser-policies
+	${MAKE} browser-hosts
 	env GOOS=linux GOARCH=amd64 go build -i binary/bukubrow.go
 	mv bukubrow $(BUILD_DIR)/bukubrow-linux-x64
 	zip -j '$(RELEASE_DIR)/binary-linux-x64' $(BUILD_DIR)/* binary/install.sh
@@ -70,7 +69,7 @@ binary-linux-x64:
 .PHONY: binary-darwin-x64
 binary-darwin-x64:
 	${MAKE} prepare
-	${MAKE} browser-policies
+	${MAKE} browser-hosts
 	env GOOS=darwin GOARCH=amd64 go build -i binary/bukubrow.go
 	mv bukubrow $(BUILD_DIR)/bukubrow-darwin-x64
 	zip -j '$(RELEASE_DIR)/binary-darwin-x64' $(BUILD_DIR)/* binary/install.sh
