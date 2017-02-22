@@ -62,9 +62,9 @@ firefox:
 binary-linux-x64:
 	${MAKE} prepare
 	${MAKE} browser-policies
-	# env GOOS=linux GOARCH=amd64 go build -i binary/bukubrow.go
-	# mv bukubrow $(BUILD_DIR)/bukubrow-linux-x64
-	# zip -j '$(RELEASE_DIR)/binary-linux-x64' $(BUILD_DIR)/* binary/install.sh
+	env GOOS=linux GOARCH=amd64 go build -i binary/bukubrow.go
+	mv bukubrow $(BUILD_DIR)/bukubrow-linux-x64
+	zip -j '$(RELEASE_DIR)/binary-linux-x64' $(BUILD_DIR)/* binary/install.sh
 
 # Build for macOS and zip into release dir
 .PHONY: binary-darwin-x64
