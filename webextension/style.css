@@ -1,12 +1,47 @@
-.bukubrow-wrapper,
-.bukubrow-wrapper::before,
-.bukubrow-wrapper::after,
-.bukubrow-wrapper *,
-.bukubrow-wrapper *::before,
-.bukubrow-wrapper *::after {
+body {
+	margin: 0;
+}
+
+.wrapper,
+.wrapper::before,
+.wrapper::after,
+.wrapper *,
+.wrapper *::before,
+.wrapper *::after {
   box-sizing: border-box;
 }
 
-.bukubrow-wrapper {
-  background: red;
+.wrapper {
+  min-width: 320px;
+  padding: 15px;
+}
+
+.header h3 {
+	margin: 0;
+}
+
+.bookmarks {
+	padding: 0;
+	list-style-type: none;
+}
+
+.bookmarks li {
+	padding: 5px;
+	cursor: pointer;
+}
+
+.bookmarks li:hover {
+	background: #eee;
+}
+
+.bookmarks li + li {
+	margin-top: 5px;
+}
+
+.footer {
+	text-align: center;
+}
+
+.footer--heart {
+	color: #ec1d26;
 }
