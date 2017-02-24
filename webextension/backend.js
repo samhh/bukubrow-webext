@@ -7,29 +7,16 @@ const cfg = {
 
 // Request bookmarks
 const requestBookmarks = () => {
-	console.log('Requesting bookmarks...')
+	console.log('Bookmarks requested...')
 
 	chrome.runtime.sendNativeMessage(cfg.appName, { request: 'true' }, res => {
 		if (chrome.runtime.lastError) console.log(chrome.runtime.lastError)
+		else console.log('...bookmarks fetched and returned.')
 
-		console.dir('Received from binary: ' + res)
-		res.forEach(obj => console.dir(obj))
 		chrome.runtime.sendMessage({ bookmarks: res })
 	})
 }
 
-// Timer to check when to fetch new bookmarks
-let timer = cfg.timerIntervalInSecs
-
-setInterval(() => {
-	timer--
-
-	if (timer === 0) {
-		timer = cfg.timerIntervalInSecs
-
-		requestBookmarks()
-	}
-
-	// Update frontend timer
-	chrome.runtime.sendMessage({ timer })
-}, 1000)
+chrome.runtime.onMessage.addListener(req => {
+	if (req.requestBookmarks) requestBookmarks()
+})

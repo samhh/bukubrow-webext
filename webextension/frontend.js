@@ -23,14 +23,15 @@ const updateBookmarks = bookmarks => {
 	})
 }
 
-// Update timer
-const timerEl = document.querySelector('.js-timer')
-const updateTimer = time => { timerEl.textContent = String(time) }
+// Request fresh bookmarks
+const requestBookmarks = () => {
+	chrome.runtime.sendMessage({ requestBookmarks: true })
+}
+
+const reqEl = document.querySelector('.js-req')
+reqEl.addEventListener('click', requestBookmarks)
 
 // React to messages from backend
 chrome.runtime.onMessage.addListener(req => {
 	if (req.bookmarks) updateBookmarks(req.bookmarks)
-	if (req.timer) updateTimer(req.timer)
-
-	if (!req.bookmarks && !req.timer) console.log(`Unknown frontend message received: ${req}`)
 })
