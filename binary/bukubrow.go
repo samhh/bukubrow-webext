@@ -2,8 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/binary"
+	"encoding/json"
 	"log"
 	"os"
+	"time"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -23,8 +26,40 @@ func main() {
 	db := InitDB(dbpath)
 	defer db.Close()
 
-	bookmarks := GetAllBookmarks(db)
-	log.Print(bookmarks)
+	// Infinite loop listening for stdin
+	for {
+		// Get message length, 4 bytes
+		var data map[string]string
+		var length uint32
+		var jsonResponse []byte
+		err := binary.Read(os.Stdin, binary.LittleEndian, &length)
+		if err != nil {
+			break
+		}
+
+		input := make([]byte, length)
+		_, err = os.Stdin.Read(input)
+		if err != nil {
+			break
+		}
+
+		err = json.Unmarshal(input, &data)
+		CheckError(err)
+
+		log.Print(data)
+		time.Sleep(1000 * time.Millisecond)
+
+		if data["request"] != "hodoralot" {
+			bookmarks := GetAllBookmarks(db)
+
+			jsonResponse, err = json.Marshal(bookmarks)
+			CheckError(err)
+
+			binary.Write(os.Stdout, binary.LittleEndian, uint32(len(jsonResponse)))
+			_, err = os.Stdout.Write(jsonResponse)
+			CheckError(err)
+		}
+	}
 }
 
 // Write errors to log & quit

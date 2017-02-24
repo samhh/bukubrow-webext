@@ -4,7 +4,6 @@
   "path": "%%replace%%",
   "type": "stdio",
   "allowed_origins": [
-    "chrome-extension://jegbgfamcgeocbfeebacnkociplhmfbk/",
-    "chrome-extension://klfoddkbhleoaabpmiigbmpbjfljimgb/"
+    "chrome-extension://hkfhplegmecfnmcmmgoaplkbokhfajck"
   ]
 }
