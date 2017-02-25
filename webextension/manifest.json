@@ -15,7 +15,8 @@
 		]
 	},
 	"permissions": [
-		"nativeMessaging"
+		"nativeMessaging",
+		"storage"
 	],
 	"commands": {
 		"_execute_browser_action": {

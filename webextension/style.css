@@ -1,3 +1,8 @@
+:root {
+	--padding: 12px;
+	--light-bg: #eee;
+}
+
 body {
 	margin: 0;
 }
@@ -12,8 +17,7 @@ body {
 }
 
 .wrapper {
-  min-width: 320px;
-  padding: 15px;
+  min-width: 270px;
 }
 
 .header h3 {
@@ -26,19 +30,20 @@ body {
 }
 
 .bookmarks li {
-	padding: 5px;
+	padding: var(--padding);
 	cursor: pointer;
 }
 
 .bookmarks li:hover {
-	background: #eee;
+	background: var(--light-bg);
 }
 
 .bookmarks li + li {
-	margin-top: 5px;
+	border-top: 1px solid var(--light-bg);
 }
 
 .footer {
+  padding: var(--padding);
 	text-align: center;
 }
 
