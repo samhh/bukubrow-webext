@@ -1,22 +1,28 @@
 :root {
 	--padding: 12px;
 	--border-radius: 2px;
-	--light-bg: #eee;
 }
 
 body {
+	--offset-bg: #eee;
 	margin: 0;
+}
+
+body.dark {
+	--offset-bg: #383838;
+	background: #282828;
+	color: #eee;
 }
 
 input,
 button {
-	border: 1px solid var(--light-bg);
+	border: 1px solid var(--offset-bg);
 	outline: 0;
 	background: none;
 }
 
 button:hover {
-	background: var(--light-bg);
+	background: var(--offset-bg);
 }
 
 button:active {
@@ -58,6 +64,11 @@ button:active {
 	border-radius: var(--border-radius);
 }
 
+.dark .controls__search,
+.dark .controls__refresh {
+	color: white;
+}
+
 .controls__search {
 	width: calc(100% - var(--header-items-margin) - var(--header-items-size));
 	height: var(--header-items-size);
@@ -86,16 +97,17 @@ button:active {
 }
 
 .bookmarks li:hover {
-	background: var(--light-bg);
+	background: var(--offset-bg);
 }
 
 .bookmarks li + li {
-	border-top: 1px solid var(--light-bg);
+	border-top: 1px solid var(--offset-bg);
 }
 
 .footer {
   padding: var(--padding);
 	text-align: center;
+	color: #777;
 }
 
 .footer--heart {
