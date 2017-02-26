@@ -6,9 +6,11 @@
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body class="wrapper">
-		<header class="header">
-			<input type="text" name="search" autocomplete="off" placeholder="Search..." class="js-search">
-			<button type="button" class="js-req">&orarr;</button>
+		<header class="controls">
+			<form class="js-search">
+				<input type="text" name="search" autocomplete="off" placeholder="Search..." class="controls__search">
+			</form>
+			<button type="button" class="controls__refresh js-req">&orarr;</button>
 		</header>
 		<main>
 			<ul class="bookmarks js-bookmarks"></ul>

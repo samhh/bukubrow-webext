@@ -6,11 +6,11 @@ ensureValidURL = url => url.substring(0, 6) === 'http://' || url.substring(0, 7)
 // State of frontend app
 let state = {
 	bookmarks: [],
-	textFilter: []
+	textFilter: ''
 }
 
 // Filter bookmarks by text filter on demand
-const getFilteredBookmarks = () => state.bookmarks.filter(bookmark => bookmark.Url.includes(state.textFilter))
+const getFilteredBookmarks = () => state.bookmarks.filter(bookmark => bookmark.Url.toLowerCase().includes(state.textFilter.toLowerCase()))
 
 // Fetch bookmarks from local storage
 const fetchBookmarks = () => {
@@ -25,11 +25,13 @@ const fetchBookmarks = () => {
 
 // Update bookmarks list
 const bookmarksEl = document.querySelector('.js-bookmarks')
+
 const displayBookmarks = () => {
 	bookmarksEl.innerHTML = ''
 
 	getFilteredBookmarks().forEach(bookmark => {
 		const newEl = document.createElement('li')
+		newEl.className = 'js-bookmark-item'
 		newEl.innerHTML = `
 			<span>
 				${bookmark.Url}
@@ -53,6 +55,7 @@ const requestBookmarks = () => {
 }
 
 const reqEl = document.querySelector('.js-req')
+
 reqEl.addEventListener('click', requestBookmarks)
 
 // React to messages from backend
@@ -65,8 +68,26 @@ updateBookmarks()
 
 // Search through bookmarks
 const searchEl = document.querySelector('.js-search')
-searchEl.addEventListener('input', () => {
-	state.textFilter = searchEl.value
+const searchInputEl = searchEl.elements['search']
 
+const updateSearchTextFilter = () => {
+	state.textFilter = searchInputEl.value
+}
+
+searchEl.addEventListener('input', () => {
+	updateSearchTextFilter()
 	displayBookmarks()
+})
+
+searchEl.addEventListener('submit', e => {
+	e.preventDefault()
+
+	const bookmarkEls = document.querySelectorAll('.js-bookmark-item')
+
+	if (bookmarkEls.length) bookmarkEls[0].click()
+	else {
+		searchInputEl.value = ''
+		updateSearchTextFilter()
+		displayBookmarks()
+	}
 })

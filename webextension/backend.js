@@ -1,5 +1,12 @@
 console.log('Backend loaded.')
 
+// Helper functions
+sortArrOfObjAlphabetically = (bookmarks, sortKey) => {
+	return bookmarks.sort((a, b) => {
+		return a[sortKey].localeCompare(b[sortKey])
+	})
+}
+
 const cfg = {
 	appName: 'com.samhh.bukubrow',
 	timerIntervalInSecs: 5
@@ -8,7 +15,9 @@ const cfg = {
 // Save bookmarks to local storage
 const saveBookmarks = bookmarks => {
 	return new Promise((resolve, reject) => {
-		chrome.storage.local.set({ bookmarks }, resolve)
+		chrome.storage.local.set({
+			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'Url')
+		}, resolve)
 	})
 }
 

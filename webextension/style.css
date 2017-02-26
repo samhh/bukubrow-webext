@@ -1,10 +1,26 @@
 :root {
 	--padding: 12px;
+	--border-radius: 2px;
 	--light-bg: #eee;
 }
 
 body {
 	margin: 0;
+}
+
+input,
+button {
+	border: 1px solid var(--light-bg);
+	outline: 0;
+	background: none;
+}
+
+button:hover {
+	background: var(--light-bg);
+}
+
+button:active {
+	transform: translateY(2px);
 }
 
 .wrapper,
@@ -20,11 +36,46 @@ body {
   min-width: 270px;
 }
 
-.header h3 {
-	margin: 0;
+.controls {
+	padding: var(--padding);
+}
+
+/* Clearfix floated children */
+.controls::after {
+	content: '';
+	display: table;
+	clear: left;
+}
+
+:root {
+	--header-items-margin: 10px;
+	--header-items-size: 25px;
+}
+
+.controls__search,
+.controls__refresh {
+	float: left;
+	border-radius: var(--border-radius);
+}
+
+.controls__search {
+	width: calc(100% - var(--header-items-margin) - var(--header-items-size));
+	height: var(--header-items-size);
+	margin: 0 var(--header-items-margin) 0 0;
+	padding: 0 var(--header-items-margin);
+}
+
+.controls__refresh {
+	width: var(--header-items-size);
+	height: var(--header-items-size);
+	line-height: 100%;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .bookmarks {
+	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
