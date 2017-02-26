@@ -82,9 +82,10 @@ searchEl.addEventListener('input', () => {
 searchEl.addEventListener('submit', e => {
 	e.preventDefault()
 
-	const bookmarkEls = document.querySelectorAll('.js-bookmark-item')
+	// Find first bookmark item
+	const firstBookmarkEl = document.querySelector('.js-bookmark-item')
 
-	if (bookmarkEls.length) bookmarkEls[0].click()
+	if (firstBookmarkEl) firstBookmarkEl.click()
 	else {
 		searchInputEl.value = ''
 		updateSearchTextFilter()
