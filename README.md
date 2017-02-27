@@ -27,8 +27,8 @@ Installing the binary and registering it with your browser through the installat
 
 Install the WebExtension from the relevant addon store.
 
-- Chrome: []()
-- Firefox: []()
+- Chrome: https://chrome.google.com/webstore/detail/bukubrow/ghniladkapjacfajiooekgkfopkjblpn
+- Firefox: Awaiting review.
 
 Alternatively, for Chrome and Chromium, you can download the .crx file directly from the [releases](https://github.com/samhh/Bukubrow/releases) page.
 
