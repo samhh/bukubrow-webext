@@ -1,7 +1,7 @@
-console.log('Frontend loaded.')
+console.log('Content JS loaded.')
 
 // Helper functions
-ensureValidURL = url => url.substring(0, 6) === 'http://' || url.substring(0, 7) === 'https://' ? url : `http://${url}`
+const ensureValidURL = url => url.substring(0, 6) === 'http://' || url.substring(0, 7) === 'https://' ? url : `http://${url}`
 
 // State of frontend app
 let state = {

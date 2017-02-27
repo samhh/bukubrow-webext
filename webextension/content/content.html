@@ -3,19 +3,21 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Bukubrow</title>
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="../shared.css">
+		<link rel="stylesheet" href="content.css">
 	</head>
 	<body class="wrapper">
-		<header class="controls">
+		<header class="controls u-clearfix">
 			<form class="js-search">
 				<input type="text" name="search" autocomplete="off" placeholder="Search..." class="controls__search">
 			</form>
-			<button type="button" class="controls__refresh js-req">&orarr;</button>
+			<button type="button" class="btn btn--no-padding controls__refresh js-req">&orarr;</button>
 		</header>
 		<main>
 			<ul class="bookmarks js-bookmarks"></ul>
 		</main>
 		<footer class="footer">Made with <span class="footer--heart">&hearts;</span> by the open source community</footer>
-		<script src="frontend.js"></script>
+		<script src="../shared.js"></script>
+		<script src="content.js"></script>
 	</body>
 </html>

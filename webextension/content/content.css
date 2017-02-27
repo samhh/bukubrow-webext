@@ -1,61 +1,14 @@
-:root {
-	--padding: 12px;
-	--border-radius: 2px;
-}
-
 body {
-	--offset-bg: #eee;
-	margin: 0;
-}
-
-body.dark {
-	--offset-bg: #383838;
-	background: #282828;
-	color: #eee;
-}
-
-input,
-button {
-	border: 1px solid var(--offset-bg);
-	outline: 0;
-	background: none;
-}
-
-button:hover {
-	background: var(--offset-bg);
-}
-
-button:active {
-	transform: translateY(2px);
-}
-
-.wrapper,
-.wrapper::before,
-.wrapper::after,
-.wrapper *,
-.wrapper *::before,
-.wrapper *::after {
-  box-sizing: border-box;
-}
-
-.wrapper {
-  min-width: 270px;
-}
-
-.controls {
-	padding: var(--padding);
-}
-
-/* Clearfix floated children */
-.controls::after {
-	content: '';
-	display: table;
-	clear: left;
+	font-size: 75%;
 }
 
 :root {
 	--header-items-margin: 10px;
 	--header-items-size: 25px;
+}
+
+.controls {
+	padding: var(--sizing);
 }
 
 .controls__search,
@@ -82,7 +35,6 @@ button:active {
 	line-height: 100%;
 	font-size: 16px;
 	font-weight: bold;
-	cursor: pointer;
 }
 
 .bookmarks {
@@ -92,7 +44,7 @@ button:active {
 }
 
 .bookmarks li {
-	padding: var(--padding);
+	padding: var(--sizing);
 	cursor: pointer;
 }
 
@@ -102,14 +54,4 @@ button:active {
 
 .bookmarks li + li {
 	border-top: 1px solid var(--offset-bg);
-}
-
-.footer {
-  padding: var(--padding);
-	text-align: center;
-	color: #777;
-}
-
-.footer--heart {
-	color: #ec1d26;
 }
