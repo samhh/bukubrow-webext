@@ -14,16 +14,16 @@ This project has been heavily influenced by [browserpass](https://github.com/dan
 
 ## Installation
 
-#### Part 1 - Installing the binary
+#### Step 1 - Installing the binary
 
-Start out by downloading the [latest binary](https://github.com/samhh/Bukubrow/releases) for your operating system. Prebuilt binaries for 64-bit Linux & macOS are available.
+Start out by downloading the [latest binary](https://github.com/samhh/Bukubrow/releases) for your operating system. A prebuilt binary for 64-bit macOS is available. For Linux and/or 32-bit systems you will need to compile the binary yourself until I figure out how to cross-compile (help appreciated!). See below for instructions.
 
 1. Extract the package.
-1. Run `./install.sh` to install the native messaging host. If you want a system-wide installation, run the script with `sudo`.
+2. Run `./install.sh` to install the native messaging host. If you want a system-wide installation, run the script with `sudo`.
 
 Installing the binary and registering it with your browser through the installation script is required to allow the browser extension to talk to Buku.
 
-#### Part 2 - Installing the WebExtension
+#### Step 2 - Installing the WebExtension
 
 Install the WebExtension from the relevant addon store.
 
@@ -32,7 +32,13 @@ Install the WebExtension from the relevant addon store.
 
 Alternatively, for Chrome and Chromium, you can download the .crx file directly from the [releases](https://github.com/samhh/Bukubrow/releases) page.
 
-## Building
+## Building the binary
+
+Clone the repo, run `make binary-linux-x64` (or substitute `binary-linux-x64` for your preferred target) and then inside `./release` you'll have a zip identical to what you would have downloaded as a binary in step 1.
+
+## Building the WebExtension
+
+As a prerequisite, clone the repo.
 
 In order to build the .crx package for Chrome/Chromium you'll need one of [these](https://developer.chrome.com/extensions/crx#scripts) scripts. The makefile assumes it will be in your PATH under the name `crxmake`. It also assumes that you will have a private key in the project root directory under the name `key.pem`. You can easily generate a keypair with the following command: `openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem`
 
