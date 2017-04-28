@@ -2,8 +2,9 @@ console.log('Shared JS loaded.')
 
 window.setTheme = () => {
 	chrome.storage.sync.get(null, opts => {
-		if (opts.theme === 'dark') document.body.classList.add('dark')
-		else document.body.classList.remove('dark')
+		const action = opts.theme === 'dark' ? 'add' : 'remove'
+
+		document.body.classList[action]('dark')
 	})
 }
 

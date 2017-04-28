@@ -43,15 +43,16 @@ body {
 	list-style-type: none;
 }
 
-.bookmarks li {
+.bookmarks__item {
 	padding: var(--sizing);
 	cursor: pointer;
 }
 
-.bookmarks li:hover {
+.bookmarks__item:hover,
+.bookmarks__item--focused {
 	background: var(--offset-bg);
 }
 
-.bookmarks li + li {
+.bookmarks__item + .bookmarks__item {
 	border-top: 1px solid var(--offset-bg);
 }
