@@ -10,7 +10,7 @@ This project has been heavily influenced by [browserpass](https://github.com/dan
 ## Requirements
 
 - Buku
-- A web browser that supports recent JavaScript standards and WebExtensions; this includes all recent releases of Chrome, Chromium, and Firefox.
+- A web browser that supports recent web standards and WebExtensions; this includes all recent releases of Chrome, Chromium, and Firefox.
 
 ## Installation
 
