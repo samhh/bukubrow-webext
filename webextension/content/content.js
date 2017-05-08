@@ -31,7 +31,7 @@ const setFilteredBookmarks = () => {
 const fetchBookmarks = () => {
 	return new Promise((resolve, reject) => {
 		chrome.storage.local.get('bookmarks', data => {
-			state.bookmarks = data.bookmarks
+			state.bookmarks = data.bookmarks || []
 
 			resolve()
 		})
@@ -52,10 +52,30 @@ const displayBookmarks = () => {
 			newEl.className += ` bookmarks__item--focused ${cfg.focusedBookmarkClassName}`
 		}
 
+		const tags = bookmark.Tags.split(',').reduce((acc, tag) => {
+			// Split will leave some empty strings behind
+			if (!!tag) acc +=`<li class="bookmarks__item-tag">#${tag}</li>`
+
+			return acc
+		})
+
+		const desc = bookmark.Desc ? `
+			<p class="bookmarks__item-desc">> ${bookmark.Desc}</p>
+		` : ''
+
 		newEl.innerHTML = `
-			<span>
+			<header>
+				<h1 class="bookmarks__item-name">
+					${bookmark.Metadata}
+				</h1>
+				<ul class="bookmarks__item-tags">
+					${tags}
+				</ul>
+			</header>
+			${desc}
+			<h2 class="bookmarks__item-url">
 				${bookmark.Url}
-			</span>
+			</h2>
 		`
 
 		newEl.addEventListener('click', () => {
