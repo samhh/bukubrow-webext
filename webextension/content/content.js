@@ -22,9 +22,22 @@ let state = {
 
 // Filter bookmarks by text filter on demand
 const setFilteredBookmarks = () => {
-	state.filteredBookmarks = state.bookmarks.filter(bookmark => {
-		return bookmark.Url.toLowerCase().includes(state.textFilter.toLowerCase())
+	const textFilter = state.textFilter.toLowerCase()
+
+	// Using separate arrays is an easy way to sort matches
+	const nameMatches = []
+	const tagMatches = []
+	const urlMatches = []
+	const descMatches = []
+
+	state.bookmarks.forEach(bookmark => {
+		if (bookmark.Metadata.toLowerCase().includes(textFilter)) nameMatches.push(bookmark)
+		else if (bookmark.Tags.toLowerCase().includes(textFilter)) tagMatches.push(bookmark)
+		else if (bookmark.Url.toLowerCase().includes(textFilter)) urlMatches.push(bookmark)
+		else if (bookmark.Desc.toLowerCase().includes(textFilter)) descMatches.push(bookmark)
 	})
+
+	state.filteredBookmarks = [...nameMatches, ...tagMatches, ...urlMatches, ...descMatches]
 }
 
 // Fetch bookmarks from local storage
