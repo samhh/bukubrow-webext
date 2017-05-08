@@ -59,6 +59,11 @@ body {
 	padding: var(--sizing);
 }
 
+.highlighted-text {
+	background: #ACCEA8;
+	color: #333;
+}
+
 .bookmarks {
 	margin: 0;
 	padding: 0;

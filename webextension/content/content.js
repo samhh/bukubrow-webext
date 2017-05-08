@@ -61,6 +61,13 @@ const fetchBookmarks = () => {
 	})
 }
 
+const addHighlightMarkup = str => {
+	// Doing it this way enables us to search case insensitively using a variable
+	const findRe = new RegExp(state.textFilter, 'ig')
+
+	return str.replace(findRe, `<span class="highlighted-text">${state.textFilter}</span>`)
+}
+
 // Update bookmarks list
 const bookmarksEl = document.querySelector('.js-bookmarks')
 
@@ -81,19 +88,19 @@ const renderBookmarks = () => {
 
 		const tags = bookmark.Tags.split(',').reduce((acc, tag) => {
 			// Split will leave some empty strings behind
-			if (!!tag) acc +=`<li class="bookmarks__item-tag">#${tag}</li>`
+			if (!!tag) acc +=`<li class="bookmarks__item-tag">#${addHighlightMarkup(tag)}</li>`
 
 			return acc
 		})
 
 		const desc = bookmark.Desc ? `
-			<p class="bookmarks__item-desc">> ${bookmark.Desc}</p>
+			<p class="bookmarks__item-desc">> ${addHighlightMarkup(bookmark.Desc)}</p>
 		` : ''
 
 		newEl.innerHTML = `
 			<header>
 				<h1 class="bookmarks__item-name">
-					${bookmark.Metadata}
+					${addHighlightMarkup(bookmark.Metadata)}
 				</h1>
 				<ul class="bookmarks__item-tags">
 					${tags}
@@ -101,7 +108,7 @@ const renderBookmarks = () => {
 			</header>
 			${desc}
 			<h2 class="bookmarks__item-url">
-				${bookmark.Url}
+				${addHighlightMarkup(bookmark.Url)}
 			</h2>
 		`
 
