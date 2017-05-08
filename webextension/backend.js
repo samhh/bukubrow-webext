@@ -15,7 +15,8 @@ const cfg = {
 const saveBookmarks = bookmarks => {
 	return new Promise((resolve, reject) => {
 		chrome.storage.local.set({
-			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'Url')
+			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'Url'),
+			hasTriggeredRequest: true
 		}, resolve)
 	})
 }

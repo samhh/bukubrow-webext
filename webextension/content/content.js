@@ -12,6 +12,21 @@ const cfg = {
 	focusedBookmarkClassName: 'js-focused-bookmark-item'
 }
 
+// Check if the user has ever triggered a request
+// If not, display tutorial message
+const checkHasTriggeredRequest = () => {
+	return new Promise((resolve, reject) => {
+		chrome.storage.local.get('hasTriggeredRequest', res => {
+			resolve(!!res.hasTriggeredRequest)
+		})
+	})
+}
+
+checkHasTriggeredRequest()
+	.then(hasTriggeredRequest => {
+		if (!hasTriggeredRequest) displayTutorialMessage()
+	})
+
 // State of frontend app
 let state = {
 	bookmarks: [],
@@ -44,9 +59,9 @@ const setFilteredBookmarks = () => {
 const fetchBookmarks = () => {
 	return new Promise((resolve, reject) => {
 		chrome.storage.local.get('bookmarks', data => {
-			state.bookmarks = data.bookmarks || []
+			state.bookmarks = data.bookmarks
 
-			resolve()
+			resolve(!!data.bookmarks)
 		})
 	})
 }
@@ -55,7 +70,11 @@ const fetchBookmarks = () => {
 const bookmarksEl = document.querySelector('.js-bookmarks')
 
 const displayBookmarks = () => {
+	const newWrapper = document.createElement('ul')
+	newWrapper.className = 'bookmarks'
+
 	bookmarksEl.innerHTML = ''
+	bookmarksEl.appendChild(newWrapper)
 
 	state.filteredBookmarks.forEach((bookmark, index) => {
 		const newEl = document.createElement('li')
@@ -95,16 +114,27 @@ const displayBookmarks = () => {
 			chrome.tabs.create({ url: ensureValidURL(bookmark.Url) })
 		})
 
-		bookmarksEl.appendChild(newEl)
+		newWrapper.appendChild(newEl)
 	})
+}
+
+// Render tutorial message instead of bookmarks list
+const displayTutorialMessage = () => {
+	bookmarksEl.innerHTML = `
+		<p class="tutorial-msg">
+			To fetch your bookmarks for use in Bukubrow click the button with the arrow in it above.<br><br>Do this whenever you want to refresh your local cache of bookmarks with those from Buku.
+		</p>
+	`
 }
 
 // Request updated bookmarks
 const setBookmarks = () => {
 	fetchBookmarks()
-		.then(() => {
-			setFilteredBookmarks()
-			displayBookmarks()
+		.then(areAnyBookmarks => {
+			if (areAnyBookmarks) {
+				setFilteredBookmarks()
+				displayBookmarks()
+			}
 		})
 }
 
