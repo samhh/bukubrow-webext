@@ -29,6 +29,12 @@ input {
 	background: none;
 }
 
+input[disabled] {
+	opacity: .25;
+	font-style: italic;
+	cursor: not-allowed;
+}
+
 .btn {
 	padding: calc(var(--sizing) / 2) var(--sizing);
 	border: none;

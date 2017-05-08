@@ -12,6 +12,14 @@ const cfg = {
 	focusedBookmarkClassName: 'js-focused-bookmark-item'
 }
 
+// State of frontend app
+let state = {
+	bookmarks: [],
+	filteredBookmarks: [],
+	focusedBookmarkIndex: 0,
+	textFilter: ''
+}
+
 // Check if the user has ever triggered a request
 // If not, display tutorial message
 const checkHasTriggeredRequest = () => {
@@ -20,19 +28,6 @@ const checkHasTriggeredRequest = () => {
 			resolve(!!res.hasTriggeredRequest)
 		})
 	})
-}
-
-checkHasTriggeredRequest()
-	.then(hasTriggeredRequest => {
-		if (!hasTriggeredRequest) renderTutorialMessage()
-	})
-
-// State of frontend app
-let state = {
-	bookmarks: [],
-	filteredBookmarks: [],
-	focusedBookmarkIndex: 0,
-	textFilter: ''
 }
 
 // Filter bookmarks by text filter on demand
@@ -140,13 +135,25 @@ const renderErrorMsg = (msg, timeInSecs = 5) => {
 	}, timeInSecs * 1000)
 }
 
+const searchEl = document.querySelector('.js-search')
+const searchInputEl = searchEl.elements['search']
+
+checkHasTriggeredRequest()
+	.then(hasTriggeredRequest => {
+		if (!hasTriggeredRequest) renderTutorialMessage()
+	})
+
 // Request updated bookmarks
 const setBookmarks = () => {
 	fetchBookmarks()
 		.then(areAnyBookmarks => {
 			if (areAnyBookmarks) {
+				searchInputEl.removeAttribute('disabled')
+
 				setFilteredBookmarks()
 				renderBookmarks()
+			} else {
+				searchInputEl.addAttribute('disabled')
 			}
 		})
 }
@@ -198,9 +205,6 @@ document.addEventListener('keydown', evt => {
 })
 
 // Search through bookmarks
-const searchEl = document.querySelector('.js-search')
-const searchInputEl = searchEl.elements['search']
-
 const updateSearchTextFilter = () => {
 	state.textFilter = searchInputEl.value
 }
