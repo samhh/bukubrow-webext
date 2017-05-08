@@ -1,5 +1,9 @@
 console.log('Options JS loaded.')
 
+const cfg = {
+	defaultTheme: 'light'
+}
+
 const formEl = document.querySelector('.js-form')
 const noticeEl = document.querySelector('.js-notice')
 
@@ -18,7 +22,7 @@ const restoreOpts = () => {
 const setOptsState = async (opts) => {
 	if (!opts) opts = await restoreOpts()
 
-	formEl.elements['theme'].value = opts.theme
+	formEl.elements['theme'].value = opts.theme || cfg.defaultTheme
 }
 
 setOptsState()
