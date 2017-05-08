@@ -1,9 +1,9 @@
 {
-  "name": "com.samhh.bukubrow",
-  "description": "Bukubrow binary for the Firefox extension",
-  "path": "%%replace%%",
-  "type": "stdio",
-  "allowed_extensions": [
-     "bukubrow@samhh.com"
-   ]
+	"name": "com.samhh.bukubrow",
+	"description": "Bukubrow binary for the Firefox extension",
+	"path": "%%replace%%",
+	"type": "stdio",
+	"allowed_extensions": [
+		 "bukubrow@samhh.com"
+	 ]
 }

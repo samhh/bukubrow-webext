@@ -1,10 +1,10 @@
 {
-  "name": "com.samhh.bukubrow",
-  "description": "Bukubrow binary for the Chrome extension",
-  "path": "%%replace%%",
-  "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://ghniladkapjacfajiooekgkfopkjblpn/",
-    "chrome-extension://hkfhplegmecfnmcmmgoaplkbokhfajck/"
-  ]
+	"name": "com.samhh.bukubrow",
+	"description": "Bukubrow binary for the Chrome extension",
+	"path": "%%replace%%",
+	"type": "stdio",
+	"allowed_origins": [
+		"chrome-extension://ghniladkapjacfajiooekgkfopkjblpn/",
+		"chrome-extension://hkfhplegmecfnmcmmgoaplkbokhfajck/"
+	]
 }
