@@ -2,7 +2,7 @@ console.log('Content JS loaded.')
 
 // Helper functions
 const ensureValidURL = url => {
-	const isAlreadyValidUrl = url.substring(0, 6) === 'http://' || url.substring(0, 7) === 'https://'
+	const isAlreadyValidUrl = url.substring(0, 7) === 'http://' || url.substring(0, 8) === 'https://'
 
 	return isAlreadyValidUrl ? url : `http://${url}`
 }
