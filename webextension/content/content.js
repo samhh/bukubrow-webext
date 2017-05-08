@@ -24,7 +24,7 @@ const checkHasTriggeredRequest = () => {
 
 checkHasTriggeredRequest()
 	.then(hasTriggeredRequest => {
-		if (!hasTriggeredRequest) displayTutorialMessage()
+		if (!hasTriggeredRequest) renderTutorialMessage()
 	})
 
 // State of frontend app
@@ -69,7 +69,7 @@ const fetchBookmarks = () => {
 // Update bookmarks list
 const bookmarksEl = document.querySelector('.js-bookmarks')
 
-const displayBookmarks = () => {
+const renderBookmarks = () => {
 	const newWrapper = document.createElement('ul')
 	newWrapper.className = 'bookmarks'
 
@@ -119,12 +119,25 @@ const displayBookmarks = () => {
 }
 
 // Render tutorial message instead of bookmarks list
-const displayTutorialMessage = () => {
+const renderTutorialMessage = () => {
 	bookmarksEl.innerHTML = `
 		<p class="tutorial-msg">
 			To fetch your bookmarks for use in Bukubrow click the button with the arrow in it above.<br><br>Do this whenever you want to refresh your local cache of bookmarks with those from Buku.
 		</p>
 	`
+}
+
+// Render error messages for specified time
+const errorEl = document.querySelector('.js-error')
+const renderErrorMsg = (msg, timeInSecs = 5) => {
+	const visibleClassName = 'visible'
+
+	errorEl.textContent = msg
+	errorEl.classList.add(visibleClassName)
+
+	setTimeout(() => {
+		errorEl.classList.remove(visibleClassName)
+	}, timeInSecs * 1000)
 }
 
 // Request updated bookmarks
@@ -133,7 +146,7 @@ const setBookmarks = () => {
 		.then(areAnyBookmarks => {
 			if (areAnyBookmarks) {
 				setFilteredBookmarks()
-				displayBookmarks()
+				renderBookmarks()
 			}
 		})
 }
@@ -150,6 +163,18 @@ reqEl.addEventListener('click', requestBookmarks)
 chrome.runtime.onMessage.addListener(req => {
 	if (req.bookmarksUpdated) {
 		setBookmarks()
+	}
+
+	if (req.cannotFindBinary) {
+		const msg = 'The binary could not be found. Please refer to the installation instructions.'
+
+		renderErrorMsg(msg)
+	}
+
+	if (req.unknownError) {
+		const msg = 'An unknown error occurred.'
+
+		renderErrorMsg(msg)
 	}
 })
 
@@ -169,7 +194,7 @@ document.addEventListener('keydown', evt => {
 		state.focusedBookmarkIndex++
 	}
 
-	displayBookmarks()
+	renderBookmarks()
 })
 
 // Search through bookmarks
@@ -185,7 +210,7 @@ searchEl.addEventListener('input', () => {
 
 	updateSearchTextFilter()
 	setFilteredBookmarks()
-	displayBookmarks()
+	renderBookmarks()
 })
 
 searchEl.addEventListener('submit', evt => {
@@ -200,6 +225,6 @@ searchEl.addEventListener('submit', evt => {
 
 		updateSearchTextFilter()
 		setFilteredBookmarks()
-		displayBookmarks()
+		renderBookmarks()
 	}
 })

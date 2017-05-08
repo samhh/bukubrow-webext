@@ -31,7 +31,19 @@ const requestBookmarks = () => {
 	console.log('Bookmarks requested...')
 
 	chrome.runtime.sendNativeMessage(cfg.appName, { request: 'true' }, res => {
-		if (chrome.runtime.lastError) return console.log(chrome.runtime.lastError)
+		if (chrome.runtime.lastError) {
+			const error = chrome.runtime.lastError.message
+
+			console.log(`...error fetching bookmarks: ${error}`)
+
+			if (error === 'Specified native messaging host not found.') {
+				chrome.runtime.sendMessage({ cannotFindBinary: true })
+			} else {
+				chrome.runtime.sendMessage({ unknownError: true })
+			}
+
+			return
+		}
 
 		console.log('...bookmarks fetched and returned.')
 

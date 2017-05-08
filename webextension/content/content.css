@@ -7,6 +7,23 @@ body {
 	--header-items-size: 25px;
 }
 
+.error-popup {
+	width: calc(100% - (var(--sizing) * 2));
+	position: fixed;
+	bottom: var(--sizing);
+	left: var(--sizing);
+	transform: translateY(calc(100% + var(--sizing)));
+	padding: var(--sizing);
+	font-size: 14px;
+	background: #FFC0CB;
+	color: #333;
+	transition: transform .25s;
+}
+
+.error-popup.visible {
+	transform: translateY(0);
+}
+
 .controls {
 	padding: var(--sizing);
 }
