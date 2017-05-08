@@ -1,6 +1,6 @@
 {
 	"name": "Bukubrow",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"manifest_version": 2,
 	"minimum_chrome_version": "55",
 	"description": "Synchronise your browser bookmarks with Buku",
