@@ -23,6 +23,8 @@ Start out by downloading the [latest binary](https://github.com/samhh/Bukubrow/r
 
 Installing the binary and registering it with your browser through the installation script is required to allow the browser extension to talk to Buku.
 
+Note that the binary must always remain in the same location in order for the browser to find it. If you move or delete the file you will need to install it / register it with the browser again.
+
 #### Step 2 - Installing the WebExtension
 
 Install the WebExtension from the relevant addon store.
