@@ -39,21 +39,21 @@ webext:
 	cp -r `ls $(WEBEXT_DIR) | grep -v '_' | sed 's/^/$(WEBEXT_DIR)\//'` $(BUILD_DIR)
 	cp -r assets $(BUILD_DIR)
 
-# Copy Chrome files to build dir and build into release dir
-.PHONY: chrome
-chrome:
+# Copy web extension files to build dir and build into release dir
+.PHONY: webext-release
+webext-release:
+	${MAKE} prepare
+	${MAKE} webext
+	cd $(BUILD_DIR) && zip -r '../$(RELEASE_DIR)/webext' ./*
+	${MAKE} clean
+
+# Copy Chrome files to build dir and build into release dir as a CRX/extension
+.PHONY: chrome-crx
+chrome-crx:
 	${MAKE} prepare
 	${MAKE} webext
 	crxmake $(BUILD_DIR) ./key.pem
 	mv .build.crx release/chrome.crx
-	${MAKE} clean
-
-# Copy Firefox files to build dir and zip into release dir
-.PHONY: firefox
-firefox:
-	${MAKE} prepare
-	${MAKE} webext
-	zip -j '$(RELEASE_DIR)/firefox' $(BUILD_DIR)/*
 	${MAKE} clean
 
 # Build for Linux and zip into release dir
@@ -63,7 +63,8 @@ binary-linux-x64:
 	${MAKE} browser-hosts
 	env GOOS=linux GOARCH=amd64 go build -i binary/bukubrow.go
 	mv bukubrow $(BUILD_DIR)/bukubrow-linux-x64
-	zip -j '$(RELEASE_DIR)/binary-linux-x64' $(BUILD_DIR)/* binary/install.sh
+	cd $(BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-linux-x64' ./* ../binary/install.sh
+	${MAKE} clean
 
 # Build for macOS and zip into release dir
 .PHONY: binary-darwin-x64
@@ -72,13 +73,12 @@ binary-darwin-x64:
 	${MAKE} browser-hosts
 	env GOOS=darwin GOARCH=amd64 go build -i binary/bukubrow.go
 	mv bukubrow $(BUILD_DIR)/bukubrow-darwin-x64
-	zip -j '$(RELEASE_DIR)/binary-darwin-x64' $(BUILD_DIR)/* binary/install.sh
+	cd $(BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-darwin-x64' ./* ../binary/install.sh
 	${MAKE} clean
 
 # Full release
 .PHONY: release
 release:
-	${MAKE} chrome
-	${MAKE} firefox
+	${MAKE} webext-release
 	${MAKE} binary-linux-x64
 	${MAKE} binary-darwin-x64
