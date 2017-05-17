@@ -30,9 +30,7 @@ Note that the binary must always remain in the same location in order for the br
 Install the WebExtension from the relevant addon store.
 
 - Chrome: https://chrome.google.com/webstore/detail/bukubrow/ghniladkapjacfajiooekgkfopkjblpn
-- Firefox: Awaiting review.
-
-Alternatively, for Chrome and Chromium, you can download the .crx file directly from the [releases](https://github.com/samhh/Bukubrow/releases) page.
+- Firefox: https://addons.mozilla.org/en-US/firefox/addon/bukubrow/ (Note: that this is presently quite far behind master)
 
 ## Building the binary
 
