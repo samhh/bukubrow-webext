@@ -155,12 +155,12 @@ const setBookmarks = () => {
 	fetchBookmarks()
 		.then(areAnyBookmarks => {
 			if (areAnyBookmarks) {
-				searchInputEl.removeAttribute('disabled')
+				searchInputEl.disabled = false
 
 				setFilteredBookmarks()
 				renderBookmarks()
 			} else {
-				searchInputEl.addAttribute('disabled')
+				searchInputEl.disabled = true
 			}
 		})
 }
