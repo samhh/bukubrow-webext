@@ -2,17 +2,18 @@
 	"name": "Bukubrow",
 	"version": "1.1.0",
 	"manifest_version": 2,
-	"minimum_chrome_version": "55",
 	"description": "Synchronise your browser bookmarks with Buku",
+	"icons": {
+		"128": "assets/icon-128.png",
+		"256": "assets/icon-256.png"
+	},
 	"homepage_url": "https://github.com/samhh/bukubrow",
 	"browser_action": {
 		"default_icon": "assets/icon-256.png",
 		"default_popup": "content/content.html"
 	},
-	"options_page": "options/options.html",
-	"icons": {
-		"128": "assets/icon-128.png",
-		"256": "assets/icon-256.png"
+	"options_ui": {
+		"page": "options/options.html"
 	},
 	"background": {
 		"scripts": [
@@ -30,6 +31,9 @@
 			}
 		}
 	},
+	// Chrome / Blink & WebKit
+	"minimum_chrome_version": "55",
+	// Firefox / Gecko
 	"applications": {
 		"gecko": {
 			"id": "bukubrow@samhh.com",
