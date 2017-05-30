@@ -1,3 +1,8 @@
+import setTheme from '../modules/setTheme'
+
+import '../global-styles/'
+import './options.css'
+
 console.log('Options JS loaded.')
 
 const cfg = {
@@ -25,6 +30,7 @@ const setOptsState = async (opts) => {
 	formEl.elements['theme'].value = opts.theme || cfg.defaultTheme
 }
 
+setTheme()
 setOptsState()
 
 formEl.addEventListener('submit', e => {
@@ -35,7 +41,7 @@ formEl.addEventListener('submit', e => {
 	}
 
 	saveOpts(selectedOpts).then(() => {
-		window.setTheme()
+		setTheme()
 
 		noticeEl.innerHTML = 'Settings saved successfully.'
 	})

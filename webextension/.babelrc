@@ -1,0 +1,12 @@
+{
+	// There are plugins for JS standard proposals that aren't yet fully
+	// standardised but are well worth using anyway. Anything that's already fully
+	// standardised can be expected to be supported natively by the targeted
+	// browsers
+	"plugins": [
+		// Static class properties & ES2016 property initialiser syntax
+		"transform-class-properties",
+		// Object rest/spread {...obj}
+		"transform-object-rest-spread"
+	]
+}

@@ -10,14 +10,14 @@
 	"homepage_url": "https://github.com/samhh/bukubrow",
 	"browser_action": {
 		"default_icon": "assets/icon-256.png",
-		"default_popup": "content/content.html"
+		"default_popup": "content/content.build.html"
 	},
 	"options_ui": {
-		"page": "options/options.html"
+		"page": "options/options.build.html"
 	},
 	"background": {
 		"scripts": [
-			"backend.js"
+			"backend/backend.build.js"
 		]
 	},
 	"permissions": [
@@ -31,9 +31,9 @@
 			}
 		}
 	},
-	// Chrome / Blink & WebKit
+	// Blink & WebKit (Chrome, Opera, etc)
 	"minimum_chrome_version": "55",
-	// Firefox / Gecko
+	// Gecko (Firefox)
 	"applications": {
 		"gecko": {
 			"id": "bukubrow@samhh.com",

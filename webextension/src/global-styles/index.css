@@ -1,3 +1,5 @@
+@import 'sanitize.css';
+
 :root {
 	--sizing: 12px;
 	--border-radius: 2px;
@@ -33,6 +35,10 @@ input[disabled] {
 	opacity: .25;
 	font-style: italic;
 	cursor: not-allowed;
+}
+
+select {
+	border: 1px solid var(--offset-bg);
 }
 
 .btn {

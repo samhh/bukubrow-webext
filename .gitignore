@@ -1,10 +1,9 @@
-# Sensitive
-*.pem
+# Dependencies
+node_modules/
 
 # Build
-.build/
+dist/
 release/
-*.crx
 
 # Misc
 .DS_Store

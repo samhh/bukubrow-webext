@@ -1,11 +1,10 @@
+import setTheme from '../modules/setTheme'
+import ensureValidURL from '../modules/ensureValidURL'
+
+import '../global-styles/'
+import './content.css'
+
 console.log('Content JS loaded.')
-
-// Helper functions
-const ensureValidURL = url => {
-	const isAlreadyValidUrl = url.substring(0, 7) === 'http://' || url.substring(0, 8) === 'https://'
-
-	return isAlreadyValidUrl ? url : `http://${url}`
-}
 
 // Config
 const cfg = {
@@ -88,7 +87,7 @@ const renderBookmarks = () => {
 
 		const tags = bookmark.Tags.split(',').reduce((acc, tag) => {
 			// Split will leave some empty strings behind
-			if (!!tag) acc +=`<li class="bookmarks__item-tag">#${addHighlightMarkup(tag)}</li>`
+			if (tag) acc += `<li class="bookmarks__item-tag">#${addHighlightMarkup(tag)}</li>`
 
 			return acc
 		})
@@ -192,7 +191,8 @@ chrome.runtime.onMessage.addListener(req => {
 	}
 })
 
-// Load bookmarks saved in local storage on load
+// Load theme and bookmarks saved in local storage on load
+setTheme()
 setBookmarks()
 
 // Update active bookmark focus index on up/down keypress

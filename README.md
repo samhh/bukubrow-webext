@@ -38,8 +38,8 @@ Clone the repo, run `make binary-linux-x64` (or substitute `binary-linux-x64` fo
 
 ## Building the WebExtension
 
-As a prerequisite, clone the repo.
+Clone the repo, run 'make webext` and then inside `./release` you'll have a zip containing all required files and folders in the expected structure.
 
-In order to build the .crx package for Chrome/Chromium you'll need one of [these](https://developer.chrome.com/extensions/crx#scripts) scripts. The makefile assumes it will be in your PATH under the name `crxmake`. It also assumes that you will have a private key in the project root directory under the name `key.pem`. You can easily generate a keypair with the following command: `openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem`
+## Building everything
 
-You'll usually only need to run `make release`, however the makefile is modular and you can run individual builds on demand as well. It also contains helper commands such as `make clean` (remove `.build` dir) and `make wipe` (previous plus remove `release` dir).
+You can alternatively build everything all at once with `make release`.

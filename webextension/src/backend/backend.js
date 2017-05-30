@@ -1,11 +1,6 @@
-console.log('Backend loaded.')
+import sortArrOfObjAlphabetically from '../modules/sortArrOfObjAlphabetically'
 
-// Helper functions
-const sortArrOfObjAlphabetically = (bookmarks, sortKey) => {
-	return bookmarks.sort((a, b) => {
-		return a[sortKey].localeCompare(b[sortKey])
-	})
-}
+console.log('Backend loaded.')
 
 const cfg = {
 	appName: 'com.samhh.bukubrow'
