@@ -127,3 +127,12 @@ body {
 	font-weight: normal;
 	color: var(--dimmed-text-color);
 }
+
+.bookmarks__more-note {
+	text-align: center;
+	cursor: pointer;
+}
+
+.bookmarks__more-note:hover {
+	text-decoration: underline;
+}

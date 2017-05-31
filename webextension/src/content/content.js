@@ -1,5 +1,6 @@
 import setTheme from '../modules/setTheme'
 import ensureValidURL from '../modules/ensureValidURL'
+import sleep from '../modules/sleep'
 
 import '../global-styles/'
 import './content.css'
@@ -8,7 +9,8 @@ console.log('Content JS loaded.')
 
 // Config
 const cfg = {
-	focusedBookmarkClassName: 'js-focused-bookmark-item'
+	focusedBookmarkClassName: 'js-focused-bookmark-item',
+	maxBookmarksToRender: 10
 }
 
 // State of frontend app
@@ -70,36 +72,38 @@ const addHighlightMarkup = str => {
 // Update bookmarks list
 const bookmarksEl = document.querySelector('.js-bookmarks')
 
-const renderBookmarks = () => {
+const renderBookmarks = (renderAll = false) => {
 	const newWrapper = document.createElement('ul')
 	newWrapper.className = 'bookmarks'
 
 	bookmarksEl.innerHTML = ''
 	bookmarksEl.appendChild(newWrapper)
 
-	state.filteredBookmarks.forEach((bookmark, index) => {
+	const { filteredBookmarks: bookmarks } = state
+
+	for (let i = 0; i < bookmarks.length; i++) {
 		const newEl = document.createElement('li')
 
 		newEl.className = 'bookmarks__item'
-		if (index === state.focusedBookmarkIndex) {
+		if (i === state.focusedBookmarkIndex) {
 			newEl.className += ` bookmarks__item--focused ${cfg.focusedBookmarkClassName}`
 		}
 
-		const tags = bookmark.Tags.split(',').reduce((acc, tag) => {
+		const tags = bookmarks[i].Tags.split(',').reduce((acc, tag) => {
 			// Split will leave some empty strings behind
 			if (tag) acc += `<li class="bookmarks__item-tag">#${addHighlightMarkup(tag)}</li>`
 
 			return acc
 		})
 
-		const desc = bookmark.Desc ? `
-			<p class="bookmarks__item-desc">> ${addHighlightMarkup(bookmark.Desc)}</p>
+		const desc = bookmarks[i].Desc ? `
+			<p class="bookmarks__item-desc">> ${addHighlightMarkup(bookmarks[i].Desc)}</p>
 		` : ''
 
 		newEl.innerHTML = `
 			<header>
 				<h1 class="bookmarks__item-name">
-					${addHighlightMarkup(bookmark.Metadata)}
+					${addHighlightMarkup(bookmarks[i].Metadata)}
 				</h1>
 				<ul class="bookmarks__item-tags">
 					${tags}
@@ -107,16 +111,32 @@ const renderBookmarks = () => {
 			</header>
 			${desc}
 			<h2 class="bookmarks__item-url">
-				${addHighlightMarkup(bookmark.Url)}
+				${addHighlightMarkup(bookmarks[i].Url)}
 			</h2>
 		`
 
 		newEl.addEventListener('click', () => {
-			chrome.tabs.create({ url: ensureValidURL(bookmark.Url) })
+			chrome.tabs.create({ url: ensureValidURL(bookmarks[i].Url) })
 		})
 
 		newWrapper.appendChild(newEl)
-	})
+
+		if (!renderAll && i >= cfg.maxBookmarksToRender - 1) {
+			if (state.filteredBookmarks.length > cfg.maxBookmarksToRender) {
+				const remainingBookmarks = bookmarks.length - cfg.maxBookmarksToRender
+				const nthMoreEl = document.createElement('p')
+
+				nthMoreEl.className = 'bookmarks__more-note'
+				nthMoreEl.textContent = `...and ${remainingBookmarks} more.`
+
+				nthMoreEl.addEventListener('click', () => renderBookmarks(true))
+
+				newWrapper.appendChild(nthMoreEl)
+			}
+
+			break
+		}
+	}
 }
 
 // Render tutorial message instead of bookmarks list
@@ -136,9 +156,9 @@ const renderErrorMsg = (msg, timeInSecs = 5) => {
 	errorEl.textContent = msg
 	errorEl.classList.add(visibleClassName)
 
-	setTimeout(() => {
+	sleep(timeInSecs * 1000).then(() => {
 		errorEl.classList.remove(visibleClassName)
-	}, timeInSecs * 1000)
+	})
 }
 
 const searchEl = document.querySelector('.js-search')
@@ -155,6 +175,12 @@ const setBookmarks = () => {
 		.then(areAnyBookmarks => {
 			if (areAnyBookmarks) {
 				searchInputEl.disabled = false
+
+				// Firefox refuses to focus unless you wait a seemingly arbitrary length
+				// of time
+				sleep(150).then(() => {
+					searchInputEl.focus()
+				})
 
 				setFilteredBookmarks()
 				renderBookmarks()
