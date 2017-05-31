@@ -64,17 +64,17 @@ const fetchBookmarks = () => {
 }
 
 const addHighlightMarkup = str => {
-	// Doing it this way enables us to search case insensitively using a variable
+	// Search case insensitively using a variable
 	const findRe = new RegExp(state.textFilter, 'ig')
 
-	return str.replace(findRe, `<span class="highlighted-text">${state.textFilter}</span>`)
+	// Replace each found instance of the text filter, but don't change the casing (hence using the function paramater with the match argument)
+	return str.replace(findRe, match => `<span class="highlighted-text">${match}</span>`)
 }
 
 // Update bookmarks list
 const bookmarksEl = document.querySelector('.js-bookmarks')
 
 const renderBookmarks = (renderAll = false) => {
-	if (renderAll) state.numRenderedBookmarks = state.filteredBookmarks.length
 	state.numRenderedBookmarks = renderAll
 		? state.filteredBookmarks.length
 		: Math.min(state.filteredBookmarks.length, cfg.maxBookmarksToRender)
