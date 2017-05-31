@@ -115,8 +115,11 @@ const renderBookmarks = (renderAll = false) => {
 			</h2>
 		`
 
+		// On click open the link in a new tab and close the extension popup
 		newEl.addEventListener('click', () => {
 			chrome.tabs.create({ url: ensureValidURL(bookmarks[i].Url) })
+
+			window.close()
 		})
 
 		newWrapper.appendChild(newEl)
