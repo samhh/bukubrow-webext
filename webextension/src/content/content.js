@@ -17,6 +17,7 @@ const cfg = {
 let state = {
 	bookmarks: [],
 	filteredBookmarks: [],
+	numRenderedBookmarks: 0,
 	focusedBookmarkIndex: 0,
 	textFilter: ''
 }
@@ -73,6 +74,11 @@ const addHighlightMarkup = str => {
 const bookmarksEl = document.querySelector('.js-bookmarks')
 
 const renderBookmarks = (renderAll = false) => {
+	if (renderAll) state.numRenderedBookmarks = state.filteredBookmarks.length
+	state.numRenderedBookmarks = renderAll
+		? state.filteredBookmarks.length
+		: Math.min(state.filteredBookmarks.length, cfg.maxBookmarksToRender)
+
 	const newWrapper = document.createElement('ul')
 	newWrapper.className = 'bookmarks'
 
@@ -203,9 +209,7 @@ reqEl.addEventListener('click', requestBookmarks)
 
 // React to messages from backend
 chrome.runtime.onMessage.addListener(req => {
-	if (req.bookmarksUpdated) {
-		setBookmarks()
-	}
+	if (req.bookmarksUpdated) setBookmarks()
 
 	if (req.cannotFindBinary) {
 		const msg = 'The binary could not be found. Please refer to the installation instructions.'
@@ -230,10 +234,11 @@ document.addEventListener('keydown', evt => {
 
 	// If keypress not on up or down keys
 	if (!keypress) return
+	else evt.preventDefault()
 
 	if (keypress === 'up' && state.focusedBookmarkIndex > 0) {
 		state.focusedBookmarkIndex--
-	} else if (keypress === 'down' && state.focusedBookmarkIndex < state.filteredBookmarks.length - 1) {
+	} else if (keypress === 'down' && state.focusedBookmarkIndex < state.numRenderedBookmarks - 1) {
 		state.focusedBookmarkIndex++
 	}
 
