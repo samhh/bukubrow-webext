@@ -51,9 +51,10 @@ body {
 .controls__refresh {
 	width: var(--header-items-size);
 	height: var(--header-items-size);
-	line-height: 100%;
-	font-size: 16px;
-	font-weight: bold;
+}
+
+.controls__refresh svg {
+	padding: 5%;
 }
 
 .tutorial-msg {
