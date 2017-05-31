@@ -48,6 +48,16 @@ body {
 	padding: 0 var(--header-items-margin);
 }
 
+@keyframes refreshRotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 .controls__refresh {
 	width: var(--header-items-size);
 	height: var(--header-items-size);
@@ -55,6 +65,10 @@ body {
 
 .controls__refresh svg {
 	padding: 5%;
+}
+
+.controls__refresh--active svg {
+	animation: refreshRotate 1.5s infinite linear;
 }
 
 .tutorial-msg {

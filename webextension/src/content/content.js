@@ -178,10 +178,24 @@ checkHasTriggeredRequest()
 		if (!hasTriggeredRequest) renderTutorialMessage()
 	})
 
+const reqEl = document.querySelector('.js-req')
+const reqActiveClassName = 'controls__refresh--active'
+
 // Request updated bookmarks
 const setBookmarks = () => {
 	fetchBookmarks()
 		.then(areAnyBookmarks => {
+			// Remove the active class once the animation has finished its current
+			// iteration
+			const animationEl = reqEl.querySelector('svg')
+			const removeActiveClass = () => {
+				reqEl.classList.remove(reqActiveClassName)
+
+				animationEl.removeEventListener('animationiteration', removeActiveClass)
+			}
+
+			animationEl.addEventListener('animationiteration', removeActiveClass)
+
 			if (areAnyBookmarks) {
 				searchInputEl.disabled = false
 
@@ -200,10 +214,10 @@ const setBookmarks = () => {
 }
 
 const requestBookmarks = () => {
+	reqEl.classList.add(reqActiveClassName)
+
 	chrome.runtime.sendMessage({ requestBookmarks: true })
 }
-
-const reqEl = document.querySelector('.js-req')
 
 reqEl.addEventListener('click', requestBookmarks)
 
