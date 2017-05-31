@@ -1,4 +1,5 @@
 import sortArrOfObjAlphabetically from '../modules/sortArrOfObjAlphabetically'
+import adhereBookmarksToSchema from '../modules/adhereBookmarksToSchema'
 
 console.log('Backend loaded.')
 
@@ -10,7 +11,7 @@ const cfg = {
 const saveBookmarks = bookmarks => {
 	return new Promise((resolve, reject) => {
 		chrome.storage.local.set({
-			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'Url'),
+			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'title'),
 			hasTriggeredRequest: true
 		}, resolve)
 	})
@@ -42,7 +43,8 @@ const requestBookmarks = () => {
 
 		console.log('...bookmarks fetched and returned.')
 
-		saveBookmarks(res).then(sendBookmarksNotif)
+		const bookmarks = adhereBookmarksToSchema(res)
+		saveBookmarks(bookmarks).then(sendBookmarksNotif)
 	})
 }
 

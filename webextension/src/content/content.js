@@ -37,19 +37,19 @@ const setFilteredBookmarks = () => {
 	const textFilter = state.textFilter.toLowerCase()
 
 	// Using separate arrays is an easy way to sort matches
-	const nameMatches = []
+	const titleMatches = []
 	const tagMatches = []
 	const urlMatches = []
 	const descMatches = []
 
 	state.bookmarks.forEach(bookmark => {
-		if (bookmark.Metadata.toLowerCase().includes(textFilter)) nameMatches.push(bookmark)
-		else if (bookmark.Tags.toLowerCase().includes(textFilter)) tagMatches.push(bookmark)
-		else if (bookmark.Url.toLowerCase().includes(textFilter)) urlMatches.push(bookmark)
-		else if (bookmark.Desc.toLowerCase().includes(textFilter)) descMatches.push(bookmark)
+		if (bookmark.title.toLowerCase().includes(textFilter)) titleMatches.push(bookmark)
+		else if (bookmark.tags.toLowerCase().includes(textFilter)) tagMatches.push(bookmark)
+		else if (bookmark.url.toLowerCase().includes(textFilter)) urlMatches.push(bookmark)
+		else if (bookmark.desc.toLowerCase().includes(textFilter)) descMatches.push(bookmark)
 	})
 
-	state.filteredBookmarks = [...nameMatches, ...tagMatches, ...urlMatches, ...descMatches]
+	state.filteredBookmarks = [...titleMatches, ...tagMatches, ...urlMatches, ...descMatches]
 }
 
 // Fetch bookmarks from local storage
@@ -95,21 +95,21 @@ const renderBookmarks = (renderAll = false) => {
 			newEl.className += ` bookmarks__item--focused ${cfg.focusedBookmarkClassName}`
 		}
 
-		const tags = bookmarks[i].Tags.split(',').reduce((acc, tag) => {
+		const tags = bookmarks[i].tags.split(',').reduce((acc, tag) => {
 			// Split will leave some empty strings behind
 			if (tag) acc += `<li class="bookmarks__item-tag">#${addHighlightMarkup(tag)}</li>`
 
 			return acc
 		})
 
-		const desc = bookmarks[i].Desc ? `
-			<p class="bookmarks__item-desc">> ${addHighlightMarkup(bookmarks[i].Desc)}</p>
+		const desc = bookmarks[i].desc ? `
+			<p class="bookmarks__item-desc">> ${addHighlightMarkup(bookmarks[i].desc)}</p>
 		` : ''
 
 		newEl.innerHTML = `
 			<header>
 				<h1 class="bookmarks__item-name">
-					${addHighlightMarkup(bookmarks[i].Metadata)}
+					${addHighlightMarkup(bookmarks[i].title)}
 				</h1>
 				<ul class="bookmarks__item-tags">
 					${tags}
@@ -117,13 +117,13 @@ const renderBookmarks = (renderAll = false) => {
 			</header>
 			${desc}
 			<h2 class="bookmarks__item-url">
-				${addHighlightMarkup(bookmarks[i].Url)}
+				${addHighlightMarkup(bookmarks[i].url)}
 			</h2>
 		`
 
 		// On click open the link in a new tab and close the extension popup
 		newEl.addEventListener('click', () => {
-			chrome.tabs.create({ url: ensureValidURL(bookmarks[i].Url) })
+			chrome.tabs.create({ url: ensureValidURL(bookmarks[i].url) })
 
 			window.close()
 		})
