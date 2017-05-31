@@ -1,6 +1,6 @@
 {
 	"name": "Bukubrow",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"manifest_version": 2,
 	"description": "Synchronise your browser bookmarks with Buku",
 	"icons": {
@@ -31,9 +31,7 @@
 			}
 		}
 	},
-	// Blink & WebKit (Chrome, Opera, etc)
 	"minimum_chrome_version": "55",
-	// Gecko (Firefox)
 	"applications": {
 		"gecko": {
 			"id": "bukubrow@samhh.com",

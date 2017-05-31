@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.1] - 2017-05-31
+### Changed
+- Don't change case sensitivity of matched text when filtering bookmarks.
+- New refresh icon and accompanying rotate animation.
+- Fixed multiple severe issues unique to Firefox:
+	- Startup error.
+	- Not autofocusing.
+	- No preferences.
+	- Popup window not closing upon opening a bookmark.
+	- Styling incl/ the refresh icon.
+
 ## [1.1.0] - 2017-05-08
 ### Added
 - Much improved UI layout with more useful information.
