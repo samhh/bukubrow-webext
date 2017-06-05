@@ -2,14 +2,6 @@ extends ../templates/base
 
 block content
 	.wrapper
-		.error-popup.js-error
-
-		header.controls.u-clearfix
-			form.js-search
-				input(type='text', name='search', autocomplete='off', placeholder='Search...', disabled).controls__search
-			button(type='button').btn.btn--no-padding.controls__refresh.js-req
-				include ../assets/refresh.svg
-
-		main: .js-bookmarks
+		.js-root
 
 		include ../templates/components/footer

@@ -1,5 +1,5 @@
-import sortArrOfObjAlphabetically from '../modules/sortArrOfObjAlphabetically'
-import adhereBookmarksToSchema from '../modules/adhereBookmarksToSchema'
+import sortArrOfObjAlphabetically from '../modules/sort-arr-of-obj-alphabetically'
+import adhereBookmarksToSchema from '../modules/adhere-bookmarks-to-schema'
 
 console.log('Backend loaded.')
 

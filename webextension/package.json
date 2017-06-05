@@ -19,7 +19,10 @@
   },
   "homepage": "https://github.com/SamHH/bukubrow#readme",
   "dependencies": {
-    "sanitize.css": "^5.0.0"
+    "classnames": "^2.2.5",
+    "preact": "^8.1.0",
+    "sanitize.css": "^5.0.0",
+    "string-replace-to-array": "^1.0.3"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.1",
@@ -28,7 +31,8 @@
     "babel-loader": "^7.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "case-sensitive-paths-webpack-plugin": "^2.0.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "case-sensitive-paths-webpack-plugin": "^2.1.1",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
     "eslint": "^3.19.0",
@@ -41,8 +45,9 @@
     "html-webpack-plugin": "^2.28.0",
     "postcss-import": "^10.0.0",
     "postcss-loader": "^2.0.5",
-    "pug": "^2.0.0-rc.1",
+    "pug": "^2.0.0-rc.2",
     "pug-loader": "^2.3.0",
+    "svg-inline-loader": "^0.7.1",
     "webpack": "^2.6.1"
   }
 }

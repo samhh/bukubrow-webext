@@ -7,6 +7,10 @@
 		// Static class properties & ES2016 property initialiser syntax
 		"transform-class-properties",
 		// Object rest/spread {...obj}
-		"transform-object-rest-spread"
+		"transform-object-rest-spread",
+		// JSX configured for Preact
+		["babel-plugin-transform-react-jsx", {
+			"pragma": "h"
+		}]
 	]
 }

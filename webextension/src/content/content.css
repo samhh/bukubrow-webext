@@ -61,10 +61,11 @@ body {
 .controls__refresh {
 	width: var(--header-items-size);
 	height: var(--header-items-size);
+	padding: 2px;
 }
 
-.controls__refresh svg {
-	padding: 5%;
+.controls__refresh--active:active {
+	transform: none;
 }
 
 .controls__refresh--active svg {
@@ -103,8 +104,12 @@ body {
 	background: var(--offset-bg);
 }
 
-.bookmarks__item + .bookmarks__item {
+.bookmarks__item {
 	border-top: 1px solid var(--offset-bg);
+}
+
+.bookmarks__item:last-child {
+	border-bottom: 1px solid var(--offset-bg);
 }
 
 .bookmarks__item-name {

@@ -65,6 +65,9 @@ module.exports = {
 						pretty: devMode
 					}
 				}]
+			}, {
+				test: /\.svg$/,
+				use: ['svg-inline-loader']
 			},
 			{
 				test: /\.js$/,

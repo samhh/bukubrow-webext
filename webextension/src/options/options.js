@@ -1,4 +1,4 @@
-import setTheme from '../modules/setTheme'
+import setTheme from '../modules/set-theme'
 
 import '../global-styles/'
 import './options.css'
