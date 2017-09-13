@@ -4,8 +4,8 @@
   "description": "WebExtension for Buku",
   "main": "webextension/backend.js",
   "scripts": {
-    "dev": "rm -r ./dist/ && webpack --watch",
-    "build": "rm -r ./dist/ && NODE_ENV=production webpack",
+    "dev": "rm -rf ./dist/ && webpack --watch",
+    "build": "rm -rf ./dist/ && NODE_ENV=production webpack",
     "test": "eslint src/"
   },
   "repository": {
