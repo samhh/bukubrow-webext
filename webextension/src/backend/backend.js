@@ -1,20 +1,10 @@
-import sortArrOfObjAlphabetically from '../modules/sort-arr-of-obj-alphabetically'
 import adhereBookmarksToSchema from '../modules/adhere-bookmarks-to-schema'
+import { saveBookmarks } from './local-storage'
 
 console.log('Backend loaded.')
 
 const cfg = {
 	appName: 'com.samhh.bukubrow'
-}
-
-// Save bookmarks to local storage
-const saveBookmarks = bookmarks => {
-	return new Promise((resolve, reject) => {
-		chrome.storage.local.set({
-			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'title'),
-			hasTriggeredRequest: true
-		}, resolve)
-	})
 }
 
 // Tell frontend that updated bookmarks are available from local storage
@@ -26,7 +16,7 @@ const sendBookmarksNotif = () => {
 const requestBookmarks = () => {
 	console.log('Bookmarks requested...')
 
-	chrome.runtime.sendNativeMessage(cfg.appName, { request: 'true' }, res => {
+	chrome.runtime.sendNativeMessage(cfg.appName, { method: 'GET' }, res => {
 		if (chrome.runtime.lastError) {
 			const error = chrome.runtime.lastError.message
 
@@ -43,7 +33,9 @@ const requestBookmarks = () => {
 
 		console.log('...bookmarks fetched and returned.')
 
-		const bookmarks = adhereBookmarksToSchema(res)
+		if (!res.success) return
+
+		const bookmarks = adhereBookmarksToSchema(res.bookmarks)
 		saveBookmarks(bookmarks).then(sendBookmarksNotif)
 	})
 }
