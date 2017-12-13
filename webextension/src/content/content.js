@@ -3,7 +3,7 @@ import filterBookmarks from '../modules/filter-bookmarks'
 import ensureValidURL from '../modules/ensure-valid-url'
 import setTheme from '../modules/set-theme'
 import sleep from '../modules/sleep'
-import { maxBookmarksToRender } from '../modules/config'
+import { MAX_BOOKMARKS_TO_RENDER } from '../modules/config'
 
 import Bookmark from '../components/bookmark'
 import BookmarksForm from '../components/bookmarks-form'
@@ -14,8 +14,6 @@ import TutorialMessage from '../components/tutorial-message'
 
 import '../global-styles/'
 import './content.css'
-
-console.log('Content JS loaded.')
 
 class ContentPage extends Component {
 	state = {
@@ -31,10 +29,13 @@ class ContentPage extends Component {
 
 	numRenderedBookmarks = 0
 
+	static genBookmarkRefSchema = id => `bookmark-${id}`
+
 	constructor () {
 		super()
 
 		setTheme()
+		chrome.runtime.sendMessage({ checkBinary: true })
 		this.checkHasTriggeredRequest()
 		this.fetchCachedBookmarks()
 
@@ -50,6 +51,12 @@ class ContentPage extends Component {
 
 			if (req.cannotFindBinary) {
 				const msg = 'The binary could not be found. Please refer to the installation instructions.'
+
+				this.initError(msg)
+			}
+
+			if (req.outdatedBinary) {
+				const msg = 'The binary is outdated; please download or build a more recent one.'
 
 				this.initError(msg)
 			}
@@ -77,8 +84,6 @@ class ContentPage extends Component {
 		})
 	}
 
-	genBookmarkRefSchema = id => `bookmark-${id}`
-
 	checkHasTriggeredRequest = () => {
 		chrome.storage.local.get('hasTriggeredRequest', res => {
 			this.setState({
@@ -88,7 +93,7 @@ class ContentPage extends Component {
 		})
 	}
 
-	initError = (errMsg, errTimeInSecs = 5) => {
+	initError = (errMsg, errTimeInSecs = 15) => {
 		this.setState({ errMsg })
 
 		sleep(errTimeInSecs * 1000)
@@ -140,7 +145,7 @@ class ContentPage extends Component {
 			return
 		}
 
-		this[this.genBookmarkRefSchema(this.state.focusedBookmarkIndex)].base.click()
+		this[ContentPage.genBookmarkRefSchema(this.state.focusedBookmarkIndex)].base.click()
 	}
 
 	openBookmark = url => {
@@ -155,7 +160,7 @@ class ContentPage extends Component {
 		const bookmarksToRender =
 			state.renderAllBookmarks
 				? filteredBookmarks
-				: filteredBookmarks.slice(0, maxBookmarksToRender)
+				: filteredBookmarks.slice(0, MAX_BOOKMARKS_TO_RENDER)
 
 		this.numRenderedBookmarks = bookmarksToRender.length
 
@@ -169,7 +174,7 @@ class ContentPage extends Component {
 					textFilter={state.textFilter}
 					isFocused={state.focusedBookmarkIndex === index}
 					openBookmark={this.openBookmark}
-					ref={el => { this[this.genBookmarkRefSchema(index)] = el }}
+					ref={el => { this[ContentPage.genBookmarkRefSchema(index)] = el }}
 				/>
 			))
 			: null
@@ -198,6 +203,7 @@ class ContentPage extends Component {
 		return (
 			<div>
 				<ErrorPopup msg={state.errMsg} />
+
 				<Loader shouldDisplayLoader={state.loading}>
 					<BookmarksForm
 						shouldEnableSearch={!!state.bookmarks.length}
@@ -206,6 +212,7 @@ class ContentPage extends Component {
 						refreshBookmarks={this.fetchLiveBookmarks}
 						triggerBookmarkOpen={this.simulateBookmarkClick}
 					/>
+
 					<main>
 						{mainContent}
 					</main>

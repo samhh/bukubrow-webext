@@ -1,16 +1,8 @@
-const adhereBookmarksToSchema = bookmarks => {
-	const formattedBookmarks = bookmarks.map(bookmark => {
-		const newBookmark = {}
-
-		newBookmark.title = bookmark.Metadata
-		newBookmark.tags = bookmark.Tags
-		newBookmark.url = bookmark.Url
-		newBookmark.desc = bookmark.Desc
-
-		return newBookmark
-	})
-
-	return formattedBookmarks
-}
+const adhereBookmarksToSchema = bookmarks => bookmarks.map(bm => ({
+	title: bm.metadata,
+	tags: bm.tags,
+	url: bm.url,
+	desc: bm.desc
+}))
 
 export default adhereBookmarksToSchema
