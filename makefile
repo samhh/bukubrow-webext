@@ -43,8 +43,8 @@ prepare-binary:
 .PHONY: binary-linux-x64
 binary-linux-x64:
 	${MAKE} prepare-binary
-	env GOOS=linux GOARCH=amd64 go build -i binary/bukubrow.go
-	mv bukubrow $(TEMP_BUILD_DIR)/bukubrow-linux-x64
+	cd binary && cargo build --release --target=x86_64-unknown-linux-gnu
+	mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-darwin-x64
 	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-linux-x64' ./*
 	${MAKE} clean
 
@@ -52,8 +52,8 @@ binary-linux-x64:
 .PHONY: binary-darwin-x64
 binary-darwin-x64:
 	${MAKE} prepare-binary
-	env GOOS=darwin GOARCH=amd64 go build -i binary/bukubrow.go
-	mv bukubrow $(TEMP_BUILD_DIR)/bukubrow-darwin-x64
+	cd binary && cargo build --release --target=x86_64-apple-darwin
+	mv binary/target/x86_64-apple-darwin/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-darwin-x64
 	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-darwin-x64' ./*
 	${MAKE} clean
 

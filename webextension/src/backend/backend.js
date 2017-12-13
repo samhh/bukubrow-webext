@@ -1,53 +1,49 @@
-import sortArrOfObjAlphabetically from '../modules/sort-arr-of-obj-alphabetically'
 import adhereBookmarksToSchema from '../modules/adhere-bookmarks-to-schema'
+import { sendExtensionMessage } from './api/protocol'
+import { saveBookmarks } from './local-storage'
+import { checkRuntimeErrors, checkBinaryVersion, getBookmarks } from './api/native'
 
-console.log('Backend loaded.')
+const checkBinary = () => {
+	const errors = checkRuntimeErrors()
+	const version = checkBinaryVersion()
 
-const cfg = {
-	appName: 'com.samhh.bukubrow'
-}
+	return Promise.all([errors, version])
+		.then(([err, versionIsOkay]) => {
+			if (err) {
+				err === 'Specified native messaging host not found.'
+					? sendExtensionMessage({ cannotFindBinary: true })
+					: sendExtensionMessage({ unknownError: true })
 
-// Save bookmarks to local storage
-const saveBookmarks = bookmarks => {
-	return new Promise((resolve, reject) => {
-		chrome.storage.local.set({
-			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'title'),
-			hasTriggeredRequest: true
-		}, resolve)
-	})
-}
+				return false
+			}
 
-// Tell frontend that updated bookmarks are available from local storage
-const sendBookmarksNotif = () => {
-	chrome.runtime.sendMessage({ bookmarksUpdated: true })
+			if (!versionIsOkay) {
+				sendExtensionMessage({ outdatedBinary: true })
+
+				return false
+			}
+
+			return true
+		})
 }
 
 // Request bookmarks
-const requestBookmarks = () => {
-	console.log('Bookmarks requested...')
+const requestBookmarks = () =>
+	getBookmarks()
+		.then(res => {
+			if (!res.success) return false
 
-	chrome.runtime.sendNativeMessage(cfg.appName, { request: 'true' }, res => {
-		if (chrome.runtime.lastError) {
-			const error = chrome.runtime.lastError.message
+			const bookmarks = adhereBookmarksToSchema(res.bookmarks)
 
-			console.log(`...error fetching bookmarks: ${error}`)
+			return saveBookmarks(bookmarks).then(() => {
+				sendExtensionMessage({ bookmarksUpdated: true })
 
-			if (error === 'Specified native messaging host not found.') {
-				chrome.runtime.sendMessage({ cannotFindBinary: true })
-			} else {
-				chrome.runtime.sendMessage({ unknownError: true })
-			}
+				return true
+			})
+		})
 
-			return
-		}
-
-		console.log('...bookmarks fetched and returned.')
-
-		const bookmarks = adhereBookmarksToSchema(res)
-		saveBookmarks(bookmarks).then(sendBookmarksNotif)
-	})
-}
-
+// Listen for messages from frontend
 chrome.runtime.onMessage.addListener(req => {
+	if (req.checkBinary) checkBinary()
 	if (req.requestBookmarks) requestBookmarks()
 })
