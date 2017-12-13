@@ -1,6 +1,7 @@
 import { h, render, Component } from 'preact'
 import filterBookmarks from '../modules/filter-bookmarks'
 import ensureValidURL from '../modules/ensure-valid-url'
+import fullyInViewport from '../modules/element-in-viewport'
 import setTheme from '../modules/set-theme'
 import sleep from '../modules/sleep'
 import { MAX_BOOKMARKS_TO_RENDER } from '../modules/config'
@@ -73,13 +74,9 @@ class ContentPage extends Component {
 			const { focusedBookmarkIndex } = this.state
 
 			if (keypress === 'up' && focusedBookmarkIndex > 0) {
-				this.setState({
-					focusedBookmarkIndex: focusedBookmarkIndex - 1
-				})
+				this.updateFocusedBookmark(focusedBookmarkIndex - 1)
 			} else if (keypress === 'down' && focusedBookmarkIndex < this.numRenderedBookmarks - 1) {
-				this.setState({
-					focusedBookmarkIndex: focusedBookmarkIndex + 1
-				})
+				this.updateFocusedBookmark(focusedBookmarkIndex + 1)
 			}
 		})
 	}
@@ -100,6 +97,24 @@ class ContentPage extends Component {
 			.then(() => {
 				this.setState({ errMsg: '' })
 			})
+	}
+
+	updateFocusedBookmark = index => {
+		const indexIncreased = index > this.state.focusedBookmarkIndex
+
+		this.setState({ focusedBookmarkIndex: index }, () => {
+			const el = this[ContentPage.genBookmarkRefSchema(index)].base
+
+			const scrollNeeded = !fullyInViewport(el)
+
+			if (!scrollNeeded) return
+
+			const headerHeight = parseInt(window.getComputedStyle(document.body).getPropertyValue('--header-height'), 10)
+			const { top, bottom } = el.getBoundingClientRect()
+
+			if (indexIncreased) window.scrollTo(0, window.scrollY + bottom - window.innerHeight)
+			else window.scrollTo(0, window.scrollY + top - headerHeight)
+		})
 	}
 
 	handleTextFilter = evt => {
