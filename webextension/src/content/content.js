@@ -205,17 +205,19 @@ class ContentPage extends Component {
 				<ErrorPopup msg={state.errMsg} />
 
 				<Loader shouldDisplayLoader={state.loading}>
-					<BookmarksForm
-						shouldEnableSearch={!!state.bookmarks.length}
-						updateTextFilter={this.handleTextFilter}
-						textFilter={this.state.textFilter}
-						refreshBookmarks={this.fetchLiveBookmarks}
-						triggerBookmarkOpen={this.simulateBookmarkClick}
-					/>
+					<div className="content-wrapper">
+						<BookmarksForm
+							shouldEnableSearch={!!state.bookmarks.length}
+							updateTextFilter={this.handleTextFilter}
+							textFilter={this.state.textFilter}
+							refreshBookmarks={this.fetchLiveBookmarks}
+							triggerBookmarkOpen={this.simulateBookmarkClick}
+						/>
 
-					<main>
-						{mainContent}
-					</main>
+						<main className="content">
+							{mainContent}
+						</main>
+					</div>
 				</Loader>
 			</div>
 		)

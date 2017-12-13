@@ -5,8 +5,13 @@ body {
 }
 
 :root {
+	--header-height: 50px;
 	--header-items-margin: 10px;
 	--header-items-size: 25px;
+}
+
+.content-wrapper {
+	margin: var(--header-height) 0 0;
 }
 
 .error-popup {
@@ -30,7 +35,12 @@ body {
 }
 
 .controls {
+	width: 100%;
+	height: var(--header-height);
+	position: fixed;
+	top: 0;
 	padding: var(--sizing);
+	background: var(--bg);
 }
 
 .controls__search,
