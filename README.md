@@ -3,7 +3,7 @@ Bukubrow
 
 Bukubrow is a WebExtension for [Buku](https://github.com/jarun/Buku), a command-line bookmark manager. This WebExtension is developed to work in at least Chrome, Chromium, and Firefox, however any other browsers that support WebExtensions should also run this just fine.
 
-It uses a [native binary written in Golang](https://github.com/samhh/Bukubrow/blob/master/binary/bukubrow.go) to interface with your Buku database. Secure communication between the binary and the browser extension is handled through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
+It uses a [native binary written in Rust](https://github.com/samhh/Bukubrow/blob/master/binary/src/main.rs) to interface with your Buku database. Secure communication between the binary and the browser extension is handled through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
 
 This project has been heavily influenced by [browserpass](https://github.com/dannyvankooten/browserpass), a WebExtension designed to allow a similar kind of synchronicity between the browser and [pass](https://www.passwordstore.org).
 
