@@ -9,6 +9,8 @@ use std::io;
 use rusqlite::{Connection, Error as DbError};
 use chrome_native_messaging::{event_loop, write_output, errors};
 
+const VERSION = "1.0.0";
+
 #[derive(Serialize)]
 struct Bookmark {
     id: i32,
@@ -76,6 +78,12 @@ fn main() {
             let req = req.unwrap();
 
             match req.method.as_ref() {
+                "OPTIONS" => {
+                    json!({
+                        "success": true,
+                        "binaryVersion": VERSION,
+                    })
+                }
                 "GET" => {
                     let bookmarks = get_bookmarks(&db_conn);
 
