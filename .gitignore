@@ -1,9 +1,13 @@
 # Dependencies
 node_modules/
 
-# Build
+# JS build
 dist/
 release/
+
+# Rust build
+binary/target/
+**/*.rs.bk
 
 # Misc
 .DS_Store
