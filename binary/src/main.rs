@@ -9,7 +9,7 @@ use std::io;
 use rusqlite::{Connection, Error as DbError};
 use chrome_native_messaging::{event_loop, write_output, errors};
 
-const VERSION = "1.0.0";
+const VERSION: &'static str = "1.0.0";
 
 #[derive(Serialize)]
 struct Bookmark {

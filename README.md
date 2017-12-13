@@ -36,7 +36,7 @@ Install the WebExtension from the relevant addon store.
 
 ### Building the binary
 
-Clone the repo, run `make binary-linux-x64` (or substitute `binary-linux-x64` for your preferred target) and then inside `./release` you'll have a zip identical to what you would have downloaded as a binary in step 1.
+Clone the repo, run `make binary-linux-x64` (or substitute `binary-linux-x64` for your preferred target) and then inside `./release` you'll have a zip identical to what you would have downloaded as a binary in step 1. Note that you'll need your target platform installed and configured with Cargo.
 
 ### Building the WebExtension
 
