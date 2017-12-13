@@ -6,6 +6,7 @@
 }
 
 body {
+	--bg: white;
 	--offset-bg: #eee;
 	min-height: 100vh;
 	display: flex;
@@ -13,11 +14,12 @@ body {
 	align-items: center;
 	margin: 0;
 	font-size: 100%;
+	background: var(--bg);
 }
 
 body.dark {
+	--bg: #282828;
 	--offset-bg: #383838;
-	background: #282828;
 	color: #eee;
 }
 
