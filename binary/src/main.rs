@@ -72,11 +72,9 @@ fn main() {
     let db_conn = Connection::open(db_path).unwrap();
 
     event_loop(|req_json: serde_json::Value| -> Result<(), errors::Error> {
-        let req: Result<Request, serde_json::Error> = serde_json::from_value(req_json);
+        let req: Request = serde_json::from_value(req_json)?;
 
-        let res: serde_json::Value = if req.is_ok() {
-            let req = req.unwrap();
-
+        let res: serde_json::Value = {
             match req.method.as_ref() {
                 "OPTIONS" => {
                     json!({
@@ -109,14 +107,9 @@ fn main() {
                     })
                 }
             }
-        } else {
-            json!({
-                "success": false,
-                "message": "Failed to read incoming JSON.",
-            })
         };
 
-        write_output(io::stdout(), &res).unwrap();
+        write_output(io::stdout(), &res)?;
 
         Ok(())
     });
