@@ -45,11 +45,13 @@ select {
 
 .btn {
 	padding: calc(var(--sizing) / 2) var(--sizing);
-	border: none;
+	border: 1px solid var(--offset-bg);
+	border-radius: var(--border-radius);
 	font-size: 100%;
-	background: var(--offset-bg);
 	color: black;
 	cursor: pointer;
+	user-select: none;
+	transition: background-color .2s;
 }
 
 .dark .btn {
@@ -57,7 +59,7 @@ select {
 }
 
 .btn:hover {
-	background: var(--offset-bg);
+	background-color: var(--offset-bg);
 }
 
 .btn:active {

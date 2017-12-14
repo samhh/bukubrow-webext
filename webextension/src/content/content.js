@@ -109,7 +109,9 @@ class ContentPage extends Component {
 
 			if (!scrollNeeded) return
 
-			const headerHeight = parseInt(window.getComputedStyle(document.body).getPropertyValue('--header-height'), 10)
+			const headerHeight = parseInt(
+				window.getComputedStyle(document.body).getPropertyValue('--header-height'),
+			10)
 			const { top, bottom } = el.getBoundingClientRect()
 
 			if (indexIncreased) window.scrollTo(0, window.scrollY + bottom - window.innerHeight)
@@ -163,8 +165,17 @@ class ContentPage extends Component {
 		this[ContentPage.genBookmarkRefSchema(this.state.focusedBookmarkIndex)].base.click()
 	}
 
-	openBookmark = url => {
-		chrome.tabs.create({ url: ensureValidURL(url) })
+	// Open the specified bookmark(s), or all presently filtered bookmarks by
+	// default
+	openBookmarks = (...urlsArgs) => {
+		// Like this as can't do rest param w/ default arg
+		const urls = urlsArgs.length
+			? urlsArgs
+			: filterBookmarks(this.state.bookmarks, this.state.textFilter).map(bm => bm.url)
+
+		urls.forEach(url => {
+			chrome.tabs.create({ url: ensureValidURL(url) })
+		})
 
 		window.close()
 	}
@@ -188,14 +199,16 @@ class ContentPage extends Component {
 					tags={bookmark.tags}
 					textFilter={state.textFilter}
 					isFocused={state.focusedBookmarkIndex === index}
-					openBookmark={this.openBookmark}
+					openBookmark={this.openBookmarks}
 					ref={el => { this[ContentPage.genBookmarkRefSchema(index)] = el }}
 				/>
 			))
 			: null
 
 		const numRemainingBookmarks = filteredBookmarks.length - bookmarksToRender.length
-		if (state.numRemainingBookmarks !== numRemainingBookmarks) this.setNumBookmarksRemaining(numRemainingBookmarks)
+		if (state.numRemainingBookmarks !== numRemainingBookmarks) {
+			this.setNumBookmarksRemaining(numRemainingBookmarks)
+		}
 
 		const RenderedLoadMoreBookmarks = numRemainingBookmarks ? (
 			<LoadMoreBookmarks
@@ -227,6 +240,7 @@ class ContentPage extends Component {
 							textFilter={this.state.textFilter}
 							refreshBookmarks={this.fetchLiveBookmarks}
 							triggerBookmarkOpen={this.simulateBookmarkClick}
+							triggerBookmarkMultiOpen={this.openBookmarks}
 						/>
 
 						<main className="content">

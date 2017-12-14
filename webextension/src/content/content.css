@@ -39,29 +39,25 @@ body {
 	height: var(--header-height);
 	position: fixed;
 	top: 0;
+	display: grid;
+	grid-template-columns: 1fr auto auto;
+	grid-gap: calc(var(--sizing) / 2);
 	padding: var(--sizing);
 	background: var(--bg);
 }
 
-.controls__search,
-.controls__refresh {
-	float: left;
-	border-radius: var(--border-radius);
-}
-
 .dark .controls__search,
-.dark .controls__refresh {
+.dark .controls__btn {
 	color: white;
 }
 
 .controls__search {
-	width: calc(100% - var(--header-items-margin) - var(--header-items-size));
 	height: var(--header-items-size);
-	margin: 0 var(--header-items-margin) 0 0;
 	padding: 0 var(--header-items-margin);
+	border-radius: var(--border-radius);
 }
 
-@keyframes refreshRotate {
+@keyframes controlBtnRotate {
 	0% {
 		transform: rotate(0deg);
 	}
@@ -71,18 +67,30 @@ body {
 	}
 }
 
-.controls__refresh {
+.controls__btn {
 	width: var(--header-items-size);
 	height: var(--header-items-size);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 5px;
+}
+
+.controls__btn svg {
+	width: 100%;
+}
+
+/* For poorly spaced SVG */
+.controls__btn--refresh {
 	padding: 2px;
 }
 
-.controls__refresh--active:active {
+.controls__btn--active:active {
 	transform: none;
 }
 
-.controls__refresh--active svg {
-	animation: refreshRotate 1.5s infinite linear;
+.controls__btn--active svg {
+	animation: controlBtnRotate 1.5s infinite linear;
 }
 
 .tutorial-msg {
