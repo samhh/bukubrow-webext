@@ -1,6 +1,7 @@
 import { h, Component } from 'preact'
 import classNames from 'classnames'
 
+import AsteriskIcon from '../assetsBundledOnly/asterisk.svg'
 import RefreshIcon from '../assetsBundledOnly/refresh.svg'
 
 class BookmarksForm extends Component {
@@ -20,6 +21,10 @@ class BookmarksForm extends Component {
 			nextProps.shouldEnableSearch === this.props.shouldEnableSearch &&
 			nextState.refreshInProgress === this.state.refreshInProgress
 		)
+	}
+
+	handleOpenAllBookmarks = () => {
+		this.props.triggerBookmarkMultiOpen()
 	}
 
 	handleRefreshBookmarks = () => {
@@ -46,18 +51,24 @@ class BookmarksForm extends Component {
 		this.props.triggerBookmarkOpen()
 	}
 
-	render ({ textFilter, updateTextFilter, shouldEnableSearch }, { refreshInProgress }) {
+	render ({ textFilter, updateTextFilter, shouldEnableSearch, triggerBookmarkMultiOpen }, { refreshInProgress }) {
+		const openAllBtnClasses = classNames(
+			'btn',
+			'controls__btn'
+		)
+
 		const refreshBtnClasses = classNames(
 			'btn',
-			'btn--no-padding',
-			'controls__refresh',
-			{ 'controls__refresh--active': refreshInProgress }
+			'controls__btn',
+			'controls__btn--refresh',
+			{ 'controls__btn--active': refreshInProgress }
 		)
 
 		return (
-			<header className="controls u-clearfix">
+			<header>
 				<form
 					onSubmit={this.handleSubmit}
+					className="controls u-clearfix"
 				>
 					<input
 						className="controls__search"
@@ -70,14 +81,22 @@ class BookmarksForm extends Component {
 						value={textFilter}
 						ref={el => { this.inputEl = el }}
 					/>
+
+					<button
+						className={openAllBtnClasses}
+						type="button"
+						onClick={this.handleOpenAllBookmarks}
+						dangerouslySetInnerHTML={{ __html: AsteriskIcon }}
+						ref={el => { this.refreshBtnEl = el }}
+					/>
+
 					<button
 						className={refreshBtnClasses}
 						type="button"
 						onClick={this.handleRefreshBookmarks}
 						dangerouslySetInnerHTML={{ __html: RefreshIcon }}
 						ref={el => { this.refreshBtnEl = el }}
-					>
-					</button>
+					/>
 				</form>
 			</header>
 		)
