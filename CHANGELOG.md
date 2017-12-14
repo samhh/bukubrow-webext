@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] - 2017-12-14
+### Added
+- Button to open all bookmarks in search bar.
+
+### Changed
+- Search bar to be fixed to the top of the UI.
+- UI to scroll with you if you use keyboard navigation and start scrolling off-screen.
+
 ## [2.0.0] - 2017-12-13
 ### Changed
 - Rewritten binary to make new features possible.
