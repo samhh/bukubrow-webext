@@ -27,7 +27,7 @@ wipe:
 .PHONY: webext
 webext:
 	${MAKE} prepare
-	cd webextension && npm run build
+	cd webextension && npm i && npm run build
 	cd webextension/dist && zip -r '../../$(RELEASE_DIR)/webext' ./*
 	${MAKE} clean
 
