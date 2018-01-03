@@ -44,7 +44,7 @@ prepare-binary:
 binary-linux-x64:
 	${MAKE} prepare-binary
 	cd binary && cargo build --release --target=x86_64-unknown-linux-gnu
-	mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-darwin-x64
+	mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-linux-x64
 	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-linux-x64' ./*
 	${MAKE} clean
 
