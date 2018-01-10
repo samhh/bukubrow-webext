@@ -70,6 +70,25 @@ select {
 	padding: 0;
 }
 
+/* Tooltip for buttons */
+.btn .tooltip {
+	visibility: hidden;
+	position: absolute;
+	right: 28%;
+	width: calc(var(--header-items-size) * 3);
+	border: 1px solid var(--offset-bg);
+	border-radius: var(--border-radius);
+	padding: 3px;
+	background: var(--bg);
+	opacity: 0;
+	transition: opacity .3s;
+}
+
+.btn:hover .tooltip {
+	visibility: visible;
+	opacity: 1;
+}
+
 .u-clearfix::after {
 	content: '';
 	display: table;
