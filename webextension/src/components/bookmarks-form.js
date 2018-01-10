@@ -86,17 +86,21 @@ class BookmarksForm extends Component {
 						className={openAllBtnClasses}
 						type="button"
 						onClick={this.handleOpenAllBookmarks}
-						dangerouslySetInnerHTML={{ __html: AsteriskIcon }}
 						ref={el => { this.refreshBtnEl = el }}
-					/>
+					>
+						<span dangerouslySetInnerHTML={{ __html: AsteriskIcon }}/>
+						<span className="tooltip">Open all in new tab</span>
+					</button>
 
 					<button
 						className={refreshBtnClasses}
 						type="button"
 						onClick={this.handleRefreshBookmarks}
-						dangerouslySetInnerHTML={{ __html: RefreshIcon }}
 						ref={el => { this.refreshBtnEl = el }}
-					/>
+					>
+						<span dangerouslySetInnerHTML={{ __html: RefreshIcon }}/>
+						<span className="tooltip">Fetch bookmarks</span>
+					</button>
 				</form>
 			</header>
 		)
