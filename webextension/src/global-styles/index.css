@@ -14,6 +14,7 @@ body {
 	align-items: center;
 	margin: 0;
 	font-size: 100%;
+	font-family: sans-serif;
 	background: var(--bg);
 }
 
@@ -70,21 +71,27 @@ select {
 	padding: 0;
 }
 
-/* Tooltip for buttons */
-.btn .tooltip {
-	visibility: hidden;
-	position: absolute;
-	right: 28%;
+.btn__icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.btn__tooltip {
 	width: calc(var(--header-items-size) * 3);
+	position: absolute;
+	/* This must be kept in sync with the number of header buttons/items */
+	right: calc((var(--sizing) * 2) + (var(--header-items-size) * 2));
+	padding: 3px;
 	border: 1px solid var(--offset-bg);
 	border-radius: var(--border-radius);
-	padding: 3px;
-	background: var(--bg);
+	visibility: hidden;
 	opacity: 0;
+	background: var(--bg);
 	transition: opacity .3s;
 }
 
-.btn:hover .tooltip {
+.btn:hover .btn__tooltip {
 	visibility: visible;
 	opacity: 1;
 }
