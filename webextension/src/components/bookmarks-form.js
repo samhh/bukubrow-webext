@@ -86,10 +86,12 @@ class BookmarksForm extends Component {
 						className={openAllBtnClasses}
 						type="button"
 						onClick={this.handleOpenAllBookmarks}
-						ref={el => { this.refreshBtnEl = el }}
 					>
-						<span dangerouslySetInnerHTML={{ __html: AsteriskIcon }}/>
-						<span className="tooltip">Open all in new tab</span>
+						<span
+							className="btn__icon"
+							dangerouslySetInnerHTML={{ __html: AsteriskIcon }}
+						/>
+						<span className="btn__tooltip">Open all matches</span>
 					</button>
 
 					<button
@@ -98,8 +100,11 @@ class BookmarksForm extends Component {
 						onClick={this.handleRefreshBookmarks}
 						ref={el => { this.refreshBtnEl = el }}
 					>
-						<span dangerouslySetInnerHTML={{ __html: RefreshIcon }}/>
-						<span className="tooltip">Fetch bookmarks</span>
+						<span
+							className="btn__icon"
+							dangerouslySetInnerHTML={{ __html: RefreshIcon }}
+						/>
+						<span className="btn__tooltip">Fetch bookmarks</span>
 					</button>
 				</form>
 			</header>
