@@ -7,7 +7,10 @@ const bookmark = ({ title, url, desc, tags, textFilter, isFocused, openBookmark,
 	const renderedTags = tags.split(',').reduce((acc, tag) => {
 		// Split will leave some empty strings behind
 		return tag ? acc.concat([
-			<li className="bookmarks__item-tag">
+			<li
+				className="bookmarks__item-tag"
+				key={tag}
+			>
 				#<HighlightMarkup str={tag} match={textFilter} />
 			</li>
 		]) : acc
@@ -15,7 +18,7 @@ const bookmark = ({ title, url, desc, tags, textFilter, isFocused, openBookmark,
 
 	const renderedDesc = desc ? (
 		<p className="bookmarks__item-desc">
-			> <HighlightMarkup str={desc} match={textFilter} />
+			&#x3E; <HighlightMarkup str={desc} match={textFilter} />
 		</p>
 	) : null
 
