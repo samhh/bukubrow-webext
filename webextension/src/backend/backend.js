@@ -31,7 +31,7 @@ const checkBinary = () => {
 const requestBookmarks = () =>
 	getBookmarks()
 		.then(res => {
-			if (!res.success) return false
+			if (!res || !res.success) return false
 
 			const bookmarks = adhereBookmarksToSchema(res.bookmarks)
 

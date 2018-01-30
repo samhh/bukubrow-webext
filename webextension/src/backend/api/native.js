@@ -12,6 +12,7 @@ export const checkRuntimeErrors = () => new Promise(resolve => {
 export const checkBinaryVersion = () =>
 	sendNativeMessage({ method: 'OPTIONS' })
 		.then(res => (
+			res &&
 			res.success &&
 			res.binaryVersion &&
 			compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
