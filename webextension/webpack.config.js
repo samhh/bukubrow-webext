@@ -70,6 +70,17 @@ module.exports = {
 				use: ['svg-inline-loader']
 			},
 			{
+				enforce: 'pre',
+				test: /\.js$/,
+				use: [{
+					loader: 'eslint-loader',
+					options: {
+						emitError: true
+					}
+				}],
+				exclude: /node_modules/
+			},
+			{
 				test: /\.js$/,
 				use: ['babel-loader'],
 				exclude: /node_modules/
