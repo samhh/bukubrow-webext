@@ -74,7 +74,7 @@ class BookmarksForm extends Component {
 						className="controls__search"
 						type="text"
 						name="search"
-						autocomplete="off"
+						autoComplete="off"
 						placeholder="Search..."
 						disabled={!shouldEnableSearch}
 						onInput={updateTextFilter}

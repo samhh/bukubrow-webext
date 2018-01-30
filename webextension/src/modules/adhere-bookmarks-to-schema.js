@@ -1,4 +1,5 @@
-const adhereBookmarksToSchema = bookmarks => bookmarks.map(bm => ({
+const adhereBookmarksToSchema = bookmarks => bookmarks.map((bm, index) => ({
+	key: index,
 	title: bm.metadata,
 	tags: bm.tags,
 	url: bm.url,

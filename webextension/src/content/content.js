@@ -111,7 +111,8 @@ class ContentPage extends Component {
 
 			const headerHeight = parseInt(
 				window.getComputedStyle(document.body).getPropertyValue('--header-height'),
-			10)
+				10
+			)
 			const { top, bottom } = el.getBoundingClientRect()
 
 			if (indexIncreased) window.scrollTo(0, window.scrollY + bottom - window.innerHeight)
@@ -180,7 +181,7 @@ class ContentPage extends Component {
 		window.close()
 	}
 
-	render (props, state) {
+	render (_props, state) {
 		const filteredBookmarks = filterBookmarks(state.bookmarks, state.textFilter)
 
 		const bookmarksToRender =
@@ -193,6 +194,7 @@ class ContentPage extends Component {
 		const RenderedBookmarks = bookmarksToRender.length
 			? bookmarksToRender.map((bookmark, index) => (
 				<Bookmark
+					key={bookmark.key}
 					title={bookmark.title}
 					url={bookmark.url}
 					desc={bookmark.desc}
