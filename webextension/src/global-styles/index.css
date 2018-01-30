@@ -80,8 +80,10 @@ select {
 .btn__tooltip {
 	width: calc(var(--header-items-size) * 3);
 	position: absolute;
+	top: 50%;
 	/* This must be kept in sync with the number of header buttons/items */
 	right: calc((var(--sizing) * 2) + (var(--header-items-size) * 2));
+	transform: translateY(-50%);
 	padding: 3px;
 	border: 1px solid var(--offset-bg);
 	border-radius: var(--border-radius);
