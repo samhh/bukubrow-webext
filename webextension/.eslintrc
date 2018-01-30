@@ -1,6 +1,10 @@
 {
 	"parser": "babel-eslint",
+	"plugins": [
+		"react"
+	],
 	"extends": [
+		"plugin:react/recommended",
 		"standard"
 	],
 	"env": {
@@ -13,6 +17,12 @@
 	},
 	"rules": {
 		"indent": ["error", "tab"],
-		"no-tabs": "off"
+		"no-tabs": "off",
+		"react/prop-types": "off"
+	},
+	"settings": {
+		"react": {
+			"pragma": "h"
+		}
 	}
 }

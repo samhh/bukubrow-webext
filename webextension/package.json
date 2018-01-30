@@ -12,12 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/SamHH/bukubrow.git"
   },
-  "author": "Sam A. Horvath-Hunt <samhh.web@gmail.com>",
+  "author": "Sam A. Horvath-Hunt <samhh.web@gmail.com> (https://samhh.com)",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/SamHH/bukubrow/issues"
   },
-  "homepage": "https://github.com/SamHH/bukubrow#readme",
+  "homepage": "https://github.com/SamHH/bukubrow",
   "dependencies": {
     "classnames": "^2.2.5",
     "preact": "^8.2.7",
@@ -37,9 +37,11 @@
     "css-loader": "^0.28.7",
     "eslint": "^4.13.1",
     "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-loader": "^1.9.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-react": "^7.6.1",
     "eslint-plugin-standard": "^3.0.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
