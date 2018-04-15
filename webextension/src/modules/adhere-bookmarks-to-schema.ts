@@ -4,7 +4,7 @@ const adhereBookmarksToSchema = (bookmarks: RemoteBookmark[]): LocalBookmark[] =
 		title: bm.metadata,
 		// Split can leave empty strings behind in the provided string, so filter
 		// those
-		tags: bm.tags.split(',').filter(tag => tag !== ' '),
+		tags: bm.tags.split(',').filter(tag => !!tag),
 		url: bm.url,
 		desc: bm.desc,
 	}));
