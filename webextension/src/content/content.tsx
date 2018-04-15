@@ -25,7 +25,6 @@ interface State {
 	loading: boolean;
 	displayTutorialMessage: boolean;
 	bookmarks: LocalBookmark[];
-	numRemainingBookmarks: number;
 	renderAllBookmarks: boolean;
 	focusedBookmarkIndex: number;
 	textFilter: string;
@@ -37,7 +36,6 @@ class ContentPage extends Component<Props, State> {
 		loading: true,
 		displayTutorialMessage: false,
 		bookmarks: [],
-		numRemainingBookmarks: 0,
 		renderAllBookmarks: false,
 		focusedBookmarkIndex: 0,
 		textFilter: '',
@@ -47,9 +45,7 @@ class ContentPage extends Component<Props, State> {
 	numRenderedBookmarks = 0;
 	resolveBookmarksPromise: Function | undefined;
 
-	constructor (props: Props) {
-		super(props);
-
+	componentDidMount() {
 		setTheme();
 		chrome.runtime.sendMessage({ checkBinary: true });
 		this.checkHasTriggeredRequest();
@@ -152,10 +148,6 @@ class ContentPage extends Component<Props, State> {
 		});
 	}
 
-	setNumBookmarksRemaining = (numRemainingBookmarks: number): void => {
-		this.setState({ numRemainingBookmarks });
-	}
-
 	fetchLiveBookmarks = (): Promise<void> => new Promise((resolve) => {
 		chrome.runtime.sendMessage({ requestBookmarks: true });
 
@@ -220,49 +212,7 @@ class ContentPage extends Component<Props, State> {
 
 		this.numRenderedBookmarks = bookmarksToRender.length;
 
-		const RenderedBookmarks = bookmarksToRender.length
-			? bookmarksToRender.map((bookmark, index) => {
-				const ref: RefObject<ForwardRefElementType> = createRef();
-				this.bookmarkRefs.set(index, ref);
-
-				return (
-					<Bookmark
-						key={bookmark.key}
-						title={bookmark.title}
-						url={bookmark.url}
-						desc={bookmark.desc}
-						tags={bookmark.tags}
-						textFilter={this.state.textFilter}
-						isFocused={this.state.focusedBookmarkIndex === index}
-						openBookmark={this.openBookmarks}
-						ref={ref}
-					/>
-				);
-			})
-			: null;
-
 		const numRemainingBookmarks = filteredBookmarks.length - bookmarksToRender.length;
-		if (this.state.numRemainingBookmarks !== numRemainingBookmarks) {
-			this.setNumBookmarksRemaining(numRemainingBookmarks);
-		}
-
-		const RenderedLoadMoreBookmarks = numRemainingBookmarks ? (
-			<LoadMoreBookmarks
-				numRemainingBookmarks={numRemainingBookmarks}
-				renderAllBookmarks={this.renderAllBookmarks}
-			/>
-		) : null;
-
-		const mainContent = this.state.displayTutorialMessage ? (
-			<TutorialMessage />
-		) : (
-			<div>
-				<ul className="bookmarks">
-					{RenderedBookmarks}
-				</ul>
-				{RenderedLoadMoreBookmarks}
-			</div>
-		);
 
 		return (
 			<div>
@@ -280,7 +230,39 @@ class ContentPage extends Component<Props, State> {
 						/>
 
 						<main className="content">
-							{mainContent}
+							{this.state.displayTutorialMessage ? (
+								<TutorialMessage />
+							) : (
+								<div>
+									<ul className="bookmarks">
+										{bookmarksToRender.map((bookmark, index) => {
+											const ref: RefObject<ForwardRefElementType> = createRef();
+											this.bookmarkRefs.set(index, ref);
+
+											return (
+												<Bookmark
+													key={bookmark.key}
+													title={bookmark.title}
+													url={bookmark.url}
+													desc={bookmark.desc}
+													tags={bookmark.tags}
+													textFilter={this.state.textFilter}
+													isFocused={this.state.focusedBookmarkIndex === index}
+													openBookmark={this.openBookmarks}
+													ref={ref}
+												/>
+											);
+										})}
+									</ul>
+
+									{!!numRemainingBookmarks && (
+										<LoadMoreBookmarks
+											numRemainingBookmarks={numRemainingBookmarks}
+											renderAllBookmarks={this.renderAllBookmarks}
+										/>
+									)}
+								</div>
+							)}
 						</main>
 					</div>
 				</Loader>
