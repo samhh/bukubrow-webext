@@ -1,60 +1,63 @@
-'use strict'
+'use strict';
 
 // Dependencies
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
-const postcssImport = require('postcss-import')
-const autoprefixer = require('autoprefixer')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const postcssImport = require('postcss-import');
+const autoprefixer = require('autoprefixer');
 
 // Only utilise some features during development
-const devMode = process.env.NODE_ENV !== 'production'
+const devMode = process.env.NODE_ENV !== 'production';
 
 // Don't use an eval() source map, it will breach default
 // content_security_policy. Whilst that key could be changed in the manifest
 // it's better to just use these slightly slower non-eval sourcemaps
-const devtool = devMode ? 'cheap-module-source-map' : false
+const devtool = devMode ? 'cheap-module-source-map' : false;
 
 const plugins = [
 	new CopyWebpackPlugin([
 		{ from: './src/assets/', to: 'assets/' },
-		{ from: './src/manifest.json' }
+		{ from: './src/manifest.json' },
 	]),
 	new HtmlWebpackPlugin({
 		filename: 'content/content.build.html',
 		template: './src/content/content.pug',
-		chunks: ['content']
+		chunks: ['content'],
 	}),
 	new HtmlWebpackPlugin({
 		filename: 'options/options.build.html',
 		template: './src/options/options.pug',
-		chunks: ['options']
+		chunks: ['options'],
 	}),
 	new ExtractTextPlugin({
-		filename: '[name]/[name].build.css'
-	})
-]
+		filename: '[name]/[name].build.css',
+	}),
+];
 
-if (devMode) plugins.push(new CaseSensitivePathsPlugin())
+if (devMode) plugins.push(new CaseSensitivePathsPlugin());
 
 module.exports = {
+	devtool,
+	plugins,
 	context: __dirname,
+	mode: devMode ? 'development' : 'production',
 	target: 'web',
 	resolve: {
-		extensions: ['.js', '.css']
+		extensions: ['.ts', '.tsx', '.js', '.css'],
+		plugins: [new TsConfigPathsPlugin()],
 	},
 	entry: {
-		content: './src/content/content.js',
-		options: './src/options/options.js',
-		backend: './src/backend/backend.js'
+		content: './src/content/content.tsx',
+		options: './src/options/options.ts',
+		backend: './src/backend/backend.ts',
 	},
 	output: {
 		filename: '[name]/[name].build.js',
-		path: `${__dirname}/dist/`
+		path: `${__dirname}/dist/`,
 	},
-	devtool,
-	plugins,
 	module: {
 		rules: [
 			{
@@ -62,28 +65,25 @@ module.exports = {
 				use: [{
 					loader: 'pug-loader',
 					options: {
-						pretty: devMode
-					}
-				}]
+						pretty: devMode,
+					},
+				}],
 			}, {
 				test: /\.svg$/,
-				use: ['svg-inline-loader']
+				use: ['svg-inline-loader'],
 			},
 			{
 				enforce: 'pre',
-				test: /\.js$/,
+				test: /\.tsx?$/,
 				use: [{
-					loader: 'eslint-loader',
-					options: {
-						emitError: true
-					}
+					loader: 'tslint-loader',
 				}],
-				exclude: /node_modules/
+				exclude: /node_modules/,
 			},
 			{
-				test: /\.js$/,
-				use: ['babel-loader'],
-				exclude: /node_modules/
+				test: /\.tsx?$/,
+				use: ['awesome-typescript-loader'],
+				exclude: /node_modules/,
 			},
 			{
 				test: /\.css$/,
@@ -92,8 +92,8 @@ module.exports = {
 						{
 							loader: 'css-loader',
 							options: {
-								sourceMap: devMode
-							}
+								sourceMap: devMode,
+							},
 						},
 						{
 							loader: 'postcss-loader',
@@ -103,15 +103,15 @@ module.exports = {
 									autoprefixer({
 										browsers: [
 											'Chrome >= 55',
-											'Firefox >= 52'
-										]
-									})
-								]
-							}
-						}
-					]
-				})
-			}
-		]
-	}
-}
+											'Firefox >= 52',
+										],
+									}),
+								],
+							},
+						},
+					],
+				}),
+			},
+		],
+	},
+};

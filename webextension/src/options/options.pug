@@ -7,9 +7,9 @@ block content
 		main: form.js-form
 			div
 				label(for='theme') Theme:
-				select(name='theme', id='theme')
+				select(name='theme').js-form__theme
 					option(value='light') Light
 					option(value='dark') Dark
-			button(type='submit').btn Save
+			button(type='submit').btn.js-form__submit-btn Save
 
 		include ../templates/components/footer
