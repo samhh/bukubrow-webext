@@ -1,5 +1,6 @@
 import React, { Component, createRef, FormEvent, RefObject } from 'react';
 import { render } from 'react-dom';
+import { getBookmarks } from '../backend/local-storage';
 import filterBookmarks from 'Modules/filter-bookmarks';
 import ensureValidURL from 'Modules/ensure-valid-url';
 import fullyInViewport from 'Modules/element-in-viewport';
@@ -161,17 +162,20 @@ class ContentPage extends Component<Props, State> {
 		this.resolveBookmarksPromise = resolve;
 	})
 
-	fetchCachedBookmarks = (): void => {
-		chrome.storage.local.get('bookmarks', (data) => {
-			this.setState({ bookmarks: data.bookmarks || [] });
+	fetchCachedBookmarks = (): Promise<void> =>
+		getBookmarks()
+			.then((bookmarks) => {
+				this.setState({ bookmarks });
 
-			if (this.resolveBookmarksPromise) {
-				this.resolveBookmarksPromise();
+				if (this.resolveBookmarksPromise) {
+					this.resolveBookmarksPromise();
 
-				this.resolveBookmarksPromise = undefined;
-			}
-		});
-	}
+					this.resolveBookmarksPromise = undefined;
+				}
+			})
+			.catch(() => {
+				this.fetchLiveBookmarks();
+			})
 
 	renderAllBookmarks = (): void => {
 		this.setState({ renderAllBookmarks: true });
