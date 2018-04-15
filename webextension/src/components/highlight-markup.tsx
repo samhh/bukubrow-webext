@@ -12,7 +12,14 @@ const AddHighlightMarkup: SFC<Props> = ({ str, match }) => {
 	const content = strReplaceAsArr(
 		str,
 		new RegExp(match, 'ig'),
-		(matched: string) => <span className="highlighted-text">{matched}</span>,
+		(matched, index) => (
+			<span
+				key={index}
+				className="highlighted-text"
+			>
+				{matched}
+			</span>
+		),
 	);
 
 	return <span>{content}</span>;
