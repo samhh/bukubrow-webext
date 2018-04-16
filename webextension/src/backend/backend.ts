@@ -1,4 +1,4 @@
-import adhereBookmarksToSchema from 'Modules/adhere-bookmarks-to-schema';
+import { transform } from 'Modules/schema-transform';
 import { sendExtensionMessage } from './api/protocol';
 import { saveBookmarks } from './local-storage';
 import { checkRuntimeErrors, checkBinaryVersion, getBookmarks } from './api/native';
@@ -33,7 +33,7 @@ const requestBookmarks = (): Promise<boolean> =>
 		.then((res) => {
 			if (!res || !res.success) return false;
 
-			const bookmarks = adhereBookmarksToSchema(res.bookmarks);
+			const bookmarks = transform(res.bookmarks);
 
 			return saveBookmarks(bookmarks).then(() => {
 				sendExtensionMessage({ bookmarksUpdated: true });

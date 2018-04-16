@@ -2,7 +2,11 @@ import React, { forwardRef, SFC, RefObject } from 'react';
 import cn from 'classnames';
 import HighlightMarkup from './highlight-markup';
 
-interface Props extends LocalBookmark {
+interface Props {
+	title: string;
+	url: string;
+	desc: string;
+	tags: string[];
 	textFilter: string;
 	isFocused: boolean;
 	openBookmark(url: string): void;
@@ -11,17 +15,14 @@ interface Props extends LocalBookmark {
 export type ForwardRefElementType = HTMLLIElement;
 
 const Bookmark = forwardRef((props: Props, ref) => {
-	const renderedTags = props.tags.map((tag) => {
-		// Split will leave some empty strings behind
-		return (
+	const renderedTags = props.tags.map(tag => (
 			<li
 				className="bookmarks__item-tag"
 				key={tag}
 			>
 				#<HighlightMarkup str={tag} match={props.textFilter} />
 			</li>
-		);
-	});
+	));
 
 	const renderedDesc = props.desc ? (
 		<p className="bookmarks__item-desc">

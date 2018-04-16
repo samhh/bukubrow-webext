@@ -16,19 +16,26 @@ declare module 'string-replace-to-array' {
 	): T[];
 }
 
-// Bookmark as stored in Buku database
-interface RemoteBookmark {
+// Bookmark ready to be inserted into Buku database
+interface RemoteBookmarkUnsaved {
+	metadata: string;
 	desc: string;
 	url: string;
 	tags: string;
-	metadata: string;
+	flags: number;
+}
+
+// Bookmark as stored in Buku database
+interface RemoteBookmark extends RemoteBookmarkUnsaved {
+	id: number;
 }
 
 // Bookmark as stored in LocalStorage
 interface LocalBookmark {
-	key: number;
+	id: number;
 	title: string;
 	desc: string;
 	url: string;
 	tags: string[];
+	flags: number;
 }

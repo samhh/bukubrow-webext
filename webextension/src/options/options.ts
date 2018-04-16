@@ -8,8 +8,6 @@ interface Opts {
 	theme: 'light' | 'dark';
 }
 
-console.log('Options JS loaded.');
-
 const cfg = {
 	defaultTheme: 'light',
 };

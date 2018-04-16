@@ -241,7 +241,7 @@ class ContentPage extends Component<Props, State> {
 
 											return (
 												<Bookmark
-													key={bookmark.key}
+													key={bookmark.id}
 													title={bookmark.title}
 													url={bookmark.url}
 													desc={bookmark.desc}
