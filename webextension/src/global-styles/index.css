@@ -1,134 +1,41 @@
 @import 'sanitize.css';
 
-:root {
+:global :root {
 	--sizing: 12px;
-	--border-radius: 2px;
+	--border-radius: 3px;
+	--offset-text-color: #888;
 }
 
-body {
+:global body {
 	--bg: white;
 	--offset-bg: #eee;
+	--offset-bg-offset: #ddd;
+	--text-color: #282828;
+	max-width: 100%;
+	width: 500px;
 	min-height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	margin: 0;
 	font-size: 100%;
 	font-family: sans-serif;
 	background: var(--bg);
+	color: var(--text-color)
 }
 
-body.dark {
+:global body.dark {
 	--bg: #282828;
 	--offset-bg: #383838;
-	color: #eee;
+	--offset-bg-offset: #484848;
+	--text-color: #eee;
 }
 
-input,
-.btn {
-	outline: 0;
-}
-
-input {
-	border: 1px solid var(--offset-bg);
-	background: none;
-}
-
-input[disabled] {
-	opacity: .25;
-	font-style: italic;
-	cursor: not-allowed;
-}
-
-select {
-	border: 1px solid var(--offset-bg);
-}
-
-.btn {
-	padding: calc(var(--sizing) / 2) var(--sizing);
-	border: 1px solid var(--offset-bg);
-	border-radius: var(--border-radius);
-	font-size: 100%;
-	color: black;
-	cursor: pointer;
-	user-select: none;
-	transition: background-color .2s;
-}
-
-.dark .btn {
-	color: white;
-}
-
-.btn:hover {
-	background-color: var(--offset-bg);
-}
-
-.btn:active {
-	transform: translateY(2px);
-}
-
-.btn--no-padding {
-	padding: 0;
-}
-
-.btn__icon {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.btn__tooltip {
-	width: calc(var(--header-items-size) * 3);
-	position: absolute;
-	top: 50%;
-	/* This must be kept in sync with the number of header buttons/items */
-	right: calc((var(--sizing) * 2) + (var(--header-items-size) * 2));
-	transform: translateY(-50%);
-	padding: 3px;
-	border: 1px solid var(--offset-bg);
-	border-radius: var(--border-radius);
-	visibility: hidden;
-	opacity: 0;
-	background: var(--bg);
-	transition: opacity .3s;
-}
-
-.btn:hover .btn__tooltip {
-	visibility: visible;
-	opacity: 1;
-}
-
-.u-clearfix::after {
+:global .u-clearfix::after {
 	content: '';
 	display: table;
 	clear: both;
 }
 
-.wrapper,
-.wrapper::before,
-.wrapper::after,
-.wrapper *,
-.wrapper *::before,
-.wrapper *::after {
-  box-sizing: border-box;
-}
-
-.wrapper {
-  min-width: 270px;
-  display: inline-block;
-}
-
-.wrapper--page {
-	padding: var(--sizing);
-}
-
-.footer {
-	margin: var(--sizing) 0;
-  padding: 0 var(--sizing);
-	text-align: center;
-	color: #777;
-}
-
-.footer--heart {
-	color: #ec1d26;
+:global *,
+:global *::before,
+:global *::after {
+	box-sizing: border-box;
 }

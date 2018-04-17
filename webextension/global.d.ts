@@ -1,5 +1,7 @@
 declare module '*.css' {
-	const content: any;
+	const content: {
+		[key: string]: string;
+	};
 	export default content;
 }
 
@@ -30,12 +32,16 @@ interface RemoteBookmark extends RemoteBookmarkUnsaved {
 	id: number;
 }
 
-// Bookmark as stored in LocalStorage
-interface LocalBookmark {
-	id: number;
+// Bookmark ready to be saved
+interface LocalBookmarkUnsaved {
 	title: string;
 	desc: string;
 	url: string;
 	tags: string[];
 	flags: number;
+}
+
+// Bookmark as stored in LocalStorage
+interface LocalBookmark extends LocalBookmarkUnsaved {
+	id: number;
 }

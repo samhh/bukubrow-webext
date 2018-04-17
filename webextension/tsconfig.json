@@ -10,6 +10,9 @@
 		"jsx": "react",
 		"baseUrl": "./src/",
 		"paths": {
+			"Assets/*": [
+				"./assetsBundledOnly/*"
+			],
 			"Components/*": [
 				"./components/*"
 			],

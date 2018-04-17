@@ -1,4 +1,5 @@
 import React, { SFC } from 'react';
+import styles from './load-more-bookmarks.css';
 
 interface Props {
 	numRemainingBookmarks: number;
@@ -7,7 +8,7 @@ interface Props {
 
 const LoadMoreBookmarks: SFC<Props> = ({ numRemainingBookmarks, renderAllBookmarks }) => (
 	<p
-		className="bookmarks__more-note"
+		className={styles.msg}
 		onClick={() => { renderAllBookmarks(true); }} // tslint:disable-line jsx-no-lambda
 	>
 		...and {numRemainingBookmarks} more.

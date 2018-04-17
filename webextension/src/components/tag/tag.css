@@ -1,0 +1,19 @@
+.tag {
+	display: inline-block;
+	margin: 0;
+	font-size: 13px;
+	font-weight: normal;
+	color: var(--offset-text-color);
+}
+
+.tag:not(:last-child) {
+	margin-right: calc(var(--sizing) / 2);
+}
+
+.tag--removable {
+	cursor: pointer;
+}
+
+.tag--removable:hover {
+	text-decoration: line-through;
+}
