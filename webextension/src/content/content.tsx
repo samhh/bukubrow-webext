@@ -7,23 +7,27 @@ import fullyInViewport from 'Modules/element-in-viewport';
 import setTheme from 'Modules/set-theme';
 import sleep from 'Modules/sleep';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
+import styles from './content.css';
 
-import Bookmark, { ForwardRefElementType } from 'Components/bookmark';
-import BookmarksForm from 'Components/bookmarks-form';
-import ErrorPopup from 'Components/error-popup';
-import Loader from 'Components/loader';
-import LoadMoreBookmarks from 'Components/load-more-bookmarks';
-import TutorialMessage from 'Components/tutorial-message';
+import Bookmark, { ForwardRefElementType } from 'Components/bookmark/';
+import BookmarkForm from 'Components/bookmark-form/';
+import ErrorPopup from 'Components/error-popup/';
+import Loader from 'Components/loader/';
+import LoadMoreBookmarks from 'Components/load-more-bookmarks/';
+import SearchControls from 'Components/search-controls/';
+import TutorialMessage from 'Components/tutorial-message/';
 
 import '../global-styles/';
-import './content.css';
 
 interface Props {}
 
 interface State {
 	errMsg: string;
 	loading: boolean;
+	displayAdd: boolean;
+	displayEdit: boolean;
 	displayTutorialMessage: boolean;
+	bookmarkToEditId: LocalBookmark['id'];
 	bookmarks: LocalBookmark[];
 	renderAllBookmarks: boolean;
 	focusedBookmarkIndex: number;
@@ -34,8 +38,11 @@ class ContentPage extends Component<Props, State> {
 	state = {
 		errMsg: '',
 		loading: true,
+		displayAdd: false,
+		displayEdit: false,
 		displayTutorialMessage: false,
-		bookmarks: [],
+		bookmarkToEditId: -1,
+		bookmarks: [] as LocalBookmark[],
 		renderAllBookmarks: false,
 		focusedBookmarkIndex: 0,
 		textFilter: '',
@@ -54,6 +61,8 @@ class ContentPage extends Component<Props, State> {
 		// Respond to messages from the backend
 		chrome.runtime.onMessage.addListener((req) => {
 			if (req.bookmarksUpdated) this.fetchCachedBookmarks();
+
+			if (req.bookmarkSaved || req.bookmarkUpdated) this.fetchLiveBookmarks();
 
 			if (req.unknownError) {
 				const msg = 'An unknown error occurred.';
@@ -106,6 +115,41 @@ class ContentPage extends Component<Props, State> {
 		});
 	}
 
+	fetchLiveBookmarks = (): Promise<void> => new Promise((resolve) => {
+		chrome.runtime.sendMessage({ requestBookmarks: true });
+
+		this.resolveBookmarksPromise = resolve;
+	})
+
+	fetchCachedBookmarks = (): Promise<void> =>
+		getBookmarks()
+			.then((bookmarks) => {
+				this.setState({ bookmarks });
+
+				if (this.resolveBookmarksPromise) {
+					this.resolveBookmarksPromise();
+
+					this.resolveBookmarksPromise = undefined;
+				}
+			})
+			.catch(() => {
+				this.fetchLiveBookmarks();
+			})
+
+	saveBookmark = (bookmark: LocalBookmarkUnsaved): void => {
+		chrome.runtime.sendMessage({
+			bookmark,
+			saveBookmark: true,
+		});
+	}
+
+	updateBookmark = (bookmark: LocalBookmark): void => {
+		chrome.runtime.sendMessage({
+			bookmark,
+			updateBookmark: true,
+		});
+	}
+
 	initError = (errMsg: string, errTimeInSecs: number = 15): void => {
 		this.setState({ errMsg });
 
@@ -140,6 +184,22 @@ class ContentPage extends Component<Props, State> {
 		});
 	}
 
+	handleOpenAddBookmark = () => {
+		this.setState({ displayAdd: true });
+	}
+
+	handleCloseAddBookmark = () => {
+		this.setState({ displayAdd: false });
+	}
+
+	handleOpenEditBookmark = (bookmarkId: LocalBookmark['id']) => {
+		this.setState({ displayEdit: true, bookmarkToEditId: bookmarkId });
+	}
+
+	handleCloseEditBookmark = () => {
+		this.setState({ displayEdit: false });
+	}
+
 	handleTextFilter = (textFilter: string): void => {
 		this.setState({
 			textFilter,
@@ -147,27 +207,6 @@ class ContentPage extends Component<Props, State> {
 			focusedBookmarkIndex: 0,
 		});
 	}
-
-	fetchLiveBookmarks = (): Promise<void> => new Promise((resolve) => {
-		chrome.runtime.sendMessage({ requestBookmarks: true });
-
-		this.resolveBookmarksPromise = resolve;
-	})
-
-	fetchCachedBookmarks = (): Promise<void> =>
-		getBookmarks()
-			.then((bookmarks) => {
-				this.setState({ bookmarks });
-
-				if (this.resolveBookmarksPromise) {
-					this.resolveBookmarksPromise();
-
-					this.resolveBookmarksPromise = undefined;
-				}
-			})
-			.catch(() => {
-				this.fetchLiveBookmarks();
-			})
 
 	renderAllBookmarks = (): void => {
 		this.setState({ renderAllBookmarks: true });
@@ -216,11 +255,27 @@ class ContentPage extends Component<Props, State> {
 
 		return (
 			<div>
+				{this.state.displayAdd && (
+					<BookmarkForm
+						onClose={this.handleCloseAddBookmark}
+						onSubmit={this.saveBookmark}
+					/>
+				)}
+
+				{this.state.displayEdit && (
+					<BookmarkForm
+						bookmark={this.state.bookmarks.find(bm => bm.id === this.state.bookmarkToEditId)}
+						onClose={this.handleCloseEditBookmark}
+						onSubmit={this.updateBookmark}
+					/>
+				)}
+
 				<ErrorPopup msg={this.state.errMsg} />
 
 				<Loader shouldDisplayLoader={this.state.loading}>
-					<div className="content-wrapper">
-						<BookmarksForm
+					<div className={styles.content}>
+						<SearchControls
+							onAdd={this.handleOpenAddBookmark}
 							shouldEnableSearch={!!this.state.bookmarks.length}
 							updateTextFilter={this.handleTextFilter}
 							textFilter={this.state.textFilter}
@@ -229,12 +284,12 @@ class ContentPage extends Component<Props, State> {
 							triggerBookmarkMultiOpen={this.openBookmarks}
 						/>
 
-						<main className="content">
+						<main>
 							{this.state.displayTutorialMessage ? (
 								<TutorialMessage />
 							) : (
-								<div>
-									<ul className="bookmarks">
+								<>
+									<ul className={styles.bookmarks}>
 										{bookmarksToRender.map((bookmark, index) => {
 											const ref: RefObject<ForwardRefElementType> = createRef();
 											this.bookmarkRefs.set(index, ref);
@@ -242,6 +297,7 @@ class ContentPage extends Component<Props, State> {
 											return (
 												<Bookmark
 													key={bookmark.id}
+													id={bookmark.id}
 													title={bookmark.title}
 													url={bookmark.url}
 													desc={bookmark.desc}
@@ -249,6 +305,7 @@ class ContentPage extends Component<Props, State> {
 													textFilter={this.state.textFilter}
 													isFocused={this.state.focusedBookmarkIndex === index}
 													openBookmark={this.openBookmarks}
+													onEdit={this.handleOpenEditBookmark}
 													ref={ref}
 												/>
 											);
@@ -261,7 +318,7 @@ class ContentPage extends Component<Props, State> {
 											renderAllBookmarks={this.renderAllBookmarks}
 										/>
 									)}
-								</div>
+								</>
 							)}
 						</main>
 					</div>

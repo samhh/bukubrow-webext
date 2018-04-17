@@ -1,0 +1,71 @@
+:global :root {
+	--btn-icon-size: 25px;
+}
+
+.btn {
+	position: relative;
+	padding: calc(var(--sizing) / 2) var(--sizing);
+	border: 1px solid var(--offset-bg);
+	border-radius: var(--border-radius);
+	font-size: 100%;
+	background: var(--offset-bg);
+	color: var(--text-color);
+	cursor: pointer;
+	user-select: none;
+	transition: background-color .2s;
+}
+
+/* Has to be !important to override Firefox default */
+.btn,
+.btn:focus {
+	outline: none !important;
+}
+
+.btn:hover {
+	background-color: var(--offset-bg-offset);
+}
+
+.btn:active {
+	transform: translateY(2px);
+}
+
+.btn--icon {
+	width: var(--btn-icon-size);
+	height: var(--btn-icon-size);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 5px;
+}
+
+.icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.icon svg {
+	width: 100%;
+}
+
+.tooltip {
+	position: absolute;
+	top: 50%;
+	right: calc(100% + var(--sizing));
+	z-index: 1;
+	transform: translateY(-50%);
+	padding: calc(var(--sizing) / 2) var(--sizing);
+	border: 1px solid var(--offset-bg);
+	white-space: nowrap;
+	border-radius: var(--border-radius);
+	visibility: hidden;
+	opacity: 0;
+	font-size: 14px;
+	background: var(--bg);
+	transition: opacity .3s;
+}
+
+.btn:hover .tooltip {
+	visibility: visible;
+	opacity: 1;
+}

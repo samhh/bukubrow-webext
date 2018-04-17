@@ -1,5 +1,6 @@
 import React, { SFC } from 'react';
 import strReplaceAsArr from 'string-replace-to-array';
+import styles from './highlight-markup.css';
 
 interface Props {
 	str: string;
@@ -15,7 +16,7 @@ const AddHighlightMarkup: SFC<Props> = ({ str, match }) => {
 		(matched, index) => (
 			<span
 				key={index}
-				className="highlighted-text"
+				className={styles.highlight}
 			>
 				{matched}
 			</span>

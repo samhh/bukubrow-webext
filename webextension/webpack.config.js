@@ -6,7 +6,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const postcssImport = require('postcss-import');
 const autoprefixer = require('autoprefixer');
 
 // Only utilise some features during development
@@ -93,13 +92,13 @@ module.exports = {
 							loader: 'css-loader',
 							options: {
 								sourceMap: devMode,
+								modules: true,
 							},
 						},
 						{
 							loader: 'postcss-loader',
 							options: {
 								plugins: () => [
-									postcssImport(),
 									autoprefixer({
 										browsers: [
 											'Chrome >= 55',

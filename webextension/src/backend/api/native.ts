@@ -10,7 +10,7 @@ export const checkRuntimeErrors = () => new Promise((resolve) => {
 // Ensure binary version is equal to or newer than what we're expecting, but on
 // the same major version (semantic versioning)
 export const checkBinaryVersion = () =>
-	sendNativeMessage(NativeRequestMethod.OPTIONS)
+	sendNativeMessage(NativeRequestMethod.OPTIONS, undefined)
 		.then(res => (
 			res &&
 			res.success &&
@@ -18,4 +18,11 @@ export const checkBinaryVersion = () =>
 			compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
 		));
 
-export const getBookmarks = () => sendNativeMessage(NativeRequestMethod.GET);
+export const getBookmarks = () =>
+	sendNativeMessage(NativeRequestMethod.GET, undefined);
+
+export const saveBookmark = (bookmark: RemoteBookmarkUnsaved) =>
+	sendNativeMessage(NativeRequestMethod.POST, bookmark);
+
+export const updateBookmark = (bookmark: RemoteBookmarkUnsaved) =>
+	sendNativeMessage(NativeRequestMethod.PUT, bookmark);

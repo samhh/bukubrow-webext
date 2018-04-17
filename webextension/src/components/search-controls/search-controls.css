@@ -1,0 +1,58 @@
+:root {
+	--header-height: 50px;
+}
+
+.wrapper {
+	width: 100%;
+	height: var(--header-height);
+	position: fixed;
+	top: 0;
+	z-index: 1;
+	display: grid;
+	grid-template-columns: 1fr repeat(3, auto);
+	grid-gap: calc(var(--sizing) / 2);
+	padding: var(--sizing);
+	background: var(--bg);
+}
+
+:global(.dark) .search,
+:global(.dark) .btn {
+	color: white;
+}
+
+.search {
+	height: var(--btn-icon-size);
+	padding: 0 var(--header-items-margin);
+}
+
+@keyframes controlBtnRotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.btn {
+	position: static;
+}
+
+/* For poorly spaced SVG */
+.btn--refresh {
+	padding: 2px;
+}
+
+.btn--active:active {
+	transform: none;
+}
+
+.btn--active svg {
+	animation: controlBtnRotate .75s infinite linear;
+}
+
+.tooltip {
+	left: initial;
+	right: calc((var(--sizing) * 2.5) + (var(--header-items-size) * var(--heading-num-items)));
+}

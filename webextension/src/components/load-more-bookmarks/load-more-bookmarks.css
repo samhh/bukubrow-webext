@@ -1,0 +1,9 @@
+.msg {
+	text-align: center;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.msg:hover {
+	text-decoration: underline;
+}

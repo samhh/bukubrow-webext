@@ -9,11 +9,11 @@ use std::io;
 use rusqlite::{Connection, Error as DbError};
 use chrome_native_messaging::{event_loop, write_output, errors};
 
-const VERSION: &'static str = "1.0.0";
+const VERSION: &'static str = "1.1.0";
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 struct Bookmark {
-    id: i32,
+    id: Option<i32>,
     url: String,
     metadata: String,
     tags: String,
@@ -24,6 +24,7 @@ struct Bookmark {
 #[derive(Serialize, Deserialize)]
 struct Request {
     method: String,
+    data: Option<Bookmark>,
 }
 
 // Determine path to database from environment variables
@@ -44,6 +45,8 @@ fn get_db_path() -> String {
 }
 
 // Get bookmarks from database
+// TODO prepare is deprecated
+// TODO also update deps
 fn get_bookmarks(db: &Connection) -> Result<Vec<Bookmark>, DbError> {
     let query = "SELECT * FROM bookmarks;";
     let mut stmt = db.prepare(query).unwrap();
@@ -67,6 +70,20 @@ fn get_bookmarks(db: &Connection) -> Result<Vec<Bookmark>, DbError> {
     Ok(bookmarks)
 }
 
+fn add_bookmark(db: &Connection, bm: &Bookmark) -> bool {
+    let query = "INSERT INTO bookmarks(metadata, desc, tags, url, flags) VALUES (?1, ?2, ?3, ?4, ?5)";
+    let exec = db.execute(query, &[&bm.metadata, &bm.desc, &bm.tags, &bm.url, &bm.flags]);
+
+    exec.is_ok()
+}
+
+fn update_bookmark(db: &Connection, bm: &Bookmark) -> bool {
+    let query = "UPDATE bookmarks SET (metadata, desc, tags, url, flags) = (?2, ?3, ?4, ?5, ?6) WHERE id = ?1";
+    let exec = db.execute(query, &[&bm.id.unwrap(), &bm.metadata, &bm.desc, &bm.tags, &bm.url, &bm.flags]);
+
+    exec.is_ok()
+}
+
 fn main() {
     let db_path = get_db_path();
     let db_conn = Connection::open(db_path).unwrap();
@@ -76,12 +93,6 @@ fn main() {
 
         let res: serde_json::Value = {
             match req.method.as_ref() {
-                "OPTIONS" => {
-                    json!({
-                        "success": true,
-                        "binaryVersion": VERSION,
-                    })
-                }
                 "GET" => {
                     let bookmarks = get_bookmarks(&db_conn);
 
@@ -99,6 +110,30 @@ fn main() {
                             })
                         }
                     }
+                }
+                "OPTIONS" => {
+                    json!({
+                        "success": true,
+                        "binaryVersion": VERSION,
+                    })
+                }
+                "POST" => {
+                    let data = req.data.unwrap();
+
+                    let success = add_bookmark(&db_conn, &data);
+
+                    json!({
+                        "success": success,
+                    })
+                }
+                "PUT" => {
+                    let data = req.data.unwrap();
+
+                    let success = data.id.is_some() && update_bookmark(&db_conn, &data);
+
+                    json!({
+                        "success": success
+                    })
                 }
                 _ => {
                     json!({
