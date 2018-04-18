@@ -1,5 +1,7 @@
 :root {
 	--header-height: 50px;
+	/* This must be kept in sync with the number of header buttons/items */
+	--heading-num-items: 3;
 }
 
 .wrapper {

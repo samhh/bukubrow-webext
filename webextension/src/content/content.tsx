@@ -13,9 +13,11 @@ import styles from './content.css';
 
 import Bookmark, { ForwardRefElementType } from 'Components/bookmark/';
 import BookmarkForm from 'Components/bookmark-form/';
+import Button from 'Components/button/';
 import ErrorPopup from 'Components/error-popup/';
 import Loader from 'Components/loader/';
 import LoadMoreBookmarks from 'Components/load-more-bookmarks/';
+import Modal from 'Components/modal/';
 import SearchControls from 'Components/search-controls/';
 import TutorialMessage from 'Components/tutorial-message/';
 
@@ -28,8 +30,10 @@ interface State {
 	loading: boolean;
 	displayAdd: boolean;
 	displayEdit: boolean;
+	displayDelete: boolean;
 	displayTutorialMessage: boolean;
 	bookmarkToEditId: LocalBookmark['id'];
+	bookmarkToDeleteId: LocalBookmark['id'];
 	bookmarks: LocalBookmark[];
 	renderAllBookmarks: boolean;
 	focusedBookmarkIndex: number;
@@ -42,8 +46,10 @@ class ContentPage extends Component<Props, State> {
 		loading: true,
 		displayAdd: false,
 		displayEdit: false,
+		displayDelete: false,
 		displayTutorialMessage: false,
 		bookmarkToEditId: -1,
+		bookmarkToDeleteId: -1,
 		bookmarks: [] as LocalBookmark[],
 		renderAllBookmarks: false,
 		focusedBookmarkIndex: 0,
@@ -64,7 +70,9 @@ class ContentPage extends Component<Props, State> {
 		chrome.runtime.onMessage.addListener((res: BackendResponse) => {
 			if ('bookmarksUpdated' in res) this.fetchCachedBookmarks();
 
-			if ('bookmarkSaved' in res || 'bookmarkUpdated' in res) this.fetchLiveBookmarks();
+			if ('bookmarkSaved' in res || 'bookmarkUpdated' in res || 'bookmarkDeleted' in res) {
+				this.fetchLiveBookmarks();
+			}
 
 			if ('unknownError' in res) {
 				const msg = 'An unknown error occurred.';
@@ -161,7 +169,7 @@ class ContentPage extends Component<Props, State> {
 			});
 	}
 
-	updateFocusedBookmark = (index: number) => {
+	updateFocusedBookmark = (index: number): void => {
 		const indexIncreased = index > this.state.focusedBookmarkIndex;
 
 		this.setState({ focusedBookmarkIndex: index }, () => {
@@ -186,20 +194,37 @@ class ContentPage extends Component<Props, State> {
 		});
 	}
 
-	handleOpenAddBookmark = () => {
+	handleOpenAddBookmark = (): void => {
 		this.setState({ displayAdd: true });
 	}
 
-	handleCloseAddBookmark = () => {
+	handleCloseAddBookmark = (): void => {
 		this.setState({ displayAdd: false });
 	}
 
-	handleOpenEditBookmark = (bookmarkId: LocalBookmark['id']) => {
+	handleOpenEditBookmark = (bookmarkId: LocalBookmark['id']): void => {
 		this.setState({ displayEdit: true, bookmarkToEditId: bookmarkId });
 	}
 
-	handleCloseEditBookmark = () => {
+	handleCloseEditBookmark = (): void => {
 		this.setState({ displayEdit: false });
+	}
+
+	handleInitiateBookmarkDeletion = (bookmarkId: LocalBookmark['id']): void => {
+		this.setState({
+			displayDelete: true,
+			bookmarkToDeleteId: bookmarkId,
+		});
+	}
+
+	handleCancelBookmarkDeletion = (): void => {
+		this.setState({ displayDelete: false });
+	}
+
+	handleConfirmBookmarkDeletion = (): void => {
+		sendBackendMessage({ deleteBookmark: true, bookmarkId: this.state.bookmarkToDeleteId });
+
+		this.setState({ displayDelete: false });
 	}
 
 	handleTextFilter = (textFilter: string): void => {
@@ -244,6 +269,9 @@ class ContentPage extends Component<Props, State> {
 	}
 
 	render (): JSX.Element {
+		const bmToDel = this.state.bookmarks.find(bm => bm.id === this.state.bookmarkToDeleteId);
+
+		// TODO map out here instead of in func?
 		const filteredBookmarks = filterBookmarks(this.state.bookmarks, this.state.textFilter);
 
 		const bookmarksToRender =
@@ -270,6 +298,25 @@ class ContentPage extends Component<Props, State> {
 						onClose={this.handleCloseEditBookmark}
 						onSubmit={this.updateBookmark}
 					/>
+				)}
+
+				{this.state.displayDelete && bmToDel && (
+					<Modal>
+						<header>
+							<h1 className={styles['delete-heading']}>Delete bookmark <em>{bmToDel.title}</em>?</h1>
+						</header>
+
+						<Button
+							onClick={this.handleCancelBookmarkDeletion}
+							label="Cancel"
+						/>
+
+						<Button
+							onClick={this.handleConfirmBookmarkDeletion}
+							label="Delete"
+							className={styles['delete-btn-confirm']}
+						/>
+					</Modal>
 				)}
 
 				<ErrorPopup msg={this.state.errMsg} />
@@ -308,6 +355,7 @@ class ContentPage extends Component<Props, State> {
 													isFocused={this.state.focusedBookmarkIndex === index}
 													openBookmark={this.openBookmarks}
 													onEdit={this.handleOpenEditBookmark}
+													onDelete={this.handleInitiateBookmarkDeletion}
 													ref={ref}
 												/>
 											);

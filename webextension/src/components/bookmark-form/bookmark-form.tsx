@@ -2,6 +2,7 @@ import React, { Component, FormEvent } from 'react';
 import styles from './bookmark-form.css';
 
 import Button from 'Components/button/';
+import Modal from 'Components/modal/';
 import PlusIcon from 'Assets/plus.svg';
 import Tag from 'Components/tag/';
 import TextInput from 'Components/text-input/';
@@ -93,71 +94,70 @@ class BookmarkForm extends Component<Props, State> {
 
 	render(): JSX.Element {
 		return (
-			<form
-				className={styles.form}
-				onSubmit={this.handleSubmit}
-			>
-				<header className={styles.header}>
-					<h1 className={styles.heading}>
-						{this.props.bookmark ? 'Edit bookmark' : 'Add a bookmark'}
-					</h1>
+			<Modal>
+				<form onSubmit={this.handleSubmit}>
+					<header className={styles.header}>
+						<h1 className={styles.heading}>
+							{this.props.bookmark ? 'Edit bookmark' : 'Add a bookmark'}
+						</h1>
 
-					<Button
-						iconHTML={PlusIcon}
-						className={styles.exit}
-						onClick={this.handleClose}
-					/>
-				</header>
-
-				<TextInput
-					value={this.state.title}
-					onInput={this.handleFormTitle}
-					label="Title"
-				/>
-
-				<TextInput
-					value={this.state.desc}
-					onInput={this.handleFormDesc}
-					label="Description"
-				/>
-
-				<TextInput
-					value={this.state.url}
-					onInput={this.handleFormUrl}
-					label="URL"
-				/>
-
-				<div className={styles['tag-input-wrapper']}>
-					<TextInput
-						value={this.state.tagInput}
-						onInput={this.handleTagInput}
-						label="Tags"
-					/>
-
-					<Button
-						onClick={this.handleTagAddition}
-						iconHTML={PlusIcon}
-						className={styles['tag-btn']}
-					/>
-				</div>
-
-				<ul className={styles.tags}>
-					{this.state.tags.map(tag => (
-						<Tag
-							key={tag}
-							id={tag}
-							label={tag}
-							onRemove={this.handleTagRemoval}
+						<Button
+							iconHTML={PlusIcon}
+							className={styles.exit}
+							onClick={this.handleClose}
 						/>
-					))}
-				</ul>
+					</header>
 
-				<Button
-					type="submit"
-					label={this.props.bookmark ? 'Update bookmark' : 'Add bookmark'}
-					className={styles.btn}
-				/>
-			</form>
+					<TextInput
+						value={this.state.title}
+						onInput={this.handleFormTitle}
+						label="Title"
+					/>
+
+					<TextInput
+						value={this.state.desc}
+						onInput={this.handleFormDesc}
+						label="Description"
+					/>
+
+					<TextInput
+						value={this.state.url}
+						onInput={this.handleFormUrl}
+						label="URL"
+					/>
+
+					<div className={styles['tag-input-wrapper']}>
+						<TextInput
+							value={this.state.tagInput}
+							onInput={this.handleTagInput}
+							label="Tags"
+						/>
+
+						<Button
+							onClick={this.handleTagAddition}
+							iconHTML={PlusIcon}
+							className={styles['tag-btn']}
+						/>
+					</div>
+
+					<ul className={styles.tags}>
+						{this.state.tags.map(tag => (
+							<Tag
+								key={tag}
+								id={tag}
+								label={tag}
+								onRemove={this.handleTagRemoval}
+							/>
+						))}
+					</ul>
+
+					<Button
+						type="submit"
+						label={this.props.bookmark ? 'Update bookmark' : 'Add bookmark'}
+						className={styles.btn}
+					/>
+				</form>
+			</Modal>
 		);
 	}
 }

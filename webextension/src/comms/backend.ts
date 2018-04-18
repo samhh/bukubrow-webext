@@ -7,6 +7,7 @@ export enum NativeRequestMethod {
 	OPTIONS = 'OPTIONS',
 	POST = 'POST',
 	PUT = 'PUT',
+	DELETE = 'DELETE',
 }
 
 interface NativeGETResponse {
@@ -28,11 +29,16 @@ interface NativePUTResponse {
 	success: boolean;
 }
 
+interface NativeDELETEResponse {
+	success: boolean;
+}
+
 type NativeRequestData = {
 	GET: undefined;
 	OPTIONS: undefined;
-	POST: RemoteBookmarkUnsaved;
-	PUT: RemoteBookmarkUnsaved;
+	POST: { bookmark: RemoteBookmarkUnsaved };
+	PUT: { bookmark: RemoteBookmark };
+	DELETE: { bookmark_id: RemoteBookmark['id'] };
 };
 
 type NativeRequestResult = {
@@ -40,9 +46,9 @@ type NativeRequestResult = {
 	OPTIONS: NativeOPTIONSResponse;
 	POST: NativePOSTResponse;
 	PUT: NativePUTResponse;
+	DELETE: NativeDELETEResponse;
 };
 
-// tslint:disable-next-line max-line-length
 function sendNativeMessage<T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]):
 Promise<NativeRequestResult[T]> {
 	return new Promise((resolve) => {
@@ -65,10 +71,13 @@ export const getBookmarks = () =>
 	sendNativeMessage(NativeRequestMethod.GET, undefined);
 
 export const saveBookmark = (bookmark: RemoteBookmarkUnsaved) =>
-	sendNativeMessage(NativeRequestMethod.POST, bookmark);
+	sendNativeMessage(NativeRequestMethod.POST, { bookmark });
 
-export const updateBookmark = (bookmark: RemoteBookmarkUnsaved) =>
-	sendNativeMessage(NativeRequestMethod.PUT, bookmark);
+export const updateBookmark = (bookmark: RemoteBookmark) =>
+	sendNativeMessage(NativeRequestMethod.PUT, { bookmark });
+
+export const deleteBookmark = (bookmarkId: RemoteBookmark['id']) =>
+	sendNativeMessage(NativeRequestMethod.DELETE, { bookmark_id: bookmarkId });
 
 export const sendFrontendMessage = (response: BackendResponse) =>
 	new Promise((resolve) => {

@@ -1,4 +1,7 @@
 .bookmark {
+	/* Needs to be kept in sync */
+	--controls-num-items: 2;
+
 	position: relative;
 	padding: var(--sizing);
 	border-top: 1px solid var(--offset-bg);
@@ -14,16 +17,36 @@
 	border-bottom: 1px solid var(--offset-bg);
 }
 
-.edit {
+.controls {
 	float: right;
+}
+
+.edit {
+	margin: 0 calc(var(--sizing) / 2) 0 0;
+}
+
+.edit,
+.delete {
+	position: static !important;
+	float: left;
 	opacity: 0;
 }
 
-.edit:hover svg {
+.edit:hover svg,
+.delete:hover svg {
 	fill: white;
 }
 
-.bookmark:hover .edit {
+.tooltip {
+	/* 4px is roughly half the difference in height between tooltip and icon btns */
+	top: calc(var(--sizing) - 2px) !important;
+	transform: none !important;
+	left: initial;
+	right: calc((var(--sizing) * 2.5) + (var(--btn-icon-size) * var(--controls-num-items))) !important;
+}
+
+.bookmark:hover .edit,
+.bookmark:hover .delete {
 	opacity: 1;
 }
 

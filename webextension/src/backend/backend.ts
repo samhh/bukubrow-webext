@@ -7,6 +7,7 @@ import {
 	getBookmarks as getBookmarksFromDb,
 	saveBookmark as saveBookmarkToDb,
 	updateBookmark as updateBookmarkInDb,
+	deleteBookmark as deleteBookmarkFromDb,
 } from 'Comms/backend';
 
 const checkBinary = (): Promise<boolean> => {
@@ -67,10 +68,22 @@ const updateBookmark = (bookmark: LocalBookmark): Promise<boolean> =>
 			return true;
 		});
 
+const deleteBookmark = (bookmarkId: number): Promise<boolean> =>
+	deleteBookmarkFromDb(bookmarkId)
+		.then((res) => {
+			console.log(res);
+			if (!res || !res.success) return false;
+
+			sendFrontendMessage({ bookmarkDeleted: true });
+
+			return true;
+		});
+
 // Listen for messages from frontend
 chrome.runtime.onMessage.addListener((req: BackendRequest): void => {
 	if ('checkBinary' in req) checkBinary();
 	if ('requestBookmarks' in req) requestBookmarks();
 	if ('saveBookmark' in req) saveBookmark(req.bookmark);
 	if ('updateBookmark' in req) updateBookmark(req.bookmark);
+	if ('deleteBookmark' in req) deleteBookmark(req.bookmarkId);
 });
