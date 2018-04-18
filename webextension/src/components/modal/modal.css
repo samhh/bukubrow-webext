@@ -1,0 +1,22 @@
+.wrapper {
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: calc(var(--sizing) * 2);
+}
+
+.modal {
+	width: 100%;
+	max-height: 100%;
+	padding: calc(var(--sizing) * 2) var(--sizing);
+	border: 1px solid var(--offset-bg);
+	overflow: scroll;
+	box-shadow: 0px 0px 7px -4px #999;
+	background: var(--bg);
+}

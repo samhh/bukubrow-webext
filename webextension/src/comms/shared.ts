@@ -16,8 +16,13 @@ interface UpdateBookmarkReq {
 	bookmark: LocalBookmark;
 }
 
+interface DeleteBookmarkReq {
+	deleteBookmark: true;
+	bookmarkId: RemoteBookmark['id'];
+}
+
 export type BackendRequest =
-	CheckBinaryReq | GetBookmarksReq | SaveBookmarkReq | UpdateBookmarkReq;
+	CheckBinaryReq | GetBookmarksReq | SaveBookmarkReq | UpdateBookmarkReq | DeleteBookmarkReq;
 
 type CheckBinaryRes =
 	{ outdatedBinary: true } |
@@ -36,8 +41,12 @@ interface UpdateBookmarkRes {
 	bookmarkUpdated: true;
 }
 
+interface DeleteBookmarkRes {
+	bookmarkDeleted: true;
+}
+
 export type BackendResponse =
-	CheckBinaryRes | GetBookmarksRes | SaveBookmarkRes | UpdateBookmarkRes;
+	CheckBinaryRes | GetBookmarksRes | SaveBookmarkRes | UpdateBookmarkRes | DeleteBookmarkRes;
 
 export const checkRuntimeErrors = () => new Promise((resolve) => {
 	resolve((chrome.runtime.lastError && chrome.runtime.lastError.message) || false);

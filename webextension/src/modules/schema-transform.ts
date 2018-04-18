@@ -9,10 +9,15 @@ export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	flags: bookmark.flags,
 });
 
-// This could probably be improved by someone with a better understanding of
-// generics
-export const untransform = (bookmark: LocalBookmarkUnsaved | LocalBookmark):
-RemoteBookmarkUnsaved | RemoteBookmark => {
+type untransformResult = {
+	LocalBookmark: RemoteBookmark;
+	LocalBookmarkUnsaved: RemoteBookmarkUnsaved;
+};
+
+export function untransform(bookmark: LocalBookmark): RemoteBookmark;
+export function untransform(bookmark: LocalBookmarkUnsaved): RemoteBookmarkUnsaved;
+export function untransform(bookmark: LocalBookmark | LocalBookmarkUnsaved):
+RemoteBookmark | RemoteBookmarkUnsaved {
 	const base: RemoteBookmarkUnsaved = {
 		metadata: bookmark.title,
 		tags: bookmark.tags.join(','),
@@ -26,4 +31,4 @@ RemoteBookmarkUnsaved | RemoteBookmark => {
 		: base;
 
 	return transformed;
-};
+}

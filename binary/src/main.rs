@@ -22,9 +22,15 @@ struct Bookmark {
 }
 
 #[derive(Serialize, Deserialize)]
+struct RequestData {
+    bookmark: Option<Bookmark>,
+    bookmark_id: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize)]
 struct Request {
     method: String,
-    data: Option<Bookmark>,
+    data: Option<RequestData>,
 }
 
 // Determine path to database from environment variables
@@ -84,6 +90,13 @@ fn update_bookmark(db: &Connection, bm: &Bookmark) -> bool {
     exec.is_ok()
 }
 
+fn delete_bookmark(db: &Connection, bm_id: i32) -> bool {
+    let query = "DELETE FROM bookmarks WHERE id = ?1";
+    let exec = db.execute(query, &[&bm_id]);
+
+    exec.is_ok()
+}
+
 fn main() {
     let db_path = get_db_path();
     let db_conn = Connection::open(db_path).unwrap();
@@ -118,18 +131,27 @@ fn main() {
                     })
                 }
                 "POST" => {
-                    let data = req.data.unwrap();
+                    let bm = req.data.unwrap().bookmark.unwrap();
 
-                    let success = add_bookmark(&db_conn, &data);
+                    let success = add_bookmark(&db_conn, &bm);
 
                     json!({
                         "success": success,
                     })
                 }
                 "PUT" => {
-                    let data = req.data.unwrap();
+                    let bm = req.data.unwrap().bookmark.unwrap();
 
-                    let success = data.id.is_some() && update_bookmark(&db_conn, &data);
+                    let success = bm.id.is_some() && update_bookmark(&db_conn, &bm);
+
+                    json!({
+                        "success": success
+                    })
+                }
+                "DELETE" => {
+                    let bm_id = req.data.unwrap().bookmark_id.unwrap();
+
+                    let success = delete_bookmark(&db_conn, bm_id);
 
                     json!({
                         "success": success
