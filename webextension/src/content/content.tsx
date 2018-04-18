@@ -1,6 +1,8 @@
 import React, { Component, createRef, FormEvent, RefObject } from 'react';
 import { render } from 'react-dom';
-import { getBookmarks } from '../backend/local-storage';
+import { sendBackendMessage } from 'Comms/frontend';
+import { BackendResponse } from 'Comms/shared';
+import { getBookmarks } from 'Modules/cache';
 import filterBookmarks from 'Modules/filter-bookmarks';
 import ensureValidURL from 'Modules/ensure-valid-url';
 import fullyInViewport from 'Modules/element-in-viewport';
@@ -54,29 +56,29 @@ class ContentPage extends Component<Props, State> {
 
 	componentDidMount() {
 		setTheme();
-		chrome.runtime.sendMessage({ checkBinary: true });
+		sendBackendMessage({ checkBinary: true });
 		this.checkHasTriggeredRequest();
 		this.fetchCachedBookmarks();
 
 		// Respond to messages from the backend
-		chrome.runtime.onMessage.addListener((req) => {
-			if (req.bookmarksUpdated) this.fetchCachedBookmarks();
+		chrome.runtime.onMessage.addListener((res: BackendResponse) => {
+			if ('bookmarksUpdated' in res) this.fetchCachedBookmarks();
 
-			if (req.bookmarkSaved || req.bookmarkUpdated) this.fetchLiveBookmarks();
+			if ('bookmarkSaved' in res || 'bookmarkUpdated' in res) this.fetchLiveBookmarks();
 
-			if (req.unknownError) {
+			if ('unknownError' in res) {
 				const msg = 'An unknown error occurred.';
 
 				this.initError(msg);
 			}
 
-			if (req.cannotFindBinary) {
+			if ('cannotFindBinary' in res) {
 				const msg = 'The binary could not be found. Please refer to the installation instructions.';
 
 				this.initError(msg);
 			}
 
-			if (req.outdatedBinary) {
+			if ('outdatedBinary' in res) {
 				const msg = 'The binary is outdated; please download or build a more recent one.';
 
 				this.initError(msg);
@@ -116,7 +118,7 @@ class ContentPage extends Component<Props, State> {
 	}
 
 	fetchLiveBookmarks = (): Promise<void> => new Promise((resolve) => {
-		chrome.runtime.sendMessage({ requestBookmarks: true });
+		sendBackendMessage({ requestBookmarks: true });
 
 		this.resolveBookmarksPromise = resolve;
 	})
@@ -137,14 +139,14 @@ class ContentPage extends Component<Props, State> {
 			})
 
 	saveBookmark = (bookmark: LocalBookmarkUnsaved): void => {
-		chrome.runtime.sendMessage({
+		sendBackendMessage({
 			bookmark,
 			saveBookmark: true,
 		});
 	}
 
 	updateBookmark = (bookmark: LocalBookmark): void => {
-		chrome.runtime.sendMessage({
+		sendBackendMessage({
 			bookmark,
 			updateBookmark: true,
 		});

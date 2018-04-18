@@ -13,6 +13,9 @@
 			"Assets/*": [
 				"./assetsBundledOnly/*"
 			],
+			"Comms/*": [
+				"./comms/*"
+			],
 			"Components/*": [
 				"./components/*"
 			],

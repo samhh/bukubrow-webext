@@ -1,13 +1,13 @@
 import { transform, untransform } from 'Modules/schema-transform';
-import { sendExtensionMessage } from './api/protocol';
-import { saveBookmarks as saveBookmarksToLocalStorage } from './local-storage';
+import { checkRuntimeErrors, BackendRequest } from 'Comms/shared';
+import { saveBookmarks as saveBookmarksToLocalStorage } from 'Modules/cache';
 import {
-	checkRuntimeErrors,
+	sendFrontendMessage,
 	checkBinaryVersion,
 	getBookmarks as getBookmarksFromDb,
 	saveBookmark as saveBookmarkToDb,
 	updateBookmark as updateBookmarkInDb,
-} from './api/native';
+} from 'Comms/backend';
 
 const checkBinary = (): Promise<boolean> => {
 	const errors = checkRuntimeErrors();
@@ -17,14 +17,14 @@ const checkBinary = (): Promise<boolean> => {
 		.then(([err, versionIsOkay]) => {
 			if (err) {
 				err === 'Specified native messaging host not found.'
-					? sendExtensionMessage({ cannotFindBinary: true })
-					: sendExtensionMessage({ unknownError: true });
+					? sendFrontendMessage({ cannotFindBinary: true })
+					: sendFrontendMessage({ unknownError: true });
 
 				return false;
 			}
 
 			if (!versionIsOkay) {
-				sendExtensionMessage({ outdatedBinary: true });
+				sendFrontendMessage({ outdatedBinary: true });
 
 				return false;
 			}
@@ -41,7 +41,7 @@ const requestBookmarks = (): Promise<boolean> =>
 			const bookmarks = res.bookmarks.map(transform);
 
 			return saveBookmarksToLocalStorage(bookmarks).then(() => {
-				sendExtensionMessage({ bookmarksUpdated: true });
+				sendFrontendMessage({ bookmarksUpdated: true });
 
 				return true;
 			});
@@ -52,7 +52,7 @@ const saveBookmark = (bookmark: LocalBookmarkUnsaved): Promise<boolean> =>
 		.then((res) => {
 			if (!res || !res.success) return false;
 
-			sendExtensionMessage({ bookmarkSaved: true });
+			sendFrontendMessage({ bookmarkSaved: true });
 
 			return true;
 		});
@@ -62,15 +62,15 @@ const updateBookmark = (bookmark: LocalBookmark): Promise<boolean> =>
 		.then((res) => {
 			if (!res || !res.success) return false;
 
-			sendExtensionMessage({ bookmarkUpdated: true });
+			sendFrontendMessage({ bookmarkUpdated: true });
 
 			return true;
 		});
 
 // Listen for messages from frontend
-chrome.runtime.onMessage.addListener((req): void => {
-	if (req.checkBinary) checkBinary();
-	if (req.requestBookmarks) requestBookmarks();
-	if (req.saveBookmark && req.bookmark) saveBookmark(req.bookmark);
-	if (req.updateBookmark && req.bookmark) updateBookmark(req.bookmark);
+chrome.runtime.onMessage.addListener((req: BackendRequest): void => {
+	if ('checkBinary' in req) checkBinary();
+	if ('requestBookmarks' in req) requestBookmarks();
+	if ('saveBookmark' in req) saveBookmark(req.bookmark);
+	if ('updateBookmark' in req) updateBookmark(req.bookmark);
 });
