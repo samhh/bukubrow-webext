@@ -20,7 +20,7 @@ import Modal from 'Components/modal/';
 import SearchControls from 'Components/search-controls/';
 import TutorialMessage from 'Components/tutorial-message/';
 
-import '../global-styles/';
+import '../../global.css';
 
 interface State {
 	activeUrl: string;
