@@ -10,7 +10,7 @@ import TextInput from 'Components/text-input/';
 interface Props {
 	onClose(): void;
 	onSubmit(bookmark: LocalBookmark | LocalBookmarkUnsaved): void;
-	bookmark?: LocalBookmark;
+	bookmark?: Partial<LocalBookmark>;
 }
 
 interface State extends LocalBookmark {

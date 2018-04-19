@@ -1,4 +1,4 @@
-import React, { Component, forwardRef, Ref, FormEvent } from 'react';
+import React, { PureComponent, forwardRef, Ref, FormEvent } from 'react';
 import shortid from 'shortid';
 import cn from 'classnames';
 import styles from './text-input.css';
@@ -18,7 +18,7 @@ interface Props {
 	className?: string;
 }
 
-class TextInput extends Component<Props> {
+class TextInput extends PureComponent<Props> {
 	static defaultProps: Partial<Props> = {
 		label: '',
 		placeholder: '',
