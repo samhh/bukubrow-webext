@@ -15,7 +15,6 @@ import Bookmark, { ForwardRefElementType } from 'Components/bookmark/';
 import BookmarkForm from 'Components/bookmark-form/';
 import Button from 'Components/button/';
 import ErrorPopup from 'Components/error-popup/';
-import Loader from 'Components/loader/';
 import LoadMoreBookmarks from 'Components/load-more-bookmarks/';
 import Modal from 'Components/modal/';
 import SearchControls from 'Components/search-controls/';
@@ -27,7 +26,6 @@ interface Props {}
 
 interface State {
 	errMsg: string;
-	loading: boolean;
 	displayAdd: boolean;
 	displayEdit: boolean;
 	displayDelete: boolean;
@@ -43,7 +41,6 @@ interface State {
 class ContentPage extends Component<Props, State> {
 	state = {
 		errMsg: '',
-		loading: true,
 		displayAdd: false,
 		displayEdit: false,
 		displayDelete: false,
@@ -118,10 +115,7 @@ class ContentPage extends Component<Props, State> {
 
 	checkHasTriggeredRequest = () => {
 		chrome.storage.local.get('hasTriggeredRequest', (res) => {
-			this.setState({
-				displayTutorialMessage: !res.hasTriggeredRequest,
-				loading: false,
-			});
+			this.setState({ displayTutorialMessage: !res.hasTriggeredRequest });
 		});
 	}
 
@@ -321,58 +315,56 @@ class ContentPage extends Component<Props, State> {
 
 				<ErrorPopup msg={this.state.errMsg} />
 
-				<Loader shouldDisplayLoader={this.state.loading}>
-					<div className={styles.content}>
-						<SearchControls
-							onAdd={this.handleOpenAddBookmark}
-							shouldEnableSearch={!!this.state.bookmarks.length}
-							updateTextFilter={this.handleTextFilter}
-							textFilter={this.state.textFilter}
-							refreshBookmarks={this.fetchLiveBookmarks}
-							triggerBookmarkOpen={this.simulateBookmarkClick}
-							triggerBookmarkMultiOpen={this.openBookmarks}
-						/>
+				<div className={styles.content}>
+					<SearchControls
+						onAdd={this.handleOpenAddBookmark}
+						shouldEnableSearch={!!this.state.bookmarks.length}
+						updateTextFilter={this.handleTextFilter}
+						textFilter={this.state.textFilter}
+						refreshBookmarks={this.fetchLiveBookmarks}
+						triggerBookmarkOpen={this.simulateBookmarkClick}
+						triggerBookmarkMultiOpen={this.openBookmarks}
+					/>
 
-						<main>
-							{this.state.displayTutorialMessage ? (
-								<TutorialMessage />
-							) : (
-								<>
-									<ul className={styles.bookmarks}>
-										{bookmarksToRender.map((bookmark, index) => {
-											const ref: RefObject<ForwardRefElementType> = createRef();
-											this.bookmarkRefs.set(index, ref);
+					<main>
+						{this.state.displayTutorialMessage ? (
+							<TutorialMessage />
+						) : (
+							<>
+								<ul className={styles.bookmarks}>
+									{bookmarksToRender.map((bookmark, index) => {
+										const ref: RefObject<ForwardRefElementType> = createRef();
+										this.bookmarkRefs.set(index, ref);
 
-											return (
-												<Bookmark
-													key={bookmark.id}
-													id={bookmark.id}
-													title={bookmark.title}
-													url={bookmark.url}
-													desc={bookmark.desc}
-													tags={bookmark.tags}
-													textFilter={this.state.textFilter}
-													isFocused={this.state.focusedBookmarkIndex === index}
-													openBookmark={this.openBookmarks}
-													onEdit={this.handleOpenEditBookmark}
-													onDelete={this.handleInitiateBookmarkDeletion}
-													ref={ref}
-												/>
-											);
-										})}
-									</ul>
+										return (
+											<Bookmark
+												key={bookmark.id}
+												id={bookmark.id}
+												title={bookmark.title}
+												url={bookmark.url}
+												desc={bookmark.desc}
+												tags={bookmark.tags}
+												textFilter={this.state.textFilter}
+												isFocused={this.state.focusedBookmarkIndex === index}
+												openBookmark={this.openBookmarks}
+												onEdit={this.handleOpenEditBookmark}
+												onDelete={this.handleInitiateBookmarkDeletion}
+												ref={ref}
+											/>
+										);
+									})}
+								</ul>
 
-									{!!numRemainingBookmarks && (
-										<LoadMoreBookmarks
-											numRemainingBookmarks={numRemainingBookmarks}
-											renderAllBookmarks={this.renderAllBookmarks}
-										/>
-									)}
-								</>
-							)}
-						</main>
-					</div>
-				</Loader>
+								{!!numRemainingBookmarks && (
+									<LoadMoreBookmarks
+										numRemainingBookmarks={numRemainingBookmarks}
+										renderAllBookmarks={this.renderAllBookmarks}
+									/>
+								)}
+							</>
+						)}
+					</main>
+				</div>
 			</div>
 		);
 	}
