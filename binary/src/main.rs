@@ -51,8 +51,6 @@ fn get_db_path() -> String {
 }
 
 // Get bookmarks from database
-// TODO prepare is deprecated
-// TODO also update deps
 fn get_bookmarks(db: &Connection) -> Result<Vec<Bookmark>, DbError> {
     let query = "SELECT * FROM bookmarks;";
     let mut stmt = db.prepare(query).unwrap();
@@ -68,30 +66,30 @@ fn get_bookmarks(db: &Connection) -> Result<Vec<Bookmark>, DbError> {
         }
     })?;
 
-    let mut bookmarks = Vec::new();
-    for bookmark in rows {
-        bookmarks.push(bookmark?);
-    }
+    let bookmarks: Vec<Bookmark> = rows.filter_map(|x| x.ok()).collect();
 
     Ok(bookmarks)
 }
 
+// Save bookmark to database
 fn add_bookmark(db: &Connection, bm: &Bookmark) -> bool {
-    let query = "INSERT INTO bookmarks(metadata, desc, tags, url, flags) VALUES (?1, ?2, ?3, ?4, ?5)";
+    let query = "INSERT INTO bookmarks(metadata, desc, tags, url, flags) VALUES (?1, ?2, ?3, ?4, ?5);";
     let exec = db.execute(query, &[&bm.metadata, &bm.desc, &bm.tags, &bm.url, &bm.flags]);
 
     exec.is_ok()
 }
 
+// Update bookmark in database by ID
 fn update_bookmark(db: &Connection, bm: &Bookmark) -> bool {
-    let query = "UPDATE bookmarks SET (metadata, desc, tags, url, flags) = (?2, ?3, ?4, ?5, ?6) WHERE id = ?1";
+    let query = "UPDATE bookmarks SET (metadata, desc, tags, url, flags) = (?2, ?3, ?4, ?5, ?6) WHERE id = ?1;";
     let exec = db.execute(query, &[&bm.id.unwrap(), &bm.metadata, &bm.desc, &bm.tags, &bm.url, &bm.flags]);
 
     exec.is_ok()
 }
 
+// Delete bookmark from database by ID
 fn delete_bookmark(db: &Connection, bm_id: i32) -> bool {
-    let query = "DELETE FROM bookmarks WHERE id = ?1";
+    let query = "DELETE FROM bookmarks WHERE id = ?1;";
     let exec = db.execute(query, &[&bm_id]);
 
     exec.is_ok()
