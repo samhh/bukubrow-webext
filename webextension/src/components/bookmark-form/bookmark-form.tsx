@@ -98,7 +98,10 @@ class BookmarkForm extends Component<Props, State> {
 				<form onSubmit={this.handleSubmit}>
 					<header className={styles.header}>
 						<h1 className={styles.heading}>
-							{this.props.bookmark ? 'Edit bookmark' : 'Add a bookmark'}
+							{this.props.bookmark && 'id' in this.props.bookmark
+								? 'Edit bookmark'
+								: 'Add a bookmark'
+							}
 						</h1>
 
 						<Button
@@ -153,7 +156,10 @@ class BookmarkForm extends Component<Props, State> {
 
 					<Button
 						type="submit"
-						label={this.props.bookmark ? 'Update bookmark' : 'Add bookmark'}
+						label={this.props.bookmark && 'id' in this.props.bookmark
+							? 'Update bookmark'
+							: 'Add bookmark'
+						}
 						className={styles.btn}
 					/>
 				</form>

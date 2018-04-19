@@ -270,7 +270,6 @@ class ContentPage extends Component<{}, State> {
 	render (): JSX.Element {
 		const bmToDel = this.state.bookmarks.find(bm => bm.id === this.state.bookmarkToDeleteId);
 
-		// TODO map out here instead of in func?
 		const filteredBookmarks = filterBookmarks(this.state.bookmarks, this.state.textFilter);
 
 		const bookmarksToRender =
