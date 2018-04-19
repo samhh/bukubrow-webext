@@ -1,6 +1,6 @@
 import React, { Component, createRef, FormEvent, RefObject } from 'react';
 import { render } from 'react-dom';
-import { sendBackendMessage } from 'Comms/frontend';
+import { sendBackendMessage, getActiveTab } from 'Comms/frontend';
 import { BackendResponse } from 'Comms/shared';
 import { getBookmarks } from 'Modules/cache';
 import filterBookmarks from 'Modules/filter-bookmarks';
@@ -22,9 +22,8 @@ import TutorialMessage from 'Components/tutorial-message/';
 
 import '../global-styles/';
 
-interface Props {}
-
 interface State {
+	activeUrl: string;
 	errMsg: string;
 	displayAdd: boolean;
 	displayEdit: boolean;
@@ -38,8 +37,9 @@ interface State {
 	textFilter: string;
 }
 
-class ContentPage extends Component<Props, State> {
+class ContentPage extends Component<{}, State> {
 	state = {
+		activeUrl: '',
 		errMsg: '',
 		displayAdd: false,
 		displayEdit: false,
@@ -60,6 +60,11 @@ class ContentPage extends Component<Props, State> {
 	componentDidMount() {
 		setTheme();
 		sendBackendMessage({ checkBinary: true });
+		getActiveTab().then((tab) => {
+			if (!tab.url) return;
+
+			this.setState({ activeUrl: tab.url });
+		});
 		this.checkHasTriggeredRequest();
 		this.fetchCachedBookmarks();
 
@@ -281,6 +286,7 @@ class ContentPage extends Component<Props, State> {
 			<div>
 				{this.state.displayAdd && (
 					<BookmarkForm
+						bookmark={{ url: this.state.activeUrl }}
 						onClose={this.handleCloseAddBookmark}
 						onSubmit={this.saveBookmark}
 					/>

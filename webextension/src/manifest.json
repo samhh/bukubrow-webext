@@ -22,7 +22,8 @@
 	},
 	"permissions": [
 		"nativeMessaging",
-		"storage"
+		"storage",
+		"tabs"
 	],
 	"commands": {
 		"_execute_browser_action": {

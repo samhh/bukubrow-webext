@@ -1,4 +1,4 @@
-import React, { forwardRef, SFC, RefObject } from 'react';
+import React, { PureComponent, forwardRef, SFC, Ref, MouseEvent } from 'react';
 import cn from 'classnames';
 import styles from './bookmark.css';
 
@@ -19,66 +19,85 @@ interface Props {
 	openBookmark(url: LocalBookmark['url']): void;
 	onEdit(id: LocalBookmark['id']): void;
 	onDelete(id: LocalBookmark['id']): void;
+	forwardedRef?: Ref<ForwardRefElementType>;
 }
 
 export type ForwardRefElementType = HTMLLIElement;
 
-const Bookmark = forwardRef((props: Props, ref) => {
-	return (
-		<li
-			className={cn(styles.bookmark, { [styles['bookmark--focused']]: props.isFocused })}
-			onClick={() => { props.openBookmark(props.url); }} // tslint:disable-line jsx-no-lambda
-			ref={ref as RefObject<ForwardRefElementType>}
-		>
-			<header>
-				<h1 className={styles.name}>
-					<HighlightMarkup str={props.title} match={props.textFilter} />
-				</h1>
+class Bookmark extends PureComponent<Props> {
+	handleClick = () => {
+		this.props.openBookmark(this.props.url);
+	}
 
-				<ul className={styles.tags}>
-					&nbsp;{props.tags.map(tag => (
-						<Tag
-							key={tag}
-							id={tag}
-							label={<HighlightMarkup str={tag} match={props.textFilter} />}
+	handleEdit = (evt: MouseEvent<HTMLButtonElement>) => {
+		evt.stopPropagation();
+
+		this.props.onEdit(this.props.id);
+	}
+
+	handleDelete = (evt: MouseEvent<HTMLButtonElement>) => {
+		evt.stopPropagation();
+
+		this.props.onDelete(this.props.id);
+	}
+
+	render(): JSX.Element {
+		return (
+			<li
+				className={cn(styles.bookmark, { [styles['bookmark--focused']]: this.props.isFocused })}
+				onClick={this.handleClick}
+				ref={this.props.forwardedRef}
+			>
+				<header>
+					<h1 className={styles.name}>
+						<HighlightMarkup str={this.props.title} match={this.props.textFilter} />
+					</h1>
+
+					<ul className={styles.tags}>
+						&nbsp;{this.props.tags.map(tag => (
+							<Tag
+								key={tag}
+								id={tag}
+								label={<HighlightMarkup str={tag} match={this.props.textFilter} />}
+							/>
+						))}
+					</ul>
+
+					<div className={styles.controls}>
+						<Button
+							onClick={this.handleEdit}
+							type="button"
+							iconHTML={PencilIcon}
+							tooltip="Edit bookmark"
+							className={styles.edit}
+							tooltipClassName={styles.tooltip}
 						/>
-					))}
-				</ul>
 
-				<div className={styles.controls}>
-					<Button
-						// tslint:disable-next-line jsx-no-lambda
-						onClick={(evt) => { evt.stopPropagation(); props.onEdit(props.id); }}
-						type="button"
-						iconHTML={PencilIcon}
-						tooltip="Edit bookmark"
-						className={styles.edit}
-						tooltipClassName={styles.tooltip}
-					/>
+						<Button
+							onClick={this.handleDelete}
+							type="button"
+							iconHTML={BinIcon}
+							tooltip="Delete bookmark"
+							className={styles.delete}
+							tooltipClassName={styles.tooltip}
+						/>
+					</div>
+				</header>
 
-					<Button
-						// tslint:disable-next-line jsx-no-lambda
-						onClick={(evt) => { evt.stopPropagation(); props.onDelete(props.id); }}
-						type="button"
-						iconHTML={BinIcon}
-						tooltip="Delete bookmark"
-						className={styles.delete}
-						tooltipClassName={styles.tooltip}
-					/>
-				</div>
-			</header>
+				{this.props.desc && (
+					<p className={styles.desc}>
+						&#x3E; <HighlightMarkup str={this.props.desc} match={this.props.textFilter} />
+					</p>
+				)}
 
-			{props.desc && (
-				<p className={styles.desc}>
-					&#x3E; <HighlightMarkup str={props.desc} match={props.textFilter} />
-				</p>
-			)}
+				<h2 className={styles.url}>
+					<HighlightMarkup str={this.props.url} match={this.props.textFilter} />
+				</h2>
+			</li>
+		);
+	}
+}
 
-			<h2 className={styles.url}>
-				<HighlightMarkup str={props.url} match={props.textFilter} />
-			</h2>
-		</li>
-	);
-});
-
-export default Bookmark;
+export default forwardRef((props: Props, ref) => (
+	<Bookmark forwardedRef={ref as Ref<ForwardRefElementType> | undefined} {...props} />
+));

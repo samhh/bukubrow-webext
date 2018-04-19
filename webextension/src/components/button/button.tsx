@@ -1,4 +1,4 @@
-import React, { Component, forwardRef, Ref, MouseEvent } from 'react';
+import React, { PureComponent, forwardRef, Ref, MouseEvent } from 'react';
 import cn from 'classnames';
 import styles from './button.css';
 
@@ -15,7 +15,7 @@ interface Props {
 
 export type ForwardRefElementType = HTMLButtonElement;
 
-class Button extends Component<Props> {
+class Button extends PureComponent<Props> {
 	static defaultProps: Partial<Props> = {
 		label: '',
 		iconHTML: '',
