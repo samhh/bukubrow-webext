@@ -71,7 +71,6 @@ const updateBookmark = (bookmark: LocalBookmark): Promise<boolean> =>
 const deleteBookmark = (bookmarkId: number): Promise<boolean> =>
 	deleteBookmarkFromDb(bookmarkId)
 		.then((res) => {
-			console.log(res);
 			if (!res || !res.success) return false;
 
 			sendFrontendMessage({ bookmarkDeleted: true });
