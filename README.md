@@ -16,7 +16,7 @@ This project has been heavily influenced by [browserpass](https://github.com/dan
 
 #### Step 1 - Installing the binary
 
-Start out by downloading the [latest binary](https://github.com/samhh/Bukubrow/releases) for your operating system. A prebuilt binary for 64-bit macOS is available. For Linux and/or 32-bit systems you will need to compile the binary yourself until I figure out how to cross-compile (help appreciated!). See below for instructions.
+Start out by downloading the [latest binary](https://github.com/samhh/Bukubrow/releases) for your operating system. As I have yet to successfully cross-compile, the existence of an up-to-date pre-compiled binary for your OS will be hit and miss. Should you need to build it yourself, refer to [building](#building).
 
 1. Extract the package.
 2. Run `./install.sh` to install the native messaging host. If you want a system-wide installation, run the script with `sudo`.
@@ -32,7 +32,7 @@ Install the WebExtension from the relevant addon store.
 - Chrome: https://chrome.google.com/webstore/detail/bukubrow/ghniladkapjacfajiooekgkfopkjblpn
 - Firefox: https://addons.mozilla.org/en-US/firefox/addon/bukubrow/
 
-## Building
+## Building<a name="building"></a>
 
 ### Building the binary
 
