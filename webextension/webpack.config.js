@@ -23,12 +23,12 @@ const plugins = [
 	]),
 	new HtmlWebpackPlugin({
 		filename: 'content/content.build.html',
-		template: './src/content/content.pug',
+		template: './src/template.pug',
 		chunks: ['content'],
 	}),
 	new HtmlWebpackPlugin({
 		filename: 'options/options.build.html',
-		template: './src/options/options.pug',
+		template: './src/template.pug',
 		chunks: ['options'],
 	}),
 	new ExtractTextPlugin({
@@ -49,8 +49,8 @@ module.exports = {
 		plugins: [new TsConfigPathsPlugin()],
 	},
 	entry: {
-		content: './src/content/content.tsx',
-		options: './src/options/options.ts',
+		content: './src/pages/content/content.tsx',
+		options: './src/pages/options/options.tsx',
 		backend: './src/backend/backend.ts',
 	},
 	output: {
