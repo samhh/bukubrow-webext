@@ -36,11 +36,14 @@ Install the WebExtension from the relevant addon store.
 
 ### Building the binary
 
-Clone the repo, run `make binary-linux-x64` (or substitute `binary-linux-x64` for your preferred target) and then inside `./release` you'll have a zip identical to what you would have downloaded as a binary in step 1. Note that you'll need your target platform installed and configured with Cargo.
+1. Clone the repo.
+2. Install the SQLite 3 development packages. Refer to the README of our dependency: https://github.com/jgallagher/rusqlite
+3. Run `make binary-linux-x64` (or substitute `binary-linux-x64` for your preferred target) and then inside `./release` you'll have a zip identical to what you would have downloaded as a binary in step 1. Note that you'll need your target platform installed and configured with Cargo (Rust package manager).
 
 ### Building the WebExtension
 
-Clone the repo, run `make webext` and then inside `./release` you'll have a zip containing all required files and folders in the expected structure.
+1. Clone the repo
+2. Run `make webext` and then inside `./release` you'll have a zip containing all required files and folders in the expected structure.
 
 ### Building everything
 
@@ -52,8 +55,8 @@ This project is made up of two parts, the WebExtension and the binary.
 
 ### WebExtension
 
-The WebExtension is written in vanilla CSS and ESNext JS (via Babel), using Preact as the view library. npm is used for dependency management and task running. Broadly, it communicates with the (WebExtension) backend what it wants, and reacts according to the data it receives back.
+The WebExtension is written in (mostly) scoped, vanilla CSS and TypeScript, using React as the view library. npm is used for dependency management and task running. Broadly, it communicates with the (WebExtension) backend what it wants, and reacts according to the data it receives back.
 
 ### Binary
 
-The binary is written in Rust stable (1.22.1 at time of writing), and as you'd expect Cargo is used for dependency management. The messages it expects to receive from the WebExtension backend follow a faux HTTP format; for instance, to get all the bookmarks, you pass it a JSON object of the following format: `{ method: 'GET' }`.
+The binary is written in Rust stable (1.22.1 at time of writing), and as you'd expect Cargo is used for dependency management. The messages it expects to receive from the WebExtension backend follow a faux HTTP format; for instance, to get all the bookmarks, you pass it a JSON object of the following format: `{ method: 'GET' }`. The easiest way to visualise these is to view the TypeScript interfaces for them.

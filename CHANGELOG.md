@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0] - 2018-04-19
+### Added
+- Functionality to add a bookmark.
+- Functionality to edit a bookmark.
+- Functionality to delete a bookmark.
+
 ## [2.2.0] - 2018-01-14
 ### Added
 - Tooltip to buttons in search bar. (Thanks [andipabst](https://github.com/andipabst)!)
