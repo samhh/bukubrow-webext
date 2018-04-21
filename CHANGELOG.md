@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## WIP
+### Changed
+- Browser action shortcut to Ctrl+Shift+B.
+
 ## [2.3.0] - 2018-04-19
 ### Added
 - Functionality to add a bookmark.

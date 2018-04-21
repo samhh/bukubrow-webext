@@ -28,8 +28,9 @@
 	"commands": {
 		"_execute_browser_action": {
 			"suggested_key": {
-				"default": "Alt+Shift+B"
-			}
+				"default": "Ctrl+Shift+B"
+			},
+			"description": "Open Bukubrow"
 		}
 	},
 	"minimum_chrome_version": "55",
