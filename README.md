@@ -1,4 +1,4 @@
-Bukubrow
+Bukubrow [![Build Status](https://travis-ci.org/SamHH/bukubrow.svg?branch=master)](https://travis-ci.org/SamHH/bukubrow)
 ===
 
 Bukubrow is a WebExtension for [Buku](https://github.com/jarun/Buku), a command-line bookmark manager. This WebExtension is developed to work in at least Chrome, Chromium, and Firefox, however any other browsers that support WebExtensions should also run this just fine.

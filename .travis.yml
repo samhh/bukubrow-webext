@@ -31,3 +31,4 @@ deploy:
   on:
     repo: SamHH/bukubrow
     branch: ci # TODO change to master branch when this is all working
+		condition: $TRAVIS_RUST_VERSION = stable
