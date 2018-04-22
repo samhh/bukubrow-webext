@@ -16,9 +16,10 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cargo build --release --target=x86_64-unknown-linux-gnu; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cargo build --release --target=x86_64-apple-darwin; fi
 before_deploy:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make binary-linux-x64-bundle && make clean; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make binary-darwin-x64-bundle && make clean; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make binary-linux-x64-bundle; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make binary-darwin-x64-bundle; fi
   - git tag "ci_$(date +'%F')_$(git log --format=%h -1)_$TRAVIS_OS_NAME"
+# Deploy Linux & macOS builds for all commits to master branch
 deploy:
   provider: releases
   on:
