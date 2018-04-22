@@ -13,15 +13,15 @@ matrix:
 cache: cargo
 before_script: make prepare-binary && cd ./binary
 script:
-	- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cargo build --release --target=x86_64-unknown-linux-gnu; fi
-	- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cargo build --release --target=x86_64-apple-darwin; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cargo build --release --target=x86_64-unknown-linux-gnu; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cargo build --release --target=x86_64-apple-darwin; fi
 after_script:
-	- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make binary-linux-x64-bundle && make
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make binary-linux-x64-bundle && make
   clean; fi
-	- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make binary-darwin-x64-bundle && make
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make binary-darwin-x64-bundle && make
   clean; fi
 before_deploy:
-	- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   provider: releases
   api_key:
@@ -31,4 +31,4 @@ deploy:
   on:
     repo: SamHH/bukubrow
     branch: ci # TODO change to master branch when this is all working
-		condition: $TRAVIS_RUST_VERSION = stable
+    condition: $TRAVIS_RUST_VERSION = stable
