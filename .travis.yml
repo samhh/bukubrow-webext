@@ -19,7 +19,6 @@ before_deploy:
   - cd ..
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make binary-linux-x64-bundle && make clean; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make binary-darwin-x64-bundle && make clean; fi
-  - ls ./release
   - git tag "ci_$(date +'%F')_$(git log --format=%h -1)_$TRAVIS_OS_NAME"
 # Deploy Linux & macOS builds for all commits to master branch
 deploy:
@@ -29,7 +28,7 @@ deploy:
     branch: ci # TODO change to master branch when this is all working
     condition: $TRAVIS_RUST_VERSION = stable
   file_glob: true
-  file: "./release/*"
+  file: release/*
   api_key:
     secure: LHthkbnX7KEWjiMmFrFV0eNl0nyOAzTRFKgBH37XkcjWfu8EOrXxnfo0uAVtgdL1RJdH7LLaAuWobZIcSNCnxIE6Mlj494BF/HdYsC8Uoebq15fcGH0xyaZemBawvFEH11OGeKyStquxKgZJi0cHtY+A+AY5jJ84/9O7uLsztoPjS8qe3N/YEvM5+W8iuciu31JZFFKirtOBd6tvQ8L1ycnS8mTIo3+QiLbvVdi0eYOOEfnEwgSIWsHCuit3kInJFUveXJszlUHmOkaSBaNt4YNGJvWlYL3PaBPTs6WPwEaF2UVIBFPf2yQ3eCxNLYL2qSKCnuR+a8VuVK7M2GuT1BXOkJc0L9yZ6nNDVUBsJylzMLgD7f8oXkQAzwo6Qr0mvZlUs2+UllwLSp9p8cyymyVoMZQ/UMQdzkUNDA85qdixX06oE909Zz8UdTBdTMZA9Sw6M+cQbyzQX/yuPdONeMIHMrRq4Ov9D+C/kb3SiUzEfA9JUI6OoMFXmYrmpN2ZF6ouuM5FIgvdhK4PUSut4kW32QqA7/K8YNqgss3af8+yMU7mFSsASwOCc4gL0IKOyye/hjL5QjrSvnjDHBUJbAOB0xC21EI8qJT/3jwxtEWaozFp+mTB++qr5h0CrlAVT+H4FR9USySOWMIoreC2YHlOUnegLgRccg+0danw+Us=
 # Effectively don't build tags, only commits
