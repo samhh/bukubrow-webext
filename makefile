@@ -52,8 +52,9 @@ binary-darwin-x64-build:
 # Bundle Linux binary
 .PHONY: binary-linux-x64-bundle
 binary-linux-x64-bundle:
-	mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-linux-x64
-	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-linux-x64' ./*
+	# mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-linux-x64
+	# cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-linux-x64' ./*
+	mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(RELEASE_DIR)/bukubrow-binary-test
 
 # Bundle macOS binary
 .PHONY: binary-darwin-x64-bundle
