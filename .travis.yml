@@ -1,3 +1,6 @@
+os:
+	- linux
+	- osx
 language: rust
 rust:
   - stable
@@ -7,7 +10,17 @@ matrix:
   allow_failures:
     - rust: nightly
   fast_finish: true
-before_script: cd ./binary
-# after_script:
-# script:
-  # -
+cache: cargo
+before_script: make prepare-binary && cd ./binary
+script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cargo build --release --target=x86_64-unknown-linux-gnu; fi
+	- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cargo build --release --target=x86_64-apple-darwin; fi
+after_script:
+	- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make binary-linux-x64-bundle && make clean; fi
+	- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make binary-darwin-x64-bundle && make clean; fi
+deploy:
+	provider: releases
+	# api_key: ""
+	file_glob: true
+	file: ./release/*
+	skip_cleanup: true

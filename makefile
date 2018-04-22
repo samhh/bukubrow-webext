@@ -39,27 +39,40 @@ prepare-binary:
 	cp binary/browser-hosts/firefox.json $(TEMP_BUILD_DIR)/firefox-host.json
 	cp binary/install.sh $(TEMP_BUILD_DIR)/
 
+# Build Linux binary
+.PHONY: binary-linux-x64-build
+binary-linux-x64-build:
+	cd binary && cargo build --release --target=x86_64-unknown-linux-gnu
+
+# Build macOS binary
+.PHONY: binary-darwin-x64-build
+binary-darwin-x64-build:
+	cd binary && cargo build --release --target=x86_64-apple-darwin
+
+# Bundle Linux binary
+.PHONY: binary-linux-x64-bundle
+binary-linux-x64-bundle:
+	mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-linux-x64
+	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-linux-x64' ./*
+
+# Bundle macOS binary
+.PHONY: binary-darwin-x64-bundle
+binary-darwin-x64-bundle:
+	mv binary/target/x86_64-apple-darwin/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-darwin-x64
+	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-darwin-x64' ./*
+
 # Build for Linux and zip into release dir
 .PHONY: binary-linux-x64
 binary-linux-x64:
 	${MAKE} prepare-binary
-	cd binary && cargo build --release --target=x86_64-unknown-linux-gnu
-	mv binary/target/x86_64-unknown-linux-gnu/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-linux-x64
-	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-linux-x64' ./*
+	${MAKE} binary-linux-x64-build
+	${MAKE} binary-linux-x64-bundle
 	${MAKE} clean
 
 # Build for macOS and zip into release dir
 .PHONY: binary-darwin-x64
 binary-darwin-x64:
 	${MAKE} prepare-binary
-	cd binary && cargo build --release --target=x86_64-apple-darwin
-	mv binary/target/x86_64-apple-darwin/release/bukubrow $(TEMP_BUILD_DIR)/bukubrow-darwin-x64
-	cd $(TEMP_BUILD_DIR) && zip -r '../$(RELEASE_DIR)/binary-darwin-x64' ./*
+	${MAKE} binary-darwin-x64-build
+	${MAKE} binary-darwin-x64-bundle
 	${MAKE} clean
-
-# Full release
-.PHONY: release
-release:
-	${MAKE} webext
-	${MAKE} binary-linux-x64
-	${MAKE} binary-darwin-x64
