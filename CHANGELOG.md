@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## WIP
+## [2.4.0] - 2018-06-21
+### Added
+- Autofill active tab title for new bookmark form like URL was previously.
+- Number of matches is now displayed in tooltip when hovering "Open All Matches" button.
+
 ### Changed
 - Browser action shortcut to Ctrl+Shift+B.
+- Added a minimum height to entire UI frame to fix bookmark form being unusable.
 
 ## [2.3.0] - 2018-04-19
 ### Added
