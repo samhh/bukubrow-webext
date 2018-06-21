@@ -1,4 +1,4 @@
-import React, { Component, createRef, FormEvent, RefObject } from 'react';
+import React, { Component, createRef, RefObject } from 'react';
 import { render } from 'react-dom';
 import { sendBackendMessage, getActiveTab } from 'Comms/frontend';
 import { BackendResponse } from 'Comms/shared';
@@ -23,7 +23,8 @@ import TutorialMessage from 'Components/tutorial-message/';
 import '../../global.css';
 
 interface State {
-	activeUrl: string;
+	pageTitle: string;
+	pageURL: string;
 	errMsg: string;
 	displayAdd: boolean;
 	displayEdit: boolean;
@@ -39,7 +40,8 @@ interface State {
 
 class ContentPage extends Component<{}, State> {
 	state = {
-		activeUrl: '',
+		pageTitle: '',
+		pageURL: '',
 		errMsg: '',
 		displayAdd: false,
 		displayEdit: false,
@@ -63,7 +65,10 @@ class ContentPage extends Component<{}, State> {
 		getActiveTab().then((tab) => {
 			if (!tab.url) return;
 
-			this.setState({ activeUrl: tab.url });
+			this.setState({
+				pageTitle: tab.title || '',
+				pageURL: tab.url,
+			});
 		});
 		this.checkHasTriggeredRequest();
 		this.fetchCachedBookmarks();
@@ -285,7 +290,10 @@ class ContentPage extends Component<{}, State> {
 			<div>
 				{this.state.displayAdd && (
 					<BookmarkForm
-						bookmark={{ url: this.state.activeUrl }}
+						bookmark={{
+							title: this.state.pageTitle,
+							url: this.state.pageURL,
+						}}
 						onClose={this.handleCloseAddBookmark}
 						onSubmit={this.saveBookmark}
 					/>
