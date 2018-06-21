@@ -8,6 +8,7 @@ body {
 }
 
 .content {
+	min-height: 300px; /* For bookmark form in cases where there are not yet any bookmarks */
 	padding: var(--header-height) 0 0;
 }
 
