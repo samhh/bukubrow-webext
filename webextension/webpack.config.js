@@ -4,7 +4,7 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CSSPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 
@@ -17,7 +17,7 @@ const devMode = process.env.NODE_ENV !== 'production';
 const devtool = devMode ? 'cheap-module-source-map' : false;
 
 const plugins = [
-	new CopyWebpackPlugin([
+	CopyWebpackPlugin([
 		{ from: './src/assets/', to: 'assets/' },
 		{ from: './src/manifest.json' },
 	]),
@@ -31,7 +31,7 @@ const plugins = [
 		template: './src/template.pug',
 		chunks: ['options'],
 	}),
-	new ExtractTextPlugin({
+	new CSSPlugin({
 		filename: '[name]/[name].build.css',
 	}),
 ];
@@ -86,30 +86,30 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
-				use: ExtractTextPlugin.extract({
-					use: [
-						{
-							loader: 'css-loader',
-							options: {
-								sourceMap: devMode,
-								modules: true,
-							},
+				use: [
+					CSSPlugin.loader,
+					{
+						loader: 'css-loader',
+						options: {
+							sourceMap: devMode,
+							modules: true,
+							importLoaders: 1,
 						},
-						{
-							loader: 'postcss-loader',
-							options: {
-								plugins: () => [
-									autoprefixer({
-										browsers: [
-											'Chrome >= 55',
-											'Firefox >= 52',
-										],
-									}),
-								],
-							},
+					},
+					{
+						loader: 'postcss-loader',
+						options: {
+							plugins: () => [
+								autoprefixer({
+									browsers: [
+										'Chrome >= 55',
+										'Firefox >= 52',
+									],
+								}),
+							],
 						},
-					],
-				}),
+					},
+				],
 			},
 		],
 	},
