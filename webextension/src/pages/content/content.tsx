@@ -324,6 +324,7 @@ class ContentPage extends Component<{}, State> {
 					<SearchControls
 						onAdd={this.handleOpenAddBookmark}
 						shouldEnableSearch={!!this.state.bookmarks.length}
+						numMatches={filteredBookmarks.length}
 						updateTextFilter={this.handleTextFilter}
 						textFilter={this.state.textFilter}
 						refreshBookmarks={this.fetchLiveBookmarks}
