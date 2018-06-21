@@ -1,4 +1,4 @@
-@import 'sanitize.css';
+@import '~sanitize.css';
 
 :global :root {
 	--sizing: 12px;
