@@ -15,6 +15,7 @@ import RefreshIcon from 'Assets/refresh.svg';
 interface Props {
 	textFilter: string;
 	shouldEnableSearch: boolean;
+	numMatches: number;
 	onAdd(): void;
 	updateTextFilter(textFilter: Props['textFilter']): void;
 	triggerBookmarkOpen(): void;
@@ -108,7 +109,7 @@ class BookmarksForm extends Component<Props, State> {
 						type="button"
 						onClick={this.handleOpenAllBookmarks}
 						iconHTML={AsteriskIcon}
-						tooltip="Open all matches"
+						tooltip={`Open all ${this.props.numMatches} matches`}
 					/>
 
 					<Button
