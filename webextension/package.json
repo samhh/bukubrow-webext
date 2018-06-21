@@ -1,6 +1,6 @@
 {
   "name": "bukubrow",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "WebExtension for Buku",
   "main": "webextension/backend.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/SamHH/bukubrow.git"
   },
-  "author": "Sam A. Horvath-Hunt <samhh.web@gmail.com> (https://samhh.com)",
+  "author": "Sam A. Horvath-Hunt <git@samhh.com> (https://samhh.com)",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/SamHH/bukubrow/issues"
