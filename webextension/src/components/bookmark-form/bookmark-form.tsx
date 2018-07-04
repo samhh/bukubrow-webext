@@ -32,13 +32,9 @@ class BookmarkForm extends Component<Props, State> {
 		tagInput: '',
 	};
 
-	static getDerivedStateFromProps(nextProps: Props, prevState: State): State {
-		if (
-			nextProps.bookmark &&
-			prevState.id !== nextProps.bookmark.id
-		) return { ...prevState, ...nextProps.bookmark };
-
-		return prevState;
+	componentDidMount(): void {
+		// Type assertion as setState type seems imperfect here
+		if (this.props.bookmark) this.setState({ ...this.props.bookmark as State });
 	}
 
 	handleClose = (): void => {
