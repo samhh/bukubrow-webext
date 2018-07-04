@@ -17,7 +17,7 @@ const devMode = process.env.NODE_ENV !== 'production';
 const devtool = devMode ? 'cheap-module-source-map' : false;
 
 const plugins = [
-	CopyWebpackPlugin([
+	new CopyWebpackPlugin([
 		{ from: './src/assets/', to: 'assets/' },
 		{ from: './src/manifest.json' },
 	]),
