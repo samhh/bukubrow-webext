@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.1] - 2018-07-04
+### Changed
+- Fixed some fields being immutable for new bookmarks.
+
 ## [2.4.0] - 2018-06-21
 ### Added
 - Autofill active tab title for new bookmark form like URL was previously.
