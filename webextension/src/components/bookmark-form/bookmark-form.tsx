@@ -27,7 +27,7 @@ class BookmarkForm extends Component<Props, State> {
 		title: '',
 		desc: '',
 		url: '',
-		tags: [] as LocalBookmark['tags'],
+		tags: new Set() as LocalBookmark['tags'],
 		flags: 0,
 		tagInput: '',
 	};
@@ -76,19 +76,21 @@ class BookmarkForm extends Component<Props, State> {
 		const tagToAdd = this.state.tagInput.trim();
 
 		// Disallow adding an empty tag or the same tag twice
-		if (!tagToAdd || this.state.tags.includes(tagToAdd)) return;
+		if (!tagToAdd || this.state.tags.has(tagToAdd)) return;
 
 		this.setState({
-			tags: this.state.tags.concat([tagToAdd]),
+			tags: new Set([...this.state.tags, tagToAdd]),
 			tagInput: '',
 		});
 	}
 
 	handleTagRemoval = (tagToRemove: string): void => {
-		this.setState({ tags: this.state.tags.filter(tag => tag !== tagToRemove) });
+		this.state.tags.delete(tagToRemove);
+
+		this.setState({ tags: new Set(this.state.tags) });
 	}
 
-	render(): JSX.Element {
+	render() {
 		return (
 			<Modal>
 				<form onSubmit={this.handleSubmit}>
@@ -140,7 +142,7 @@ class BookmarkForm extends Component<Props, State> {
 					</div>
 
 					<ul className={styles.tags}>
-						{this.state.tags.map(tag => (
+						{Array.from(this.state.tags).map(tag => (
 							<Tag
 								key={tag}
 								id={tag}

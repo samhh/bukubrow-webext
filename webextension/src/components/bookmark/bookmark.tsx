@@ -41,7 +41,7 @@ class Bookmark extends PureComponent<Props> {
 		this.props.onDelete(this.props.id);
 	}
 
-	render(): JSX.Element {
+	render() {
 		return (
 			<li
 				className={cn(styles.bookmark, { [styles['bookmark--focused']]: this.props.isFocused })}
@@ -54,7 +54,7 @@ class Bookmark extends PureComponent<Props> {
 					</h1>
 
 					<ul className={styles.tags}>
-						&nbsp;{this.props.tags.map(tag => (
+						&nbsp;{Array.from(this.props.tags).map(tag => (
 							<Tag
 								key={tag}
 								id={tag}

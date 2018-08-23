@@ -55,9 +55,9 @@ class ContentPage extends Component<{}, State> {
 		textFilter: '',
 	};
 
-	bookmarkRefs: Map<number, RefObject<JSX.Element | {}>> = new Map();
+	bookmarkRefs: Map<number, RefObject<HTMLElement>> = new Map();
 	numRenderedBookmarks = 0;
-	resolveBookmarksPromise: Function | undefined;
+	resolveBookmarksPromise: (() => void) | undefined;
 
 	componentDidMount() {
 		setTheme();
@@ -179,9 +179,9 @@ class ContentPage extends Component<{}, State> {
 		this.setState({ focusedBookmarkIndex: index }, () => {
 			const ref = this.bookmarkRefs.get(index);
 
-			if (!ref) return;
+			if (!ref || !ref.current) return;
 
-			const el = ref.current as HTMLElement;
+			const el = ref.current;
 
 			const scrollNeeded = !fullyInViewport(el);
 
@@ -260,7 +260,6 @@ class ContentPage extends Component<{}, State> {
 	// Open the specified bookmark(s), or all presently filtered bookmarks by
 	// default
 	openBookmarks = (...urlsArgs: string[]): void => {
-		// Like this as can't do rest param w/ default arg
 		const urls = urlsArgs.length
 			? urlsArgs
 			: filterBookmarks(this.state.bookmarks, this.state.textFilter).map(bm => bm.url);
@@ -272,15 +271,14 @@ class ContentPage extends Component<{}, State> {
 		window.close();
 	}
 
-	render (): JSX.Element {
+	render() {
 		const bmToDel = this.state.bookmarks.find(bm => bm.id === this.state.bookmarkToDeleteId);
 
 		const filteredBookmarks = filterBookmarks(this.state.bookmarks, this.state.textFilter);
 
-		const bookmarksToRender =
-			this.state.renderAllBookmarks
-				? filteredBookmarks
-				: filteredBookmarks.slice(0, MAX_BOOKMARKS_TO_RENDER);
+		const bookmarksToRender = this.state.renderAllBookmarks
+			? filteredBookmarks
+			: filteredBookmarks.slice(0, MAX_BOOKMARKS_TO_RENDER);
 
 		this.numRenderedBookmarks = bookmarksToRender.length;
 

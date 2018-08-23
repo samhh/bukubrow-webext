@@ -43,7 +43,7 @@ class TextInput extends PureComponent<Props> {
 		this.props.onInput(value);
 	}
 
-	render(): JSX.Element {
+	render() {
 		const inputClasses = cn(
 			styles.input,
 			{ [styles['input--disabled']]: this.props.disabled },

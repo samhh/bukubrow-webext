@@ -3,7 +3,7 @@ export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	title: bookmark.metadata,
 	// Split can leave empty strings behind in the provided string, so filter
 	// those out
-	tags: bookmark.tags.split(',').filter(tag => !!tag),
+	tags: new Set(bookmark.tags.split(',').filter(tag => !!tag)),
 	url: bookmark.url,
 	desc: bookmark.desc,
 	flags: bookmark.flags,
@@ -20,7 +20,7 @@ export function untransform(bookmark: LocalBookmark | LocalBookmarkUnsaved):
 RemoteBookmark | RemoteBookmarkUnsaved {
 	const base: RemoteBookmarkUnsaved = {
 		metadata: bookmark.title,
-		tags: bookmark.tags.join(','),
+		tags: Array.from(bookmark.tags).join(','),
 		url: bookmark.url,
 		desc: bookmark.desc,
 		flags: bookmark.flags,

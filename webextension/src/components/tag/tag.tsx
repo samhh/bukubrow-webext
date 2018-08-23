@@ -4,7 +4,7 @@ import styles from './tag.css';
 
 interface Props {
 	id: string;
-	label: string | JSX.Element;
+	label: string | React.ReactNode;
 	onRemove?(tag: string): void;
 }
 
@@ -13,7 +13,7 @@ class Tag extends PureComponent<Props> {
 		if (this.props.onRemove) this.props.onRemove(this.props.id);
 	}
 
-	render(): JSX.Element {
+	render() {
 		return (
 			<li
 				className={cn(styles.tag, { [styles['tag--removable']]: !!this.props.onRemove })}
