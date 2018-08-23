@@ -4,7 +4,7 @@ declare module '*.css' {
 }
 
 declare module '*.svg' {
-	const content: any;
+	const content: string;
 	export default content;
 }
 
@@ -15,6 +15,10 @@ declare module 'string-replace-to-array' {
 		nsof: (matched: string, index: number) => T,
 	): T[];
 }
+
+type SubType<Base, Condition> = Pick<Base, {
+    [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
+}[keyof Base]>;
 
 // Bookmark ready to be inserted into Buku database
 interface RemoteBookmarkUnsaved {
@@ -35,7 +39,7 @@ interface LocalBookmarkUnsaved {
 	title: string;
 	desc: string;
 	url: string;
-	tags: string[];
+	tags: Set<string>;
 	flags: number;
 }
 
