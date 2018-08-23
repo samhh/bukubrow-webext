@@ -1,8 +1,16 @@
 export const compareAgainstMinimum = (minimum: string, test: string): boolean => {
-	if (minimum.split('.').length !== 3 || test.split('.').length !== 3) return false;
+	const minVer = minimum.split('.').map(str => Number(str));
+	const testVer = test.split('.').map(str => Number(str));
 
-	const [expMajor, expMinor, expPatch] = minimum.split('.');
-	const [testMajor, testMinor, testPatch] = test.split('.');
+	if (
+		minVer.length !== 3 ||
+		testVer.length !== 3 ||
+		minVer.some(num => Number.isNaN(num)) ||
+		testVer.some(num => Number.isNaN(num))
+	) return false;
+
+	const [expMajor, expMinor, expPatch] = minVer;
+	const [testMajor, testMinor, testPatch] = testVer;
 
 	// Ensure equal major version
 	if (testMajor !== expMajor) return false;
