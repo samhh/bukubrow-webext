@@ -36,7 +36,7 @@ class OptionsPage extends Component<{}, State> {
 		this.setState({ theme });
 	}
 
-	render(): JSX.Element {
+	render() {
 		return (
 			<>
 				<select

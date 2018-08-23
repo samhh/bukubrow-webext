@@ -2,7 +2,7 @@ import React, { SFC } from 'react';
 import styles from './modal.css';
 
 interface Props {
-	children: JSX.Element | JSX.Element[];
+	children: React.ReactNode;
 }
 
 const Modal: SFC<Props> = ({ children }) => (

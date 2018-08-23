@@ -7,12 +7,17 @@ const filterBookmarks = (bookmarks: LocalBookmark[], textFilter: string): LocalB
 	const urlMatches: LocalBookmark[] = [];
 	const descMatches: LocalBookmark[] = [];
 
-	bookmarks.forEach((bookmark) => {
-		if (bookmark.title.toLowerCase().includes(filter)) titleMatches.push(bookmark);
-		else if (bookmark.tags.some(tag => tag.toLowerCase().includes(filter))) tagMatches.push(bookmark);
-		else if (bookmark.url.toLowerCase().includes(filter)) urlMatches.push(bookmark);
-		else if (bookmark.desc.toLowerCase().includes(filter)) descMatches.push(bookmark);
-	});
+	for (const bookmark of bookmarks) {
+		if (bookmark.title.toLowerCase().includes(filter)) {
+			titleMatches.push(bookmark);
+		} else if ([...bookmark.tags].some(tag => tag.toLowerCase().includes(filter))) {
+			tagMatches.push(bookmark);
+		} else if (bookmark.url.toLowerCase().includes(filter)) {
+			urlMatches.push(bookmark);
+		} else if (bookmark.desc.toLowerCase().includes(filter)) {
+			descMatches.push(bookmark);
+		}
+	}
 
 	return [...titleMatches, ...tagMatches, ...urlMatches, ...descMatches];
 };

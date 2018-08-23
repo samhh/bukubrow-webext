@@ -87,7 +87,7 @@ class BookmarksForm extends Component<Props, State> {
 		this.props.triggerBookmarkOpen();
 	}
 
-	render (): JSX.Element {
+	render () {
 		return (
 			<nav>
 				<form
