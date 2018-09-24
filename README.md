@@ -60,3 +60,4 @@ The WebExtension is written in (mostly) scoped, vanilla CSS and TypeScript, usin
 ### Binary
 
 The binary is written in Rust stable, and as you'd expect Cargo is used for dependency management. The messages it expects to receive from the WebExtension backend follow a faux HTTP format; for instance, to get all the bookmarks, you pass it a JSON object of the following format: `{ method: 'GET' }`. The easiest way to visualise these is to view the TypeScript interfaces for them.
+
