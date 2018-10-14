@@ -32,9 +32,6 @@
 .btn--icon {
 	width: var(--btn-icon-size);
 	height: var(--btn-icon-size);
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	padding: 5px;
 }
 
@@ -46,6 +43,7 @@
 
 .icon svg {
 	width: 100%;
+	fill: white;
 }
 
 .tooltip {
