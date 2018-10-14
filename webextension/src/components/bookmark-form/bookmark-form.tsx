@@ -41,7 +41,7 @@ class BookmarkForm extends Component<Props, State> {
 		this.props.onClose();
 	}
 
-	handleSubmit = (evt: FormEvent<HTMLFormControlsCollection>): void => {
+	handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
 		evt.preventDefault();
 
 		const bookmark = { ...this.state };
