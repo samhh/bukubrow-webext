@@ -30,7 +30,6 @@
 	padding: calc(var(--sizing) / 2) var(--sizing);
 	border: 1px solid var(--offset-bg);
 	border-radius: var(--border-radius);
-	outline: none;
 	border-radius: 3px;
 	background: none;
 }
@@ -40,6 +39,7 @@
 }
 
 .input:focus {
+	outline: none;
 	border-color: var(--offset-bg-offset);
 }
 
