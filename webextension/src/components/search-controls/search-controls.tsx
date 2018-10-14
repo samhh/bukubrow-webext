@@ -1,4 +1,4 @@
-import React, { Component, createRef, FormEvent, RefObject } from 'react';
+import React, { Component, createRef, FormEvent } from 'react';
 import cn from 'classnames';
 import styles from './search-controls.css';
 
