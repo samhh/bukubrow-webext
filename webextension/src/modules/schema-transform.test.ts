@@ -7,7 +7,16 @@ describe('schema transform', () => {
 			metadata: 'meta',
 			desc: '',
 			url: 'URL',
-			tags: '1,b,xx,',
+			tags: ',1,b,xx,',
+			flags: 0,
+		};
+
+		const remoteBmLegacy: RemoteBookmark = {
+			id: 123,
+			metadata: 'meta',
+			desc: '',
+			url: 'URL',
+			tags: '1,b,xx',
 			flags: 0,
 		};
 
@@ -21,6 +30,7 @@ describe('schema transform', () => {
 		};
 
 		expect(transform(remoteBm)).toMatchObject(expectedLocalBm);
+		expect(transform(remoteBmLegacy)).toMatchObject(expectedLocalBm);
 	});
 
 	test('untransform local bookmark to remote bookmark', () => {
@@ -38,7 +48,7 @@ describe('schema transform', () => {
 			metadata: 'meta',
 			desc: '',
 			url: 'URL',
-			tags: '1,b,xx',
+			tags: ',1,b,xx,',
 			flags: 0,
 		};
 
