@@ -39,7 +39,7 @@ interface LocalBookmarkUnsaved {
 	title: string;
 	desc: string;
 	url: string;
-	tags: Set<string>;
+	tags: string[];
 	flags: number;
 }
 

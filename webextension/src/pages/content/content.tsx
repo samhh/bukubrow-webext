@@ -274,6 +274,7 @@ class ContentPage extends Component<{}, State> {
 	render() {
 		const bmToDel = this.state.bookmarks.find(bm => bm.id === this.state.bookmarkToDeleteId);
 
+		console.log(this.state.bookmarks, this.state.bookmarks.map(b => b.tags));
 		const filteredBookmarks = filterBookmarks(this.state.bookmarks, this.state.textFilter);
 
 		const bookmarksToRender = this.state.renderAllBookmarks
