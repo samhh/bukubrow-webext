@@ -5,7 +5,7 @@ export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	title: bookmark.metadata,
 	// Buku uses commas as delimiters including at the start and end of the
 	// string, so filter those out
-	tags: new Set(bookmark.tags.split(bukuDelimiter).filter(tag => tag !== '')),
+	tags: bookmark.tags.split(bukuDelimiter).filter(tag => tag !== ''),
 	url: bookmark.url,
 	desc: bookmark.desc,
 	flags: bookmark.flags,
