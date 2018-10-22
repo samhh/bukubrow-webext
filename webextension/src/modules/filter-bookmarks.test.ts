@@ -5,7 +5,7 @@ const coolBookmark: LocalBookmark = {
 	title: 'Cool bookmark',
 	desc: 'Some other words',
 	url: 'https://samhh.com',
-	tags: new Set(['awesome', 'supreme']),
+	tags: ['awesome', 'supreme'],
 	flags: 0,
 };
 
@@ -14,7 +14,7 @@ const superBookmark: LocalBookmark = {
 	title: 'Super duper website. Awesome',
 	desc: 'Legitimately fantastic',
 	url: 'https://blog.samhh.com',
-	tags: new Set(['impeccable']),
+	tags: ['impeccable'],
 	flags: 1,
 };
 
@@ -23,7 +23,7 @@ const incredibleBookmark: LocalBookmark = {
 	title: 'Incredibly excellent',
 	desc: 'Truly outstanding and duper awesome',
 	url: 'http://www.samhh.com',
-	tags: new Set(['great', 'superb']),
+	tags: ['great', 'superb'],
 	flags: 20,
 };
 
@@ -32,7 +32,7 @@ const unstoppableBookmark: LocalBookmark = {
 	title: 'Unstoppable',
 	desc: '',
 	url: 'https://samhh.com/awesome',
-	tags: new Set(),
+	tags: [],
 	flags: 999,
 };
 

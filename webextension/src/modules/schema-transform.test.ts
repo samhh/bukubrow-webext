@@ -23,7 +23,7 @@ describe('schema transform', () => {
 		const expectedLocalBm: LocalBookmark = {
 			id: 123,
 			title: 'meta',
-			tags: new Set(['1', 'b', 'xx']),
+			tags: ['1', 'b', 'xx'],
 			url: 'URL',
 			desc: '',
 			flags: 0,
@@ -37,7 +37,7 @@ describe('schema transform', () => {
 		const localBm: LocalBookmark = {
 			id: 123,
 			title: 'meta',
-			tags: new Set(['1', 'b', 'xx']),
+			tags: ['1', 'b', 'xx'],
 			url: 'URL',
 			desc: '',
 			flags: 0,
