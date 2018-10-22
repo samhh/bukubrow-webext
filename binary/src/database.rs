@@ -23,9 +23,7 @@ impl SqliteDatabase {
     pub fn new(path: &PathBuf) -> Result<Self, DbError> {
         let connection = Connection::open(&path)?;
 
-        let instance = SqliteDatabase {
-            connection,
-        };
+        let instance = SqliteDatabase { connection };
 
         Ok(instance)
     }
