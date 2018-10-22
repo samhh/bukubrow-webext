@@ -17,7 +17,7 @@ pub fn get_db_path() -> Result<PathBuf, io::Error> {
     };
 
     if let Ok(mut path) = dir {
-        path.set_file_name(db_filename);
+        path.push(db_filename);
 
         return Ok(path);
     } else {
