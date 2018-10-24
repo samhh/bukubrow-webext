@@ -18,6 +18,7 @@
 }
 
 .controls {
+	opacity: 0;
 	float: right;
 }
 
@@ -29,12 +30,6 @@
 .delete {
 	position: static !important;
 	float: left;
-	opacity: 0;
-}
-
-.edit:hover svg,
-.delete:hover svg {
-	fill: white;
 }
 
 .tooltip {
@@ -45,8 +40,7 @@
 	right: calc((var(--sizing) * 2.5) + (var(--btn-icon-size) * var(--controls-num-items))) !important;
 }
 
-.bookmark:hover .edit,
-.bookmark:hover .delete {
+.bookmark:hover .controls {
 	opacity: 1;
 }
 

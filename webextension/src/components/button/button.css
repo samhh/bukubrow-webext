@@ -43,7 +43,8 @@
 
 .icon svg {
 	width: 100%;
-	fill: white;
+	/* !important to override sanitize.css */
+	fill: var(--text-color) !important;
 }
 
 .tooltip {
