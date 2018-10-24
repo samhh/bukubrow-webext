@@ -17,14 +17,10 @@
 	background: var(--bg);
 }
 
-:global(.dark) .search,
-:global(.dark) .btn {
-	color: white;
-}
-
 .search {
 	height: var(--btn-icon-size);
 	padding: 0 var(--header-items-margin);
+	color: var(--text-color);
 }
 
 @keyframes controlBtnRotate {
