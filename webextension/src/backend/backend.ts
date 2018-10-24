@@ -16,7 +16,7 @@ const checkBinary = (): Promise<boolean> => {
 
 	return Promise.all([errors, version])
 		.then(([err, versionIsOkay]) => {
-			if (err) {
+			if (err || versionIsOkay === undefined) {
 				err === 'Specified native messaging host not found.'
 					? sendFrontendMessage({ cannotFindBinary: true })
 					: sendFrontendMessage({ unknownError: true });
@@ -24,7 +24,7 @@ const checkBinary = (): Promise<boolean> => {
 				return false;
 			}
 
-			if (!versionIsOkay) {
+			if (versionIsOkay === false) {
 				sendFrontendMessage({ outdatedBinary: true });
 
 				return false;
