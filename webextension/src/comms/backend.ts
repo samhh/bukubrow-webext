@@ -81,7 +81,5 @@ export const deleteBookmark = (bookmarkId: RemoteBookmark['id']) =>
 
 export const sendFrontendMessage = (response: BackendResponse) =>
 	new Promise((resolve) => {
-		chrome.runtime.sendMessage(response);
-
-		resolve();
+		chrome.runtime.sendMessage(response, resolve);
 	});

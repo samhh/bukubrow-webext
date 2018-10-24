@@ -24,7 +24,7 @@ export const getBookmarks = (): Promise<LocalBookmark[]> => new Promise((resolve
 
 // Save bookmarks to local storage
 export const saveBookmarks = (bookmarks: LocalBookmark[]): Promise<void> =>
-	new Promise((resolve, reject) => {
+	new Promise((resolve) => {
 		chrome.storage.local.set({
 			bookmarks: sortArrOfObjAlphabetically(bookmarks, 'title'),
 			bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
