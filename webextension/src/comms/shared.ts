@@ -48,6 +48,5 @@ interface DeleteBookmarkRes {
 export type BackendResponse =
 	CheckBinaryRes | GetBookmarksRes | SaveBookmarkRes | UpdateBookmarkRes | DeleteBookmarkRes;
 
-export const checkRuntimeErrors = () => new Promise((resolve) => {
-	resolve((chrome.runtime.lastError && chrome.runtime.lastError.message) || false);
-});
+export const checkRuntimeErrors = () =>
+	Promise.resolve(chrome.runtime.lastError && chrome.runtime.lastError.message);
