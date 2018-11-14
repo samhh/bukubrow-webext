@@ -1,4 +1,4 @@
-import React, { Component, createRef, RefObject } from 'react';
+import React, { Component, StrictMode, createRef, RefObject } from 'react';
 import { render } from 'react-dom';
 import { sendBackendMessage, getActiveTab } from 'Comms/frontend';
 import { BackendResponse } from 'Comms/shared';
@@ -285,7 +285,7 @@ class ContentPage extends Component<{}, State> {
 		const numRemainingBookmarks = filteredBookmarks.length - bookmarksToRender.length;
 
 		return (
-			<div>
+			<StrictMode>
 				{this.state.displayAdd && (
 					<BookmarkForm
 						bookmark={{
@@ -377,7 +377,7 @@ class ContentPage extends Component<{}, State> {
 						)}
 					</main>
 				</div>
-			</div>
+			</StrictMode>
 		);
 	}
 }

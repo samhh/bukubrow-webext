@@ -2,10 +2,8 @@ import React, { PureComponent, forwardRef, Ref, MouseEvent } from 'react';
 import cn from 'classnames';
 import styles from './button.css';
 
-interface Props {
+interface BaseProps {
 	forwardedRef?: Ref<ForwardRefElementType>;
-	label?: string;
-	iconHTML?: string;
 	onClick?(evt: MouseEvent<HTMLButtonElement>): void;
 	tooltip?: string;
 	type?: 'button' | 'submit';
@@ -13,27 +11,25 @@ interface Props {
 	tooltipClassName?: string;
 }
 
+interface PropsWithLabel extends BaseProps {
+	label: string;
+}
+
+interface PropsWithIcon extends BaseProps {
+	iconHTML: string;
+}
+
+type Props = XOR<PropsWithLabel, PropsWithIcon>;
+
 export type ForwardRefElementType = HTMLButtonElement;
 
 class Button extends PureComponent<Props> {
 	static defaultProps: Partial<Props> = {
-		label: '',
-		iconHTML: '',
 		tooltip: '',
 		type: 'button',
 		className: '',
 		tooltipClassName: '',
 	};
-
-	componentWillReceiveProps(nextProps: Props): void | never {
-		if (!nextProps.label && !nextProps.iconHTML) {
-			throw new Error('Must supply either label or iconHTML prop to Button component.');
-		}
-
-		if (nextProps.label && nextProps.iconHTML) {
-			throw new Error('Cannot supply both label or iconHTML props to Button component.');
-		}
-	}
 
 	render() {
 		return (
