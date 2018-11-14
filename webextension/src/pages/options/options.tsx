@@ -1,44 +1,35 @@
-import React, { Component, FormEvent } from 'react';
+import React, { Component, StrictMode, FormEvent } from 'react';
 import { render } from 'react-dom';
 import { getSettings, saveSettings, Settings, Theme } from 'Modules/settings';
-import setTheme from 'Modules/set-theme';
-import sleep from 'Modules/sleep';
 
-import TextInput from 'Components/text-input/';
-
-interface State extends Settings {}
+type State = Settings;
 
 class OptionsPage extends Component<{}, State> {
 	state = {
 		theme: Theme.Light,
 	};
 
-	componentDidMount(): void {
-		getSettings().then((settings) => {
-			// Type assertion as undefined keys will be absent and therefore safe for
-			// setState's partial object update
-			this.setState(settings);
-		});
+	async componentDidMount() {
+		const settings = await getSettings();
+
+		// Type assertion because React state typings dislike Partials
+		this.setState(settings as Settings, this.syncState);
 	}
 
-	// Can't figure out the correct typings for this. Anyway, as somewhat of a
-	// hack we're hooking setState and syncing that up with saving the settings
-	// remotely
-	setState (state: any) {
-		saveSettings(state);
-		super.setState(state);
+	syncState() {
+		saveSettings(this.state);
 	}
 
-	handleThemeChange = (evt: FormEvent<HTMLSelectElement>): void => {
+	handleThemeChange = (evt: FormEvent<HTMLSelectElement>) => {
+		// Type assertion as we wholly control this value
 		const theme = evt.currentTarget.value as Theme;
 
-		saveSettings({ theme });
-		this.setState({ theme });
+		this.setState({ theme }, this.syncState);
 	}
 
 	render() {
 		return (
-			<>
+			<StrictMode>
 				<select
 					value={this.state.theme}
 					onChange={this.handleThemeChange}
@@ -46,7 +37,7 @@ class OptionsPage extends Component<{}, State> {
 					<option value={Theme.Light}>Light</option>
 					<option value={Theme.Dark}>Dark</option>
 				</select>
-			</>
+			</StrictMode>
 		);
 	}
 }

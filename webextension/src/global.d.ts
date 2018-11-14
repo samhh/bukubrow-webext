@@ -20,6 +20,10 @@ type SubType<Base, Condition> = Pick<Base, {
     [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
 }[keyof Base]>;
 
+// From: https://stackoverflow.com/a/53229567/3369753
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+
 // Bookmark ready to be inserted into Buku database
 interface RemoteBookmarkUnsaved {
 	metadata: string;
