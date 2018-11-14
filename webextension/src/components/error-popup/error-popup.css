@@ -1,6 +1,7 @@
 .wrapper {
 	width: calc(100% - (var(--sizing) * 2));
 	position: fixed;
+	z-index: 1;
 	bottom: var(--sizing);
 	left: var(--sizing);
 	transform: translateY(calc(100% + var(--sizing)));
