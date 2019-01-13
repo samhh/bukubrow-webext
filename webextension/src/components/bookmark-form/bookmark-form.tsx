@@ -51,8 +51,6 @@ class BookmarkForm extends Component<Props, State> {
 		if (!bookmark.title || !bookmark.url) return;
 
 		this.props.onSubmit(bookmark as LocalBookmark | LocalBookmarkUnsaved);
-
-		this.props.onClose();
 	}
 
 	handleFormTitle = (title: string): void => {
@@ -140,7 +138,7 @@ class BookmarkForm extends Component<Props, State> {
 					</div>
 
 					<ul className={styles.tags}>
-						{Array.from(this.state.tags).map(tag => (
+						{this.state.tags.map(tag => (
 							<Tag
 								key={tag}
 								id={tag}

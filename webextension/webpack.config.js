@@ -49,8 +49,8 @@ module.exports = {
 		plugins: [new TsConfigPathsPlugin()],
 	},
 	entry: {
-		content: './src/pages/content/content.tsx',
-		options: './src/pages/options/options.tsx',
+		content: './src/apps/content',
+		options: './src/apps/options',
 		backend: './src/backend/backend.ts',
 	},
 	output: {

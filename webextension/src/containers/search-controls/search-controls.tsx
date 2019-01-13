@@ -13,21 +13,21 @@ import PlusIcon from 'Assets/plus.svg';
 import RefreshIcon from 'Assets/refresh.svg';
 
 interface Props {
-	textFilter: string;
-	shouldEnableSearch: boolean;
-	numMatches: number;
 	onAdd(): void;
 	updateTextFilter(textFilter: Props['textFilter']): void;
 	triggerBookmarkOpen(): void;
-	triggerBookmarkMultiOpen(): void;
+	openAllVisibleBookmarks(): void;
 	refreshBookmarks(): Promise<void>;
+	textFilter: string;
+	shouldEnableSearch: boolean;
+	numMatches: number;
 }
 
 interface State {
 	refreshInProgress: boolean;
 }
 
-class BookmarksForm extends Component<Props, State> {
+class SearchControls extends Component<Props, State> {
 	state = {
 		refreshInProgress: false,
 	};
@@ -44,13 +44,14 @@ class BookmarksForm extends Component<Props, State> {
 	shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
 		return !(
 			nextProps.textFilter === this.props.textFilter &&
+			nextProps.numMatches === this.props.numMatches &&
 			nextProps.shouldEnableSearch === this.props.shouldEnableSearch &&
 			nextState.refreshInProgress === this.state.refreshInProgress
 		);
 	}
 
-	handleOpenAllBookmarks = (): void => {
-		this.props.triggerBookmarkMultiOpen();
+	handleOpenAllVisibleBookmarks = (): void => {
+		this.props.openAllVisibleBookmarks();
 	}
 
 	handleRefreshBookmarks = (): void => {
@@ -107,7 +108,7 @@ class BookmarksForm extends Component<Props, State> {
 						className={styles.btn}
 						tooltipClassName={styles.tooltip}
 						type="button"
-						onClick={this.handleOpenAllBookmarks}
+						onClick={this.handleOpenAllVisibleBookmarks}
 						iconHTML={AsteriskIcon}
 						tooltip={`Open all ${this.props.numMatches} matches`}
 					/>
@@ -138,4 +139,4 @@ class BookmarksForm extends Component<Props, State> {
 	}
 }
 
-export default BookmarksForm;
+export default SearchControls;

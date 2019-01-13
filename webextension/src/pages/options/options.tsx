@@ -1,5 +1,4 @@
-import React, { Component, StrictMode, FormEvent } from 'react';
-import { render } from 'react-dom';
+import React, { Component, FormEvent } from 'react';
 import { getSettings, saveSettings, Settings, Theme } from 'Modules/settings';
 
 type State = Settings;
@@ -29,7 +28,7 @@ class OptionsPage extends Component<{}, State> {
 
 	render() {
 		return (
-			<StrictMode>
+			<main>
 				<select
 					value={this.state.theme}
 					onChange={this.handleThemeChange}
@@ -37,9 +36,9 @@ class OptionsPage extends Component<{}, State> {
 					<option value={Theme.Light}>Light</option>
 					<option value={Theme.Dark}>Dark</option>
 				</select>
-			</StrictMode>
+			</main>
 		);
 	}
 }
 
-render(<OptionsPage />, document.querySelector('.js-root'));
+export default OptionsPage;

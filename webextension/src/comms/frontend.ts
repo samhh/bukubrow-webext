@@ -5,6 +5,8 @@ export const sendBackendMessage = (request: BackendRequest): Promise<void> =>
 		chrome.runtime.sendMessage(request, resolve);
 	});
 
+export const requestBookmarks = () => sendBackendMessage({ requestBookmarks: true });
+
 export const getActiveTab = (): Promise<chrome.tabs.Tab> =>
 	new Promise((resolve) => {
 		chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
