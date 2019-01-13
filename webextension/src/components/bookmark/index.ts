@@ -1,1 +1,1 @@
-export { default, ForwardRefElementType } from './bookmark';
+export { default } from './bookmark';

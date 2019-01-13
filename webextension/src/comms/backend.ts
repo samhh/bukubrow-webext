@@ -10,20 +10,22 @@ export enum NativeRequestMethod {
 	DELETE = 'DELETE',
 }
 
-interface NativeGETResponse {
-	success: boolean;
-	message?: string;
-	bookmarks?: RemoteBookmark[];
+interface ErrResponse {
+	success: false;
+	message: string;
 }
 
+type NativeGETResponse = {
+	success: true;
+	bookmarks: RemoteBookmark[];
+} | ErrResponse;
+
 interface NativeOPTIONSResponse {
-	success: boolean;
+	success: true;
 	binaryVersion: string;
 }
 
-interface NativePOSTResponse {
-	success: boolean;
-}
+type NativePOSTResponse = { success: true; id: number; } | { success: false };
 
 interface NativePUTResponse {
 	success: boolean;

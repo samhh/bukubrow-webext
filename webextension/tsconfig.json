@@ -19,8 +19,23 @@
 			"Components/*": [
 				"./components/*"
 			],
+			"Containers/*": [
+				"./containers/*"
+			],
+			"Hooks/*": [
+				"./hooks/*"
+			],
 			"Modules/*": [
 				"./modules/*"
+			],
+			"Pages/*": [
+				"./pages/*"
+			],
+			"Store": [
+				"./store/index"
+			],
+			"Store/*": [
+				"./store/*"
 			]
 		}
 	}

@@ -1,20 +1,4 @@
-declare module '*.css' {
-	const content: Record<string, string>;
-	export default content;
-}
-
-declare module '*.svg' {
-	const content: string;
-	export default content;
-}
-
-declare module 'string-replace-to-array' {
-	export default function<T>(
-		string: string,
-		regexpOrSubstr: RegExp | string,
-		nsof: (matched: string, index: number) => T,
-	): T[];
-}
+type Nullable<T> = T | null;
 
 type SubType<Base, Condition> = Pick<Base, {
     [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
@@ -23,6 +7,13 @@ type SubType<Base, Condition> = Pick<Base, {
 // From: https://stackoverflow.com/a/53229567/3369753
 type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+
+// Helper, probably unneeded if thunk actions are better typed in this project
+type UnwrapThunkActions<T> = {
+	[K in keyof T]: T[K] extends (...args: infer U) => import('redux-thunk').ThunkAction<infer R, any, any, any>
+		? (...args: U) => R
+		: T[K];
+};
 
 // Bookmark ready to be inserted into Buku database
 interface RemoteBookmarkUnsaved {

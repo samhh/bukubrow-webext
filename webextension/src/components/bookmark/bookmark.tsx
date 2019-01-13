@@ -1,4 +1,4 @@
-import React, { PureComponent, forwardRef, SFC, Ref, MouseEvent } from 'react';
+import React, { PureComponent, forwardRef, Ref, MouseEvent } from 'react';
 import cn from 'classnames';
 import styles from './bookmark.css';
 
@@ -16,17 +16,15 @@ interface Props {
 	tags: LocalBookmark['tags'];
 	textFilter: string;
 	isFocused: boolean;
-	openBookmark(url: LocalBookmark['url']): void;
+	openBookmark(id: LocalBookmark['id']): void;
 	onEdit(id: LocalBookmark['id']): void;
 	onDelete(id: LocalBookmark['id']): void;
-	forwardedRef?: Ref<ForwardRefElementType>;
+	forwardedRef?: Ref<HTMLElement>;
 }
-
-export type ForwardRefElementType = HTMLLIElement;
 
 class Bookmark extends PureComponent<Props> {
 	handleClick = () => {
-		this.props.openBookmark(this.props.url);
+		this.props.openBookmark(this.props.id);
 	}
 
 	handleEdit = (evt: MouseEvent<HTMLButtonElement>) => {
@@ -46,7 +44,7 @@ class Bookmark extends PureComponent<Props> {
 			<li
 				className={cn(styles.bookmark, { [styles['bookmark--focused']]: this.props.isFocused })}
 				onClick={this.handleClick}
-				ref={this.props.forwardedRef}
+				ref={this.props.forwardedRef as Ref<HTMLLIElement>}
 			>
 				<header>
 					<h1 className={styles.name}>
@@ -54,7 +52,8 @@ class Bookmark extends PureComponent<Props> {
 					</h1>
 
 					<ul className={styles.tags}>
-						&nbsp;{Array.from(this.props.tags).map(tag => (
+						&nbsp;
+						{this.props.tags.map(tag => (
 							<Tag
 								key={tag}
 								id={tag}
@@ -98,6 +97,6 @@ class Bookmark extends PureComponent<Props> {
 	}
 }
 
-export default forwardRef((props: Props, ref) => (
-	<Bookmark forwardedRef={ref as Ref<ForwardRefElementType> | undefined} {...props} />
+export default forwardRef((props: Props, ref?: Ref<HTMLElement>) => (
+	<Bookmark forwardedRef={ref} {...props} />
 ));
