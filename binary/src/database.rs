@@ -1,5 +1,4 @@
 use std::path::PathBuf;
-use utils::empty_result_val;
 use rusqlite::{Connection, Error as DbError};
 
 pub type BookmarkId = i32;
@@ -50,26 +49,26 @@ impl SqliteDatabase {
     }
 
     // Save bookmark to database
-    pub fn add_bookmark(&self, bm: &Bookmark) -> Result<(), DbError> {
+    pub fn add_bookmark(&self, bm: &Bookmark) -> Result<usize, DbError> {
         let query = "INSERT INTO bookmarks(metadata, desc, tags, url, flags) VALUES (?1, ?2, ?3, ?4, ?5);";
         let exec = self.connection.execute(query, &[&bm.metadata, &bm.desc, &bm.tags, &bm.url, &bm.flags]);
 
-        empty_result_val(exec)
+        exec
     }
 
     // Update bookmark in database by ID
-    pub fn update_bookmark(&self, bm: &Bookmark) -> Result<(), DbError> {
+    pub fn update_bookmark(&self, bm: &Bookmark) -> Result<usize, DbError> {
         let query = "UPDATE bookmarks SET (metadata, desc, tags, url, flags) = (?2, ?3, ?4, ?5, ?6) WHERE id = ?1;";
         let exec = self.connection.execute(query, &[&bm.id.unwrap(), &bm.metadata, &bm.desc, &bm.tags, &bm.url, &bm.flags]);
 
-        empty_result_val(exec)
+        exec
     }
 
     // Delete bookmark from database by ID
-    pub fn delete_bookmark(&self, bm_id: &BookmarkId) -> Result<(), DbError> {
+    pub fn delete_bookmark(&self, bm_id: &BookmarkId) -> Result<usize, DbError> {
         let query = "DELETE FROM bookmarks WHERE id = ?1;";
         let exec = self.connection.execute(query, &[bm_id]);
 
-        empty_result_val(exec)
+        exec
     }
 }
