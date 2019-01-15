@@ -7,16 +7,21 @@ export type UserActions = ActionType<typeof userActions>;
 
 const initialState = {
 	displayTutorialMessage: false,
+	displayOpenAllBookmarksConfirmation: false,
 };
 
 const userReducer: Reducer<UserState, UserActions> = (state = initialState, action) => {
 	switch (action.type) {
-		case UserActionTypes.SetDisplayTutorialMessage: {
+		case UserActionTypes.SetDisplayTutorialMessage:
 			return {
 				...state,
 				displayTutorialMessage: action.payload,
 			};
-		}
+		case UserActionTypes.SetDisplayOpenAllBookmarksConfirmation:
+			return {
+				...state,
+				displayOpenAllBookmarksConfirmation: action.payload,
+			};
 		default:
 			return state;
 	}
