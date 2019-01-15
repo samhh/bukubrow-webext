@@ -11,7 +11,7 @@ const getLimitNumRendered = (state: AppState) => state.bookmarks.limitNumRendere
 const getSearchFilter = (state: AppState) => state.input.searchFilter;
 
 // Filter all bookmarks by search filter
-const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getSearchFilter,
+export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getSearchFilter,
 	(bookmarks, searchFilter) => filterBookmarks(bookmarks, searchFilter));
 
 // Filter all bookmarks by search filter and return potentially a limited number of them

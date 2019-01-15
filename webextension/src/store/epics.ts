@@ -9,7 +9,7 @@ import { setDisplayTutorialMessage } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
-import { getFilteredBookmarks, getFocusedBookmark } from 'Store/selectors';
+import { getFilteredBookmarks, getUnlimitedFilteredBookmarks, getFocusedBookmark } from 'Store/selectors';
 
 const getAndSetCachedBookmarks = (): ThunkActionCreator => (dispatch) => {
 	getBookmarks().then((bookmarks) => {
@@ -85,7 +85,7 @@ export const openFocusedBookmarkAndExit = (): ThunkActionCreator => (_, getState
 };
 
 export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, getState) => {
-	const filteredBookmarks = getFilteredBookmarks(getState());
+	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
 	filteredBookmarks
 		.map(bm => bm.url)

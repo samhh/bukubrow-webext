@@ -7,6 +7,7 @@ import BookmarkEditForm from 'Containers/bookmark-edit-form/';
 import BookmarksList from 'Containers/bookmarks-list/';
 import ErrorMessages from 'Containers/error-messages/';
 import LoadMoreBookmarks from 'Components/load-more-bookmarks/';
+import OpenAllBookmarksConfirmation from 'Containers/open-all-bookmarks-confirmation/';
 import SearchControls from 'Containers/search-controls/';
 import TutorialMessage from 'Components/tutorial-message/';
 
@@ -21,6 +22,8 @@ const ContentPage: SFC<Props> = props => (
 		<BookmarkAddForm />
 		<BookmarkEditForm />
 		<BookmarkDeleteForm />
+
+		<OpenAllBookmarksConfirmation />
 
 		<ErrorMessages />
 
