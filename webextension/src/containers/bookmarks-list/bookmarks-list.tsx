@@ -1,4 +1,4 @@
-import React, { useState, useRef, SFC } from 'react';
+import React, { useRef, SFC } from 'react';
 import { scrollToEl } from 'Modules/scroll-window';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import { Key } from 'ts-key-enum';
@@ -18,29 +18,34 @@ interface Props {
 	focusedBookmarkId?: BookmarkId;
 }
 
+let prevEid: symbol;
+
 const BookmarksList: SFC<Props> = (props) => {
 	const prev = useRef<Nullable<HTMLElement>>(null);
 	const curr = useRef<Nullable<HTMLElement>>(null);
 	const next = useRef<Nullable<HTMLElement>>(null);
-	const [evtId, setEvtId] = useState<number>(-1);
-	const evt = useListenToKeydown();
 
-	if (evt && evt.timeStamp !== evtId) {
+	const [evts, eid] = useListenToKeydown();
+
+	if (eid !== prevEid) {
+		prevEid = eid;
+
+		const arrowUpEvt: KeyboardEvent | undefined = evts[Key.ArrowUp];
+		const arrowDownEvt: KeyboardEvent | undefined = evts[Key.ArrowDown];
+
 		// preventDefault to prevent keyboard scrolling
-		if (evt.key === Key.ArrowUp) {
-			evt.preventDefault();
+		if (arrowUpEvt) {
+			arrowUpEvt.preventDefault();
 			props.attemptFocusedBookmarkIndexDecrement();
 
 			if (prev && prev.current) scrollToEl(prev.current);
 		}
-		if (evt.key === Key.ArrowDown) {
-			evt.preventDefault();
+		if (arrowDownEvt) {
+			arrowDownEvt.preventDefault();
 			props.attemptFocusedBookmarkIndexIncrement();
 
 			if (next && next.current) scrollToEl(next.current);
 		}
-
-		setEvtId(evt.timeStamp);
 	}
 
 	const focusedIndex = props.bookmarks.findIndex(bm => bm.id === props.focusedBookmarkId);

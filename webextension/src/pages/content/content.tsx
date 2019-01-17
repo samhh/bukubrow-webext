@@ -1,4 +1,6 @@
 import React, { SFC } from 'react';
+import useListenToKeydown from 'Hooks/listen-to-keydown';
+import { Key } from 'ts-key-enum';
 import s from './content.css';
 
 import BookmarkAddForm from 'Containers/bookmark-add-form/';
@@ -13,42 +15,62 @@ import TutorialMessage from 'Components/tutorial-message/';
 
 interface Props {
 	onEnableLimitlessRender(): void;
+	toggleAddBookmarkForm(): void;
+	openAllFilteredBookmarksWithoutConfirmation(): void;
+	refreshBookmarks(): void;
 	numRemainingBookmarks: number;
 	displayTutorialMessage: boolean;
 }
 
-const ContentPage: SFC<Props> = props => (
-	<>
-		<BookmarkAddForm />
-		<BookmarkEditForm />
-		<BookmarkDeleteForm />
+let prevEid: symbol;
 
-		<OpenAllBookmarksConfirmation />
+const ContentPage: SFC<Props> = (props) => {
+	const [evts, eid] = useListenToKeydown();
+	const activeKeys = Object.keys(evts);
 
-		<ErrorMessages />
+	if (eid !== prevEid) {
+		prevEid = eid;
 
-		<div className={s.content}>
-			<SearchControls />
+		if (activeKeys.includes(Key.Control)) {
+			if (activeKeys.includes('d')) props.toggleAddBookmarkForm();
+			if (activeKeys.includes('o')) props.openAllFilteredBookmarksWithoutConfirmation();
+			if (activeKeys.includes('r')) props.refreshBookmarks();
+		}
+	}
 
-			<main>
-				{props.displayTutorialMessage
-					? <TutorialMessage />
-					: (
-						<>
-							<BookmarksList />
+	return (
+		<>
+			<BookmarkAddForm />
+			<BookmarkEditForm />
+			<BookmarkDeleteForm />
 
-							{!!props.numRemainingBookmarks && (
-								<LoadMoreBookmarks
-									numRemainingBookmarks={props.numRemainingBookmarks}
-									renderAllBookmarks={props.onEnableLimitlessRender}
-								/>
-							)}
-						</>
-					)
-				}
-			</main>
-		</div>
-	</>
-);
+			<OpenAllBookmarksConfirmation />
+
+			<ErrorMessages />
+
+			<div className={s.content}>
+				<SearchControls />
+
+				<main>
+					{props.displayTutorialMessage
+						? <TutorialMessage />
+						: (
+							<>
+								<BookmarksList />
+
+								{!!props.numRemainingBookmarks && (
+									<LoadMoreBookmarks
+										numRemainingBookmarks={props.numRemainingBookmarks}
+										renderAllBookmarks={props.onEnableLimitlessRender}
+									/>
+								)}
+							</>
+						)
+					}
+				</main>
+			</div>
+		</>
+	);
+};
 
 export default ContentPage;
