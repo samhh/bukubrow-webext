@@ -50,10 +50,6 @@ class SearchControls extends Component<Props, State> {
 		);
 	}
 
-	handleOpenAllVisibleBookmarks = (): void => {
-		this.props.openAllVisibleBookmarks();
-	}
-
 	handleRefreshBookmarks = (): void => {
 		if (this.state.refreshInProgress) return;
 
@@ -78,10 +74,6 @@ class SearchControls extends Component<Props, State> {
 			});
 	}
 
-	handleTextFilterUpdate = (textFilter: string): void => {
-		this.props.updateTextFilter(textFilter);
-	}
-
 	handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
 		evt.preventDefault();
 
@@ -97,7 +89,7 @@ class SearchControls extends Component<Props, State> {
 				>
 					<TextInput
 						value={this.props.textFilter}
-						onInput={this.handleTextFilterUpdate}
+						onInput={this.props.updateTextFilter}
 						placeholder="Search..."
 						disabled={!this.props.shouldEnableSearch}
 						className={styles.search}
@@ -108,7 +100,7 @@ class SearchControls extends Component<Props, State> {
 						className={styles.btn}
 						tooltipClassName={styles.tooltip}
 						type="button"
-						onClick={this.handleOpenAllVisibleBookmarks}
+						onClick={this.props.openAllVisibleBookmarks}
 						iconHTML={AsteriskIcon}
 						tooltip={`Open all ${this.props.numMatches} matches`}
 					/>

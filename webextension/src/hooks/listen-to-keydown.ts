@@ -1,22 +1,41 @@
 import { useEffect, useState } from 'react';
 
-const useListenToKeydown = () => {
-	const [evt, setEvt] = useState<Nullable<KeyboardEvent>>(null);
+type EventsRecord = Record<string, KeyboardEvent>;
 
-	// TODO can replace with setEvt in handlers directly? try it
-	const handleEvent = (evt: KeyboardEvent) => {
-		setEvt(evt);
+const useListenToKeydown = () => {
+	const [evts, setEvts] = useState<EventsRecord>({});
+	const [uniqueId, setUniqueId] = useState(Symbol());
+
+	const setEvtsAndId = (newEvts: EventsRecord) => {
+		setEvts(newEvts);
+		setUniqueId(Symbol());
+	};
+
+	const handleKeydown = (evt: KeyboardEvent) => {
+		setEvtsAndId({
+			...evts,
+			[evt.key]: evt,
+		});
+	};
+
+	const handleKeyup = (evt: KeyboardEvent) => {
+		const { [evt.key]: evtToDiscard, ...evtsToKeep } = evts;
+
+		setEvtsAndId(evtsToKeep);
 	};
 
 	useEffect(() => {
-		document.addEventListener('keydown', handleEvent);
+		document.addEventListener('keydown', handleKeydown);
+		document.addEventListener('keyup', handleKeyup);
 
 		return () => {
-			document.removeEventListener('keydown', handleEvent);
+			document.removeEventListener('keydown', handleKeydown);
+			document.removeEventListener('keyup', handleKeyup);
 		};
 	});
 
-	return evt;
+	// export as tuple
+	return [evts, uniqueId] as [EventsRecord, symbol];
 };
 
 export default useListenToKeydown;
