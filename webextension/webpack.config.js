@@ -49,8 +49,8 @@ module.exports = {
 		plugins: [new TsConfigPathsPlugin()],
 	},
 	entry: {
-		content: './src/pages/content/content.tsx',
-		options: './src/pages/options/options.tsx',
+		content: './src/apps/content',
+		options: './src/apps/options',
 		backend: './src/backend/backend.ts',
 	},
 	output: {
@@ -92,7 +92,7 @@ module.exports = {
 						loader: 'css-loader',
 						options: {
 							sourceMap: devMode,
-							modules: true,
+							modules: 'local',
 							importLoaders: 1,
 						},
 					},

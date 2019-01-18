@@ -1,4 +1,4 @@
-import React, { Component, FormEvent } from 'react';
+import React, { useState, useEffect, SFC, FormEvent } from 'react';
 import styles from './bookmark-form.css';
 
 import Button from 'Components/button/';
@@ -13,155 +13,138 @@ interface Props {
 	bookmark?: Partial<LocalBookmark>;
 }
 
-interface State extends LocalBookmark {
-	tagInput: string;
+interface BookmarkInput {
+	id: Nullable<LocalBookmark['id']>;
+	title: LocalBookmark['title'];
+	desc: LocalBookmark['desc'];
+	url: LocalBookmark['url'];
+	tags: LocalBookmark['tags'];
 }
 
-class BookmarkForm extends Component<Props, State> {
-	// This cannot match any preexisting bookmark, and will be discarded prior to
-	// submission
-	static fauxId = -1;
+type KeyofStringValues<T> = {
+    [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
 
-	state = {
-		id: BookmarkForm.fauxId,
+const BookmarkForm: SFC<Props> = (props) => {
+	const [bookmarkInput, setBookmarkInput] = useState<BookmarkInput>({
+		id: null,
 		title: '',
 		desc: '',
 		url: '',
-		tags: [] as LocalBookmark['tags'],
-		flags: 0,
-		tagInput: '',
+		tags: [],
+	});
+	const setInputBookmarkPartial = (partialBookmark: Partial<BookmarkInput>) => {
+		setBookmarkInput({ ...bookmarkInput, ...partialBookmark });
 	};
 
-	componentDidMount(): void {
-		// Type assertion as setState type seems imperfect here
-		if (this.props.bookmark) this.setState({ ...this.props.bookmark as State });
-	}
+	const [tagInput, setTagInput] = useState('');
 
-	handleClose = (): void => {
-		this.props.onClose();
-	}
+	useEffect(() => {
+		// TODO check types match up ok
+		if (props.bookmark) setInputBookmarkPartial({ ...props.bookmark });
+	}, []);
 
-	handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
+	const handleBookmarkTextInput = (key: KeyofStringValues<BookmarkInput>) => (input: string) => {
+		setInputBookmarkPartial({ [key]: input });
+	};
+
+	const handleTagAddition = () => {
+		const newTag = tagInput.trim();
+
+		// Disallow adding an empty tag or the same tag twice
+		if (!newTag || bookmarkInput.tags.includes(newTag)) return;
+
+		setInputBookmarkPartial({ tags: [...bookmarkInput.tags, newTag] });
+		setTagInput('');
+	};
+
+	const handleTagRemoval = (tagToRemove: string) => {
+		setInputBookmarkPartial({ tags: bookmarkInput.tags.filter(tag => tag !== tagToRemove) });
+	};
+
+	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
 
-		const bookmark = { ...this.state };
-		delete bookmark.tagInput;
-		if (bookmark.id === BookmarkForm.fauxId) delete bookmark.id;
+		const bookmark = { ...bookmarkInput, flags: 0 };
+		if (bookmark.id === null) delete bookmark.id;
 
 		if (!bookmark.title || !bookmark.url) return;
 
-		this.props.onSubmit(bookmark as LocalBookmark | LocalBookmarkUnsaved);
+		props.onSubmit(bookmark as LocalBookmark | LocalBookmarkUnsaved);
+	};
 
-		this.props.onClose();
-	}
-
-	handleFormTitle = (title: string): void => {
-		this.setState({ title });
-	}
-
-	handleFormDesc = (desc: string): void => {
-		this.setState({ desc });
-	}
-
-	handleFormUrl = (url: string): void => {
-		this.setState({ url });
-	}
-
-	handleTagInput = (tagInput: string): void => {
-		this.setState({ tagInput });
-	}
-
-	handleTagAddition = (): void => {
-		// Strip whitespace from either end
-		const tagToAdd = this.state.tagInput.trim();
-
-		// Disallow adding an empty tag or the same tag twice
-		if (!tagToAdd || this.state.tags.includes(tagToAdd)) return;
-
-		this.setState({
-			tags: [...this.state.tags, tagToAdd],
-			tagInput: '',
-		});
-	}
-
-	handleTagRemoval = (tagToRemove: string): void => {
-		this.setState({ tags: this.state.tags.filter(tag => tag !== tagToRemove) });
-	}
-
-	render() {
-		return (
-			<Modal>
-				<form onSubmit={this.handleSubmit}>
-					<header className={styles.header}>
-						<h1 className={styles.heading}>
-							{this.props.bookmark && 'id' in this.props.bookmark
-								? 'Edit bookmark'
-								: 'Add a bookmark'
-							}
-						</h1>
-
-						<Button
-							iconHTML={PlusIcon}
-							className={styles.exit}
-							onClick={this.handleClose}
-						/>
-					</header>
-
-					<TextInput
-						value={this.state.title}
-						onInput={this.handleFormTitle}
-						label="Title"
-					/>
-
-					<TextInput
-						value={this.state.desc}
-						onInput={this.handleFormDesc}
-						label="Description"
-					/>
-
-					<TextInput
-						value={this.state.url}
-						onInput={this.handleFormUrl}
-						label="URL"
-					/>
-
-					<div className={styles['tag-input-wrapper']}>
-						<TextInput
-							value={this.state.tagInput}
-							onInput={this.handleTagInput}
-							label="Tags"
-						/>
-
-						<Button
-							onClick={this.handleTagAddition}
-							iconHTML={PlusIcon}
-							className={styles['tag-btn']}
-						/>
-					</div>
-
-					<ul className={styles.tags}>
-						{Array.from(this.state.tags).map(tag => (
-							<Tag
-								key={tag}
-								id={tag}
-								label={tag}
-								onRemove={this.handleTagRemoval}
-							/>
-						))}
-					</ul>
+	return (
+		<Modal>
+			<form onSubmit={handleSubmit}>
+				<header className={styles.header}>
+					<h1 className={styles.heading}>
+						{props.bookmark && 'id' in props.bookmark
+							? 'Edit bookmark'
+							: 'Add a bookmark'
+						}
+					</h1>
 
 					<Button
-						type="submit"
-						label={this.props.bookmark && 'id' in this.props.bookmark
-							? 'Update bookmark'
-							: 'Add bookmark'
-						}
-						className={styles.btn}
+						iconHTML={PlusIcon}
+						className={styles.exit}
+						onClick={props.onClose}
 					/>
-				</form>
-			</Modal>
-		);
-	}
-}
+				</header>
+
+				<TextInput
+					value={bookmarkInput.title}
+					onInput={handleBookmarkTextInput('title')}
+					label="Title"
+				/>
+
+				<TextInput
+					value={bookmarkInput.desc}
+					onInput={handleBookmarkTextInput('desc')}
+					label="Description"
+				/>
+
+				<TextInput
+					value={bookmarkInput.url}
+					onInput={handleBookmarkTextInput('url')}
+					label="URL"
+				/>
+
+				<div className={styles['tag-input-wrapper']}>
+					<TextInput
+						value={tagInput}
+						onInput={setTagInput}
+						label="Tags"
+					/>
+
+					<Button
+						onClick={handleTagAddition}
+						iconHTML={PlusIcon}
+						className={styles['tag-btn']}
+					/>
+				</div>
+
+				<ul className={styles.tags}>
+					{bookmarkInput.tags.map(tag => (
+						<Tag
+							key={tag}
+							id={tag}
+							label={tag}
+							onRemove={handleTagRemoval}
+						/>
+					))}
+				</ul>
+
+				<Button
+					type="submit"
+					label={props.bookmark && 'id' in props.bookmark
+						? 'Update bookmark'
+						: 'Add bookmark'
+					}
+					className={styles.btn}
+				/>
+			</form>
+		</Modal>
+	);
+};
 
 export default BookmarkForm;

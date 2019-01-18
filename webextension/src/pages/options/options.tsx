@@ -1,54 +1,38 @@
-import React, { Component, FormEvent } from 'react';
-import { render } from 'react-dom';
+import React, { FormEvent, SFC, useState, useEffect } from 'react';
 import { getSettings, saveSettings, Settings, Theme } from 'Modules/settings';
-import setTheme from 'Modules/set-theme';
-import sleep from 'Modules/sleep';
+import s from './options.css';
 
-import TextInput from 'Components/text-input/';
+const OptionsPage: SFC<{}> = () => {
+	const [theme, setThemeState] = useState(Theme.Light);
 
-interface State extends Settings {}
+	const setSettings = (settings: Partial<Settings>) => {
+		if (settings.theme) setThemeState(settings.theme);
 
-class OptionsPage extends Component<{}, State> {
-	state = {
-		theme: Theme.Light,
+		saveSettings(settings);
 	};
 
-	componentDidMount(): void {
-		getSettings().then((settings) => {
-			// Type assertion as undefined keys will be absent and therefore safe for
-			// setState's partial object update
-			this.setState(settings);
-		});
-	}
+	useEffect(() => {
+		getSettings().then(setSettings);
+	}, []);
 
-	// Can't figure out the correct typings for this. Anyway, as somewhat of a
-	// hack we're hooking setState and syncing that up with saving the settings
-	// remotely
-	setState (state: any) {
-		saveSettings(state);
-		super.setState(state);
-	}
-
-	handleThemeChange = (evt: FormEvent<HTMLSelectElement>): void => {
+	const handleThemeChange = (evt: FormEvent<HTMLSelectElement>) => {
+		// Type assertion is safe as we wholly control this value
 		const theme = evt.currentTarget.value as Theme;
 
-		saveSettings({ theme });
-		this.setState({ theme });
-	}
+		setSettings({ theme });
+	};
 
-	render() {
-		return (
-			<>
-				<select
-					value={this.state.theme}
-					onChange={this.handleThemeChange}
-				>
-					<option value={Theme.Light}>Light</option>
-					<option value={Theme.Dark}>Dark</option>
-				</select>
-			</>
-		);
-	}
-}
+	return (
+		<main className={s.page}>
+			<select
+				value={theme}
+				onChange={handleThemeChange}
+			>
+				<option value={Theme.Light}>Light</option>
+				<option value={Theme.Dark}>Dark</option>
+			</select>
+		</main>
+	);
+};
 
-render(<OptionsPage />, document.querySelector('.js-root'));
+export default OptionsPage;

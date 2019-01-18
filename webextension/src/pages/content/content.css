@@ -11,18 +11,3 @@ body {
 	min-height: 300px; /* For bookmark form in cases where there are not yet any bookmarks */
 	padding: var(--header-height) 0 0;
 }
-
-.bookmarks {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-}
-
-.delete-heading {
-	margin: 0 0 var(--sizing);
-	font-size: 20px;
-}
-
-.delete-btn-confirm {
-	margin: 0 0 0 calc(var(--sizing) / 2);
-}

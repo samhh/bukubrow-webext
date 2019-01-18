@@ -4,7 +4,6 @@ use config::VERSION;
 use database::{SqliteDatabase, Bookmark, BookmarkId};
 use serde_json;
 use chrome_native_messaging::{event_loop, write_output, errors};
-use utils::empty_result_err;
 
 type JSON = serde_json::Value;
 
@@ -99,15 +98,20 @@ impl Server {
     fn post(&self, bm: &Bookmark) -> JSON {
         let added = self.db.add_bookmark(&bm);
 
-        json!({ "success": added.is_ok() })
+        if let Ok(id) = added {
+            json!({
+                "success": true,
+                "id": id,
+            })
+        } else {
+            json!({ "success": false })
+        }
     }
 
     fn put(&self, bm: &Bookmark) -> JSON {
-        let updated: Result<(), ()> = if bm.id.is_some() {
-            empty_result_err(self.db.update_bookmark(&bm))
-        } else { Err(()) };
+        let updated: bool = bm.id.is_some() && self.db.update_bookmark(&bm).is_ok();
 
-        json!({ "success": updated.is_ok() })
+        json!({ "success": updated })
     }
 
     fn delete(&self, bm_id: &BookmarkId) -> JSON {
