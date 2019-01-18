@@ -1,5 +1,6 @@
 import React, { SFC } from 'react';
 import { connect } from 'react-redux';
+import noop from 'Modules/noop';
 import { AppState } from 'Store';
 import { openBookmarkAndExit } from 'Store/epics';
 import {
@@ -22,6 +23,7 @@ const BookmarksListContainer: SFC<Props> = props => (
 		onOpenBookmark={props.onOpenBookmark}
 		onEditBookmark={props.onEditBookmark}
 		onDeleteBookmark={props.onDeleteBookmark}
+		openFocusedBookmark={props.focusedBookmark ? props.onOpenBookmark.bind(null, props.focusedBookmark.id) : noop}
 		attemptFocusedBookmarkIndexIncrement={props.attemptFocusedBookmarkIndexIncrement}
 		attemptFocusedBookmarkIndexDecrement={props.attemptFocusedBookmarkIndexDecrement}
 	/>

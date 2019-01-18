@@ -3,7 +3,7 @@ import cn from 'classnames';
 import styles from './button.css';
 
 interface BaseProps {
-	forwardedRef?: Ref<ForwardRefElementType>;
+	forwardedRef?: Ref<HTMLButtonElement>;
 	onClick?(evt: MouseEvent<HTMLButtonElement>): void;
 	tooltip?: string;
 	type?: 'button' | 'submit';
@@ -20,8 +20,6 @@ interface PropsWithIcon extends BaseProps {
 }
 
 type Props = XOR<PropsWithLabel, PropsWithIcon>;
-
-export type ForwardRefElementType = HTMLButtonElement;
 
 class Button extends PureComponent<Props> {
 	static defaultProps: Partial<Props> = {
@@ -60,6 +58,6 @@ class Button extends PureComponent<Props> {
 	}
 }
 
-export default forwardRef((props: Props, ref) => (
-	<Button forwardedRef={ref as Ref<ForwardRefElementType> | undefined} {...props} />
+export default forwardRef((props: Props, ref?: Ref<HTMLButtonElement>) => (
+	<Button forwardedRef={ref} {...props} />
 ));

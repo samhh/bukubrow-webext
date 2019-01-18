@@ -74,16 +74,6 @@ export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator
 	window.close();
 };
 
-export const openFocusedBookmarkAndExit = (): ThunkActionCreator => (_, getState) => {
-	const focusedBookmark = getFocusedBookmark(getState());
-
-	if (focusedBookmark) {
-		chrome.tabs.create({ url: ensureValidURL(focusedBookmark.url) });
-	}
-
-	window.close();
-};
-
 export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 

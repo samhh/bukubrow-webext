@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { requestBookmarks } from 'Comms/frontend';
 import { scrollToTop } from 'Modules/scroll-window';
 import { AppState } from 'Store';
-import { openFocusedBookmarkAndExit, setSearchFilterWithResets } from 'Store/epics';
+import { setSearchFilterWithResets } from 'Store/epics';
 import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import SearchControls from './search-controls';
@@ -18,7 +18,6 @@ const SearchControlsContainer: SFC<Props> = props => (
 	<SearchControls
 		onAdd={props.openAddModal}
 		updateTextFilter={(text) => { props.setSearchFilter(text); scrollToTop(); }}
-		triggerBookmarkOpen={props.openFocusedBookmark}
 		openAllVisibleBookmarks={props.openAllFilteredBookmarks}
 		refreshBookmarks={requestBookmarks}
 		textFilter={props.searchFilter}
@@ -37,7 +36,6 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = {
 	openAddModal: setAddBookmarkModalDisplay.bind(null, true),
 	setSearchFilter: setSearchFilterWithResets,
-	openFocusedBookmark: openFocusedBookmarkAndExit,
 	openAllFilteredBookmarks: setDisplayOpenAllBookmarksConfirmation.bind(null, true),
 };
 
