@@ -1,134 +1,76 @@
-import React, { Component, createRef, FormEvent } from 'react';
-import cn from 'classnames';
+import React, { useRef, useEffect, SFC } from 'react';
+import useListenToKeydown from 'Hooks/listen-to-keydown';
+import { Key } from 'ts-key-enum';
 import styles from './search-controls.css';
 
 import AsteriskIcon from 'Assets/asterisk.svg';
-import Button, {
-	ForwardRefElementType as ButtonForwardRefElementType,
-} from 'Components/button/';
-import TextInput, {
-	ForwardRefElementType as TextInputForwardRefElementType,
-} from 'Components/text-input/';
+import Button from 'Components/button/';
+import TextInput from 'Components/text-input/';
 import PlusIcon from 'Assets/plus.svg';
 import RefreshIcon from 'Assets/refresh.svg';
 
 interface Props {
 	onAdd(): void;
-	updateTextFilter(textFilter: Props['textFilter']): void;
-	triggerBookmarkOpen(): void;
+	updateTextFilter(textFilter: string): void;
 	openAllVisibleBookmarks(): void;
-	refreshBookmarks(): Promise<void>;
+	refreshBookmarks(): void;
 	textFilter: string;
 	shouldEnableSearch: boolean;
 	numMatches: number;
 }
 
-interface State {
-	refreshInProgress: boolean;
-}
+const SearchControls: SFC<Props> = (props) => {
+	const inputRef = useRef<HTMLInputElement>(null);
+	const [evts] = useListenToKeydown();
 
-class SearchControls extends Component<Props, State> {
-	state = {
-		refreshInProgress: false,
+	const focusInput = () => {
+		if (inputRef.current) inputRef.current.focus();
 	};
 
-	inputRef = createRef<TextInputForwardRefElementType>();
-	refreshBtnRef = createRef<ButtonForwardRefElementType>();
+	useEffect(focusInput, []);
+	if (evts[Key.Control] && evts['l']) focusInput();
 
-	componentDidMount (): void {
-		if (this.inputRef.current) this.inputRef.current.focus();
-	}
+	return (
+		<nav>
+			<div className={`u-clearfix ${styles.wrapper}`}>
+				<TextInput
+					value={props.textFilter}
+					onInput={props.updateTextFilter}
+					placeholder="Search..."
+					disabled={!props.shouldEnableSearch}
+					className={styles.search}
+					ref={inputRef}
+				/>
 
-	// This prevents the refresh button from re-rendering and restarting the
-	// animation once the updated data has been fetched
-	shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
-		return !(
-			nextProps.textFilter === this.props.textFilter &&
-			nextProps.numMatches === this.props.numMatches &&
-			nextProps.shouldEnableSearch === this.props.shouldEnableSearch &&
-			nextState.refreshInProgress === this.state.refreshInProgress
-		);
-	}
+				<Button
+					className={styles.btn}
+					tooltipClassName={styles.tooltip}
+					type="button"
+					onClick={props.openAllVisibleBookmarks}
+					iconHTML={AsteriskIcon}
+					tooltip={`Open all ${props.numMatches} matches`}
+				/>
 
-	handleRefreshBookmarks = (): void => {
-		if (this.state.refreshInProgress) return;
+				<Button
+					className={styles.btn}
+					tooltipClassName={styles.tooltip}
+					type="button"
+					onClick={props.onAdd}
+					iconHTML={PlusIcon}
+					tooltip="Add a bookmark"
+				/>
 
-		this.setState({ refreshInProgress: true });
-
-		// Wait for current animation iteration to complete before removing class
-		const removeActiveClass = () => {
-			this.setState({ refreshInProgress: false });
-
-			if (this.refreshBtnRef.current) {
-				(this.refreshBtnRef.current as HTMLElement)
-					.removeEventListener('animationiteration', removeActiveClass);
-			}
-		};
-
-		this.props.refreshBookmarks()
-			.then(() => {
-				if (this.refreshBtnRef.current) {
-					(this.refreshBtnRef.current as HTMLElement)
-						.addEventListener('animationiteration', removeActiveClass);
-				}
-			});
-	}
-
-	handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
-		evt.preventDefault();
-
-		this.props.triggerBookmarkOpen();
-	}
-
-	render () {
-		return (
-			<nav>
-				<form
-					onSubmit={this.handleSubmit}
-					className={`u-clearfix ${styles.wrapper}`}
-				>
-					<TextInput
-						value={this.props.textFilter}
-						onInput={this.props.updateTextFilter}
-						placeholder="Search..."
-						disabled={!this.props.shouldEnableSearch}
-						className={styles.search}
-						ref={this.inputRef}
-					/>
-
-					<Button
-						className={styles.btn}
-						tooltipClassName={styles.tooltip}
-						type="button"
-						onClick={this.props.openAllVisibleBookmarks}
-						iconHTML={AsteriskIcon}
-						tooltip={`Open all ${this.props.numMatches} matches`}
-					/>
-
-					<Button
-						className={styles.btn}
-						tooltipClassName={styles.tooltip}
-						type="button"
-						onClick={this.props.onAdd}
-						iconHTML={PlusIcon}
-						tooltip="Add a bookmark"
-					/>
-
-					<Button
-						className={cn(styles.btn, styles['btn--refresh'], {
-							[styles['btn--active']]: this.state.refreshInProgress,
-						})}
-						tooltipClassName={styles.tooltip}
-						type="button"
-						onClick={this.handleRefreshBookmarks}
-						iconHTML={RefreshIcon}
-						tooltip="Fetch bookmarks"
-						ref={this.refreshBtnRef}
-					/>
-				</form>
-			</nav>
-		);
-	}
-}
+				<Button
+					className={[styles.btn, styles['btn--refresh']].join(' ')}
+					tooltipClassName={styles.tooltip}
+					type="button"
+					onClick={props.refreshBookmarks}
+					iconHTML={RefreshIcon}
+					tooltip="Fetch bookmarks"
+				/>
+			</div>
+		</nav>
+	);
+};
 
 export default SearchControls;

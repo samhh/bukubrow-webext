@@ -11,6 +11,7 @@ interface Props {
 	onOpenBookmark(id: BookmarkId): void;
 	onEditBookmark(id: BookmarkId): void;
 	onDeleteBookmark(id: BookmarkId): void;
+	openFocusedBookmark(): void;
 	attemptFocusedBookmarkIndexIncrement(): boolean;
 	attemptFocusedBookmarkIndexDecrement(): boolean;
 	bookmarks: LocalBookmark[];
@@ -21,17 +22,20 @@ interface Props {
 let prevEid: symbol;
 
 const BookmarksList: SFC<Props> = (props) => {
-	const prev = useRef<Nullable<HTMLElement>>(null);
-	const curr = useRef<Nullable<HTMLElement>>(null);
-	const next = useRef<Nullable<HTMLElement>>(null);
+	const prev = useRef<HTMLElement>(null);
+	const curr = useRef<HTMLElement>(null);
+	const next = useRef<HTMLElement>(null);
 
 	const [evts, eid] = useListenToKeydown();
 
 	if (eid !== prevEid) {
 		prevEid = eid;
 
+		const enterEvt: KeyboardEvent | undefined = evts[Key.Enter];
 		const arrowUpEvt: KeyboardEvent | undefined = evts[Key.ArrowUp];
 		const arrowDownEvt: KeyboardEvent | undefined = evts[Key.ArrowDown];
+
+		if (enterEvt) props.openFocusedBookmark();
 
 		// preventDefault to prevent keyboard scrolling
 		if (arrowUpEvt) {
@@ -40,6 +44,7 @@ const BookmarksList: SFC<Props> = (props) => {
 
 			if (prev && prev.current) scrollToEl(prev.current);
 		}
+
 		if (arrowDownEvt) {
 			arrowDownEvt.preventDefault();
 			props.attemptFocusedBookmarkIndexIncrement();
