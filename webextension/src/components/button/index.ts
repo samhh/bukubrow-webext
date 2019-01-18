@@ -1,1 +1,1 @@
-export { default, ForwardRefElementType } from './button';
+export { default } from './button';

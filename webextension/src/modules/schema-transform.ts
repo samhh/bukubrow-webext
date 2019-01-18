@@ -17,7 +17,7 @@ export function untransform(bookmark: LocalBookmark | LocalBookmarkUnsaved):
 RemoteBookmark | RemoteBookmarkUnsaved {
 	const base: RemoteBookmarkUnsaved = {
 		metadata: bookmark.title,
-		tags: bukuDelimiter + Array.from(bookmark.tags).join(bukuDelimiter) + bukuDelimiter,
+		tags: bukuDelimiter + bookmark.tags.join(bukuDelimiter) + bukuDelimiter,
 		url: bookmark.url,
 		desc: bookmark.desc,
 		flags: bookmark.flags,

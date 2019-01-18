@@ -3,12 +3,10 @@ import shortid from 'shortid';
 import cn from 'classnames';
 import styles from './text-input.css';
 
-export type ForwardRefElementType = HTMLInputElement;
-
 interface Props {
 	value: string;
 	onInput(value: string): void;
-	forwardedRef?: Ref<ForwardRefElementType>;
+	forwardedRef?: Ref<HTMLInputElement>;
 	label?: string;
 	placeholder?: string;
 	max?: number | false;
@@ -88,9 +86,6 @@ class TextInput extends PureComponent<Props> {
 	}
 }
 
-export default forwardRef((props: Props, ref) => (
-	<TextInput
-		forwardedRef={ref as Ref<ForwardRefElementType> | undefined}
-		{...props}
-	/>
+export default forwardRef((props: Props, ref?: Ref<HTMLInputElement>) => (
+	<TextInput forwardedRef={ref} {...props} />
 ));

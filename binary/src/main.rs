@@ -4,7 +4,6 @@ extern crate rusqlite;
 extern crate chrome_native_messaging;
 
 mod config;
-mod utils;
 mod buku;
 mod database;
 mod server;

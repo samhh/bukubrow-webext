@@ -23,16 +23,6 @@
 	color: var(--text-color);
 }
 
-@keyframes controlBtnRotate {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
 .btn {
 	position: static;
 }
@@ -40,14 +30,6 @@
 /* For poorly spaced SVG */
 .btn--refresh {
 	padding: 2px;
-}
-
-.btn--active:active {
-	transform: none;
-}
-
-.btn--active svg {
-	animation: controlBtnRotate .75s infinite linear;
 }
 
 .tooltip {
