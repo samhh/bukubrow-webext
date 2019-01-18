@@ -92,7 +92,7 @@ module.exports = {
 						loader: 'css-loader',
 						options: {
 							sourceMap: devMode,
-							modules: true,
+							modules: 'local',
 							importLoaders: 1,
 						},
 					},
