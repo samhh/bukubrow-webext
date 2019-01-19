@@ -1,6 +1,7 @@
-import React, { PureComponent, forwardRef, Ref, MouseEvent } from 'react';
+import React, { forwardRef, Ref, SFC, MouseEvent } from 'react';
 import cn from 'classnames';
-import styles from './bookmark.css';
+import { ParsedInputResult } from 'Modules/parse-search-input';
+import s from './bookmark.css';
 
 import BinIcon from 'Assets/bin.svg';
 import Button from 'Components/button/';
@@ -14,7 +15,7 @@ interface Props {
 	url: LocalBookmark['url'];
 	desc: LocalBookmark['desc'];
 	tags: LocalBookmark['tags'];
-	textFilter: string;
+	parsedFilter: ParsedInputResult;
 	isFocused: boolean;
 	openBookmark(id: LocalBookmark['id']): void;
 	onEdit(id: LocalBookmark['id']): void;
@@ -22,80 +23,78 @@ interface Props {
 	forwardedRef?: Ref<HTMLElement>;
 }
 
-class Bookmark extends PureComponent<Props> {
-	handleClick = () => {
-		this.props.openBookmark(this.props.id);
-	}
+const Bookmark: SFC<Props> = (props) => {
+	const handleClick = () => {
+		props.openBookmark(props.id);
+	};
 
-	handleEdit = (evt: MouseEvent<HTMLButtonElement>) => {
+	const handleEdit = (evt: MouseEvent<HTMLButtonElement>) => {
 		evt.stopPropagation();
 
-		this.props.onEdit(this.props.id);
-	}
+		props.onEdit(props.id);
+	};
 
-	handleDelete = (evt: MouseEvent<HTMLButtonElement>) => {
+	const handleDelete = (evt: MouseEvent<HTMLButtonElement>) => {
 		evt.stopPropagation();
 
-		this.props.onDelete(this.props.id);
-	}
+		props.onDelete(props.id);
+	};
 
-	render() {
-		return (
-			<li
-				className={cn(styles.bookmark, { [styles['bookmark--focused']]: this.props.isFocused })}
-				onClick={this.handleClick}
-				ref={this.props.forwardedRef as Ref<HTMLLIElement>}
-			>
-				<header>
-					<h1 className={styles.name}>
-						<HighlightMarkup str={this.props.title} match={this.props.textFilter} />
-					</h1>
+	return (
+		<li
+			className={cn(s.bookmark, { [s['bookmark--focused']]: props.isFocused })}
+			onClick={handleClick}
+			ref={props.forwardedRef as Ref<HTMLLIElement>}
+		>
+			<header>
+				<h1 className={s.name}>
+					<HighlightMarkup str={props.title} match={props.parsedFilter.name} />
+				</h1>
 
-					<ul className={styles.tags}>
-						&nbsp;
-						{this.props.tags.map(tag => (
-							<Tag
-								key={tag}
-								id={tag}
-								label={<HighlightMarkup str={tag} match={this.props.textFilter} />}
-							/>
-						))}
-					</ul>
-
-					<div className={styles.controls}>
-						<Button
-							onClick={this.handleEdit}
-							type="button"
-							iconHTML={PencilIcon}
-							tooltip="Edit bookmark"
-							className={styles.edit}
-							tooltipClassName={styles.tooltip}
+				<ul className={s.tags}>
+					&nbsp;
+					{props.tags.map(tag => (
+						<Tag
+							key={tag}
+							id={tag}
+							label={<HighlightMarkup str={tag} match={props.parsedFilter.tags} />}
 						/>
+					))}
+				</ul>
 
-						<Button
-							onClick={this.handleDelete}
-							type="button"
-							iconHTML={BinIcon}
-							tooltip="Delete bookmark"
-							className={styles.delete}
-							tooltipClassName={styles.tooltip}
-						/>
-					</div>
-				</header>
+				<div className={s.controls}>
+					<Button
+						onClick={handleEdit}
+						type="button"
+						iconHTML={PencilIcon}
+						tooltip="Edit bookmark"
+						className={s.edit}
+						tooltipClassName={s.tooltip}
+					/>
 
-				{this.props.desc && (
-					<p className={styles.desc}>
-						&#x3E; <HighlightMarkup str={this.props.desc} match={this.props.textFilter} />
-					</p>
-				)}
+					<Button
+						onClick={handleDelete}
+						type="button"
+						iconHTML={BinIcon}
+						tooltip="Delete bookmark"
+						className={s.delete}
+						tooltipClassName={s.tooltip}
+					/>
+				</div>
+			</header>
 
-				<h2 className={styles.url}>
-					<HighlightMarkup str={this.props.url} match={this.props.textFilter} />
-				</h2>
-			</li>
-		);
-	}
-}
+			{props.desc && (
+				<p className={s.desc}>
+					&#x3E; <HighlightMarkup str={props.desc} match={props.parsedFilter.desc} />
+				</p>
+			)}
+
+			<h2 className={s.url}>
+				<HighlightMarkup str={props.url} match={props.parsedFilter.url} />
+			</h2>
+		</li>
+	);
+};
 
 export default forwardRef((props: Props, ref?: Ref<HTMLElement>) => (
 	<Bookmark forwardedRef={ref} {...props} />

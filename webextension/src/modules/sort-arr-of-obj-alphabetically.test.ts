@@ -1,4 +1,4 @@
-import sort from './sort-arr-of-obj-alphabetically';
+import sort from 'Modules/sort-arr-of-obj-alphabetically';
 
 describe('sort array of objects alphabetically', () => {
 	test('sort as expected', () => {

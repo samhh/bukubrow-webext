@@ -76,7 +76,8 @@
       "tsx"
     ],
     "moduleNameMapper": {
-      "\\.css$": "<rootDir>/mocks/cssMock.ts"
+			"\\.css$": "<rootDir>/mocks/cssMock.ts",
+			"^Modules/(.*)$": "<rootDir>/src/modules/$1"
     }
   }
 }

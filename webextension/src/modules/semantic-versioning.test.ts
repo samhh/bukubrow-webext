@@ -1,4 +1,4 @@
-import { compareAgainstMinimum } from './semantic-versioning';
+import { compareAgainstMinimum } from 'Modules/semantic-versioning';
 
 describe('compare against minimum semantic version', () => {
 	test('correct format', () => {
