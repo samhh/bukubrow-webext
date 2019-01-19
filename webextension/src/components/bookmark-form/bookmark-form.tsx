@@ -22,7 +22,7 @@ interface BookmarkInput {
 }
 
 type KeyofStringValues<T> = {
-    [K in keyof T]: T[K] extends string ? K : never;
+	[K in keyof T]: T[K] extends string ? K : never;
 }[keyof T];
 
 const BookmarkForm: SFC<Props> = (props) => {
