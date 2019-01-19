@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, SFC, MouseEvent } from 'react';
+import React, { memo, forwardRef, Ref, MouseEvent } from 'react';
 import cn from 'classnames';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import s from './bookmark.css';
@@ -23,7 +23,7 @@ interface Props {
 	forwardedRef?: Ref<HTMLElement>;
 }
 
-const Bookmark: SFC<Props> = (props) => {
+const Bookmark = memo<Props>((props) => {
 	const handleClick = () => {
 		props.openBookmark(props.id);
 	};
@@ -94,7 +94,7 @@ const Bookmark: SFC<Props> = (props) => {
 			</h2>
 		</li>
 	);
-};
+});
 
 export default forwardRef((props: Props, ref?: Ref<HTMLElement>) => (
 	<Bookmark forwardedRef={ref} {...props} />
