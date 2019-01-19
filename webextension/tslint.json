@@ -6,6 +6,7 @@
 	"rules": {
 		"align": false,
 		"import-name": false,
+		"indent": [true, "tabs"],
 		"jsx-boolean-value": [
 			true,
 			"never"

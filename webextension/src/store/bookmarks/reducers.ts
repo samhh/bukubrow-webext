@@ -35,9 +35,9 @@ const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = ini
 			};
 		case BookmarksActionTypes.SetBookmarkEditId:
 			return {
-			 ...state,
-			 bookmarkEditId: action.payload,
-		 };
+				...state,
+				bookmarkEditId: action.payload,
+			};
 		case BookmarksActionTypes.SetBookmarkDeleteId:
 			return {
 				...state,
