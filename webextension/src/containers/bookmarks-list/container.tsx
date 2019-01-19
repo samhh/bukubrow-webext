@@ -7,7 +7,7 @@ import {
 	initiateBookmarkEdit, initiateBookmarkDeletion,
 	attemptFocusedBookmarkIndexIncrement, attemptFocusedBookmarkIndexDecrement,
 } from 'Store/bookmarks/epics';
-import { getFilteredBookmarks, getFocusedBookmark } from 'Store/selectors';
+import { getFilteredBookmarks, getFocusedBookmark, getParsedFilter } from 'Store/selectors';
 import BookmarksList from './bookmarks-list';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -19,7 +19,7 @@ const BookmarksListContainer: SFC<Props> = props => (
 	<BookmarksList
 		bookmarks={props.bookmarks}
 		focusedBookmarkId={props.focusedBookmark && props.focusedBookmark.id}
-		searchFilter={props.searchFilter}
+		parsedFilter={props.parsedFilter}
 		onOpenBookmark={props.onOpenBookmark}
 		onEditBookmark={props.onEditBookmark}
 		onDeleteBookmark={props.onDeleteBookmark}
@@ -32,7 +32,7 @@ const BookmarksListContainer: SFC<Props> = props => (
 const mapStateToProps = (state: AppState) => ({
 	bookmarks: getFilteredBookmarks(state),
 	focusedBookmark: getFocusedBookmark(state),
-	searchFilter: state.input.searchFilter,
+	parsedFilter: getParsedFilter(state),
 });
 
 const mapDispatchToProps = ({

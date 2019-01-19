@@ -40,8 +40,12 @@ const BookmarkForm: SFC<Props> = (props) => {
 	const [tagInput, setTagInput] = useState('');
 
 	useEffect(() => {
-		// TODO check types match up ok
-		if (props.bookmark) setInputBookmarkPartial({ ...props.bookmark });
+		if (props.bookmark) {
+			// Ensure not to copy unwanted properties into state
+			const { flags, ...toCopy } = props.bookmark;
+
+			setInputBookmarkPartial({ ...toCopy });
+		}
 	}, []);
 
 	const handleBookmarkTextInput = (key: KeyofStringValues<BookmarkInput>) => (input: string) => {

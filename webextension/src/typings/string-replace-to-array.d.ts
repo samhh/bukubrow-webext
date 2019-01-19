@@ -3,5 +3,5 @@ declare module 'string-replace-to-array' {
 		string: string,
 		regexpOrSubstr: RegExp | string,
 		nsof: (matched: string, index: number) => T,
-	): T[];
+	): (T | string)[];
 }
