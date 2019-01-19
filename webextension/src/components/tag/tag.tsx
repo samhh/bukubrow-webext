@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { SFC } from 'react';
 import cn from 'classnames';
 import styles from './tag.css';
 
@@ -8,21 +8,19 @@ interface Props {
 	onRemove?(tag: string): void;
 }
 
-class Tag extends PureComponent<Props> {
-	handleRemove = () => {
-		if (this.props.onRemove) this.props.onRemove(this.props.id);
-	}
+const Tag: SFC<Props> = (props) => {
+	const handleRemove = () => {
+		if (props.onRemove) props.onRemove(props.id);
+	};
 
-	render() {
-		return (
-			<li
-				className={cn(styles.tag, { [styles['tag--removable']]: !!this.props.onRemove })}
-				onClick={this.handleRemove}
-			>
-				#{this.props.label}
-			</li>
-		);
-	}
-}
+	return (
+		<li
+			className={cn(styles.tag, { [styles['tag--removable']]: !!props.onRemove })}
+			onClick={handleRemove}
+		>
+			#{props.label}
+		</li>
+	);
+};
 
 export default Tag;
