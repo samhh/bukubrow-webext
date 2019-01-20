@@ -1,4 +1,4 @@
-import ensureValidURL from './ensure-valid-url';
+import ensureValidURL from 'Modules/ensure-valid-url';
 
 describe('ensure valid URL', () => {
 	test('return untouched valid URLs', () => {

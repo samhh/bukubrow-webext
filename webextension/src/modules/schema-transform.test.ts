@@ -1,4 +1,4 @@
-import { transform, untransform } from './schema-transform';
+import { transform, untransform } from 'Modules/schema-transform';
 
 describe('schema transform', () => {
 	test('transform remote bookmark to local bookmark', () => {

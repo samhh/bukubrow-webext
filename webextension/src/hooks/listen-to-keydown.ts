@@ -32,7 +32,7 @@ const useListenToKeydown = () => {
 			document.removeEventListener('keydown', handleKeydown);
 			document.removeEventListener('keyup', handleKeyup);
 		};
-	});
+	}, []);
 
 	// export as tuple
 	return [evts, uniqueId] as [EventsRecord, symbol];

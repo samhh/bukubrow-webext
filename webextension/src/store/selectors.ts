@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { AppState } from 'Store';
+import parseSearchInput from 'Modules/parse-search-input';
 import filterBookmarks from 'Modules/filter-bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
 
@@ -10,9 +11,11 @@ const getBookmarkDeleteId = (state: AppState) => state.bookmarks.bookmarkDeleteI
 const getLimitNumRendered = (state: AppState) => state.bookmarks.limitNumRendered;
 const getSearchFilter = (state: AppState) => state.input.searchFilter;
 
+// Parse search filter
+export const getParsedFilter = createSelector(getSearchFilter, parseSearchInput);
+
 // Filter all bookmarks by search filter
-export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getSearchFilter,
-	(bookmarks, searchFilter) => filterBookmarks(bookmarks, searchFilter));
+export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getParsedFilter, filterBookmarks);
 
 // Filter all bookmarks by search filter and return potentially a limited number of them
 export const getFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getLimitNumRendered,

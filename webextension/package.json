@@ -28,7 +28,6 @@
     "remote-redux-devtools": "^0.5.16",
     "reselect": "^4.0.0",
     "sanitize.css": "^8.0.0",
-    "shortid": "^2.2.14",
     "string-replace-to-array": "^1.0.3",
     "ts-key-enum": "^2.0.0"
   },
@@ -41,7 +40,6 @@
     "@types/react-redux": "^7.0.0",
     "@types/react-test-renderer": "^16.0.3",
     "@types/remote-redux-devtools": "^0.5.3",
-    "@types/shortid": "^0.0.29",
     "autoprefixer": "^9.4.5",
     "awesome-typescript-loader": "^5.2.1",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
@@ -76,7 +74,8 @@
       "tsx"
     ],
     "moduleNameMapper": {
-      "\\.css$": "<rootDir>/mocks/cssMock.ts"
+      "\\.css$": "<rootDir>/mocks/cssMock.ts",
+      "^Modules/(.*)$": "<rootDir>/src/modules/$1"
     }
   }
 }
