@@ -1,5 +1,6 @@
 import React, { useRef, SFC } from 'react';
 import { scrollToEl } from 'Modules/scroll-window';
+import { ParsedInputResult } from 'Modules/parse-search-input';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import { Key } from 'ts-key-enum';
 import s from './styles.css';
@@ -15,7 +16,7 @@ interface Props {
 	attemptFocusedBookmarkIndexIncrement(): boolean;
 	attemptFocusedBookmarkIndexDecrement(): boolean;
 	bookmarks: LocalBookmark[];
-	searchFilter: string;
+	parsedFilter: ParsedInputResult;
 	focusedBookmarkId?: BookmarkId;
 }
 
@@ -74,7 +75,7 @@ const BookmarksList: SFC<Props> = (props) => {
 						url={bookmark.url}
 						desc={bookmark.desc}
 						tags={bookmark.tags}
-						textFilter={props.searchFilter}
+						parsedFilter={props.parsedFilter}
 						isFocused={bookmark.id === props.focusedBookmarkId}
 						openBookmark={props.onOpenBookmark}
 						onEdit={props.onEditBookmark}

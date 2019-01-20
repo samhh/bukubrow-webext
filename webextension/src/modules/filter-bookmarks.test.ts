@@ -1,10 +1,11 @@
-import filterBookmarks from './filter-bookmarks';
+import filterBookmarks from 'Modules/filter-bookmarks';
+import { ParsedInputResult } from 'Modules/parse-search-input';
 
 const coolBookmark: LocalBookmark = {
 	id: 0,
 	title: 'Cool bookmark',
 	desc: 'Some other words',
-	url: 'https://samhh.com',
+	url: 'https://duckduckgo.com',
 	tags: ['awesome', 'supreme'],
 	flags: 0,
 };
@@ -36,19 +37,32 @@ const unstoppableBookmark: LocalBookmark = {
 	flags: 999,
 };
 
-const bookmarks = [coolBookmark, superBookmark, incredibleBookmark, unstoppableBookmark];
+const allBookmarks = [coolBookmark, superBookmark, incredibleBookmark, unstoppableBookmark];
+const emptyParsedInput: ParsedInputResult = {
+	name: '',
+	desc: [],
+	url: [],
+	tags: [],
+};
 
-test('filter bookmarks, ordered: title -> tags -> url -> desc', () => {
-	const awesomeFilter = filterBookmarks(bookmarks, 'awesome');
-	const expectedAwesomeResult =
-		[superBookmark, coolBookmark, unstoppableBookmark, incredibleBookmark];
+describe('filter bookmarks with parsed input case insensitively', () => {
+	test('filter by title', () => {
+		const titleFilter = filterBookmarks(allBookmarks, {
+			...emptyParsedInput,
+			name: 'awesome',
+		});
 
-	expect(awesomeFilter).not.toBe(bookmarks);
-	expect(awesomeFilter).toMatchObject(expectedAwesomeResult);
+		const expectedTitleResult = [superBookmark];
+		expect(titleFilter).toMatchObject(expectedTitleResult);
+	});
 
-	const greatFilter = filterBookmarks(bookmarks, 'GREaT');
-	const expectedGreatResult = [incredibleBookmark];
+	test('filter by url', () => {
+		const urlFilter = filterBookmarks(allBookmarks, {
+			...emptyParsedInput,
+			url: ['samhh.com'],
+		});
 
-	expect(greatFilter).not.toBe(bookmarks);
-	expect(greatFilter).toMatchObject(expectedGreatResult);
+		const expectedUrlResult = [superBookmark, incredibleBookmark, unstoppableBookmark];
+		expect(urlFilter).toMatchObject(expectedUrlResult);
+	});
 });
