@@ -20,70 +20,51 @@ interface Props {
 	focusedBookmarkId?: BookmarkId;
 }
 
-let prevEid: symbol;
-
 const BookmarksList: SFC<Props> = (props) => {
-	const prev = useRef<HTMLElement>(null);
-	const curr = useRef<HTMLElement>(null);
-	const next = useRef<HTMLElement>(null);
+	const activeBookmarkEl = useRef<HTMLElement>(null);
 
-	const [evts, eid] = useListenToKeydown();
+	const propsRef = useRef(props);
+	propsRef.current = props;
 
-	if (eid !== prevEid) {
-		prevEid = eid;
+	useListenToKeydown((evt) => {
+		const liveProps = propsRef.current;
 
-		const enterEvt: KeyboardEvent | undefined = evts[Key.Enter];
-		const arrowUpEvt: KeyboardEvent | undefined = evts[Key.ArrowUp];
-		const arrowDownEvt: KeyboardEvent | undefined = evts[Key.ArrowDown];
-
-		if (enterEvt) props.openFocusedBookmark();
+		if (evt.key === Key.Enter) liveProps.openFocusedBookmark();
 
 		// preventDefault to prevent keyboard scrolling
-		if (arrowUpEvt) {
-			arrowUpEvt.preventDefault();
-			props.attemptFocusedBookmarkIndexDecrement();
+		if (evt.key === Key.ArrowUp) {
+			evt.preventDefault();
+			liveProps.attemptFocusedBookmarkIndexDecrement();
 
-			if (prev && prev.current) scrollToEl(prev.current);
+			if (activeBookmarkEl && activeBookmarkEl.current) scrollToEl(activeBookmarkEl.current);
 		}
 
-		if (arrowDownEvt) {
-			arrowDownEvt.preventDefault();
-			props.attemptFocusedBookmarkIndexIncrement();
+		if (evt.key === Key.ArrowDown) {
+			evt.preventDefault();
+			liveProps.attemptFocusedBookmarkIndexIncrement();
 
-			if (next && next.current) scrollToEl(next.current);
+			if (activeBookmarkEl && activeBookmarkEl.current) scrollToEl(activeBookmarkEl.current);
 		}
-	}
-
-	const focusedIndex = props.bookmarks.findIndex(bm => bm.id === props.focusedBookmarkId);
+	});
 
 	return (
 		<ul className={s.wrapper}>
-			{props.bookmarks.map((bookmark, index) => {
-				const ref = index === focusedIndex - 1
-					? prev
-					: index === focusedIndex
-						? curr
-						: index === focusedIndex + 1
-							? next
-							: undefined;
-
-				return (
-					<Bookmark
-						key={bookmark.id}
-						id={bookmark.id}
-						title={bookmark.title}
-						url={bookmark.url}
-						desc={bookmark.desc}
-						tags={bookmark.tags}
-						parsedFilter={props.parsedFilter}
-						isFocused={bookmark.id === props.focusedBookmarkId}
-						openBookmark={props.onOpenBookmark}
-						onEdit={props.onEditBookmark}
-						onDelete={props.onDeleteBookmark}
-						ref={ref}
-					/>
-				);
-			})}
+			{props.bookmarks.map(bookmark => (
+				<Bookmark
+					key={bookmark.id}
+					id={bookmark.id}
+					title={bookmark.title}
+					url={bookmark.url}
+					desc={bookmark.desc}
+					tags={bookmark.tags}
+					parsedFilter={props.parsedFilter}
+					isFocused={bookmark.id === props.focusedBookmarkId}
+					openBookmark={props.onOpenBookmark}
+					onEdit={props.onEditBookmark}
+					onDelete={props.onDeleteBookmark}
+					ref={bookmark.id === props.focusedBookmarkId ? activeBookmarkEl : undefined}
+				/>
+			))}
 		</ul>
 	);
 };

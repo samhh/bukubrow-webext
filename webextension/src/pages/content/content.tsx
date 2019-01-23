@@ -1,6 +1,5 @@
-import React, { SFC } from 'react';
+import React, { SFC, useRef } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
-import { Key } from 'ts-key-enum';
 import s from './content.css';
 
 import BookmarkAddForm from 'Containers/bookmark-add-form/';
@@ -22,21 +21,19 @@ interface Props {
 	displayTutorialMessage: boolean;
 }
 
-let prevEid: symbol;
-
 const ContentPage: SFC<Props> = (props) => {
-	const [evts, eid] = useListenToKeydown();
-	const activeKeys = Object.keys(evts);
+	const propsRef = useRef(props);
+	propsRef.current = props;
 
-	if (eid !== prevEid) {
-		prevEid = eid;
+	useListenToKeydown((evt) => {
+		const liveProps = propsRef.current;
 
-		if (activeKeys.includes(Key.Control)) {
-			if (activeKeys.includes('d')) props.toggleAddBookmarkForm();
-			if (activeKeys.includes('o')) props.openAllFilteredBookmarksWithoutConfirmation();
-			if (activeKeys.includes('r')) props.refreshBookmarks();
+		if (evt.ctrlKey) {
+			if (evt.key === 'd') liveProps.toggleAddBookmarkForm();
+			if (evt.key === 'o') liveProps.openAllFilteredBookmarksWithoutConfirmation();
+			if (evt.key === 'r') liveProps.refreshBookmarks();
 		}
-	}
+	});
 
 	return (
 		<>
