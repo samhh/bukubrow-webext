@@ -29,10 +29,10 @@
     "reselect": "^4.0.0",
     "sanitize.css": "^8.0.0",
     "string-replace-to-array": "^1.0.3",
-    "ts-key-enum": "^2.0.0"
+    "ts-key-enum": "^2.0.0",
+    "webextension-polyfill-ts": "^0.8.9"
   },
   "devDependencies": {
-    "@types/chrome": "0.0.77",
     "@types/classnames": "^2.2.7",
     "@types/jest": "^23.3.12",
     "@types/react": "^16.7.20",
