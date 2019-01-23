@@ -1,7 +1,7 @@
 const nameRegExp = /^[^#>:]*?(?:(?= +[#>:].+)|$)/;
-const descsRegExp = /(?<=(?:^| +)>).+?(?:(?= +[#>:].+)|$)/g;
-const urlsRegExp = /(?<=(?:^| +):).+?(?:(?= +[#>:].+)|$)/g;
-const tagsRegExp = /(?<=(?:^| +)#).+?(?:(?= +[#>:].+)|$)/g;
+const descsRegExp = /(?:^| )>(.+?)(?= +[#>:]|$)/g;
+const urlsRegExp = /(?:^| ):(.+?)(?= +[#>:]|$)/g;
+const tagsRegExp = /(?:^| )#(.+?)(?= +[#>:]|$)/g;
 
 export interface ParsedInputResult {
 	name: string;
@@ -10,11 +10,23 @@ export interface ParsedInputResult {
 	tags: string[];
 }
 
+// From: https://stackoverflow.com/a/54326240/3369753
+const execMulti = (str: string, r: RegExp) => {
+	let m: Nullable<RegExpExecArray>;
+	const res: string[] = [];
+
+	while (m = r.exec(str)) {
+		res.push(m[1]);
+	}
+
+	return res;
+};
+
 const parseSearchInput = (input: string): ParsedInputResult => ({
 	name: (input.match(nameRegExp) || [])[0] || '',
-	desc: input.match(descsRegExp) || [],
-	url: input.match(urlsRegExp) || [],
-	tags: input.match(tagsRegExp) || [],
+	desc: execMulti(input, descsRegExp),
+	url: execMulti(input, urlsRegExp),
+	tags: execMulti(input, tagsRegExp),
 });
 
 export default parseSearchInput;

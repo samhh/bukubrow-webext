@@ -29,7 +29,7 @@ describe('parse search input', () => {
 		const expected1: ParsedInputResult = {
 			name: '',
 			desc: [],
-			url: ['url :'],
+			url: ['url'],
 			tags: [],
 		};
 		expect(result1).toMatchObject(expected1);
