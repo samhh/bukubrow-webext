@@ -18,7 +18,18 @@ export const getBookmarks = () => new Promise<LocalBookmark[]>((resolve, reject)
 			return;
 		}
 
-		resolve(data.bookmarks);
+		// Once upon a time we tried to store tags as a Set. Chrome's extension
+		// storage implementation didn't like this, but Firefox did. The change was
+		// reverted, but now the tags are sometimes still stored as a set. For some
+		// reason. This addresses that by ensuring any tags pulled from storage will
+		// be resolved as an array, regardless of whether they're stored as an array
+		// or a Set.
+		const normalisedBookmarks = data.bookmarks.map(bm => ({
+			...bm,
+			tags: Array.from(bm.tags),
+		}));
+
+		resolve(normalisedBookmarks);
 	});
 });
 
