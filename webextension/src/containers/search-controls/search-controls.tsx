@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, SFC } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
-import { Key } from 'ts-key-enum';
 import styles from './search-controls.css';
 
 import AsteriskIcon from 'Assets/asterisk.svg';
@@ -21,14 +20,15 @@ interface Props {
 
 const SearchControls: SFC<Props> = (props) => {
 	const inputRef = useRef<HTMLInputElement>(null);
-	const [evts] = useListenToKeydown();
 
 	const focusInput = () => {
 		if (inputRef.current) inputRef.current.focus();
 	};
 
 	useEffect(focusInput, []);
-	if (evts[Key.Control] && evts['l']) focusInput();
+	useListenToKeydown((evt) => {
+		if (evt.ctrlKey && evt.key === 'l') focusInput();
+	});
 
 	return (
 		<nav>

@@ -1,41 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-type EventsRecord = Record<string, KeyboardEvent>;
-
-const useListenToKeydown = () => {
-	const [evts, setEvts] = useState<EventsRecord>({});
-	const [uniqueId, setUniqueId] = useState(Symbol());
-
-	const setEvtsAndId = (newEvts: EventsRecord) => {
-		setEvts(newEvts);
-		setUniqueId(Symbol());
-	};
-
-	const handleKeydown = (evt: KeyboardEvent) => {
-		setEvtsAndId({
-			...evts,
-			[evt.key]: evt,
-		});
-	};
-
-	const handleKeyup = (evt: KeyboardEvent) => {
-		const { [evt.key]: evtToDiscard, ...evtsToKeep } = evts;
-
-		setEvtsAndId(evtsToKeep);
-	};
-
+const useListenToKeydown = (cb: (evt: KeyboardEvent) => void) => {
 	useEffect(() => {
-		document.addEventListener('keydown', handleKeydown);
-		document.addEventListener('keyup', handleKeyup);
+		document.addEventListener('keydown', cb);
 
 		return () => {
-			document.removeEventListener('keydown', handleKeydown);
-			document.removeEventListener('keyup', handleKeyup);
+			document.removeEventListener('keydown', cb);
 		};
 	}, []);
-
-	// export as tuple
-	return [evts, uniqueId] as [EventsRecord, symbol];
 };
 
 export default useListenToKeydown;
