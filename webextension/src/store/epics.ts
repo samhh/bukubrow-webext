@@ -1,3 +1,4 @@
+import { browser } from 'webextension-polyfill-ts';
 import { sendBackendMessage, requestBookmarks } from 'Comms/frontend';
 import { BackendResponse } from 'Comms/shared';
 import { getBookmarks, hasTriggeredRequest } from 'Modules/cache';
@@ -9,7 +10,7 @@ import { setDisplayTutorialMessage } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
-import { getFilteredBookmarks, getUnlimitedFilteredBookmarks, getFocusedBookmark } from 'Store/selectors';
+import { getFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 
 const getAndSetCachedBookmarks = (): ThunkActionCreator => (dispatch) => {
 	getBookmarks().then((bookmarks) => {
@@ -20,7 +21,7 @@ const getAndSetCachedBookmarks = (): ThunkActionCreator => (dispatch) => {
 
 const listenToBackend = (): ThunkActionCreator => (dispatch) => {
 	// Respond to messages from the backend
-	chrome.runtime.onMessage.addListener((res: BackendResponse) => {
+	browser.runtime.onMessage.addListener((res: BackendResponse) => {
 		if ('bookmarksUpdated' in res) {
 			dispatch(getAndSetCachedBookmarks());
 		}
@@ -69,7 +70,7 @@ export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator
 
 	if (!bookmark) return;
 
-	chrome.tabs.create({ url: ensureValidURL(bookmark.url) });
+	browser.tabs.create({ url: ensureValidURL(bookmark.url) });
 
 	window.close();
 };
@@ -78,9 +79,9 @@ export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, get
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
 	filteredBookmarks
-		.map(bm => bm.url)
+		.map(bm => ensureValidURL(bm.url))
 		.forEach((url) => {
-			chrome.tabs.create({ url: ensureValidURL(url) });
+			browser.tabs.create({ url });
 		});
 
 	window.close();

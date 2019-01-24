@@ -1,3 +1,5 @@
+import { browser } from 'webextension-polyfill-ts';
+
 interface CheckBinaryReq {
 	checkBinary: true;
 }
@@ -48,5 +50,4 @@ interface DeleteBookmarkRes {
 export type BackendResponse =
 	CheckBinaryRes | GetBookmarksRes | SaveBookmarkRes | UpdateBookmarkRes | DeleteBookmarkRes;
 
-export const checkRuntimeErrors = () =>
-	Promise.resolve(chrome.runtime.lastError && chrome.runtime.lastError.message);
+export const checkRuntimeErrors = () => Promise.resolve(browser.runtime.lastError && browser.runtime.lastError.message);

@@ -1,3 +1,4 @@
+import { browser } from 'webextension-polyfill-ts';
 import { transform, untransform } from 'Modules/schema-transform';
 import { checkRuntimeErrors, BackendRequest } from 'Comms/shared';
 import { saveBookmarks as saveBookmarksToLocalStorage } from 'Modules/cache';
@@ -10,7 +11,7 @@ import {
 	deleteBookmark as deleteBookmarkFromDb,
 } from 'Comms/backend';
 
-const checkBinary = (): Promise<boolean> => {
+const checkBinary = () => {
 	const errors = checkRuntimeErrors();
 	const version = checkBinaryVersion();
 
@@ -34,52 +35,44 @@ const checkBinary = (): Promise<boolean> => {
 		});
 };
 
-const requestBookmarks = (): Promise<boolean> =>
-	getBookmarksFromDb()
-		.then((res) => {
-			if (!res || !res.success || !res.bookmarks) return false;
+const requestBookmarks = () => getBookmarksFromDb().then((res) => {
+	if (!res || !res.success || !res.bookmarks) return false;
 
-			const bookmarks = res.bookmarks.map(transform);
+	const bookmarks = res.bookmarks.map(transform);
 
-			return saveBookmarksToLocalStorage(bookmarks).then(() => {
-				sendFrontendMessage({ bookmarksUpdated: true });
+	return saveBookmarksToLocalStorage(bookmarks).then(() => {
+		sendFrontendMessage({ bookmarksUpdated: true });
 
-				return true;
-			});
-		});
+		return true;
+	});
+});
 
-const saveBookmark = (bookmark: LocalBookmarkUnsaved): Promise<boolean> =>
-	saveBookmarkToDb(untransform(bookmark))
-		.then((res) => {
-			if (!res || !res.success) return false;
+const saveBookmark = (bookmark: LocalBookmarkUnsaved) => saveBookmarkToDb(untransform(bookmark)).then((res) => {
+	if (!res || !res.success) return false;
 
-			sendFrontendMessage({ bookmarkSaved: true });
+	sendFrontendMessage({ bookmarkSaved: true });
 
-			return true;
-		});
+	return true;
+});
 
-const updateBookmark = (bookmark: LocalBookmark): Promise<boolean> =>
-	updateBookmarkInDb(untransform(bookmark))
-		.then((res) => {
-			if (!res || !res.success) return false;
+const updateBookmark = (bookmark: LocalBookmark) => updateBookmarkInDb(untransform(bookmark)).then((res) => {
+	if (!res || !res.success) return false;
 
-			sendFrontendMessage({ bookmarkUpdated: true });
+	sendFrontendMessage({ bookmarkUpdated: true });
 
-			return true;
-		});
+	return true;
+});
 
-const deleteBookmark = (bookmarkId: number): Promise<boolean> =>
-	deleteBookmarkFromDb(bookmarkId)
-		.then((res) => {
-			if (!res || !res.success) return false;
+const deleteBookmark = (bookmarkId: number) => deleteBookmarkFromDb(bookmarkId).then((res) => {
+	if (!res || !res.success) return false;
 
-			sendFrontendMessage({ bookmarkDeleted: true });
+	sendFrontendMessage({ bookmarkDeleted: true });
 
-			return true;
-		});
+	return true;
+});
 
 // Listen for messages from frontend
-chrome.runtime.onMessage.addListener((req: BackendRequest): void => {
+browser.runtime.onMessage.addListener((req: BackendRequest) => {
 	if ('checkBinary' in req) checkBinary();
 	if ('requestBookmarks' in req) requestBookmarks();
 	if ('saveBookmark' in req) saveBookmark(req.bookmark);

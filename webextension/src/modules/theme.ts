@@ -1,15 +1,13 @@
+import { browser } from 'webextension-polyfill-ts';
+
 export enum Theme {
 	Light = 'light',
 	Dark = 'dark',
 }
 
-export const getActiveTheme = () => new Promise<Theme>((resolve) => {
-	chrome.storage.sync.get(null, (opts) => {
-		const { theme } = opts as { theme?: Theme };
+const isTheme = (arg: unknown): arg is Theme => Object.values(Theme).includes(arg);
 
-		resolve(theme || Theme.Light);
-	});
-});
+export const getActiveTheme = () => browser.storage.sync.get().then(res => isTheme(res.theme) ? res.theme : Theme.Light);
 
 export const setTheme = (theme: Theme) => {
 	const action = theme === 'dark'

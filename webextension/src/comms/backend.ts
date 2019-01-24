@@ -1,3 +1,4 @@
+import { browser } from 'webextension-polyfill-ts';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { compareAgainstMinimum } from 'Modules/semantic-versioning';
 import { BackendResponse } from './shared';
@@ -51,23 +52,19 @@ type NativeRequestResult = {
 	DELETE: NativeDELETEResponse;
 };
 
-function sendNativeMessage<T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]):
-Promise<NativeRequestResult[T]> {
-	return new Promise((resolve) => {
-		chrome.runtime.sendNativeMessage(APP_NAME, { method, data }, resolve);
-	});
+function sendNativeMessage<T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) {
+	return browser.runtime.sendNativeMessage(APP_NAME, { method, data }) as Promise<NativeRequestResult[T]>;
 }
 
 // Ensure binary version is equal to or newer than what we're expecting, but on
 // the same major version (semantic versioning)
 export const checkBinaryVersion = () =>
-	sendNativeMessage(NativeRequestMethod.OPTIONS, undefined)
-		.then(res => (
-			res &&
-			res.success &&
-			res.binaryVersion &&
-			compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
-		));
+	sendNativeMessage(NativeRequestMethod.OPTIONS, undefined).then(res => (
+		res &&
+		res.success &&
+		res.binaryVersion &&
+		compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
+	) || false);
 
 export const getBookmarks = () =>
 	sendNativeMessage(NativeRequestMethod.GET, undefined);
@@ -81,7 +78,5 @@ export const updateBookmark = (bookmark: RemoteBookmark) =>
 export const deleteBookmark = (bookmarkId: RemoteBookmark['id']) =>
 	sendNativeMessage(NativeRequestMethod.DELETE, { bookmark_id: bookmarkId });
 
-export const sendFrontendMessage = (response: BackendResponse) =>
-	new Promise((resolve) => {
-		chrome.runtime.sendMessage(response, resolve);
-	});
+export const sendFrontendMessage = (response: BackendResponse): Promise<void> =>
+	browser.runtime.sendMessage(response);
