@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, SFC } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
-import styles from './search-controls.css';
+import s from './search-controls.css';
 
 import AsteriskIcon from 'Assets/asterisk.svg';
 import Button from 'Components/button/';
@@ -32,19 +32,19 @@ const SearchControls: SFC<Props> = (props) => {
 
 	return (
 		<nav>
-			<div className={`u-clearfix ${styles.wrapper}`}>
+			<div className={s.wrapper}>
 				<TextInput
 					value={props.textFilter}
 					onInput={props.updateTextFilter}
 					placeholder="Search..."
 					disabled={!props.shouldEnableSearch}
-					className={styles.search}
+					className={s.search}
 					ref={inputRef}
 				/>
 
 				<Button
-					className={styles.btn}
-					tooltipClassName={styles.tooltip}
+					className={s.btn}
+					tooltipClassName={s.tooltip}
 					type="button"
 					onClick={props.openAllVisibleBookmarks}
 					iconHTML={AsteriskIcon}
@@ -52,8 +52,8 @@ const SearchControls: SFC<Props> = (props) => {
 				/>
 
 				<Button
-					className={styles.btn}
-					tooltipClassName={styles.tooltip}
+					className={s.btn}
+					tooltipClassName={s.tooltip}
 					type="button"
 					onClick={props.onAdd}
 					iconHTML={PlusIcon}
@@ -61,8 +61,8 @@ const SearchControls: SFC<Props> = (props) => {
 				/>
 
 				<Button
-					className={[styles.btn, styles['btn--refresh']].join(' ')}
-					tooltipClassName={styles.tooltip}
+					className={[s.btn, s['btn--refresh']].join(' ')}
+					tooltipClassName={s.tooltip}
 					type="button"
 					onClick={props.refreshBookmarks}
 					iconHTML={RefreshIcon}

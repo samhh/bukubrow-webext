@@ -27,9 +27,9 @@ export type BackendRequest =
 	CheckBinaryReq | GetBookmarksReq | SaveBookmarkReq | UpdateBookmarkReq | DeleteBookmarkReq;
 
 type CheckBinaryRes =
-	{ outdatedBinary: true } |
-	{ cannotFindBinary: true } |
-	{ unknownError: true };
+	| { outdatedBinary: true }
+	| { cannotFindBinary: true }
+	| { unknownError: true };
 
 interface GetBookmarksRes {
 	bookmarksUpdated: true;

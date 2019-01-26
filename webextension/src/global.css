@@ -1,12 +1,12 @@
 @import '~sanitize.css';
 
-:global :root {
+:root {
 	--sizing: 12px;
 	--border-radius: 3px;
 	--offset-text-color: #888;
 }
 
-:global body {
+body {
 	--bg: white;
 	--offset-bg: #eee;
 	--offset-bg-offset: #ddd;
@@ -21,21 +21,15 @@
 	color: var(--text-color)
 }
 
-:global body.dark {
+body.dark {
 	--bg: #282828;
 	--offset-bg: #383838;
 	--offset-bg-offset: #484848;
 	--text-color: #eee;
 }
 
-:global .u-clearfix::after {
-	content: '';
-	display: table;
-	clear: both;
-}
-
-:global *,
-:global *::before,
-:global *::after {
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
 }

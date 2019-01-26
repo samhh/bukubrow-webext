@@ -38,6 +38,31 @@ const plugins = [
 
 if (devMode) plugins.push(new CaseSensitivePathsPlugin());
 
+const genCSSLoadersConfig = (modulesEnabled) => [
+	CSSPlugin.loader,
+	{
+		loader: 'css-loader',
+		options: {
+			sourceMap: devMode,
+			modules: modulesEnabled ? 'local' : false,
+			importLoaders: 1,
+		},
+	},
+	{
+		loader: 'postcss-loader',
+		options: {
+			plugins: () => [
+				autoprefixer({
+					browsers: [
+						'Chrome >= 55',
+						'Firefox >= 52',
+					],
+				}),
+			],
+		},
+	},
+];
+
 module.exports = {
 	devtool,
 	plugins,
@@ -84,32 +109,14 @@ module.exports = {
 				use: ['awesome-typescript-loader'],
 				exclude: /node_modules/,
 			},
+			// *global.css is global, all other .css is locally scoped
 			{
-				test: /\.css$/,
-				use: [
-					CSSPlugin.loader,
-					{
-						loader: 'css-loader',
-						options: {
-							sourceMap: devMode,
-							modules: 'local',
-							importLoaders: 1,
-						},
-					},
-					{
-						loader: 'postcss-loader',
-						options: {
-							plugins: () => [
-								autoprefixer({
-									browsers: [
-										'Chrome >= 55',
-										'Firefox >= 52',
-									],
-								}),
-							],
-						},
-					},
-				],
+				test: /global\.css$/,
+				use: genCSSLoadersConfig(false),
+			},
+			{
+				test: /(?<!global).css$/,
+				use: genCSSLoadersConfig(true),
 			},
 		],
 	},
