@@ -2,11 +2,11 @@ import { browser } from 'webextension-polyfill-ts';
 import sortArrOfObjAlphabetically from 'Modules/sort-arr-of-obj-alphabetically';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 
-interface StorageState {
-	bookmarks?: LocalBookmark[];
-	bookmarksSchemaVersion?: number;
-	hasTriggeredRequest?: boolean;
-}
+type StorageState = Partial<{
+	bookmarks: LocalBookmark[];
+	bookmarksSchemaVersion: number;
+	hasTriggeredRequest: boolean;
+}>;
 
 // Fetch bookmarks from local storage, and check schema version
 export const getBookmarks = () => browser.storage.local.get(['bookmarks', 'bookmarksSchemaVersion'])

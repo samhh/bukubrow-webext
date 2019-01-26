@@ -5,7 +5,7 @@ import {
 	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
 	setAddBookmarkModalDisplay, setEditBookmarkModalDisplay, setDeleteBookmarkModalDisplay,
 } from './actions';
-import { getFilteredBookmarks, getFocusedBookmark } from 'Store/selectors';
+import { getFilteredBookmarks } from 'Store/selectors';
 
 type BookmarksThunkActionCreator<R = void> = ThunkActionCreator<BookmarksActions, R>;
 
