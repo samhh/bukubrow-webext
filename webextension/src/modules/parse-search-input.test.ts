@@ -24,14 +24,31 @@ describe('parse search input', () => {
 	});
 
 	test('correctly parse peculiar input', () => {
-		const input1 = ' :url :';
-		const result1 = parseSearchInput(input1);
-		const expected1: ParsedInputResult = {
+		const emptyResult: ParsedInputResult = {
 			name: '',
 			desc: [],
-			url: ['url'],
+			url: [],
 			tags: [],
 		};
-		expect(result1).toMatchObject(expected1);
+
+		const testCases: [string, Partial<ParsedInputResult>][] = [
+			['a', { name: 'a' }],
+			['a :', { name: 'a :' }],
+			['a :u', { name: 'a', url: ['u'] }],
+			['a:a', { name: 'a:a' }],
+			['a:a :', { name: 'a:a :' }],
+			['a:a :u', { name: 'a:a', url: ['u'] }],
+			['aa', { name: 'aa' }],
+			[' a :', { name: ' a :' }],
+			[' a :u', { name: ' a', url: ['u'] }],
+			[' :', { name: ' :' }],
+			[' :u', { url: ['u'] }],
+			[' :u :', { url: ['u'] }],
+			[' :u :u', { url: ['u', 'u'] }],
+		];
+
+		for (const testCase of testCases) {
+			expect(parseSearchInput(testCase[0])).toMatchObject({ ...emptyResult, ...testCase[1] });
+		}
 	});
 });
