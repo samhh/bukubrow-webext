@@ -1,4 +1,4 @@
-const nameRegExp = /^[^#>:]*?(?:(?= +[#>:].+)|$)/;
+const nameRegExp = /^.*?(?:(?=^[#>:].+)|(?= +[#>:].+)|$)/;
 const descsRegExp = /(?:^| )>(.+?)(?= +[#>:]|$)/g;
 const urlsRegExp = /(?:^| ):(.+?)(?= +[#>:]|$)/g;
 const tagsRegExp = /(?:^| )#(.+?)(?= +[#>:]|$)/g;
