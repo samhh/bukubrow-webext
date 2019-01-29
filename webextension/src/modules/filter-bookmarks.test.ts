@@ -24,7 +24,7 @@ const incredibleBookmark: LocalBookmark = {
 	title: 'Incredibly excellent',
 	desc: 'Truly outstanding and duper awesome',
 	url: 'http://www.samhh.com',
-	tags: ['great', 'superb'],
+	tags: ['great', 'superb', 'supreme'],
 	flags: 20,
 };
 
@@ -43,6 +43,7 @@ const emptyParsedInput: ParsedInputResult = {
 	desc: [],
 	url: [],
 	tags: [],
+	wildcard: [],
 };
 
 describe('filter bookmarks with parsed input case insensitively', () => {
@@ -64,5 +65,15 @@ describe('filter bookmarks with parsed input case insensitively', () => {
 
 		const expectedUrlResult = [superBookmark, incredibleBookmark, unstoppableBookmark];
 		expect(urlFilter).toMatchObject(expectedUrlResult);
+	});
+
+	test('filter by wildcard', () => {
+		const wildcardFilter = filterBookmarks(allBookmarks, {
+			...emptyParsedInput,
+			wildcard: ['supreme', 'duckduck'],
+		});
+
+		const expectedWildcardResult = [coolBookmark];
+		expect(wildcardFilter).toMatchObject(expectedWildcardResult);
 	});
 });

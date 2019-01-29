@@ -2,13 +2,14 @@ import parseSearchInput, { ParsedInputResult } from 'Modules/parse-search-input'
 
 describe('parse search input', () => {
 	test('correctly parse ideal input', () => {
-		const input1 = 'thing >desc #tag1 #tag2 :url';
+		const input1 = 'thing >desc #tag1 #tag2 *all :url';
 		const result1 = parseSearchInput(input1);
 		const expected1: ParsedInputResult = {
 			name: 'thing',
 			desc: ['desc'],
 			url: ['url'],
 			tags: ['tag1', 'tag2'],
+			wildcard: ['all'],
 		};
 		expect(result1).toMatchObject(expected1);
 
@@ -19,8 +20,20 @@ describe('parse search input', () => {
 			desc: ['a b c'],
 			url: [],
 			tags: [],
+			wildcard: [],
 		};
 		expect(result2).toMatchObject(expected2);
+
+		const input3 = '*search all';
+		const result3 = parseSearchInput(input3);
+		const expected3: ParsedInputResult = {
+			name: '',
+			desc: [],
+			url: [],
+			tags: [],
+			wildcard: ['search all'],
+		};
+		expect(result3).toMatchObject(expected3);
 	});
 
 	test('correctly parse peculiar input', () => {
@@ -29,6 +42,7 @@ describe('parse search input', () => {
 			desc: [],
 			url: [],
 			tags: [],
+			wildcard: [],
 		};
 
 		const testCases: [string, Partial<ParsedInputResult>][] = [

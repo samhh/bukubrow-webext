@@ -48,7 +48,7 @@ const Bookmark = memo<Props>((props) => {
 		>
 			<header>
 				<h1 className={s.name}>
-					<HighlightMarkup str={props.title} match={props.parsedFilter.name} />
+					<HighlightMarkup str={props.title} match={[props.parsedFilter.name, ...props.parsedFilter.wildcard]} />
 				</h1>
 
 				<ul className={s.tags}>
@@ -57,7 +57,7 @@ const Bookmark = memo<Props>((props) => {
 						<Tag
 							key={tag}
 							id={tag}
-							label={<HighlightMarkup str={tag} match={props.parsedFilter.tags} />}
+							label={<HighlightMarkup str={tag} match={[...props.parsedFilter.tags, ...props.parsedFilter.wildcard]} />}
 						/>
 					))}
 				</ul>
@@ -85,12 +85,12 @@ const Bookmark = memo<Props>((props) => {
 
 			{props.desc && (
 				<p className={s.desc}>
-					&#x3E; <HighlightMarkup str={props.desc} match={props.parsedFilter.desc} />
+					&#x3E; <HighlightMarkup str={props.desc} match={[...props.parsedFilter.desc, ...props.parsedFilter.wildcard]} />
 				</p>
 			)}
 
 			<h2 className={s.url}>
-				<HighlightMarkup str={props.url} match={props.parsedFilter.url} />
+				<HighlightMarkup str={props.url} match={[...props.parsedFilter.url, ...props.parsedFilter.wildcard]} />
 			</h2>
 		</li>
 	);
