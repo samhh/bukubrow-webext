@@ -2,8 +2,11 @@
 	--btn-icon-size: 25px;
 }
 
-.btn {
+.wrapper {
 	position: relative;
+}
+
+.btn {
 	padding: calc(var(--sizing) / 2) var(--sizing);
 	border: 1px solid var(--offset-bg);
 	border-radius: var(--border-radius);
@@ -64,7 +67,7 @@
 	transition: opacity .3s;
 }
 
-.btn:hover .tooltip {
+.btn:hover + .tooltip {
 	visibility: visible;
 	opacity: 1;
 }

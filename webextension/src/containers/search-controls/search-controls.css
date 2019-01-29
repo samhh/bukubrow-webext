@@ -23,7 +23,7 @@
 	color: var(--text-color);
 }
 
-.btn {
+.btn-wrapper {
 	position: static;
 }
 

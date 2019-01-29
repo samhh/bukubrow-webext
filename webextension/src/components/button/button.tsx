@@ -1,6 +1,6 @@
 import React, { forwardRef, Ref, SFC, MouseEvent } from 'react';
 import cn from 'classnames';
-import styles from './button.css';
+import s from './button.css';
 
 interface BaseProps {
 	forwardedRef?: Ref<HTMLButtonElement>;
@@ -8,6 +8,7 @@ interface BaseProps {
 	tooltip?: string;
 	type?: 'button' | 'submit';
 	className?: string;
+	wrapperClassName?: string;
 	tooltipClassName?: string;
 }
 
@@ -22,29 +23,31 @@ interface PropsWithIcon extends BaseProps {
 type Props = XOR<PropsWithLabel, PropsWithIcon>;
 
 const Button: SFC<Props> = props => (
-	<button
-		className={cn(
-			styles.btn,
-			{ [styles['btn--icon']]: !!props.iconHTML },
-			props.className,
-		)}
-		type={props.type || 'button'}
-		onClick={props.onClick}
-		ref={props.forwardedRef}
-	>
-		{props.label}
+	<span className={[s.wrapper, props.wrapperClassName].join(' ')}>
+		<button
+			className={cn(
+				s.btn,
+				{ [s['btn--icon']]: !!props.iconHTML },
+				props.className,
+			)}
+			type={props.type || 'button'}
+			onClick={props.onClick}
+			ref={props.forwardedRef}
+		>
+			{props.label}
 
-		{props.iconHTML && (
-			<span
-				className={styles.icon}
-				dangerouslySetInnerHTML={{ __html: props.iconHTML }}
-			/>
-		)}
+			{props.iconHTML && (
+				<span
+					className={s.icon}
+					dangerouslySetInnerHTML={{ __html: props.iconHTML }}
+				/>
+			)}
+		</button>
 
 		{props.tooltip && (
-			<span className={cn(styles.tooltip, props.tooltipClassName)}>{props.tooltip}</span>
+			<span className={cn(s.tooltip, props.tooltipClassName)}>{props.tooltip}</span>
 		)}
-	</button>
+	</span>
 );
 
 export default forwardRef((props: Props, ref?: Ref<HTMLButtonElement>) => (
