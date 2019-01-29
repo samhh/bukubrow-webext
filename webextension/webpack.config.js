@@ -23,12 +23,12 @@ const plugins = [
 	]),
 	new HtmlWebpackPlugin({
 		filename: 'content/content.build.html',
-		template: './src/template.pug',
+		template: './src/template.html',
 		chunks: ['content'],
 	}),
 	new HtmlWebpackPlugin({
 		filename: 'options/options.build.html',
-		template: './src/template.pug',
+		template: './src/template.html',
 		chunks: ['options'],
 	}),
 	new CSSPlugin({
@@ -83,16 +83,7 @@ module.exports = {
 		path: `${__dirname}/dist/`,
 	},
 	module: {
-		rules: [
-			{
-				test: /\.pug$/,
-				use: [{
-					loader: 'pug-loader',
-					options: {
-						pretty: devMode,
-					},
-				}],
-			}, {
+		rules: [{
 				test: /\.svg$/,
 				use: ['svg-inline-loader'],
 			},
