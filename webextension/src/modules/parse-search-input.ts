@@ -1,13 +1,15 @@
-const nameRegExp = /^.*?(?:(?=^[#>:].+)|(?= +[#>:].+)|$)/;
-const descsRegExp = /(?:^| )>(.+?)(?= +[#>:]|$)/g;
-const urlsRegExp = /(?:^| ):(.+?)(?= +[#>:]|$)/g;
-const tagsRegExp = /(?:^| )#(.+?)(?= +[#>:]|$)/g;
+const nameRegExp = /^.*?(?:(?=^[#>:*].+)|(?= +[#>:*].+)|$)/;
+const descsRegExp = /(?:^| )>(.+?)(?= +[#>:*]|$)/g;
+const urlsRegExp = /(?:^| ):(.+?)(?= +[#>:*]|$)/g;
+const tagsRegExp = /(?:^| )#(.+?)(?= +[#>:*]|$)/g;
+const wildcardsRegExp = /(?:^| )\*(.+?)(?= +[#>:*]|$)/g;
 
 export interface ParsedInputResult {
 	name: string;
 	desc: string[];
 	url: string[];
 	tags: string[];
+	wildcard: string[];
 }
 
 // From: https://stackoverflow.com/a/54326240/3369753
@@ -27,6 +29,7 @@ const parseSearchInput = (input: string): ParsedInputResult => ({
 	desc: execMulti(input, descsRegExp),
 	url: execMulti(input, urlsRegExp),
 	tags: execMulti(input, tagsRegExp),
+	wildcard: execMulti(input, wildcardsRegExp),
 });
 
 export default parseSearchInput;
