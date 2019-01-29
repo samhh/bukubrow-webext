@@ -43,7 +43,7 @@ const SearchControls: SFC<Props> = (props) => {
 				/>
 
 				<Button
-					className={s.btn}
+					wrapperClassName={s['btn-wrapper']}
 					tooltipClassName={s.tooltip}
 					type="button"
 					onClick={props.openAllVisibleBookmarks}
@@ -52,7 +52,7 @@ const SearchControls: SFC<Props> = (props) => {
 				/>
 
 				<Button
-					className={s.btn}
+					wrapperClassName={s['btn-wrapper']}
 					tooltipClassName={s.tooltip}
 					type="button"
 					onClick={props.onAdd}
@@ -61,7 +61,8 @@ const SearchControls: SFC<Props> = (props) => {
 				/>
 
 				<Button
-					className={[s.btn, s['btn--refresh']].join(' ')}
+					className={s['btn--refresh']}
+					wrapperClassName={s['btn-wrapper']}
 					tooltipClassName={s.tooltip}
 					type="button"
 					onClick={props.refreshBookmarks}
