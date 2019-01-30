@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.0] - 2019-01-30
+### Added
+- Input filtering with tokens in the search input.
+- Hotkeys for search control bar buttons.
+- Hotkey for focusing search input.
+- Confirmation modal when opening all bookmarks.
+
+### Changed
+- Fixed button tooltips going crazy when buttons are active.
+- Hopefully fixed some sporadic issues, usually focused around tags.
+- Improved error messages.
+
 ## [2.4.2] - 2018-10-14
 ### Changed
 - Fixed tags not adhering correctly to Buku's schema.
