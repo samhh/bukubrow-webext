@@ -1,4 +1,4 @@
-import check from 'Modules/string-includes-case-insensitive';
+import { includesCaseInsensitive as check } from 'Modules/string';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 
 const filterBookmarks = (bookmarks: LocalBookmark[], test: ParsedInputResult) => bookmarks.filter((bookmark) => {

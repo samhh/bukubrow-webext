@@ -11,14 +11,17 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const BookmarkDeleteFormContainer: SFC<Props> = props => props.bookmarkToDelete && (
-	<BookmarkDeleteForm
-		bookmark={props.bookmarkToDelete}
-		display={props.displayDeleteForm}
-		onCancel={props.setDeleteBookmarkModalDisplay.bind(null, false)}
-		onConfirm={props.onSubmit}
-	/>
-) || null;
+const BookmarkDeleteFormContainer: SFC<Props> = props => props.bookmarkToDelete.caseOf({
+	Just: bookmarkToDelete => (
+		<BookmarkDeleteForm
+			bookmark={bookmarkToDelete}
+			display={props.displayDeleteForm}
+			onCancel={props.setDeleteBookmarkModalDisplay.bind(null, false)}
+			onConfirm={props.onSubmit}
+		/>
+	),
+	Nothing: () => null,
+});
 
 const mapStateToProps = (state: AppState) => ({
 	bookmarkToDelete: getBookmarkToDelete(state),

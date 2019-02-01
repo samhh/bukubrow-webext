@@ -54,7 +54,7 @@ describe('filter bookmarks with parsed input case insensitively', () => {
 		});
 
 		const expectedTitleResult = [superBookmark];
-		expect(titleFilter).toMatchObject(expectedTitleResult);
+		expect(titleFilter).toStrictEqual(expectedTitleResult);
 	});
 
 	test('filter by url', () => {
@@ -64,7 +64,7 @@ describe('filter bookmarks with parsed input case insensitively', () => {
 		});
 
 		const expectedUrlResult = [superBookmark, incredibleBookmark, unstoppableBookmark];
-		expect(urlFilter).toMatchObject(expectedUrlResult);
+		expect(urlFilter).toStrictEqual(expectedUrlResult);
 	});
 
 	test('filter by wildcard', () => {
@@ -74,6 +74,6 @@ describe('filter bookmarks with parsed input case insensitively', () => {
 		});
 
 		const expectedWildcardResult = [coolBookmark];
-		expect(wildcardFilter).toMatchObject(expectedWildcardResult);
+		expect(wildcardFilter).toStrictEqual(expectedWildcardResult);
 	});
 });

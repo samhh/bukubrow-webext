@@ -11,7 +11,7 @@ describe('parse search input', () => {
 			tags: ['tag1', 'tag2'],
 			wildcard: ['all'],
 		};
-		expect(result1).toMatchObject(expected1);
+		expect(result1).toStrictEqual(expected1);
 
 		const input2 = '>a b c';
 		const result2 = parseSearchInput(input2);
@@ -22,7 +22,7 @@ describe('parse search input', () => {
 			tags: [],
 			wildcard: [],
 		};
-		expect(result2).toMatchObject(expected2);
+		expect(result2).toStrictEqual(expected2);
 
 		const input3 = '*search all';
 		const result3 = parseSearchInput(input3);
@@ -33,7 +33,7 @@ describe('parse search input', () => {
 			tags: [],
 			wildcard: ['search all'],
 		};
-		expect(result3).toMatchObject(expected3);
+		expect(result3).toStrictEqual(expected3);
 	});
 
 	test('correctly parse peculiar input', () => {
@@ -62,7 +62,7 @@ describe('parse search input', () => {
 		];
 
 		for (const testCase of testCases) {
-			expect(parseSearchInput(testCase[0])).toMatchObject({ ...emptyResult, ...testCase[1] });
+			expect(parseSearchInput(testCase[0])).toStrictEqual({ ...emptyResult, ...testCase[1] });
 		}
 	});
 });
