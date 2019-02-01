@@ -1,4 +1,5 @@
 import React, { useState, useEffect, SFC, FormEvent } from 'react';
+import { Maybe, Nothing } from 'purify-ts/Maybe';
 import styles from './bookmark-form.css';
 
 import Button from 'Components/button/';
@@ -10,11 +11,11 @@ import TextInput from 'Components/text-input/';
 interface Props {
 	onClose(): void;
 	onSubmit(bookmark: LocalBookmark | LocalBookmarkUnsaved): void;
-	bookmark?: Partial<LocalBookmark>;
+	bookmark: Maybe<Partial<LocalBookmark>>;
 }
 
 interface BookmarkInput {
-	id: Nullable<LocalBookmark['id']>;
+	id: Maybe<LocalBookmark['id']>;
 	title: LocalBookmark['title'];
 	desc: LocalBookmark['desc'];
 	url: LocalBookmark['url'];
@@ -27,7 +28,7 @@ type KeyofStringValues<T> = {
 
 const BookmarkForm: SFC<Props> = (props) => {
 	const [bookmarkInput, setBookmarkInput] = useState<BookmarkInput>({
-		id: null,
+		id: Nothing,
 		title: '',
 		desc: '',
 		url: '',
@@ -40,12 +41,12 @@ const BookmarkForm: SFC<Props> = (props) => {
 	const [tagInput, setTagInput] = useState('');
 
 	useEffect(() => {
-		if (props.bookmark) {
+		props.bookmark.ifJust((bookmark) => {
 			// Ensure not to copy unwanted properties into state
-			const { flags, ...toCopy } = props.bookmark;
+			const { flags, id, ...toCopy } = bookmark;
 
-			setInputBookmarkPartial({ ...toCopy });
-		}
+			setInputBookmarkPartial({ ...toCopy, id: Maybe.fromNullable(id) });
+		});
 	}, []);
 
 	const handleBookmarkTextInput = (key: KeyofStringValues<BookmarkInput>) => (input: string) => {

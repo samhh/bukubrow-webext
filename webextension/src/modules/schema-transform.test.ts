@@ -29,8 +29,8 @@ describe('schema transform', () => {
 			flags: 0,
 		};
 
-		expect(transform(remoteBm)).toMatchObject(expectedLocalBm);
-		expect(transform(remoteBmLegacy)).toMatchObject(expectedLocalBm);
+		expect(transform(remoteBm)).toStrictEqual(expectedLocalBm);
+		expect(transform(remoteBmLegacy)).toStrictEqual(expectedLocalBm);
 	});
 
 	test('untransform local bookmark to remote bookmark', () => {
@@ -52,6 +52,6 @@ describe('schema transform', () => {
 			flags: 0,
 		};
 
-		expect(untransform(localBm)).toMatchObject(expectedRemoteBm);
+		expect(untransform(localBm)).toStrictEqual(expectedRemoteBm);
 	});
 });

@@ -1,4 +1,5 @@
 import React, { SFC } from 'react';
+import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { connect } from 'react-redux';
 import { requestBookmarks } from 'Comms/frontend';
 import { scrollToTop } from 'Modules/scroll-window';
@@ -28,7 +29,7 @@ const SearchControlsContainer: SFC<Props> = props => (
 
 const mapStateToProps = (state: AppState) => ({
 	searchFilter: state.input.searchFilter,
-	searchEnabled: !!state.bookmarks.bookmarks.length,
+	searchEnabled: NonEmptyList.isNonEmpty(state.bookmarks.bookmarks),
 	numFilteredBookmarks: getUnlimitedFilteredBookmarks(state).length,
 	displayAdd: state.bookmarks.displayAddBookmarkModal,
 });

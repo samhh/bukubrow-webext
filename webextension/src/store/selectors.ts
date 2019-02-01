@@ -1,3 +1,5 @@
+import { Maybe } from 'purify-ts/Maybe';
+import { List } from 'purify-ts/List';
 import { createSelector } from 'reselect';
 import { AppState } from 'Store';
 import parseSearchInput from 'Modules/parse-search-input';
@@ -29,10 +31,10 @@ export const getNumFilteredUnrenderedBookmarks = createSelector(getUnlimitedFilt
 	(u, l) => u.slice(l.length).length);
 
 export const getFocusedBookmark = createSelector(getFilteredBookmarks, getFocusedBookmarkIndex,
-	(bookmarks, focusedId) => focusedId !== null && bookmarks[focusedId] || undefined);
+	(bookmarks, focusedId) => focusedId.chain(fid => List.at(fid, bookmarks)));
 
 export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
-	(bookmarks, editId) => bookmarks.find(bm => bm.id === editId));
+	(bookmarks, editId) => editId.chain(eid => Maybe.fromNullable(bookmarks.find(bm => bm.id === eid))));
 
 export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDeleteId,
-	(bookmarks, deleteId) => bookmarks.find(bm => bm.id === deleteId));
+	(bookmarks, deleteId) => deleteId.chain(did => Maybe.fromNullable(bookmarks.find(bm => bm.id === did))));

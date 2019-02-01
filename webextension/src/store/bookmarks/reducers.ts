@@ -1,3 +1,4 @@
+import { Nothing } from 'purify-ts/Maybe';
 import { Reducer } from 'redux';
 import { ActionType } from 'typesafe-actions';
 import * as bookmarksActions from './actions';
@@ -8,9 +9,9 @@ export type BookmarksActions = ActionType<typeof bookmarksActions>;
 const initialState = {
 	bookmarks: [],
 	limitNumRendered: true,
-	focusedBookmarkIndex: null,
-	bookmarkEditId: null,
-	bookmarkDeleteId: null,
+	focusedBookmarkIndex: Nothing,
+	bookmarkEditId: Nothing,
+	bookmarkDeleteId: Nothing,
 	displayAddBookmarkModal: false,
 	displayEditBookmarkModal: false,
 	displayDeleteBookmarkModal: false,

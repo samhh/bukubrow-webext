@@ -1,4 +1,5 @@
 import React, { useRef, SFC } from 'react';
+import { Maybe } from 'purify-ts/Maybe';
 import { scrollToEl } from 'Modules/scroll-window';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
@@ -17,7 +18,7 @@ interface Props {
 	attemptFocusedBookmarkIndexDecrement(): boolean;
 	bookmarks: LocalBookmark[];
 	parsedFilter: ParsedInputResult;
-	focusedBookmarkId?: BookmarkId;
+	focusedBookmarkId: Maybe<BookmarkId>;
 }
 
 const BookmarksList: SFC<Props> = (props) => {
@@ -49,22 +50,26 @@ const BookmarksList: SFC<Props> = (props) => {
 
 	return (
 		<ul className={s.wrapper}>
-			{props.bookmarks.map(bookmark => (
-				<Bookmark
-					key={bookmark.id}
-					id={bookmark.id}
-					title={bookmark.title}
-					url={bookmark.url}
-					desc={bookmark.desc}
-					tags={bookmark.tags}
-					parsedFilter={props.parsedFilter}
-					isFocused={bookmark.id === props.focusedBookmarkId}
-					openBookmark={props.onOpenBookmark}
-					onEdit={props.onEditBookmark}
-					onDelete={props.onDeleteBookmark}
-					ref={bookmark.id === props.focusedBookmarkId ? activeBookmarkEl : undefined}
-				/>
-			))}
+			{props.bookmarks.map((bookmark) => {
+				const isFocused = bookmark.id === props.focusedBookmarkId.extract();
+
+				return (
+					<Bookmark
+						key={bookmark.id}
+						id={bookmark.id}
+						title={bookmark.title}
+						url={bookmark.url}
+						desc={bookmark.desc}
+						tags={bookmark.tags}
+						parsedFilter={props.parsedFilter}
+						isFocused={isFocused}
+						openBookmark={props.onOpenBookmark}
+						onEdit={props.onEditBookmark}
+						onDelete={props.onDeleteBookmark}
+						ref={isFocused ? activeBookmarkEl : undefined}
+					/>
+				);
+			})}
 		</ul>
 	);
 };
