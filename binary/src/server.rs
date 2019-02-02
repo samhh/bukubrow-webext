@@ -1,9 +1,9 @@
+use chrome_native_messaging::{errors, event_loop, write_output};
+use config::VERSION;
+use database::{Bookmark, BookmarkId, SqliteDatabase};
+use serde_json;
 use std::error::Error;
 use std::io;
-use config::VERSION;
-use database::{SqliteDatabase, Bookmark, BookmarkId};
-use serde_json;
-use chrome_native_messaging::{event_loop, write_output, errors};
 
 type JSON = serde_json::Value;
 
@@ -73,18 +73,14 @@ impl Server {
         let bookmarks = self.db.get_bookmarks();
 
         match bookmarks {
-            Ok(bm) => {
-                json!({
-                    "success": true,
-                    "bookmarks": bm,
-                })
-            }
-            Err(err) => {
-                json!({
-                    "success": false,
-                    "message": err.description(),
-                })
-            }
+            Ok(bm) => json!({
+                "success": true,
+                "bookmarks": bm,
+            }),
+            Err(err) => json!({
+                "success": false,
+                "message": err.description(),
+            }),
         }
     }
 

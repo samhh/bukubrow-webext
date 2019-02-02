@@ -1,10 +1,12 @@
-#[macro_use] extern crate serde_json;
-#[macro_use] extern crate serde_derive;
-extern crate rusqlite;
+#[macro_use]
+extern crate serde_json;
+#[macro_use]
+extern crate serde_derive;
 extern crate chrome_native_messaging;
+extern crate rusqlite;
 
-mod config;
 mod buku;
+mod config;
 mod database;
 mod server;
 
