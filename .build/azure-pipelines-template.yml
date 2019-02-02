@@ -22,7 +22,15 @@ jobs:
   - ${{ if eq(parameters.name, 'Linux') }}:
      - script: make binary-linux-x64
        displayName: Build binary (Linux)
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: 'artifactName'
+          targetPath: 'release/binary-linux-x64.zip'
   - ${{ if eq(parameters.name, 'macOS') }}:
       - script: make binary-darwin-x64
         displayName: Build binary (macOS)
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: 'artifactName'
+          targetPath: 'release/binary-darwin-x64.zip'
 
