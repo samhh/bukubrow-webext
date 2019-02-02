@@ -1,0 +1,23 @@
+jobs:
+- job: ${{ parameters.name }}
+  pool:
+      vmImage: ${{ parameters.vmImage }}
+  steps:
+  - script: |
+      curl https://sh.rustup.rs -sSf | sh -s -- -y
+      echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+    displayName: Install Rust
+  - ${{ if eq(parameters.name, 'Linux') }}:
+    - script: make binary-linux-x64
+      displayName: Build binary (Linux)
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: Binary for Linux
+        targetPath: release/
+  - ${{ if eq(parameters.name, 'macOS') }}:
+    - script: make binary-darwin-x64
+      displayName: Build binary (macOS)
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: Binary for macOS
+        targetPath: release/
