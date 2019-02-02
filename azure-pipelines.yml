@@ -1,0 +1,21 @@
+# See for reference: https://aka.ms/yaml
+
+# # Only trigger for test PR for now!
+# trigger: none
+# pr: [azure-ci]
+
+jobs:
+- job: Linux
+  displayName: Linux Release
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - script: |
+        echo hello from multi-line...
+        echo ...linux!
+- job: macOS
+  displayName: macOS Release
+  pool:
+    vmImage: 'macOS-10.13'
+  steps:
+  - script: echo hello from single-line macOS
