@@ -9,6 +9,7 @@ name = "bukubrow"
 [dependencies]
 chrome_native_messaging = "0.1.2"
 rusqlite = "0.14"
+rusqlite = { version = "0.14", features = ["bundled"] }
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
