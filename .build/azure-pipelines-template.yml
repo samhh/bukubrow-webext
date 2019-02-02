@@ -22,6 +22,7 @@ jobs:
   - ${{ if eq(parameters.name, 'Linux') }}:
     - script: make binary-linux-x64
       displayName: Build binary (Linux)
+    - script: pwd && ls
     - task: PublishPipelineArtifact@0
       inputs:
         artifactName: 'artifactName'
