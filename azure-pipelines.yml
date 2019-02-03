@@ -18,12 +18,12 @@ jobs:
       $HOME/.cargo/bin/cargo fmt -- --check
     displayName: Run rustfmt
 
-- template: .ci/azure-pipelines-template.yml
+- template: ./azure-pipelines-template.yml
   parameters:
     name: Linux
     vmImage: ubuntu-16.04
 
-- template: .ci/azure-pipelines-template.yml
+- template: ./azure-pipelines-template.yml
   parameters:
     name: macOS
     vmImage: macOS-10.13
