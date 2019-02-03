@@ -1,7 +1,8 @@
 [package]
 name = "bukubrow"
-version = "1.1.0"
-authors = ["Sam A. Horvath-Hunt <samhh.web@gmail.com>"]
+version = "1.2.0"
+authors = ["Sam A. Horvath-Hunt"]
+edition = "2018"
 
 [[bin]]
 name = "bukubrow"

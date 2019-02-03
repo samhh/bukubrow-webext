@@ -1,6 +1,6 @@
 use chrome_native_messaging::{errors, event_loop, write_output};
-use config::VERSION;
-use database::{Bookmark, BookmarkId, SqliteDatabase};
+use crate::config::VERSION;
+use crate::database::{Bookmark, BookmarkId, SqliteDatabase};
 use serde_json;
 use std::error::Error;
 use std::io;
