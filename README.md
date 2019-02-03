@@ -5,7 +5,7 @@ Bukubrow is a WebExtension for [Buku](https://github.com/jarun/Buku), a command-
 
 It uses a [native binary written in Rust](https://github.com/SamHH/bukubrow/tree/master/binary/src) to interface with your Buku database. Secure communication between the binary and the browser extension is handled via [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
 
-This project's foundation was heavily influenced by [browserpass](https://github.com/dannyvankooten/browserpass), a WebExtension designed to allow a similar kind of synchronicity between the browser and [pass](https://www.passwordstore.org).
+This project's foundation was heavily influenced by [browserpass](https://github.com/browserpass/browserpass), a WebExtension designed to allow a similar kind of synchronicity between the browser and [pass](https://www.passwordstore.org).
 
 ## Prerequisites
 
