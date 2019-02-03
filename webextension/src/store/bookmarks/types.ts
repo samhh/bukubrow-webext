@@ -1,9 +1,11 @@
+import { Maybe } from 'purify-ts/Maybe';
+
 export interface BookmarksState {
 	bookmarks: Bookmark[];
 	limitNumRendered: boolean;
-	focusedBookmarkIndex: Nullable<number>;
-	bookmarkEditId: Nullable<Bookmark['id']>;
-	bookmarkDeleteId: Nullable<Bookmark['id']>;
+	focusedBookmarkIndex: Maybe<number>;
+	bookmarkEditId: Maybe<Bookmark['id']>;
+	bookmarkDeleteId: Maybe<Bookmark['id']>;
 	displayAddBookmarkModal: boolean;
 	displayEditBookmarkModal: boolean;
 	displayDeleteBookmarkModal: boolean;

@@ -1,3 +1,4 @@
+import { Just, Nothing } from 'purify-ts/Maybe';
 import { sendBackendMessage } from 'Comms/frontend';
 import { ThunkActionCreator } from 'Store';
 import { BookmarksActions } from './reducers';
@@ -30,44 +31,47 @@ export const updateBookmark = (bookmark: LocalBookmark): BookmarksThunkActionCre
 export const deleteBookmark = (): BookmarksThunkActionCreator<Promise<void>> => async (dispatch, getState) => {
 	const { bookmarkDeleteId } = getState().bookmarks;
 
-	if (bookmarkDeleteId === null) return;
+	bookmarkDeleteId.ifJust(async (bookmarkId) => {
+		await sendBackendMessage({
+			bookmarkId,
+			deleteBookmark: true,
+		});
 
-	await sendBackendMessage({
-		deleteBookmark: true,
-		bookmarkId: bookmarkDeleteId,
+		dispatch(setDeleteBookmarkModalDisplay(false));
 	});
 
-	dispatch(setDeleteBookmarkModalDisplay(false));
 };
 
 export const initiateBookmarkEdit = (id: LocalBookmark['id']): BookmarksThunkActionCreator => (dispatch) => {
-	dispatch(setBookmarkEditId(id));
+	dispatch(setBookmarkEditId(Just(id)));
 	dispatch(setEditBookmarkModalDisplay(true));
 };
 
 export const initiateBookmarkDeletion = (id: LocalBookmark['id']): BookmarksThunkActionCreator => (dispatch) => {
-	dispatch(setBookmarkDeleteId(id));
+	dispatch(setBookmarkDeleteId(Just(id)));
 	dispatch(setDeleteBookmarkModalDisplay(true));
 };
 
 export const attemptFocusedBookmarkIndexIncrement = (): BookmarksThunkActionCreator<boolean> => (dispatch, getState) => {
 	const state = getState();
 	const filteredBookmarks = getFilteredBookmarks(state);
-	const focusedBookmarkIndex = state.bookmarks.focusedBookmarkIndex;
+	const focusedBookmarkIndexMaybe = state.bookmarks.focusedBookmarkIndex;
 
-	if (focusedBookmarkIndex === null || focusedBookmarkIndex === filteredBookmarks.length - 1) return false;
-
-	dispatch(setFocusedBookmarkIndex(focusedBookmarkIndex + 1));
-
-	return true;
+	return focusedBookmarkIndexMaybe
+		.chain(fbmi => fbmi === filteredBookmarks.length - 1 ? Nothing : Just(fbmi + 1))
+		.ifJust((fbmi) => {
+			dispatch(setFocusedBookmarkIndex(Just(fbmi)));
+		})
+		.isJust();
 };
 
 export const attemptFocusedBookmarkIndexDecrement = (): BookmarksThunkActionCreator<boolean> => (dispatch, getState) => {
-	const { bookmarks: { focusedBookmarkIndex } } = getState();
+	const { bookmarks: { focusedBookmarkIndex: focusedBookmarkIndexMaybe } } = getState();
 
-	if (focusedBookmarkIndex === null || focusedBookmarkIndex === 0) return false;
-
-	dispatch(setFocusedBookmarkIndex(focusedBookmarkIndex - 1));
-
-	return true;
+	return focusedBookmarkIndexMaybe
+		.chain(fbmi => fbmi === 0 ? Nothing : Just(fbmi - 1))
+		.ifJust((fbmi) => {
+			dispatch(setFocusedBookmarkIndex(Just(fbmi)));
+		})
+		.isJust();
 };

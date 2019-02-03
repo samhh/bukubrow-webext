@@ -1,3 +1,4 @@
+import { Maybe } from 'purify-ts/Maybe';
 import { action } from 'typesafe-actions';
 import { BookmarksActionTypes, Bookmark } from './types';
 
@@ -11,17 +12,17 @@ export const setLimitNumRendered = (limit: boolean) => action(
 	limit,
 );
 
-export const setFocusedBookmarkIndex = (index: Nullable<number>) => action(
+export const setFocusedBookmarkIndex = (index: Maybe<number>) => action(
 	BookmarksActionTypes.SetFocusedBookmarkIndex,
 	index,
 );
 
-export const setBookmarkEditId = (id: Nullable<Bookmark['id']>) => action(
+export const setBookmarkEditId = (id: Maybe<Bookmark['id']>) => action(
 	BookmarksActionTypes.SetBookmarkEditId,
 	id,
 );
 
-export const setBookmarkDeleteId = (id: Nullable<Bookmark['id']>) => action(
+export const setBookmarkDeleteId = (id: Maybe<Bookmark['id']>) => action(
 	BookmarksActionTypes.SetBookmarkDeleteId,
 	id,
 );

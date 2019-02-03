@@ -13,7 +13,7 @@ NoticesThunkActionCreator<Promise<void>> => async (dispatch) => {
 
 	dispatch(addError(thisId, errorMsg));
 
-	if (typeof timeout !== 'number') return;
+	if (timeout === false) return;
 
 	await sleep(timeout);
 

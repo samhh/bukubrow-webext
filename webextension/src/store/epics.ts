@@ -1,8 +1,10 @@
 import { browser } from 'webextension-polyfill-ts';
+import { Just, Nothing } from 'purify-ts/Maybe';
+import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { sendBackendMessage, requestBookmarks } from 'Comms/frontend';
 import { BackendResponse } from 'Comms/shared';
 import { getBookmarks, hasTriggeredRequest } from 'Modules/cache';
-import { getActiveTheme, setTheme as setThemeInDOM } from 'Modules/theme';
+import { getActiveTheme, setTheme as setThemeInDOM, Theme } from 'Modules/theme';
 import ensureValidURL from 'Modules/ensure-valid-url';
 import { ThunkActionCreator } from 'Store';
 import { setAllBookmarks, setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
@@ -10,12 +12,15 @@ import { setDisplayTutorialMessage } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
-import { getFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
+import { getFilteredBookmarks, getUnlimitedFilteredBookmarks, getBookmarkToEdit } from 'Store/selectors';
 
-const getAndSetCachedBookmarks = (): ThunkActionCreator => (dispatch) => {
-	getBookmarks().then((bookmarks) => {
+const getAndSetCachedBookmarks = (): ThunkActionCreator => async (dispatch) => {
+	const bookmarksRes = await getBookmarks();
+
+	// Ensuring it's a non-empty list as the focused bookmark index relies upon it
+	bookmarksRes.ifJust((bookmarks: NonEmptyList<LocalBookmark>) => {
 		dispatch(setAllBookmarks(bookmarks));
-		dispatch(setFocusedBookmarkIndex(bookmarks.length ? 0 : null));
+		dispatch(setFocusedBookmarkIndex(Just(0)));
 	});
 };
 
@@ -50,8 +55,10 @@ const listenToBackend = (): ThunkActionCreator => (dispatch) => {
 	});
 };
 
-export const onLoad = (): ThunkActionCreator => (dispatch) => {
-	getActiveTheme().then(setThemeInDOM);
+export const onLoad = (): ThunkActionCreator => async (dispatch) => {
+	getActiveTheme().then((theme) => {
+		setThemeInDOM(theme.orDefault(Theme.Light));
+	});
 
 	hasTriggeredRequest().then((has) => {
 		dispatch(setDisplayTutorialMessage(!has));
@@ -66,13 +73,12 @@ export const onLoad = (): ThunkActionCreator => (dispatch) => {
 };
 
 export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator => (_, getState) => {
-	const bookmark = getState().bookmarks.bookmarks.find(bm => bm.id === id);
+	getBookmarkToEdit(getState())
+		.ifJust((bookmark) => {
+			browser.tabs.create({ url: ensureValidURL(bookmark.url) });
 
-	if (!bookmark) return;
-
-	browser.tabs.create({ url: ensureValidURL(bookmark.url) });
-
-	window.close();
+			window.close();
+		});
 };
 
 export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, getState) => {
@@ -93,5 +99,5 @@ export const setSearchFilterWithResets = (filter: string): ThunkActionCreator =>
 
 	const filteredBookmarks = getFilteredBookmarks(getState());
 
-	dispatch(setFocusedBookmarkIndex(filteredBookmarks.length ? 0 : null));
+	dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(filteredBookmarks) ? Just(0) : Nothing));
 };
