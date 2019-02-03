@@ -16,22 +16,17 @@ const checkBinary = () => {
 	const version = checkBinaryVersion();
 
 	return Promise.all([errors, version])
-		.then(([err, versionIsOkay]) => {
-			if (err || versionIsOkay === undefined) {
-				err === 'Specified native messaging host not found.'
-					? sendFrontendMessage({ cannotFindBinary: true })
-					: sendFrontendMessage({ unknownError: true });
+		.then(([errm, versionIsOkay]) => {
+			errm
+				.ifJust((err) => {
+					if (err === 'Specified native messaging host not found.') sendFrontendMessage({ cannotFindBinary: true });
+					else sendFrontendMessage({ unknownError: true });
+				})
+				.ifNothing(() => {
+					if (!versionIsOkay) sendFrontendMessage({ outdatedBinary: true });
+				});
 
-				return false;
-			}
-
-			if (versionIsOkay === false) {
-				sendFrontendMessage({ outdatedBinary: true });
-
-				return false;
-			}
-
-			return true;
+			return errm.isNothing() && versionIsOkay;
 		});
 };
 

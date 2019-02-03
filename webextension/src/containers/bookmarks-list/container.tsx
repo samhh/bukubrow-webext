@@ -18,12 +18,12 @@ type Props = StateProps & DispatchProps;
 const BookmarksListContainer: SFC<Props> = props => (
 	<BookmarksList
 		bookmarks={props.bookmarks}
-		focusedBookmarkId={props.focusedBookmark && props.focusedBookmark.id}
+		focusedBookmarkId={props.focusedBookmark.map(fb => fb.id)}
 		parsedFilter={props.parsedFilter}
 		onOpenBookmark={props.onOpenBookmark}
 		onEditBookmark={props.onEditBookmark}
 		onDeleteBookmark={props.onDeleteBookmark}
-		openFocusedBookmark={props.focusedBookmark ? props.onOpenBookmark.bind(null, props.focusedBookmark.id) : noop}
+		openFocusedBookmark={props.focusedBookmark.mapOrDefault(fb => props.onOpenBookmark.bind(null, fb.id), noop)}
 		attemptFocusedBookmarkIndexIncrement={props.attemptFocusedBookmarkIndexIncrement}
 		attemptFocusedBookmarkIndexDecrement={props.attemptFocusedBookmarkIndexDecrement}
 	/>

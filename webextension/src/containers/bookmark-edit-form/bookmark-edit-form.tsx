@@ -1,14 +1,15 @@
 import React, { SFC } from 'react';
+import { Maybe } from 'purify-ts/Maybe';
 import BookmarkForm from 'Components/bookmark-form/';
 
 interface Props {
 	onClose(): void;
 	onSubmit(bookmark: LocalBookmark): void;
 	display: boolean;
-	bookmark?: LocalBookmark;
+	bookmark: Maybe<LocalBookmark>;
 }
 
-const BookmarkEditForm: SFC<Props> = props => props.display && props.bookmark && (
+const BookmarkEditForm: SFC<Props> = props => props.display && props.bookmark.isJust() && (
 	<BookmarkForm
 		bookmark={props.bookmark}
 		onClose={props.onClose}
