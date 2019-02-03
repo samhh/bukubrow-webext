@@ -1,5 +1,4 @@
-use rusqlite::{Connection, Error as DbError, NO_PARAMS};
-use rusqlite::types::ToSql;
+use rusqlite::{types::ToSql, Connection, Error as DbError, NO_PARAMS};
 use std::path::PathBuf;
 
 pub type BookmarkId = i32;
@@ -53,7 +52,13 @@ impl SqliteDatabase {
             "INSERT INTO bookmarks(metadata, desc, tags, url, flags) VALUES (?1, ?2, ?3, ?4, ?5);";
         let exec = self.connection.execute(
             query,
-            &[&bm.metadata, &bm.desc, &bm.tags, &bm.url, &bm.flags as &ToSql],
+            &[
+                &bm.metadata,
+                &bm.desc,
+                &bm.tags,
+                &bm.url,
+                &bm.flags as &ToSql,
+            ],
         );
 
         exec
