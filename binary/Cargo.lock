@@ -26,7 +26,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "bukubrow"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "chrome_native_messaging 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rusqlite 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -83,6 +83,7 @@ name = "libsqlite3-sys"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
+ "cc 1.0.25 (registry+https://github.com/rust-lang/crates.io-index)",
  "pkg-config 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "vcpkg 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
