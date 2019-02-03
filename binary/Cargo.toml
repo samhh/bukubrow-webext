@@ -1,14 +1,15 @@
 [package]
 name = "bukubrow"
-version = "1.1.0"
-authors = ["Sam A. Horvath-Hunt <samhh.web@gmail.com>"]
+version = "1.2.0"
+authors = ["Sam A. Horvath-Hunt"]
+edition = "2018"
 
 [[bin]]
 name = "bukubrow"
 
 [dependencies]
 chrome_native_messaging = "0.1.2"
-rusqlite = { version = "0.14", features = ["bundled"] }
+rusqlite = { version = "0.16", features = ["bundled"] }
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
