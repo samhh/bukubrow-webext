@@ -12,9 +12,8 @@ This project's foundation was heavily influenced by [browserpass](https://github
 - Buku
 - _If building the binary_:
 	- Cargo (Rust)
-	- SQLite 3 development packages - refer to [the README of the relevant dependency](https://github.com/jgallagher/rusqlite)
 - _If building the WebExtension_:
-	- npm
+	- npm (Node)
 
 ## Installation
 
@@ -22,7 +21,7 @@ Installing the binary and registering it with your browser through the installat
 
 #### Step 1 - Installing the binary
 
-If you've downloaded a binary zip from the [releases page](https://github.com/samhh/Bukubrow/releases), skip to step 3. [(Why isn't a binary available for my platform?)](https://github.com/SamHH/bukubrow/issues/12)
+If you've downloaded a binary zip from the [releases page](https://github.com/samhh/Bukubrow/releases), skip to step 3.
 
 1. Clone the repo.
 2. Run `make binary-linux-x64` (Linux) or `make binary-darwin-x64` (macOS). Note that you'll need your target platform installed and configured with Cargo. Your zip file will be located within the `./release/` directory.
@@ -52,4 +51,4 @@ The WebExtension is written in (mostly) scoped, vanilla CSS and TypeScript, usin
 
 ### Binary
 
-The binary is written in Rust stable (1.29.0 at time of writing). The messages it expects to receive from the WebExtension backend follow a faux HTTP format; for instance, to get all the bookmarks, you pass it a JSON object of the following format: `{ method: 'GET' }`.
+The binary is written in Rust stable (1.32.0 at time of writing). The messages it expects to receive from the WebExtension backend follow a faux HTTP format; for instance, to get all the bookmarks, you pass it a JSON object of the following format: `{ method: 'GET' }`.
