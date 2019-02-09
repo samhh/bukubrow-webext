@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, SFC, MouseEvent } from 'react';
+import React, { forwardRef, Ref, MouseEvent } from 'react';
 import cn from 'classnames';
 import s from './button.css';
 
@@ -22,7 +22,7 @@ interface PropsWithIcon extends BaseProps {
 
 type Props = XOR<PropsWithLabel, PropsWithIcon>;
 
-const Button: SFC<Props> = props => (
+const Button: Comp<Props> = props => (
 	<span className={[s.wrapper, props.wrapperClassName].join(' ')}>
 		<button
 			className={cn(

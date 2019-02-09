@@ -1,8 +1,8 @@
-import React, { FormEvent, SFC, useState, useEffect } from 'react';
+import React, { FormEvent, useState, useEffect } from 'react';
 import { getSettings, saveSettings, Settings, Theme } from 'Modules/settings';
 import s from './options.css';
 
-const OptionsPage: SFC<{}> = () => {
+const OptionsPage: Comp<{}> = () => {
 	const [theme, setThemeState] = useState(Theme.Light);
 
 	const setSettings = (settings: Partial<Settings>) => {

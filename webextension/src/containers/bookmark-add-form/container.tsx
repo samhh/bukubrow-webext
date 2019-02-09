@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
@@ -10,7 +10,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const BookmarkAddFormContainer: SFC<Props> = props => (
+const BookmarkAddFormContainer: Comp<Props> = props => (
 	<BookmarkAddForm
 		defaultTitle={props.pageTitle}
 		defaultUrl={props.pageUrl}

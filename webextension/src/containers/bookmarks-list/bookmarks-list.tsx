@@ -1,4 +1,4 @@
-import React, { useRef, SFC } from 'react';
+import React, { useRef } from 'react';
 import { Maybe } from 'purify-ts/Maybe';
 import { scrollToEl } from 'Modules/scroll-window';
 import { ParsedInputResult } from 'Modules/parse-search-input';
@@ -21,7 +21,7 @@ interface Props {
 	focusedBookmarkId: Maybe<BookmarkId>;
 }
 
-const BookmarksList: SFC<Props> = (props) => {
+const BookmarksList: Comp<Props> = (props) => {
 	const activeBookmarkEl = useRef<HTMLElement>(null);
 
 	const propsRef = useRef(props);

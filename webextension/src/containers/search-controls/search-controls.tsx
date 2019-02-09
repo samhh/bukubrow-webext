@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, SFC } from 'react';
+import React, { useRef, useEffect } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import s from './search-controls.css';
 
@@ -18,7 +18,7 @@ interface Props {
 	numMatches: number;
 }
 
-const SearchControls: SFC<Props> = (props) => {
+const SearchControls: Comp<Props> = (props) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const focusInput = () => {

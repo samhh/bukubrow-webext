@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import s from './highlight-markup.css';
 import Highlighter from 'react-highlight-words';
 
@@ -7,7 +7,7 @@ interface Props {
 	match: string[];
 }
 
-const HighlightMarkup: SFC<Props> = props => (
+const HighlightMarkup: Comp<Props> = props => (
 	<Highlighter
 		highlightClassName={s.highlight}
 		searchWords={props.match}

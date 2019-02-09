@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import Button from 'Components/button/';
 import Modal from 'Components/modal/';
 import s from './styles.css';
@@ -10,7 +10,7 @@ interface Props {
 	numToOpen: number;
 }
 
-const OpenAllBookmarksConfirmation: SFC<Props> = props => props.display && (
+const OpenAllBookmarksConfirmation: Comp<Props> = props => props.display && (
 	<Modal>
 		<header>
 			<h1 className={s['heading']}>Open all {props.numToOpen} bookmarks?</h1>

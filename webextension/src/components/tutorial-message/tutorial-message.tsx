@@ -1,7 +1,7 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import styles from './tutorial-message.css';
 
-const TutorialMessage: SFC = () => (
+const TutorialMessage: Comp = () => (
 	<p className={styles.msg}>
 		To fetch your bookmarks for use in Bukubrow click the button with the arrow in it above.
 		<br />

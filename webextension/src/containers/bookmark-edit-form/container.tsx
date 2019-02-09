@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import { setEditBookmarkModalDisplay } from 'Store/bookmarks/actions';
@@ -11,7 +11,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const BookmarkEditFormContainer: SFC<Props> = props => (
+const BookmarkEditFormContainer: Comp<Props> = props => (
 	<BookmarkEditForm
 		bookmark={props.bookmarkToEdit}
 		display={props.displayEditForm}

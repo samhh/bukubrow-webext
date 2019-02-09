@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { requestBookmarks } from 'Comms/frontend';
 import { AppState } from 'Store';
@@ -12,7 +12,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const ContentContainer: SFC<Props> = props => (
+const ContentContainer: Comp<Props> = props => (
 	<ContentPage
 		onEnableLimitlessRender={props.setLimitNumBookmarksRendered.bind(null, false)}
 		toggleAddBookmarkForm={props.setAddBookmarkModalDisplay.bind(null, !props.displayAddBookmarkModal)}

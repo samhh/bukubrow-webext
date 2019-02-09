@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import { setDisplayOpenAllBookmarksConfirmation } from 'Store/user/actions';
@@ -11,7 +11,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const OpenAllBookmarksConfirmationContainer: SFC<Props> = props => (
+const OpenAllBookmarksConfirmationContainer: Comp<Props> = props => (
 	<OpenAllBookmarksConfirmation
 		numToOpen={props.numFilteredBookmarks}
 		display={props.displayOpenAllBookmarksConfirmation}

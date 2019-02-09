@@ -15,6 +15,8 @@ type UnwrapThunkActions<T> = {
 		: T[K];
 };
 
+type Comp<T = {}> = import('react').FunctionComponent<T>;
+
 // Bookmark ready to be inserted into Buku database
 interface RemoteBookmarkUnsaved {
 	metadata: string;

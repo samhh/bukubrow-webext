@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import styles from './load-more-bookmarks.css';
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
 	renderAllBookmarks(renderAll: boolean): void;
 }
 
-const LoadMoreBookmarks: SFC<Props> = ({ numRemainingBookmarks, renderAllBookmarks }) => (
+const LoadMoreBookmarks: Comp<Props> = ({ numRemainingBookmarks, renderAllBookmarks }) => (
 	<p
 		className={styles.msg}
 		onClick={() => { renderAllBookmarks(true); }} // tslint:disable-line jsx-no-lambda

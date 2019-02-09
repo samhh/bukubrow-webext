@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SFC, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { Maybe, Nothing } from 'purify-ts/Maybe';
 import styles from './bookmark-form.css';
 
@@ -26,7 +26,7 @@ type KeyofStringValues<T> = {
 	[K in keyof T]: T[K] extends string ? K : never;
 }[keyof T];
 
-const BookmarkForm: SFC<Props> = (props) => {
+const BookmarkForm: Comp<Props> = (props) => {
 	const [bookmarkInput, setBookmarkInput] = useState<BookmarkInput>({
 		id: Nothing,
 		title: '',

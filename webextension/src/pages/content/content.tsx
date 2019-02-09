@@ -1,4 +1,4 @@
-import React, { SFC, useRef } from 'react';
+import React, { useRef } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import s from './content.css';
 
@@ -21,7 +21,7 @@ interface Props {
 	displayTutorialMessage: boolean;
 }
 
-const ContentPage: SFC<Props> = (props) => {
+const ContentPage: Comp<Props> = (props) => {
 	const propsRef = useRef(props);
 	propsRef.current = props;
 

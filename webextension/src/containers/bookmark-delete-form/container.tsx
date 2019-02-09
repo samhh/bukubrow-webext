@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import { setDeleteBookmarkModalDisplay } from 'Store/bookmarks/actions';
@@ -11,7 +11,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const BookmarkDeleteFormContainer: SFC<Props> = props => props.bookmarkToDelete.caseOf({
+const BookmarkDeleteFormContainer: Comp<Props> = props => props.bookmarkToDelete.caseOf({
 	Just: bookmarkToDelete => (
 		<BookmarkDeleteForm
 			bookmark={bookmarkToDelete}

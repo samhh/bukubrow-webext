@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import styles from './tag.css';
 
@@ -8,7 +8,7 @@ interface Props {
 	onRemove?(tag: string): void;
 }
 
-const Tag: SFC<Props> = (props) => {
+const Tag: Comp<Props> = (props) => {
 	const handleRemove = () => {
 		if (props.onRemove) props.onRemove(props.id);
 	};

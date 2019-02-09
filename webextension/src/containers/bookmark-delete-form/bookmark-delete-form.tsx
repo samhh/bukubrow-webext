@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import Button from 'Components/button/';
 import Modal from 'Components/modal/';
 import s from './styles.css';
@@ -10,7 +10,7 @@ interface Props {
 	bookmark: LocalBookmark;
 }
 
-const BookmarkEditForm: SFC<Props> = props => props.display && (
+const BookmarkEditForm: Comp<Props> = props => props.display && (
 	<Modal>
 		<header>
 			<h1 className={s['delete-heading']}>Delete bookmark <em>{props.bookmark.title}</em>?</h1>

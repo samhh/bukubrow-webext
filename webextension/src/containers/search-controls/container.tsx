@@ -1,4 +1,4 @@
-import React, { SFC } from 'react';
+import React from 'react';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { connect } from 'react-redux';
 import { requestBookmarks } from 'Comms/frontend';
@@ -15,7 +15,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const SearchControlsContainer: SFC<Props> = props => (
+const SearchControlsContainer: Comp<Props> = props => (
 	<SearchControls
 		onAdd={props.openAddModal}
 		updateTextFilter={(text) => { props.setSearchFilter(text); scrollToTop(); }}
