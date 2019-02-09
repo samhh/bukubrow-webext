@@ -44,8 +44,7 @@
 	border-color: var(--offset-bg-offset);
 }
 
-.input--disabled {
+.input:disabled {
 	opacity: .25;
 	font-style: italic;
-	cursor: not-allowed;
 }

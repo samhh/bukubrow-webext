@@ -29,12 +29,6 @@ const TextInput: Comp<Props> = (props) => {
 		props.onInput(value);
 	};
 
-	const inputClasses = cn(
-		s.input,
-		{ [s['input--disabled']]: props.disabled },
-		props.className,
-	);
-
 	return (
 		<div className={s.wrapper}>
 			{(props.label || props.max) && (
@@ -57,11 +51,12 @@ const TextInput: Comp<Props> = (props) => {
 
 			<input
 				type="text"
+				disabled={props.disabled}
 				onChange={handleInput}
 				value={props.value}
 				placeholder={props.placeholder}
 				autoComplete={props.autoComplete ? 'on' : 'off'}
-				className={inputClasses}
+				className={[s.input, props.className].join(' ')}
 				ref={props.forwardedRef}
 			/>
 		</div>
