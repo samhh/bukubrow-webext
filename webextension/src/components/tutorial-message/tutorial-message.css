@@ -1,4 +1,4 @@
-.msg {
-	margin: 0;
+.wrapper {
 	padding: var(--sizing);
+	text-align: center;
 }
