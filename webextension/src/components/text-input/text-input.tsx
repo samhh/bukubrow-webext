@@ -1,6 +1,7 @@
 import React, { forwardRef, Ref, SFC, FormEvent } from 'react';
 import cn from 'classnames';
 import s from './text-input.css';
+import { both, complement } from 'ramda';
 
 interface Props {
 	value: string;
@@ -15,15 +16,15 @@ interface Props {
 	className?: string;
 }
 
+const exceedsMaxLength = (_: string, newValue: string, max?: number) => typeof max === 'number' && newValue.length > max;
+const isBackspacing = (oldValue: string, newValue: string) => oldValue.length > newValue.length;
+const isInvalidInput = both(exceedsMaxLength, complement(isBackspacing));
+
 const TextInput: SFC<Props> = (props) => {
 	const handleInput = (evt: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { currentTarget: { value } } = evt;
 
-		if (
-			props.max && // Are we enforcing max length?
-			props.value.length < value.length && // Effectively allow user to backspace
-			value.length > props.max // Are we over the max limit?
-		) return;
+		if (isInvalidInput(props.value, value, props.max)) return;
 
 		props.onInput(value);
 	};
