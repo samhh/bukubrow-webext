@@ -23,11 +23,11 @@ wipe:
 	${MAKE} clean
 	rm -rf $(RELEASE_DIR)
 
-# Build WebExtension via npm and zip into release dir
+# Build WebExtension via Yarn and zip into release dir
 .PHONY: webext
 webext:
 	${MAKE} prepare
-	cd webextension && npm ci && npm run build
+	cd webextension && yarn && yarn build
 	cd webextension/dist && zip -r '../../$(RELEASE_DIR)/webext' ./*
 	${MAKE} clean
 
