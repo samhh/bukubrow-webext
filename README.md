@@ -13,7 +13,8 @@ This project's foundation was heavily influenced by [browserpass](https://github
 - _If building the binary_:
 	- Cargo (Rust)
 - _If building the WebExtension_:
-	- npm (Node)
+	- Node
+	- Yarn
 
 ## Installation
 
@@ -47,7 +48,7 @@ This project is made up of two parts, the WebExtension and the binary.
 
 ### WebExtension
 
-The WebExtension is written in (mostly) scoped, vanilla CSS and TypeScript, using React as the view library and Redux (and Thunks) for state management. npm is used for dependency management and task running. Data is fetched from the binary via communication with the WebExtension backend.
+The WebExtension is written in (mostly) scoped, vanilla CSS and TypeScript, using React as the view library and Redux (and Thunks) for state management. Yarn is used for dependency management and task running. Data is fetched from the binary via communication with the WebExtension backend.
 
 ### Binary
 
