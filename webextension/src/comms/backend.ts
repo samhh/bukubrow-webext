@@ -52,9 +52,8 @@ type NativeRequestResult = {
 	DELETE: NativeDELETEResponse;
 };
 
-function sendNativeMessage<T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) {
-	return browser.runtime.sendNativeMessage(APP_NAME, { method, data }) as Promise<NativeRequestResult[T]>;
-}
+const sendNativeMessage = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) =>
+	browser.runtime.sendNativeMessage(APP_NAME, { method, data }) as Promise<NativeRequestResult[T]>;
 
 // Ensure binary version is equal to or newer than what we're expecting, but on
 // the same major version (semantic versioning)

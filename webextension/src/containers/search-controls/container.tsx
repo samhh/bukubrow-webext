@@ -8,7 +8,7 @@ import { setSearchFilterWithResets } from 'Store/epics';
 import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import SearchControls from './search-controls';
-import { setDisplayOpenAllBookmarksConfirmation } from 'Store/user/actions';
+import { setDisplayOpenAllBookmarksConfirmation, setDisplayTutorialMessage } from 'Store/user/actions';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
@@ -20,7 +20,10 @@ const SearchControlsContainer: Comp<Props> = props => (
 		onAdd={props.openAddModal}
 		updateTextFilter={(text) => { props.setSearchFilter(text); scrollToTop(); }}
 		openAllVisibleBookmarks={props.openAllFilteredBookmarks}
-		refreshBookmarks={requestBookmarks}
+		refreshBookmarks={() => {
+			requestBookmarks();
+			props.setDisplayTutorialMessage(false);
+		}}
 		textFilter={props.searchFilter}
 		shouldEnableSearch={props.searchEnabled}
 		shouldEnableActionsExclRefresh={props.actionButtonsExclRefreshEnabled}
@@ -37,6 +40,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = {
+	setDisplayTutorialMessage,
 	openAddModal: setAddBookmarkModalDisplay.bind(null, true),
 	setSearchFilter: setSearchFilterWithResets,
 	openAllFilteredBookmarks: setDisplayOpenAllBookmarksConfirmation.bind(null, true),
