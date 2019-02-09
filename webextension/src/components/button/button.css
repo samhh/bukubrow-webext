@@ -18,6 +18,10 @@
 	transition: background-color .2s;
 }
 
+.btn:disabled {
+	opacity: .25;
+}
+
 /* Has to be !important to override Firefox default */
 .btn,
 .btn:focus {
@@ -67,7 +71,7 @@
 	transition: opacity .3s;
 }
 
-.btn:hover + .tooltip {
+.btn:not(:disabled):hover + .tooltip {
 	visibility: visible;
 	opacity: 1;
 }

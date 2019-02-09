@@ -7,6 +7,7 @@ interface BaseProps {
 	onClick?(evt: MouseEvent<HTMLButtonElement>): void;
 	tooltip?: string;
 	type?: 'button' | 'submit';
+	disabled?: boolean;
 	className?: string;
 	wrapperClassName?: string;
 	tooltipClassName?: string;
@@ -31,6 +32,7 @@ const Button: Comp<Props> = props => (
 				props.className,
 			)}
 			type={props.type || 'button'}
+			disabled={props.disabled}
 			onClick={props.onClick}
 			ref={props.forwardedRef}
 		>

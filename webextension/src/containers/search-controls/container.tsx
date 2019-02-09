@@ -23,6 +23,7 @@ const SearchControlsContainer: Comp<Props> = props => (
 		refreshBookmarks={requestBookmarks}
 		textFilter={props.searchFilter}
 		shouldEnableSearch={props.searchEnabled}
+		shouldEnableActionsExclRefresh={props.actionButtonsExclRefreshEnabled}
 		numMatches={props.numFilteredBookmarks}
 	/>
 );
@@ -30,6 +31,7 @@ const SearchControlsContainer: Comp<Props> = props => (
 const mapStateToProps = (state: AppState) => ({
 	searchFilter: state.input.searchFilter,
 	searchEnabled: NonEmptyList.isNonEmpty(state.bookmarks.bookmarks),
+	actionButtonsExclRefreshEnabled: !state.user.displayTutorialMessage,
 	numFilteredBookmarks: getUnlimitedFilteredBookmarks(state).length,
 	displayAdd: state.bookmarks.displayAddBookmarkModal,
 });

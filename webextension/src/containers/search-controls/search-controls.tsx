@@ -15,6 +15,7 @@ interface Props {
 	refreshBookmarks(): void;
 	textFilter: string;
 	shouldEnableSearch: boolean;
+	shouldEnableActionsExclRefresh: boolean;
 	numMatches: number;
 }
 
@@ -46,6 +47,7 @@ const SearchControls: Comp<Props> = (props) => {
 					wrapperClassName={s['btn-wrapper']}
 					tooltipClassName={s.tooltip}
 					type="button"
+					disabled={!props.shouldEnableActionsExclRefresh}
 					onClick={props.openAllVisibleBookmarks}
 					iconHTML={AsteriskIcon}
 					tooltip={`Open all ${props.numMatches} matches`}
@@ -55,6 +57,7 @@ const SearchControls: Comp<Props> = (props) => {
 					wrapperClassName={s['btn-wrapper']}
 					tooltipClassName={s.tooltip}
 					type="button"
+					disabled={!props.shouldEnableActionsExclRefresh}
 					onClick={props.onAdd}
 					iconHTML={PlusIcon}
 					tooltip="Add a bookmark"
