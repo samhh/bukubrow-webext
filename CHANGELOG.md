@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.2] - 2019-02-11
+### Changed
+- Fixed regression that prevented bookmark opening.
+
 ## [2.5.1] - 2019-02-09
 ### Changed
 - Fixed results text not being highlighted if the search terms overlap.
