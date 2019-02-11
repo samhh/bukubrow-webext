@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
-import { Just, Nothing } from 'purify-ts/Maybe';
+import { Just, Nothing, Maybe } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { sendBackendMessage, requestBookmarks } from 'Comms/frontend';
 import { BackendResponse } from 'Comms/shared';
@@ -73,7 +73,7 @@ export const onLoad = (): ThunkActionCreator => async (dispatch) => {
 };
 
 export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator => (_, getState) => {
-	getBookmarkToEdit(getState())
+	Maybe.fromNullable(getState().bookmarks.bookmarks.find(bm => bm.id === id))
 		.ifJust((bookmark) => {
 			browser.tabs.create({ url: ensureValidURL(bookmark.url) });
 
