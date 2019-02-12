@@ -70,7 +70,7 @@ const BookmarkForm: Comp<Props> = (props) => {
 	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
 
-		const bookmark = { ...bookmarkInput, flags: 0 };
+		const bookmark = { ...bookmarkInput, id: bookmarkInput.id.extractNullable(), flags: 0 };
 		if (bookmark.id === null) delete bookmark.id;
 
 		if (!bookmark.title || !bookmark.url) return;

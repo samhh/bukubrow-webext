@@ -10,7 +10,7 @@ interface Props {
 	defaultUrl: LocalBookmark['url'];
 }
 
-const BookmarkEditForm: Comp<Props> = props => props.display && (
+const BookmarkAddForm: Comp<Props> = props => props.display && (
 	<BookmarkForm
 		bookmark={Just({
 			title: props.defaultTitle,
@@ -21,4 +21,4 @@ const BookmarkEditForm: Comp<Props> = props => props.display && (
 	/>
 ) || null;
 
-export default BookmarkEditForm;
+export default BookmarkAddForm;

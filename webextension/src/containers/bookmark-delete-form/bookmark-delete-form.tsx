@@ -10,7 +10,7 @@ interface Props {
 	bookmark: LocalBookmark;
 }
 
-const BookmarkEditForm: Comp<Props> = props => props.display && (
+const BookmarkDeleteForm: Comp<Props> = props => props.display && (
 	<Modal>
 		<header>
 			<h1 className={s['delete-heading']}>Delete bookmark <em>{props.bookmark.title}</em>?</h1>
@@ -29,4 +29,4 @@ const BookmarkEditForm: Comp<Props> = props => props.display && (
 	</Modal>
 ) || null;
 
-export default BookmarkEditForm;
+export default BookmarkDeleteForm;
