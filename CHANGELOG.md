@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.4] - 2019-02-12
+### Changed
+- Fixed regression that prevented new bookmarks from being saved in some browsers.
+
 ## [2.5.3] - 2019-02-12
 ### Changed
 - Fixed regression that prevented search input from auto-focusing on load.
