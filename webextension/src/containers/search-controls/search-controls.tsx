@@ -23,10 +23,10 @@ const SearchControls: Comp<Props> = (props) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const focusInput = () => {
-		if (inputRef.current) inputRef.current.focus();
+		if (props.shouldEnableSearch && inputRef.current) inputRef.current.focus();
 	};
 
-	useEffect(focusInput, []);
+	useEffect(focusInput, [props.shouldEnableSearch]);
 	useListenToKeydown((evt) => {
 		if (evt.ctrlKey && evt.key === 'l') focusInput();
 	});
