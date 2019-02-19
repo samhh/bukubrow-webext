@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "rm -rf ./dist/ && webpack --watch",
     "build": "rm -rf ./dist/ && NODE_ENV=production webpack",
+    "server": "webpack-dev-server --env.SERVER_MODE",
     "test": "jest"
   },
   "repository": {
@@ -36,7 +37,11 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.7",
-    "@types/jest": "^23.3.12",
+    "@types/expect-puppeteer": "^3.3.1",
+    "@types/faker": "^4.1.5",
+    "@types/jest": "^24.0.6",
+    "@types/jest-environment-puppeteer": "^2.2.1",
+    "@types/puppeteer": "^1.12.1",
     "@types/ramda": "^0.25.48",
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
@@ -48,12 +53,17 @@
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.1.0",
+    "faker": "^4.1.0",
     "html-webpack-plugin": "^3.2.0",
-    "jest": "^23.6.0",
+    "jest": "^24.1.0",
+    "jest-puppeteer": "^4.0.0",
+    "jest-raw-loader": "^1.0.1",
+    "jest-webextension-mock": "^3.5.0",
     "mini-css-extract-plugin": "^0.5.0",
     "postcss-loader": "^3.0.0",
+    "puppeteer": "^1.12.2",
     "svg-inline-loader": "^0.8.0",
-    "ts-jest": "^23.10.5",
+    "ts-jest": "^24.0.0",
     "tslint": "^5.12.1",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-loader": "^3.5.4",
@@ -61,21 +71,7 @@
     "typesafe-actions": "^3.0.0",
     "typescript": "^3.2.4",
     "webpack": "^4.28.4",
-    "webpack-cli": "^3.2.1"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "^.+\\.test.tsx?$",
-    "moduleFileExtensions": [
-      "js",
-      "ts",
-      "tsx"
-    ],
-    "moduleNameMapper": {
-      "\\.css$": "<rootDir>/mocks/cssMock.ts",
-      "^Modules/(.*)$": "<rootDir>/src/modules/$1"
-    }
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
   }
 }

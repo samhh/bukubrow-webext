@@ -3,15 +3,15 @@ import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { sortByObjectStringValue } from 'Modules/array';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 
-type StorageState = Partial<{
+export interface StorageState {
 	bookmarks: LocalBookmark[];
 	bookmarksSchemaVersion: number;
 	hasTriggeredRequest: boolean;
-}>;
+}
 
 // Fetch bookmarks from local storage, and check schema version
 export const getBookmarks = () => browser.storage.local.get(['bookmarks', 'bookmarksSchemaVersion'])
-	.then((data: Pick<StorageState, 'bookmarks' | 'bookmarksSchemaVersion'>) => {
+	.then((data: Partial<Pick<StorageState, 'bookmarks' | 'bookmarksSchemaVersion'>>) => {
 		// Once upon a time we tried to store tags as a Set. Chrome's extension
 		// storage implementation didn't like this, but Firefox did. The change was
 		// reverted, but now the tags are sometimes still stored as a set. For some
@@ -33,4 +33,4 @@ export const saveBookmarks = (bookmarks: LocalBookmark[]) => browser.storage.loc
 });
 
 export const hasTriggeredRequest = () => browser.storage.local.get('hasTriggeredRequest')
-	.then((res: Pick<StorageState, 'hasTriggeredRequest'>) => !!res.hasTriggeredRequest);
+	.then((res: Partial<Pick<StorageState, 'hasTriggeredRequest'>>) => !!res.hasTriggeredRequest);

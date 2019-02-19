@@ -8,6 +8,14 @@ type SubType<Base, Condition> = Pick<Base, {
 type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
 
+type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends (infer U)[]
+		? DeepPartial<U>[]
+		: T[P] extends ReadonlyArray<infer U>
+			? ReadonlyArray<DeepPartial<U>>
+			: DeepPartial<T[P]>
+};
+
 // Helper, probably unneeded if thunk actions are better typed in this project
 type UnwrapThunkActions<T> = {
 	[K in keyof T]: T[K] extends (...args: infer U) => import('redux-thunk').ThunkAction<infer R, any, any, any>

@@ -1,13 +1,8 @@
-# Dependencies
+# WebExtension
 node_modules/
-
-# JS build
 dist/
 release/
 
-# Rust build
+# Binary
 binary/target/
 **/*.rs.bk
-
-# Misc
-.DS_Store
