@@ -24,7 +24,7 @@ export const getFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks
 	(bookmarks, limitNumRendered) => limitNumRendered
 		? bookmarks.slice(0, MAX_BOOKMARKS_TO_RENDER)
 		: bookmarks,
-	);
+);
 
 // Number of bookmarks filtered by search filter that aren't presently being rendered
 export const getNumFilteredUnrenderedBookmarks = createSelector(getUnlimitedFilteredBookmarks, getFilteredBookmarks,

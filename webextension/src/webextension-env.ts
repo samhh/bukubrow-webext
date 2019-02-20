@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import faker from 'faker';
 import sleep from 'Modules/sleep';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';

@@ -43,6 +43,7 @@ const BookmarkForm: Comp<Props> = (props) => {
 	useEffect(() => {
 		props.bookmark.ifJust((bookmark) => {
 			// Ensure not to copy unwanted properties into state
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { flags, id, ...toCopy } = bookmark;
 
 			setInputBookmarkPartial({ ...toCopy, id: Maybe.fromNullable(id) });

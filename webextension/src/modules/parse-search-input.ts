@@ -17,6 +17,7 @@ const execMulti = (str: string, r: RegExp) => {
 	let m: Nullable<RegExpExecArray>;
 	const res: string[] = [];
 
+	// eslint-disable-next-line no-cond-assign
 	while (m = r.exec(str)) {
 		res.push(m[1]);
 	}

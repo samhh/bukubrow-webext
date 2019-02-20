@@ -1,7 +1,7 @@
 import React, { forwardRef, Ref, FormEvent } from 'react';
+import { both, complement } from 'ramda';
 import cn from 'classnames';
 import s from './text-input.css';
-import { both, complement } from 'ramda';
 
 interface Props {
 	value: string;

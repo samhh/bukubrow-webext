@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 type Nullable<T> = T | null;
 
 type SubType<Base, Condition> = Pick<Base, {
-    [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
+	[Key in keyof Base]: Base[Key] extends Condition ? Key : never;
 }[keyof Base]>;
 
 // From: https://stackoverflow.com/a/53229567/3369753

@@ -26,7 +26,8 @@ export type AllActions =
 | NoticesActions
 | UserActions;
 
-type PayloadAction<T extends string, P> = Action<T> & { payload: P; };
+type PayloadAction<T extends string, P> = Action<T> & { payload: P };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ThunkActionCreator<A extends PayloadAction<string, any> = AllActions, R = void> =
 	ThunkAction<R, AppState, undefined, A>;
 

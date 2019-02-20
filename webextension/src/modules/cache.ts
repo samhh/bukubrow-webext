@@ -19,10 +19,10 @@ export const getBookmarks = () => browser.storage.local.get(['bookmarks', 'bookm
 		// be resolved as an array, regardless of whether they're stored as an array
 		// or a Set.
 		return NonEmptyList.fromArray((data.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION && data.bookmarks) || [])
-			.map(bookmarks => bookmarks.map(bm => ({
+			.map(bookmarks => bookmarks.map((bm): LocalBookmark => ({
 				...bm,
 				tags: Array.from(bm.tags),
-			} as LocalBookmark)));
+			})));
 	});
 
 // Save bookmarks to local storage

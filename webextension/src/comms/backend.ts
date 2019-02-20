@@ -26,7 +26,7 @@ interface NativeOPTIONSResponse {
 	binaryVersion: string;
 }
 
-type NativePOSTResponse = { success: true; id: number; } | { success: false };
+type NativePOSTResponse = { success: true; id: number } | { success: false };
 
 interface NativePUTResponse {
 	success: boolean;
@@ -36,21 +36,21 @@ interface NativeDELETEResponse {
 	success: boolean;
 }
 
-type NativeRequestData = {
+interface NativeRequestData {
 	GET: undefined;
 	OPTIONS: undefined;
 	POST: { bookmark: RemoteBookmarkUnsaved };
 	PUT: { bookmark: RemoteBookmark };
 	DELETE: { bookmark_id: RemoteBookmark['id'] };
-};
+}
 
-type NativeRequestResult = {
+interface NativeRequestResult {
 	GET: NativeGETResponse;
 	OPTIONS: NativeOPTIONSResponse;
 	POST: NativePOSTResponse;
 	PUT: NativePUTResponse;
 	DELETE: NativeDELETEResponse;
-};
+}
 
 const sendNativeMessage = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) =>
 	browser.runtime.sendNativeMessage(APP_NAME, { method, data }) as Promise<NativeRequestResult[T]>;
@@ -75,6 +75,7 @@ export const updateBookmark = (bookmark: RemoteBookmark) =>
 	sendNativeMessage(NativeRequestMethod.PUT, { bookmark });
 
 export const deleteBookmark = (bookmarkId: RemoteBookmark['id']) =>
+	// eslint-disable-next-line @typescript-eslint/camelcase
 	sendNativeMessage(NativeRequestMethod.DELETE, { bookmark_id: bookmarkId });
 
 export const sendFrontendMessage = (response: BackendResponse): Promise<void> =>

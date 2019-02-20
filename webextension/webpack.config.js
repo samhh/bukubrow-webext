@@ -101,19 +101,17 @@ module.exports = (env) => {
 		module: {
 			rules: [{
 					test: /\.svg$/,
-					use: ['svg-inline-loader'],
+					loader: 'svg-inline-loader',
 				},
 				{
 					enforce: 'pre',
 					test: /\.tsx?$/,
-					use: [{
-						loader: 'tslint-loader',
-					}],
+					loader: 'eslint-loader',
 					exclude: /node_modules/,
 				},
 				{
 					test: /\.tsx?$/,
-					use: ['awesome-typescript-loader'],
+					loader: 'awesome-typescript-loader',
 					exclude: /node_modules/,
 				},
 				// *global.css is global, all other .css is locally scoped
