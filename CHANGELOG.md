@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.5] - 2019-02-24
+### Changed
+- Fixed regression that mislabelled add/edit bookmark modals.
+- Fixed button tooltip positioning in bookmarks.
+
 ## [2.5.4] - 2019-02-12
 ### Changed
 - Fixed regression that prevented new bookmarks from being saved in some browsers.
