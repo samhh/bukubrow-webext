@@ -39,20 +39,20 @@ const Wrapper = styled.li<{ isFocused: boolean }>`
 `;
 
 const TagsList = styled.ul`
-	display: inline-block;
+	display: inline;
 	padding: 0;
 `;
 
 const Name = styled.h1`
 	display: inline-block;
-	margin: 0 0 .3rem;
+	margin: 0;
 	font-size: 1.4rem;
 	font-weight: normal;
 	color: ${props => props.theme.textColor};
 `;
 
 const Desc = styled.p`
-	magrin: 0 0 .3rem;
+	margin: .3rem 0;
 	font-size: 1.1rem;
 `;
 
