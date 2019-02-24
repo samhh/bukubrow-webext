@@ -4,11 +4,21 @@ import faker from 'faker';
 import sleep from 'Modules/sleep';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { Browser, Tabs } from 'webextension-polyfill-ts';
-import { Theme } from 'Modules/settings';
+import { Theme, isTheme } from 'Modules/settings';
 import { StorageState } from 'Modules/cache';
 import { BackendRequest, BackendResponse } from 'Comms/shared';
 
-const genDummyBookmarks = () => Array(Math.round(Math.random() * 1000))
+// Allow use of URL params to manipulate state in the simulator
+const params = new URLSearchParams(window.location.search);
+const [activeThemeParam, numBookmarksToGenerateParam] = [params.get('theme'), Number(params.get('numBookmarks'))];
+const activeTheme = isTheme(activeThemeParam)
+	? activeThemeParam
+	: Theme.Light;
+const numBookmarksToGenerate = Number.isNaN(numBookmarksToGenerateParam) || numBookmarksToGenerateParam === 0
+	? Math.round(Math.random() * 1000)
+	: numBookmarksToGenerateParam;
+
+const genDummyBookmarks = () => Array(numBookmarksToGenerate)
 	.fill(undefined)
 	.map((_, i): LocalBookmark => ({
 		id: i,
@@ -101,9 +111,7 @@ const browserMock: DeepPartial<Browser> = {
 			},
 		},
 		sync: {
-			get: () => Promise.resolve({
-				theme: Theme.Light,
-			}),
+			get: () => Promise.resolve({ theme: activeTheme }),
 		},
 	},
 	tabs: {

@@ -22,6 +22,14 @@
 	</head>
 
 	<body>
-		<iframe src="/content/content.build.html" width="500" height="675"></iframe>
+		<script>
+			// Inject iframe to allow passing through querystring params
+			const iframe = document.createElement('iframe');
+			iframe.src = '/content/content.build.html' + window.location.search;
+			iframe.width = 500;
+			iframe.height = 675;
+
+			document.body.appendChild(iframe);
+		</script>
 	</body>
 </html>
