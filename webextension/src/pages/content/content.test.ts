@@ -4,7 +4,7 @@ describe('content page', () => {
 	test('renders bookmarks dynamically', async () => {
 		await page.goto('http://localhost:8080/content/content.build.html');
 
-		const refreshBtnTarget = 'nav > div > span:last-child';
+		const refreshBtnTarget = 'nav button:nth-child(3)';
 		const bookmarksListTarget = 'main > ul';
 		const bookmarksTarget = `${bookmarksListTarget} > li`;
 		const moreTarget = `${bookmarksListTarget} + p`;
