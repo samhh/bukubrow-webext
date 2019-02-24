@@ -62,7 +62,7 @@ module.exports = (env) => {
 			content: './src/apps/content',
 			options: './src/apps/options',
 			backend: './src/backend/backend.ts',
-			webextensionEnv: './src/webextension-env.ts',
+			...(serverMode ? { webextensionEnv: './src/webextension-env.ts' } : {}),
 		},
 		output: {
 			filename: '[name]/[name].build.js',
