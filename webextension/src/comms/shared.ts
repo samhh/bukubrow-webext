@@ -1,5 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
 import { Maybe } from 'purify-ts/Maybe';
+import { Left, Right } from 'purify-ts/Either';
 
 interface CheckBinaryReq {
 	checkBinary: true;
@@ -51,4 +52,8 @@ interface DeleteBookmarkRes {
 export type BackendResponse =
 	CheckBinaryRes | GetBookmarksRes | SaveBookmarkRes | UpdateBookmarkRes | DeleteBookmarkRes;
 
-export const checkRuntimeErrors = () => Promise.resolve(Maybe.fromNullable(browser.runtime.lastError && browser.runtime.lastError.message));
+export const checkRuntimeErrors = () =>
+	Maybe.fromNullable(browser.runtime.lastError && browser.runtime.lastError.message).caseOf({
+		Just: err => Left(new Error(err)),
+		Nothing: () => Right(null),
+	});

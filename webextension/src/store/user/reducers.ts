@@ -1,12 +1,13 @@
 import { Reducer } from 'redux';
 import { ActionType } from 'typesafe-actions';
 import * as userActions from './actions';
-import { UserState, UserActionTypes } from './types';
+import { UserState, UserActionTypes, Theme } from './types';
 
 export type UserActions = ActionType<typeof userActions>;
 
 const initialState = {
 	displayTutorialMessage: false,
+	activeTheme: Theme.Light,
 	displayOpenAllBookmarksConfirmation: false,
 };
 
@@ -16,6 +17,11 @@ const userReducer: Reducer<UserState, UserActions> = (state = initialState, acti
 			return {
 				...state,
 				displayTutorialMessage: action.payload,
+			};
+		case UserActionTypes.SetActiveTheme:
+			return {
+				...state,
+				activeTheme: action.payload,
 			};
 		case UserActionTypes.SetDisplayOpenAllBookmarksConfirmation:
 			return {

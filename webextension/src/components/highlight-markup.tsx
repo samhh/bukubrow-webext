@@ -1,6 +1,10 @@
 import React from 'react';
-import s from './highlight-markup.css';
 import Highlighter from 'react-highlight-words';
+
+const highlightedStyle = {
+	background: '#ACCEA8',
+	color: '#333',
+};
 
 interface Props {
 	str: string;
@@ -9,7 +13,7 @@ interface Props {
 
 const HighlightMarkup: Comp<Props> = props => (
 	<Highlighter
-		highlightClassName={s.highlight}
+		highlightStyle={highlightedStyle}
 		searchWords={props.match}
 		textToHighlight={props.str}
 	/>

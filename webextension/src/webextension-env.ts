@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+
 import faker from 'faker';
 import sleep from 'Modules/sleep';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
@@ -53,7 +54,7 @@ const browserMock: DeepPartial<Browser> = {
 
 			if ('saveBookmark' in req) {
 				sleep(50).then(() => {
-					state.bookmarks.push({ id: state.bookmarks[state.bookmarks.length - 1].id + 1, ...req.bookmark });
+					state.bookmarks.push({ ...req.bookmark, id: state.bookmarks[state.bookmarks.length - 1].id + 1 });
 
 					listenerCb({ bookmarkSaved: true });
 				});

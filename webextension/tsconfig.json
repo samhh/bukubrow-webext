@@ -18,7 +18,8 @@
 			"Modules/*": ["./modules/*"],
 			"Pages/*": ["./pages/*"],
 			"Store": ["./store/index"],
-			"Store/*": ["./store/*"]
+			"Store/*": ["./store/*"],
+			"Styles": ["./styles"]
 		}
 	}
 }

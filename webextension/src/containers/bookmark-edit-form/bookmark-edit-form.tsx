@@ -1,6 +1,6 @@
 import React from 'react';
 import { Maybe } from 'purify-ts/Maybe';
-import BookmarkForm from 'Components/bookmark-form/';
+import BookmarkForm from 'Components/bookmark-form';
 
 interface Props {
 	onClose(): void;
@@ -9,12 +9,16 @@ interface Props {
 	bookmark: Maybe<LocalBookmark>;
 }
 
-const BookmarkEditForm: Comp<Props> = props => props.display && props.bookmark.isJust() && (
-	<BookmarkForm
-		bookmark={props.bookmark}
-		onClose={props.onClose}
-		onSubmit={props.onSubmit}
-	/>
-) || null;
+const BookmarkEditForm: Comp<Props> = props => (
+	<>
+		{props.display && props.bookmark.isJust() && (
+			<BookmarkForm
+				bookmark={props.bookmark}
+				onClose={props.onClose}
+				onSubmit={props.onSubmit}
+			/>
+		)}
+	</>
+);
 
 export default BookmarkEditForm;

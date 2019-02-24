@@ -7,7 +7,8 @@
 	],
 	"extends": [
 		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended"
+		"plugin:@typescript-eslint/recommended",
+		"plugin:react/recommended"
 	],
 	"parserOptions": {
 		"project": "./tsconfig.json",
@@ -17,17 +18,16 @@
 		"indent": "off",
 		"no-tabs": "off",
 		"@typescript-eslint/indent": ["error", "tab"],
+		"@typescript-eslint/no-use-before-define": "off",
+		"@typescript-eslint/explicit-function-return-type": "off",
 		"import/no-unresolved": "off",
+		"react/prop-types": "off",
 		"react/jsx-uses-react": 2,
 		"react/jsx-uses-vars": 2,
-		"import/prefer-default-export": "off",
-		"@typescript-eslint/explicit-function-return-type": "off",
-		"@typescript-eslint/no-use-before-define": "off",
+		"react/display-name": "off",
 		"max-len": "off",
 		"no-confusing-arrow": "off",
-		"no-plusplus": "off",
-		"no-mixed-operators": "off",
-		"dot-notation": "off"
+		"no-plusplus": "off"
 	},
 	"env": {
 		"es6": true,

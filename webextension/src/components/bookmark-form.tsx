@@ -1,12 +1,53 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { Maybe, Nothing } from 'purify-ts/Maybe';
-import styles from './bookmark-form.css';
+import styled from 'Styles';
 
-import Button from 'Components/button/';
-import Modal from 'Components/modal/';
+import Button from 'Components/button';
+import Modal from 'Components/modal';
 import PlusIcon from 'Assets/plus.svg';
-import Tag from 'Components/tag/';
-import TextInput from 'Components/text-input/';
+import Tag from 'Components/tag';
+import TextInput from 'Components/text-input';
+
+const Header = styled.header`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 0 0 2rem;
+`;
+
+const Heading = styled.h1`
+	display: inline-block;
+	margin: 0;
+	font-size: 2rem;
+`;
+
+const TagInputWrapper = styled.div`
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-gap: 1rem;
+	margin: 1rem 0 0;
+`;
+
+const AddTagButton = styled(Button)`
+	align-self: end;
+	margin: 0 0 .5rem;
+`;
+
+const ExitButton = styled(Button)`
+	svg {
+		transform: rotate(45deg);
+	}
+`;
+
+const SubmitButton = styled(Button)`
+	margin: 2rem 0 0;
+`;
+
+const TagList = styled.ul`
+	list-style: none;
+	margin: .5rem 0 0;
+	padding: 0;
+`;
 
 interface Props {
 	onClose(): void;
@@ -71,31 +112,32 @@ const BookmarkForm: Comp<Props> = (props) => {
 	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
 
-		const bookmark = { ...bookmarkInput, id: bookmarkInput.id.extractNullable(), flags: 0 };
-		if (bookmark.id === null) delete bookmark.id;
+		if (!bookmarkInput.title || !bookmarkInput.url) return;
 
-		if (!bookmark.title || !bookmark.url) return;
+		const bookmark = {
+			...bookmarkInput,
+			id: bookmarkInput.id.extract(),
+			flags: 0,
+		};
 
-		props.onSubmit(bookmark as LocalBookmark | LocalBookmarkUnsaved);
+		props.onSubmit(bookmark);
 	};
+
+	const isEditing = props.bookmark.chain(bm => Maybe.fromNullable(bm.id)).isJust();
 
 	return (
 		<Modal>
 			<form onSubmit={handleSubmit}>
-				<header className={styles.header}>
-					<h1 className={styles.heading}>
-						{props.bookmark && 'id' in props.bookmark
-							? 'Edit bookmark'
-							: 'Add a bookmark'
-						}
-					</h1>
+				<Header>
+					<Heading>
+						{isEditing ? 'Edit bookmark' : 'Add a bookmark'}
+					</Heading>
 
-					<Button
+					<ExitButton
 						iconHTML={PlusIcon}
-						className={styles.exit}
 						onClick={props.onClose}
 					/>
-				</header>
+				</Header>
 
 				<TextInput
 					value={bookmarkInput.title}
@@ -115,21 +157,20 @@ const BookmarkForm: Comp<Props> = (props) => {
 					label="URL"
 				/>
 
-				<div className={styles['tag-input-wrapper']}>
+				<TagInputWrapper>
 					<TextInput
 						value={tagInput}
 						onInput={setTagInput}
 						label="Tags"
 					/>
 
-					<Button
+					<AddTagButton
 						onClick={handleTagAddition}
 						iconHTML={PlusIcon}
-						className={styles['tag-btn']}
 					/>
-				</div>
+				</TagInputWrapper>
 
-				<ul className={styles.tags}>
+				<TagList>
 					{bookmarkInput.tags.map(tag => (
 						<Tag
 							key={tag}
@@ -138,15 +179,11 @@ const BookmarkForm: Comp<Props> = (props) => {
 							onRemove={handleTagRemoval}
 						/>
 					))}
-				</ul>
+				</TagList>
 
-				<Button
+				<SubmitButton
 					type="submit"
-					label={props.bookmark && 'id' in props.bookmark
-						? 'Update bookmark'
-						: 'Add bookmark'
-					}
-					className={styles.btn}
+					label={isEditing ? 'Update bookmark' : 'Add bookmark'}
 				/>
 			</form>
 		</Modal>

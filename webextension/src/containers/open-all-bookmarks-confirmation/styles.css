@@ -1,8 +1,0 @@
-.heading {
-	margin: 0 0 var(--sizing);
-	font-size: 20px;
-}
-
-.btn-confirm {
-	margin: 0 0 0 calc(var(--sizing) / 2);
-}

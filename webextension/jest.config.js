@@ -18,8 +18,5 @@ module.exports = {
 	},
 	testRegex: '^.+\\.test.tsx?$',
 	moduleFileExtensions: ['js', 'ts', 'tsx'],
-	moduleNameMapper: {
-		...aliases,
-		'\\.css$': '<rootDir>/src/mocks/css.ts',
-	},
+	moduleNameMapper: aliases,
 };

@@ -2,6 +2,7 @@ import { browser } from 'webextension-polyfill-ts';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { sortByObjectStringValue } from 'Modules/array';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
+import { Maybe } from 'purify-ts/Maybe';
 
 export interface StorageState {
 	bookmarks: LocalBookmark[];
@@ -18,7 +19,9 @@ export const getBookmarks = () => browser.storage.local.get(['bookmarks', 'bookm
 		// reason. This addresses that by ensuring any tags pulled from storage will
 		// be resolved as an array, regardless of whether they're stored as an array
 		// or a Set.
-		return NonEmptyList.fromArray((data.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION && data.bookmarks) || [])
+		return Maybe.fromFalsy(data.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION)
+			.map(() => Maybe.fromNullable(data.bookmarks).orDefault([]))
+			.chain(NonEmptyList.fromArray)
 			.map(bookmarks => bookmarks.map((bm): LocalBookmark => ({
 				...bm,
 				tags: Array.from(bm.tags),

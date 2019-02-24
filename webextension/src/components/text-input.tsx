@@ -1,7 +1,53 @@
 import React, { forwardRef, Ref, FormEvent } from 'react';
 import { both, complement } from 'ramda';
-import cn from 'classnames';
-import s from './text-input.css';
+import styled from 'Styles';
+
+const Wrapper = styled.div`
+	width: 100%;
+
+	& + & {
+		margin-top: 1rem;
+	}
+`;
+
+const Header = styled.header`
+	display: flex;
+	justify-content: space-between;
+`;
+
+const Label = styled.label`
+	margin: 0 0 .5rem;
+`;
+
+const Counter = styled.span<{ alerted: boolean }>`
+	font-size: 1.3rem;
+	font-weight: 900;
+	color: ${props => props.alerted ? '#ec1d26' : '#989898'};
+`;
+
+const Input = styled.input`
+	width: 100%;
+	padding:.5rem 1rem;
+	border: 1px solid ${props => props.theme.backgroundColorOffset};
+	border-radius: ${props => props.theme.borderRadius};
+	border-radius: 3px;
+	background: none;
+	color: ${props => props.theme.textColor};
+
+	&::placeholder {
+		color: '#9d9da3';
+	}
+
+	&:focus {
+		outline: none;
+		border-color: ${props => props.theme.backgroundColorOffsetOffset};
+	}
+
+	&:disabled {
+		opacity: .25;
+		font-style: italic;
+	}
+`;
 
 interface Props {
 	value: string;
@@ -29,37 +75,33 @@ const TextInput: Comp<Props> = (props) => {
 		props.onInput(value);
 	};
 
+	const renderHeader = !!(props.label || props.max);
+
 	return (
-		<div className={s.wrapper}>
-			{(props.label || props.max) && (
-				<header className={s.header}>
-					<label className={s.label}>
-						{props.label} {props.required ? '(required)' : ''}
-					</label>
+		<Wrapper>
+			{renderHeader && (
+				<Header>
+					<Label>{props.label} {props.required ? '(required)' : ''}</Label>
 
 					{props.max && (
-						<span
-							className={cn(s.counter, {
-								[s['counter--alert']]: props.value.length > props.max,
-							})}
-						>
+						<Counter alerted={props.value.length > props.max}>
 							{props.max - props.value.length}
-						</span>
+						</Counter>
 					)}
-				</header>
+				</Header>
 			)}
 
-			<input
+			<Input
 				type="text"
 				disabled={props.disabled}
 				onChange={handleInput}
 				value={props.value}
 				placeholder={props.placeholder}
 				autoComplete={props.autoComplete ? 'on' : 'off'}
-				className={[s.input, props.className].join(' ')}
+				className={props.className}
 				ref={props.forwardedRef}
 			/>
-		</div>
+		</Wrapper>
 	);
 };
 

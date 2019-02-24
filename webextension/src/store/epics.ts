@@ -4,11 +4,10 @@ import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { sendBackendMessage, requestBookmarks } from 'Comms/frontend';
 import { BackendResponse } from 'Comms/shared';
 import { getBookmarks, hasTriggeredRequest } from 'Modules/cache';
-import { getActiveTheme, setTheme as setThemeInDOM, Theme } from 'Modules/theme';
-import ensureValidURL from 'Modules/ensure-valid-url';
+import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkActionCreator } from 'Store';
 import { setAllBookmarks, setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
-import { setDisplayTutorialMessage } from 'Store/user/actions';
+import { setDisplayTutorialMessage, setActiveTheme } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
@@ -57,7 +56,7 @@ const listenToBackend = (): ThunkActionCreator => (dispatch) => {
 
 export const onLoad = (): ThunkActionCreator => async (dispatch) => {
 	getActiveTheme().then((theme) => {
-		setThemeInDOM(theme.orDefault(Theme.Light));
+		dispatch(setActiveTheme(theme.orDefault(Theme.Light)));
 	});
 
 	hasTriggeredRequest().then((has) => {
@@ -75,7 +74,7 @@ export const onLoad = (): ThunkActionCreator => async (dispatch) => {
 export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator => (_, getState) => {
 	Maybe.fromNullable(getState().bookmarks.bookmarks.find(bm => bm.id === id))
 		.ifJust((bookmark) => {
-			browser.tabs.create({ url: ensureValidURL(bookmark.url) });
+			browser.tabs.create({ url: bookmark.url });
 
 			window.close();
 		});
@@ -84,11 +83,9 @@ export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator
 export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
-	filteredBookmarks
-		.map(bm => ensureValidURL(bm.url))
-		.forEach((url) => {
-			browser.tabs.create({ url });
-		});
+	for (const { url } of filteredBookmarks) {
+		browser.tabs.create({ url });
+	}
 
 	window.close();
 };

@@ -1,7 +1,16 @@
 import React from 'react';
-import Button from 'Components/button/';
-import Modal from 'Components/modal/';
-import s from './styles.css';
+import styled from 'Styles';
+import Button from 'Components/button';
+import Modal from 'Components/modal';
+
+const Heading = styled.h1`
+	margin: 0 0 1rem;
+	font-size: 2rem;
+`;
+
+const ConfirmationButton = styled(Button)`
+	margin: 0 0 0 .5rem;
+`;
 
 interface Props {
 	onCancel(): void;
@@ -10,23 +19,26 @@ interface Props {
 	bookmark: LocalBookmark;
 }
 
-const BookmarkDeleteForm: Comp<Props> = props => props.display && (
-	<Modal>
-		<header>
-			<h1 className={s['delete-heading']}>Delete bookmark <em>{props.bookmark.title}</em>?</h1>
-		</header>
+const BookmarkDeleteForm: Comp<Props> = props => (
+	<>
+		{props.display && (
+			<Modal>
+				<header>
+					<Heading>Delete bookmark <em>{props.bookmark.title}</em>?</Heading>
+				</header>
 
-		<Button
-			onClick={props.onCancel}
-			label="Cancel"
-		/>
+				<Button
+					onClick={props.onCancel}
+					label="Cancel"
+				/>
 
-		<Button
-			onClick={props.onConfirm}
-			label="Delete"
-			className={s['delete-btn-confirm']}
-		/>
-	</Modal>
-) || null;
+				<ConfirmationButton
+					onClick={props.onConfirm}
+					label="Delete"
+				/>
+			</Modal>
+		)}
+	</>
+);
 
 export default BookmarkDeleteForm;

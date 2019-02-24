@@ -1,37 +1,36 @@
-import React, { FormEvent, useState, useEffect } from 'react';
-import { getSettings, saveSettings, Settings, Theme } from 'Modules/settings';
-import s from './options.css';
+import React, { FormEvent } from 'react';
+import { saveSettings, Theme, isTheme } from 'Modules/settings';
+import styled from 'Styles';
 
-const OptionsPage: Comp<{}> = () => {
-	const [theme, setThemeState] = useState(Theme.Light);
+const Page = styled.main`
+	padding: 2.5rem;
+`;
 
-	const setSettings = (settings: Partial<Settings>) => {
-		if (settings.theme) setThemeState(settings.theme);
+interface Props {
+	activeTheme: Theme;
+	setActiveTheme(theme: Theme): void;
+}
 
-		saveSettings(settings);
-	};
-
-	useEffect(() => {
-		getSettings().then(setSettings);
-	}, []);
-
+const OptionsPage: Comp<Props> = (props) => {
 	const handleThemeChange = (evt: FormEvent<HTMLSelectElement>) => {
-		// Type assertion is safe as we wholly control this value
-		const theme = evt.currentTarget.value as Theme;
+		const theme = evt.currentTarget.value;
 
-		setSettings({ theme });
+		if (!isTheme(theme)) return;
+
+		props.setActiveTheme(theme);
+		saveSettings({ theme });
 	};
 
 	return (
-		<main className={s.page}>
+		<Page>
 			<select
-				value={theme}
+				value={props.activeTheme}
 				onChange={handleThemeChange}
 			>
 				<option value={Theme.Light}>Light</option>
 				<option value={Theme.Dark}>Dark</option>
 			</select>
-		</main>
+		</Page>
 	);
 };
 

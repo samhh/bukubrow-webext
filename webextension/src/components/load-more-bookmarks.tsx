@@ -1,5 +1,15 @@
 import React from 'react';
-import styles from './load-more-bookmarks.css';
+import styled from 'Styles';
+
+const Wrapper = styled.p`
+	text-align: center;
+	font-size: 1.2rem;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+`;
 
 interface Props {
 	numRemainingBookmarks: number;
@@ -7,12 +17,9 @@ interface Props {
 }
 
 const LoadMoreBookmarks: Comp<Props> = ({ numRemainingBookmarks, renderAllBookmarks }) => (
-	<p
-		className={styles.msg}
-		onClick={() => { renderAllBookmarks(true); }} // tslint:disable-line jsx-no-lambda
-	>
+	<Wrapper onClick={() => { renderAllBookmarks(true); }}>
 		...and {numRemainingBookmarks} more.
-	</p>
+	</Wrapper>
 );
 
 export default LoadMoreBookmarks;

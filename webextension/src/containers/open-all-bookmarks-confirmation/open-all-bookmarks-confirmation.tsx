@@ -1,7 +1,17 @@
 import React from 'react';
-import Button from 'Components/button/';
-import Modal from 'Components/modal/';
-import s from './styles.css';
+import { matchesTerminology } from 'Modules/terminology';
+import Button from 'Components/button';
+import Modal from 'Components/modal';
+import styled from 'Styles';
+
+const Heading = styled.h1`
+	margin: 0 0 1rem;
+	font-size: 2rem;
+`;
+
+const ConfirmationButton = styled(Button)`
+	margin: 0 0 0 .5rem;
+`;
 
 interface Props {
 	onCancel(): void;
@@ -10,23 +20,26 @@ interface Props {
 	numToOpen: number;
 }
 
-const OpenAllBookmarksConfirmation: Comp<Props> = props => props.display && (
-	<Modal>
-		<header>
-			<h1 className={s['heading']}>Open all {props.numToOpen} bookmarks?</h1>
-		</header>
+const OpenAllBookmarksConfirmation: Comp<Props> = props => (
+	<>
+		{props.display && (
+			<Modal>
+				<header>
+					<Heading>{matchesTerminology(props.numToOpen)}?</Heading>
+				</header>
 
-		<Button
-			onClick={props.onCancel}
-			label="Cancel"
-		/>
+				<Button
+					onClick={props.onCancel}
+					label="Cancel"
+				/>
 
-		<Button
-			onClick={props.onConfirm}
-			label="Open"
-			className={s['btn-confirm']}
-		/>
-	</Modal>
-) || null;
+				<ConfirmationButton
+					onClick={props.onConfirm}
+					label="Open"
+				/>
+			</Modal>
+		)}
+	</>
+);
 
 export default OpenAllBookmarksConfirmation;

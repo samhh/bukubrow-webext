@@ -4,8 +4,14 @@ import { scrollToEl } from 'Modules/scroll-window';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import { Key } from 'ts-key-enum';
-import s from './styles.css';
-import Bookmark from 'Components/bookmark/';
+import styled from 'Styles';
+import Bookmark from 'Components/bookmark';
+
+const WrapperList = styled.ul`
+	margin: 0;
+	padding: 0;
+	list-style: none;
+`;
 
 type BookmarkId = LocalBookmark['id'];
 
@@ -49,7 +55,7 @@ const BookmarksList: Comp<Props> = (props) => {
 	});
 
 	return (
-		<ul className={s.wrapper}>
+		<WrapperList>
 			{props.bookmarks.map((bookmark) => {
 				const isFocused = bookmark.id === props.focusedBookmarkId.extract();
 
@@ -70,7 +76,7 @@ const BookmarksList: Comp<Props> = (props) => {
 					/>
 				);
 			})}
-		</ul>
+		</WrapperList>
 	);
 };
 

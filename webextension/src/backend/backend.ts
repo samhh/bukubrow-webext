@@ -10,67 +10,73 @@ import {
 	updateBookmark as updateBookmarkInDb,
 	deleteBookmark as deleteBookmarkFromDb,
 } from 'Comms/backend';
+import { Maybe } from 'purify-ts/Maybe';
 
-const checkBinary = () => {
+class BackendErrorWithContext extends Error {
+	public context: unknown | unknown[];
+
+	public constructor(message: string, context: unknown | unknown[]) {
+		super(message);
+
+		this.context = context;
+	}
+}
+
+const checkBinary = async () => {
 	const errors = checkRuntimeErrors();
-	const version = checkBinaryVersion();
+	const version = await checkBinaryVersion();
 
-	return Promise.all([errors, version])
-		.then(([errm, versionIsOkay]) => {
-			errm
-				.ifJust((err) => {
-					if (err === 'Specified native messaging host not found.') sendFrontendMessage({ cannotFindBinary: true });
-					else sendFrontendMessage({ unknownError: true });
-				})
-				.ifNothing(() => {
-					if (!versionIsOkay) sendFrontendMessage({ outdatedBinary: true });
-				});
+	errors.ifLeft((err) => {
+		if (err.message.includes('host not found')) sendFrontendMessage({ cannotFindBinary: true });
+		else sendFrontendMessage({ unknownError: true });
+	});
 
-			return errm.isNothing() && versionIsOkay;
-		});
+	version.ifLeft(() => {
+		sendFrontendMessage({ outdatedBinary: true });
+	});
+
+	if (errors.isLeft() || version.isLeft()) {
+		throw new BackendErrorWithContext('Binary check failed', [errors.extract(), version.extract()]);
+	}
 };
 
 const requestBookmarks = () => getBookmarksFromDb().then((res) => {
-	if (!res || !res.success || !res.bookmarks) return false;
-
-	const bookmarks = res.bookmarks.map(transform);
-
-	return saveBookmarksToLocalStorage(bookmarks).then(() => {
-		sendFrontendMessage({ bookmarksUpdated: true });
-
-		return true;
-	});
+	return Maybe.fromNullable((res && res.success && res.bookmarks) || null)
+		.map(bm => bm.map(transform))
+		.caseOf({
+			Just: bm => saveBookmarksToLocalStorage(bm).then(() => sendFrontendMessage({ bookmarksUpdated: true })),
+			Nothing: () => { throw new BackendErrorWithContext('Failed to fetch bookmarks', res) },
+		});
 });
 
 const saveBookmark = (bookmark: LocalBookmarkUnsaved) => saveBookmarkToDb(untransform(bookmark)).then((res) => {
-	if (!res || !res.success) return false;
+	if (!res || !res.success) throw new BackendErrorWithContext('Failed to save bookmark', res);
 
 	sendFrontendMessage({ bookmarkSaved: true });
-
-	return true;
 });
 
 const updateBookmark = (bookmark: LocalBookmark) => updateBookmarkInDb(untransform(bookmark)).then((res) => {
-	if (!res || !res.success) return false;
+	if (!res || !res.success) throw new BackendErrorWithContext('Failed to update bookmark', res);
 
 	sendFrontendMessage({ bookmarkUpdated: true });
-
-	return true;
 });
 
 const deleteBookmark = (bookmarkId: number) => deleteBookmarkFromDb(bookmarkId).then((res) => {
-	if (!res || !res.success) return false;
+	if (!res || !res.success) throw new BackendErrorWithContext('Failed to delete bookmark', res);
 
 	sendFrontendMessage({ bookmarkDeleted: true });
-
-	return true;
 });
 
 // Listen for messages from frontend
 browser.runtime.onMessage.addListener((req: BackendRequest) => {
-	if ('checkBinary' in req) checkBinary();
-	if ('requestBookmarks' in req) requestBookmarks();
-	if ('saveBookmark' in req) saveBookmark(req.bookmark);
-	if ('updateBookmark' in req) updateBookmark(req.bookmark);
-	if ('deleteBookmark' in req) deleteBookmark(req.bookmarkId);
+	try {
+		if ('checkBinary' in req) checkBinary();
+		if ('requestBookmarks' in req) requestBookmarks();
+		if ('saveBookmark' in req) saveBookmark(req.bookmark);
+		if ('updateBookmark' in req) updateBookmark(req.bookmark);
+		if ('deleteBookmark' in req) deleteBookmark(req.bookmarkId);
+	} catch (err) {
+		// eslint-disable-next-line no-console
+		console.error('Backend listener error: ', err, err instanceof BackendErrorWithContext ? err.context : null);
+	}
 });
