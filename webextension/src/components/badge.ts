@@ -1,5 +1,5 @@
 import styled from 'Styles';
-import { ActiveTabMatch } from 'Comms/shared';
+import { URLMatch } from 'Modules/compare-urls';
 import { colors } from 'Modules/badge';
 
 export enum BadgeWeight {
@@ -8,10 +8,10 @@ export enum BadgeWeight {
 	None,
 }
 
-export const mapActiveTabMatchToBadgeWeight = (activeTabMatch: ActiveTabMatch): BadgeWeight => {
-	switch (activeTabMatch) {
-		case ActiveTabMatch.Exact: return BadgeWeight.Primary;
-		case ActiveTabMatch.Domain: return BadgeWeight.Secondary;
+export const mapURLMatchToBadgeWeight = (urlMatch: URLMatch): BadgeWeight => {
+	switch (urlMatch) {
+		case URLMatch.Exact: return BadgeWeight.Primary;
+		case URLMatch.Domain: return BadgeWeight.Secondary;
 		default: return BadgeWeight.None;
 	}
 };
@@ -30,8 +30,8 @@ const Badge = styled.span<Props>`
 	border-radius: 50%;
 	background: ${(props) => {
 		switch (props.weight) {
-			case BadgeWeight.Primary: return colors[ActiveTabMatch.Exact];
-			case BadgeWeight.Secondary: return colors[ActiveTabMatch.Domain];
+			case BadgeWeight.Primary: return colors[URLMatch.Exact];
+			case BadgeWeight.Secondary: return colors[URLMatch.Domain];
 			case BadgeWeight.None: return 'transparent';
 		}
 	}};

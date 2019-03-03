@@ -1,9 +1,9 @@
 import React, { memo, forwardRef, Ref, MouseEvent, useState } from 'react';
-import { ActiveTabMatch } from 'Comms/shared';
+import { URLMatch } from 'Modules/compare-urls';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import styled, { css } from 'Styles';
 
-import Badge, { mapActiveTabMatchToBadgeWeight } from './badge';
+import Badge, { mapURLMatchToBadgeWeight } from './badge';
 import BinIcon from 'Assets/bin.svg';
 import Button from 'Components/button';
 import HighlightMarkup from 'Components/highlight-markup';
@@ -90,7 +90,7 @@ interface Props {
 	tags: LocalBookmark['tags'];
 	parsedFilter: ParsedInputResult;
 	isFocused: boolean;
-	activeTabMatch: ActiveTabMatch;
+	activeTabURLMatch: URLMatch;
 	openBookmark(id: LocalBookmark['id']): void;
 	onEdit(id: LocalBookmark['id']): void;
 	onDelete(id: LocalBookmark['id']): void;
@@ -134,8 +134,8 @@ const Bookmark = memo<Props>((props) => {
 		>
 			<header>
 				<Name>
-					{props.activeTabMatch !== ActiveTabMatch.None && (
-						<SpacedBadge weight={mapActiveTabMatchToBadgeWeight(props.activeTabMatch)} />
+					{props.activeTabURLMatch !== URLMatch.None && (
+						<SpacedBadge weight={mapURLMatchToBadgeWeight(props.activeTabURLMatch)} />
 					)}
 					<HighlightMarkup str={props.title} match={[props.parsedFilter.name, ...props.parsedFilter.wildcard]} />
 					&nbsp;

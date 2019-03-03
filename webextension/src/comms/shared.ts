@@ -3,12 +3,6 @@ import { Either } from 'purify-ts/Either';
 import { List } from 'purify-ts/List';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 
-export enum ActiveTabMatch {
-	Exact,
-	Domain,
-	None,
-}
-
 interface CheckBinaryReq {
 	checkBinary: true;
 }
@@ -71,10 +65,4 @@ export const getActiveTab = () => MaybeAsync(({ liftMaybe }) => browser.tabs.que
 export const onTabActivity = (cb: () => void) => {
 	browser.tabs.onActivated.addListener(cb);
 	browser.tabs.onUpdated.addListener(cb);
-};
-
-export const mapURLToActiveTabMatch = (activeTabURL: URL) => (url: URL) => {
-	if (url.href === activeTabURL.href) return ActiveTabMatch.Exact;
-	if (url.hostname === activeTabURL.hostname) return ActiveTabMatch.Domain;
-	return ActiveTabMatch.None;
 };

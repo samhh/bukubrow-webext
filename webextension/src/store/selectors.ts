@@ -6,28 +6,28 @@ import { AppState } from 'Store';
 import parseSearchInput from 'Modules/parse-search-input';
 import filterBookmarks from 'Modules/filter-bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
-import { mapURLToActiveTabMatch, ActiveTabMatch } from 'Comms/shared';
+import compareURLs, { URLMatch } from 'Modules/compare-urls';
 
 export interface LocalBookmarkWeighted extends LocalBookmark {
-	weight: ActiveTabMatch;
+	weight: URLMatch;
 }
 
 const addBookmarkWeight = (activeTabURL: Maybe<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
 	weight: MaybeTuple.fromMaybe(activeTabURL, Maybe.encase(() => new URL(bookmark.url)))
-		.map(([activeURL, bmURL]) => mapURLToActiveTabMatch(activeURL)(bmURL))
-		.orDefault(ActiveTabMatch.None),
+		.map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL))
+		.orDefault(URLMatch.None),
 });
 
-const sortBookmarksByActiveTab = (a: LocalBookmarkWeighted, b: LocalBookmarkWeighted) => {
+const sortBookmarksByWeight = (a: LocalBookmarkWeighted, b: LocalBookmarkWeighted) => {
 	const [aw, bw] = [a, b].map(bm => bm.weight);
 
-	if (aw === bw) return 0;
-	if (aw === ActiveTabMatch.Exact) return -1;
-	if (bw === ActiveTabMatch.Exact) return 1;
-	if (aw === ActiveTabMatch.Domain) return -1;
-	if (bw === ActiveTabMatch.Domain) return 1;
-	return 0;
+	if (aw === bw) return a.title.localeCompare(b.title);
+	if (aw === URLMatch.Exact) return -1;
+	if (bw === URLMatch.Exact) return 1;
+	if (aw === URLMatch.Domain) return -1;
+	if (bw === URLMatch.Domain) return 1;
+	return a.title.localeCompare(b.title);
 };
 
 const getBookmarks = (state: AppState) => state.bookmarks.bookmarks;
@@ -48,7 +48,7 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => bookmarks
 		.map(addBookmarkWeight(Maybe.encase(() => new URL(activeTabHref))))
-		.sort(sortBookmarksByActiveTab),
+		.sort(sortBookmarksByWeight),
 );
 
 // Filter all bookmarks by search filter and return potentially a limited number of them

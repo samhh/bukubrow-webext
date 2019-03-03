@@ -70,7 +70,7 @@ const BookmarksList: Comp<Props> = (props) => {
 						tags={bookmark.tags}
 						parsedFilter={props.parsedFilter}
 						isFocused={isFocused}
-						activeTabMatch={bookmark.weight}
+						activeTabURLMatch={bookmark.weight}
 						openBookmark={props.onOpenBookmark}
 						onEdit={props.onEditBookmark}
 						onDelete={props.onDeleteBookmark}

@@ -1,11 +1,12 @@
 import { Maybe } from 'purify-ts/Maybe';
 import { browser } from 'webextension-polyfill-ts';
+import { URLMatch } from 'Modules/compare-urls';
 import { getBookmarks } from 'Modules/cache';
-import { getActiveTab, onTabActivity, ActiveTabMatch } from 'Comms/shared';
+import { getActiveTab, onTabActivity } from 'Comms/shared';
 
 export const colors = {
-	[ActiveTabMatch.Exact]: '#4286f4',
-	[ActiveTabMatch.Domain]: '#a0c4ff',
+	[URLMatch.Exact]: '#4286f4',
+	[URLMatch.Domain]: '#a0c4ff',
 };
 
 let urlState: URL[] = [];
@@ -35,16 +36,16 @@ export const fetchBookmarksAndUpdateBadge = async () => {
 };
 
 const checkUrl = (url: URL) => {
-	let result = ActiveTabMatch.None;
+	let result = URLMatch.None;
 
 	for (const bookmarkUrl of urlState) {
 		if (bookmarkUrl.href === url.href) {
-			result = ActiveTabMatch.Exact;
+			result = URLMatch.Exact;
 			break;
 		}
 
 		if (bookmarkUrl.hostname === url.hostname) {
-			result = ActiveTabMatch.Domain;
+			result = URLMatch.Domain;
 		}
 	}
 
@@ -60,15 +61,15 @@ const updateBadge = async () => {
 		.map(checkUrl)
 		.ifJust((result) => {
 			switch (result) {
-				case ActiveTabMatch.Exact:
-					browser.browserAction.setBadgeBackgroundColor({ color: colors[ActiveTabMatch.Exact] });
+				case URLMatch.Exact:
+					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Exact] });
 					browser.browserAction.setBadgeText({ text: ' ' });
 					break;
-				case ActiveTabMatch.Domain:
-					browser.browserAction.setBadgeBackgroundColor({ color: colors[ActiveTabMatch.Domain] });
+				case URLMatch.Domain:
+					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Domain] });
 					browser.browserAction.setBadgeText({ text: ' ' });
 					break;
-				case ActiveTabMatch.None:
+				case URLMatch.None:
 					// Empty string disables the badge
 					browser.browserAction.setBadgeText({ text: '' });
 					break;
