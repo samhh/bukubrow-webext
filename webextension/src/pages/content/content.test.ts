@@ -18,5 +18,5 @@ describe('content page', () => {
 		await expect(page).toClick(moreTarget);
 		const allBookmarks = await page.$$(bookmarksTarget);
 		await expect(allBookmarks.length).toBeGreaterThan(10);
-	});
+	}, 10000);
 });

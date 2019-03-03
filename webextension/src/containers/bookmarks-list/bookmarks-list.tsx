@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import { Maybe } from 'purify-ts/Maybe';
-import { LocalBookmarkWeighted } from 'Store/selectors';
-import { scrollToEl } from 'Modules/scroll-window';
 import { ParsedInputResult } from 'Modules/parse-search-input';
-import useListenToKeydown from 'Hooks/listen-to-keydown';
+import { LocalBookmarkWeighted } from 'Modules/bookmarks';
 import { Key } from 'ts-key-enum';
+import { scrollToEl } from 'Modules/scroll-window';
+import useListenToKeydown from 'Hooks/listen-to-keydown';
 import styled from 'Styles';
 import Bookmark from 'Components/bookmark';
 

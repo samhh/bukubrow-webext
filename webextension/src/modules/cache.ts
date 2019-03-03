@@ -1,9 +1,9 @@
 import { browser } from 'webextension-polyfill-ts';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
-import { sortByObjectStringValue } from 'Modules/array';
-import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { Maybe } from 'purify-ts/Maybe';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
+import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
+import { sortBookmarks } from 'Modules/bookmarks';
 
 export interface StorageState {
 	bookmarks: LocalBookmark[];
@@ -32,7 +32,7 @@ export const getBookmarks = () => MaybeAsync(({ liftMaybe }) => browser.storage.
 
 // Save bookmarks to local storage
 export const saveBookmarks = (bookmarks: LocalBookmark[]) => browser.storage.local.set({
-	bookmarks: sortByObjectStringValue(bookmarks, 'title'),
+	bookmarks: [...bookmarks].sort(sortBookmarks),
 	bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
 	hasTriggeredRequest: true,
 });

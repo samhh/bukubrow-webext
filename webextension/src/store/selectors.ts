@@ -4,13 +4,9 @@ import { MaybeTuple } from 'Modules/adt';
 import { createSelector } from 'reselect';
 import { AppState } from 'Store';
 import parseSearchInput from 'Modules/parse-search-input';
-import filterBookmarks from 'Modules/filter-bookmarks';
+import { filterBookmarks, sortBookmarks, LocalBookmarkWeighted } from 'Modules/bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
 import compareURLs, { URLMatch } from 'Modules/compare-urls';
-
-export interface LocalBookmarkWeighted extends LocalBookmark {
-	weight: URLMatch;
-}
 
 const addBookmarkWeight = (activeTabURL: Maybe<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
@@ -18,17 +14,6 @@ const addBookmarkWeight = (activeTabURL: Maybe<URL>) => (bookmark: LocalBookmark
 		.map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL))
 		.orDefault(URLMatch.None),
 });
-
-const sortBookmarksByWeight = (a: LocalBookmarkWeighted, b: LocalBookmarkWeighted) => {
-	const [aw, bw] = [a, b].map(bm => bm.weight);
-
-	if (aw === bw) return a.title.localeCompare(b.title);
-	if (aw === URLMatch.Exact) return -1;
-	if (bw === URLMatch.Exact) return 1;
-	if (aw === URLMatch.Domain) return -1;
-	if (bw === URLMatch.Domain) return 1;
-	return a.title.localeCompare(b.title);
-};
 
 const getBookmarks = (state: AppState) => state.bookmarks.bookmarks;
 const getFocusedBookmarkIndex = (state: AppState) => state.bookmarks.focusedBookmarkIndex;
@@ -48,7 +33,7 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => bookmarks
 		.map(addBookmarkWeight(Maybe.encase(() => new URL(activeTabHref))))
-		.sort(sortBookmarksByWeight),
+		.sort(sortBookmarks),
 );
 
 // Filter all bookmarks by search filter and return potentially a limited number of them

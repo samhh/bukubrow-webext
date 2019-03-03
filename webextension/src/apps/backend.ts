@@ -1,6 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
 import { Maybe } from 'purify-ts/Maybe';
-import { transform, untransform } from 'Modules/schema-transform';
+import { transform, untransform } from 'Modules/bookmarks';
 import { checkRuntimeErrors, BackendRequest } from 'Comms/shared';
 import { saveBookmarks as saveBookmarksToLocalStorage } from 'Modules/cache';
 import {
