@@ -6,7 +6,7 @@ export enum URLMatch {
 	None = 'none',
 }
 
-const mapURLToActiveTabMatch = (url1: URL, url2: URL) => {
+const compareURLs = (url1: URL, url2: URL) => {
 	const http = ['http:', 'https:'];
 
 	// Never match URLs with non-HTTP(S) protocols
@@ -20,7 +20,14 @@ const mapURLToActiveTabMatch = (url1: URL, url2: URL) => {
 
 	if (url1.hostname === url2.hostname) return URLMatch.Domain;
 
+	// Match subdomain. Note that this will in exceptionally rare circumstances
+	// lead to a false positive
+	if (
+		(url1.hostname.endsWith(url2.hostname) && url1.hostname[url1.hostname.length - url2.hostname.length - 1] === '.') ||
+		(url2.hostname.endsWith(url1.hostname) && url2.hostname[url2.hostname.length - url1.hostname.length - 1] === '.')
+	) return URLMatch.Domain;
+
 	return URLMatch.None;
 };
 
-export default mapURLToActiveTabMatch;
+export default compareURLs;

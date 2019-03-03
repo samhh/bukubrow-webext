@@ -19,15 +19,21 @@ describe('compare URLs', () => {
 		expect(compareURLs(url1, url2)).toBe(URLMatch.Domain);
 	});
 
-	test('does not match different subdomain', () => {
-		const url1 = new URL('https://samhh.com');
-		const url2 = new URL('https://subdomain.samhh.com');
-		expect(compareURLs(url1, url2)).toBe(URLMatch.None);
+	test('matches subdomain as domain', () => {
+		const url1 = new URL('https://samhh.co.uk');
+		const url2 = new URL('https://sub.domain.samhh.co.uk');
+		expect(compareURLs(url1, url2)).toBe(URLMatch.Domain);
 	});
 
 	test('does not match different domain', () => {
 		const url1 = new URL('https://samhh.com');
 		const url2 = new URL('https://duckduckgo.com');
+		expect(compareURLs(url1, url2)).toBe(URLMatch.None);
+	});
+
+	test('does not match different TLD', () => {
+		const url1 = new URL('https://samhh.com');
+		const url2 = new URL('https://samhh.co.uk');
 		expect(compareURLs(url1, url2)).toBe(URLMatch.None);
 	});
 
