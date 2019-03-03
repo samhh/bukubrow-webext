@@ -27,7 +27,7 @@ class BackendErrorWithContext extends Error {
 
 const checkBinary = async () => {
 	const errors = checkRuntimeErrors();
-	const version = await checkBinaryVersion();
+	const version = await checkBinaryVersion().run();
 
 	errors.ifLeft((err) => {
 		if (err.message.includes('host not found')) sendFrontendMessage({ cannotFindBinary: true });

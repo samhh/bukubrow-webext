@@ -1,8 +1,8 @@
 import { browser } from 'webextension-polyfill-ts';
+import { EitherAsync } from 'purify-ts/EitherAsync';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { compareAgainstMinimum } from 'Modules/semantic-versioning';
 import { BackendResponse } from './shared';
-import { Maybe } from 'purify-ts/Maybe';
 
 export enum NativeRequestMethod {
 	GET = 'GET',
@@ -58,8 +58,8 @@ const sendNativeMessage = <T extends NativeRequestMethod>(method: T, data: Nativ
 
 // Ensure binary version is equal to or newer than what we're expecting, but on
 // the same major version (semantic versioning)
-export const checkBinaryVersion = () =>
-	sendNativeMessage(NativeRequestMethod.OPTIONS, undefined).then(res => {
+export const checkBinaryVersion = () => EitherAsync<Error, void>(() => sendNativeMessage(NativeRequestMethod.OPTIONS, undefined)
+	.then((res) => {
 		const valid = !!(
 			res &&
 			res.success &&
@@ -67,11 +67,8 @@ export const checkBinaryVersion = () =>
 			compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
 		);
 
-		return Maybe
-			.fromFalsy(valid)
-			.toEither(new Error('Incompatible version'))
-			.map(() => null);
-	});
+		if (!valid) throw new Error('Incompatible version');
+	}));
 
 export const getBookmarks = () =>
 	sendNativeMessage(NativeRequestMethod.GET, undefined);

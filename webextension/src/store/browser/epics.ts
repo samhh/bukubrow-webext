@@ -7,9 +7,9 @@ import { setPageMeta } from './actions';
 type BrowserThunkActionCreator<R = void> = ThunkActionCreator<BrowserActions, R>;
 
 export const syncBrowserInfo = (): BrowserThunkActionCreator<Promise<void>> => async (dispatch) => {
-	const mtab = await getActiveTab();
+	const tab = await getActiveTab().run();
 
-	mtab
+	tab
 		.chain(tab => MaybeTuple.fromNullable(tab.title, tab.url))
 		.ifJust(([title, url]) => {
 			dispatch(setPageMeta(title, url));

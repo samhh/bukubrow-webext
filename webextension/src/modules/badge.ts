@@ -20,7 +20,7 @@ const hrefToUrlReducer = (acc: URL[], href: string): URL[] =>
 		});
 
 export const fetchBookmarksAndUpdateBadge = async () => {
-	const fetchedBookmarks = await getBookmarks();
+	const fetchedBookmarks = await getBookmarks().run();
 
 	fetchedBookmarks
 		.map(bms => bms
@@ -52,7 +52,7 @@ const checkUrl = (url: URL) => {
 }
 
 const updateBadge = async () => {
-	const activeTab = await getActiveTab();
+	const activeTab = await getActiveTab().run();
 
 	activeTab
 		.chain(tab => Maybe.fromNullable(tab.url))

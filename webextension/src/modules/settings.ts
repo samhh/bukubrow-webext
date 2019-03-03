@@ -1,5 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
 import { Just, Nothing } from 'purify-ts/Maybe';
+import { MaybeAsync } from 'purify-ts/MaybeAsync';
 
 export enum Theme {
 	Light = 'light',
@@ -16,7 +17,6 @@ export const saveSettings = (opts: Partial<Settings>) => browser.storage.sync.se
 
 const getSettings = (): Promise<Partial<Settings>> => browser.storage.sync.get();
 
-export const getActiveTheme = () => getSettings().then(res => isTheme(res.theme)
+export const getActiveTheme = () => MaybeAsync(({ liftMaybe }) => getSettings().then(res => liftMaybe(isTheme(res.theme)
 	? Just(res.theme)
-	: Nothing,
-);
+	: Nothing)));

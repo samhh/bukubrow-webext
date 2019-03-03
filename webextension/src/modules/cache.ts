@@ -3,6 +3,7 @@ import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { sortByObjectStringValue } from 'Modules/array';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { Maybe } from 'purify-ts/Maybe';
+import { MaybeAsync } from 'purify-ts/MaybeAsync';
 
 export interface StorageState {
 	bookmarks: LocalBookmark[];
@@ -11,7 +12,7 @@ export interface StorageState {
 }
 
 // Fetch bookmarks from local storage, and check schema version
-export const getBookmarks = () => browser.storage.local.get(['bookmarks', 'bookmarksSchemaVersion'])
+export const getBookmarks = () => MaybeAsync(({ liftMaybe }) => browser.storage.local.get(['bookmarks', 'bookmarksSchemaVersion'])
 	.then((data: Partial<Pick<StorageState, 'bookmarks' | 'bookmarksSchemaVersion'>>) => {
 		// Once upon a time we tried to store tags as a Set. Chrome's extension
 		// storage implementation didn't like this, but Firefox did. The change was
@@ -19,14 +20,15 @@ export const getBookmarks = () => browser.storage.local.get(['bookmarks', 'bookm
 		// reason. This addresses that by ensuring any tags pulled from storage will
 		// be resolved as an array, regardless of whether they're stored as an array
 		// or a Set.
-		return Maybe.fromFalsy(data.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION)
-			.map(() => Maybe.fromNullable(data.bookmarks).orDefault([]))
+		return liftMaybe(Maybe
+			.fromFalsy(data.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION)
+			.chain(() => Maybe.fromNullable(data.bookmarks))
 			.chain(NonEmptyList.fromArray)
 			.map(bookmarks => bookmarks.map((bm): LocalBookmark => ({
 				...bm,
 				tags: Array.from(bm.tags),
-			})));
-	});
+			}))));
+	}));
 
 // Save bookmarks to local storage
 export const saveBookmarks = (bookmarks: LocalBookmark[]) => browser.storage.local.set({

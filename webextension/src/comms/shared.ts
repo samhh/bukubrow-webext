@@ -1,7 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
-import { Maybe } from 'purify-ts/Maybe';
-import { Left, Right } from 'purify-ts/Either';
+import { Either } from 'purify-ts/Either';
 import { List } from 'purify-ts/List';
+import { MaybeAsync } from 'purify-ts/MaybeAsync';
 
 export enum ActiveTabMatch {
 	Exact,
@@ -59,13 +59,14 @@ interface DeleteBookmarkRes {
 export type BackendResponse =
 	CheckBinaryRes | GetBookmarksRes | SaveBookmarkRes | UpdateBookmarkRes | DeleteBookmarkRes;
 
-export const checkRuntimeErrors = () =>
-	Maybe.fromNullable(browser.runtime.lastError && browser.runtime.lastError.message).caseOf({
-		Just: err => Left(new Error(err)),
-		Nothing: () => Right(null),
-	});
+export const checkRuntimeErrors = () => Either.encase(() => {
+	const errMsg = browser.runtime.lastError && browser.runtime.lastError.message;
 
-export const getActiveTab = () => browser.tabs.query({ active: true, currentWindow: true }).then(tabs => List.at(0, tabs));
+	if (errMsg) throw new Error(errMsg);
+});
+
+export const getActiveTab = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({ active: true, currentWindow: true })
+	.then(tabs => liftMaybe(List.at(0, tabs))));
 
 export const onTabActivity = (cb: () => void) => {
 	browser.tabs.onActivated.addListener(cb);

@@ -14,7 +14,7 @@ import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 
 const getAndSetCachedBookmarks = (): ThunkActionCreator => async (dispatch) => {
-	const bookmarksRes = await getBookmarks();
+	const bookmarksRes = await getBookmarks().run();
 
 	// Ensuring it's a non-empty list as the focused bookmark index relies upon it
 	bookmarksRes.ifJust((bookmarks: NonEmptyList<LocalBookmark>) => {
@@ -55,7 +55,7 @@ const listenToBackend = (): ThunkActionCreator => (dispatch) => {
 };
 
 export const onLoad = (): ThunkActionCreator => async (dispatch) => {
-	getActiveTheme().then((theme) => {
+	getActiveTheme().run().then((theme) => {
 		dispatch(setActiveTheme(theme.orDefault(Theme.Light)));
 	});
 
