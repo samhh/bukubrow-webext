@@ -63,7 +63,7 @@ const Desc = styled.p`
 `;
 
 const URL = styled.h2`
-	margin: 0;
+	margin: .3rem 0 0;
 	font-size: 1rem;
 	font-weight: normal;
 	color: ${props => props.theme.textColorOffset};
