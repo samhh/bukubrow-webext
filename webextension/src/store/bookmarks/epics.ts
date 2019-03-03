@@ -6,7 +6,7 @@ import {
 	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
 	setAddBookmarkModalDisplay, setEditBookmarkModalDisplay, setDeleteBookmarkModalDisplay,
 } from './actions';
-import { getFilteredBookmarks } from 'Store/selectors';
+import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
 type BookmarksThunkActionCreator<R = void> = ThunkActionCreator<BookmarksActions, R>;
 
@@ -54,7 +54,7 @@ export const initiateBookmarkDeletion = (id: LocalBookmark['id']): BookmarksThun
 
 export const attemptFocusedBookmarkIndexIncrement = (): BookmarksThunkActionCreator<boolean> => (dispatch, getState) => {
 	const state = getState();
-	const filteredBookmarks = getFilteredBookmarks(state);
+	const filteredBookmarks = getWeightedLimitedFilteredBookmarks(state);
 	const focusedBookmarkIndexMaybe = state.bookmarks.focusedBookmarkIndex;
 
 	return focusedBookmarkIndexMaybe

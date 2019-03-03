@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Maybe } from 'purify-ts/Maybe';
+import { LocalBookmarkWeighted } from 'Store/selectors';
 import { scrollToEl } from 'Modules/scroll-window';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
@@ -22,7 +23,7 @@ interface Props {
 	openFocusedBookmark(): void;
 	attemptFocusedBookmarkIndexIncrement(): boolean;
 	attemptFocusedBookmarkIndexDecrement(): boolean;
-	bookmarks: LocalBookmark[];
+	bookmarks: LocalBookmarkWeighted[];
 	parsedFilter: ParsedInputResult;
 	focusedBookmarkId: Maybe<BookmarkId>;
 }
@@ -69,6 +70,7 @@ const BookmarksList: Comp<Props> = (props) => {
 						tags={bookmark.tags}
 						parsedFilter={props.parsedFilter}
 						isFocused={isFocused}
+						activeTabMatch={bookmark.weight}
 						openBookmark={props.onOpenBookmark}
 						onEdit={props.onEditBookmark}
 						onDelete={props.onDeleteBookmark}

@@ -2,7 +2,7 @@ import { browser } from 'webextension-polyfill-ts';
 import { Just, Nothing, Maybe } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { sendBackendMessage, requestBookmarks } from 'Comms/frontend';
-import { BackendResponse } from 'Comms/shared';
+import { BackendResponse, onTabActivity } from 'Comms/shared';
 import { getBookmarks, hasTriggeredRequest } from 'Modules/cache';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkActionCreator } from 'Store';
@@ -11,7 +11,7 @@ import { setDisplayTutorialMessage, setActiveTheme } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
-import { getFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
+import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 
 const getAndSetCachedBookmarks = (): ThunkActionCreator => async (dispatch) => {
 	const bookmarksRes = await getBookmarks();
@@ -67,8 +67,13 @@ export const onLoad = (): ThunkActionCreator => async (dispatch) => {
 
 	sendBackendMessage({ checkBinary: true });
 
-	dispatch(syncBrowserInfo());
 	dispatch(getAndSetCachedBookmarks());
+
+	// Sync browser info once now on load and then again whenever there's any tab activity
+	dispatch(syncBrowserInfo());
+	onTabActivity(() => {
+		dispatch(syncBrowserInfo());
+	});
 };
 
 export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator => (_, getState) => {
@@ -94,7 +99,7 @@ export const setSearchFilterWithResets = (filter: string): ThunkActionCreator =>
 	dispatch(setSearchFilter(filter));
 	dispatch(setLimitNumRendered(true));
 
-	const filteredBookmarks = getFilteredBookmarks(getState());
+	const filteredBookmarks = getWeightedLimitedFilteredBookmarks(getState());
 
 	dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(filteredBookmarks) ? Just(0) : Nothing));
 };

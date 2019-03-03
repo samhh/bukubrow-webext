@@ -9,4 +9,14 @@ export class MaybeTuple {
 			? Just(Tuple(fst, snd))
 			: Nothing;
 	}
+
+	public static fromMaybe<F, S>(fst: Maybe<F>, snd: Maybe<S>): Maybe<Tuple<F, S>> {
+		return fst.caseOf({
+			Just: f => snd.caseOf({
+				Just: s => Just(Tuple(f, s)),
+				Nothing: () => Nothing,
+			}),
+			Nothing: () => Nothing,
+		});
+	}
 }

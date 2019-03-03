@@ -7,7 +7,7 @@ import {
 	initiateBookmarkEdit, initiateBookmarkDeletion,
 	attemptFocusedBookmarkIndexIncrement, attemptFocusedBookmarkIndexDecrement,
 } from 'Store/bookmarks/epics';
-import { getFilteredBookmarks, getFocusedBookmark, getParsedFilter } from 'Store/selectors';
+import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 import BookmarksList from './bookmarks-list';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -30,7 +30,7 @@ const BookmarksListContainer: Comp<Props> = props => (
 );
 
 const mapStateToProps = (state: AppState) => ({
-	bookmarks: getFilteredBookmarks(state),
+	bookmarks: getWeightedLimitedFilteredBookmarks(state),
 	focusedBookmark: getFocusedBookmark(state),
 	parsedFilter: getParsedFilter(state),
 });
