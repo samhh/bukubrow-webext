@@ -1,4 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
+import { Maybe } from 'purify-ts/Maybe';
 import { transform, untransform } from 'Modules/schema-transform';
 import { checkRuntimeErrors, BackendRequest } from 'Comms/shared';
 import { saveBookmarks as saveBookmarksToLocalStorage } from 'Modules/cache';
@@ -10,7 +11,9 @@ import {
 	updateBookmark as updateBookmarkInDb,
 	deleteBookmark as deleteBookmarkFromDb,
 } from 'Comms/backend';
-import { Maybe } from 'purify-ts/Maybe';
+import { initBadgeAndWatch, fetchBookmarksAndUpdateBadge } from 'Modules/badge';
+
+initBadgeAndWatch();
 
 class BackendErrorWithContext extends Error {
 	public context: unknown | unknown[];
@@ -44,7 +47,10 @@ const requestBookmarks = () => getBookmarksFromDb().then((res) => {
 	return Maybe.fromNullable((res && res.success && res.bookmarks) || null)
 		.map(bm => bm.map(transform))
 		.caseOf({
-			Just: bm => saveBookmarksToLocalStorage(bm).then(() => sendFrontendMessage({ bookmarksUpdated: true })),
+			Just: bm => saveBookmarksToLocalStorage(bm).then(() => {
+				sendFrontendMessage({ bookmarksUpdated: true });
+				fetchBookmarksAndUpdateBadge();
+			}),
 			Nothing: () => { throw new BackendErrorWithContext('Failed to fetch bookmarks', res) },
 		});
 });

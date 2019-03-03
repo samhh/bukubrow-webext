@@ -1,5 +1,5 @@
 import { MaybeTuple } from 'Modules/adt';
-import { getActiveTab } from 'Comms/frontend';
+import { getActiveTab } from 'Comms/shared';
 import { ThunkActionCreator } from 'Store';
 import { BrowserActions } from './reducers';
 import { setPageMeta } from './actions';

@@ -1,6 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
 import { Maybe } from 'purify-ts/Maybe';
 import { Left, Right } from 'purify-ts/Either';
+import { List } from 'purify-ts/List';
 
 interface CheckBinaryReq {
 	checkBinary: true;
@@ -57,3 +58,10 @@ export const checkRuntimeErrors = () =>
 		Just: err => Left(new Error(err)),
 		Nothing: () => Right(null),
 	});
+
+export const getActiveTab = () => browser.tabs.query({ active: true, currentWindow: true }).then(tabs => List.at(0, tabs));
+
+export const onTabActivity = (cb: () => void) => {
+	browser.tabs.onActivated.addListener(cb);
+	browser.tabs.onUpdated.addListener(cb);
+};
