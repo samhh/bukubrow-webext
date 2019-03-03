@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.0] - 2019-03-03
+### Added
+- Browser action (WebExtension toolbar icon) displays a badge based upon whether a bookmark with the exact URL or domain of the active tab is present, differentiated by colour.
+- Pin bookmarks whose URLs match the active tab at the top of the bookmarks list.
+
+### Changed
+- Fixed regression that broke padding for bookmarks with no description.
+
 ## [2.5.5] - 2019-02-24
 ### Changed
 - Fixed regression that mislabelled add/edit bookmark modals.
