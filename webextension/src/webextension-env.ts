@@ -7,6 +7,7 @@ import { Browser, Tabs } from 'webextension-polyfill-ts';
 import { Theme, isTheme } from 'Modules/settings';
 import { StorageState } from 'Modules/cache';
 import { BackendRequest, BackendResponse } from 'Comms/shared';
+import noop from 'Modules/noop';
 
 // Allow use of URL params to manipulate state in the simulator
 const params = new URLSearchParams(window.location.search);
@@ -117,6 +118,12 @@ const browserMock: DeepPartial<Browser> = {
 	tabs: {
 		query: () => Promise.resolve([{ title: 'Currently Active Tab Page Title', url: 'https://samhh.com' }] as Tabs.Tab[]),
 		create: () => Promise.resolve(),
+		onActivated: {
+			addListener: noop,
+		},
+		onUpdated: {
+			addListener: noop,
+		},
 	},
 };
 
