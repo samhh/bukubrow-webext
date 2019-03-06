@@ -4,9 +4,6 @@
 	"path": "%%replace%%",
 	"type": "stdio",
 	"allowed_origins": [
-		"chrome-extension://ghniladkapjacfajiooekgkfopkjblpn/",
-		"chrome-extension://hkfhplegmecfnmcmmgoaplkbokhfajck/",
-		"chrome-extension://eoglaoedlmeaogboaipeeledcikdiiel/",
-		"chrome-extension://ddpeodeehalacfjplbmhomnmkhlmilli/"
+		"chrome-extension://ghniladkapjacfajiooekgkfopkjblpn/"
 	]
 }
