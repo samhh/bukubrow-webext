@@ -20,11 +20,11 @@ const rootReducer = combineReducers({
 export type AppState = ReturnType<typeof rootReducer>;
 
 export type AllActions =
-| BookmarksActions
-| BrowserActions
-| InputActions
-| NoticesActions
-| UserActions;
+	| BookmarksActions
+	| BrowserActions
+	| InputActions
+	| NoticesActions
+	| UserActions;
 
 type PayloadAction<T extends string, P> = Action<T> & { payload: P };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

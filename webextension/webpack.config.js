@@ -4,11 +4,10 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = (env) => {
 	// Only utilise some features in certain environments
-	const devMode = process.env.NODE_ENV !== 'production';
+	const devMode = env && env.DEV_MODE;
 	const serverMode = env && env.SERVER_MODE;
 
 	// Don't use an eval() source map, it will breach default
@@ -43,7 +42,6 @@ module.exports = (env) => {
 		template: './src/templates/simulator.html',
 		chunks: [],
 	}));
-	if (devMode) plugins.push(new CaseSensitivePathsPlugin());
 
 	const cfg = {
 		devtool,
@@ -52,7 +50,6 @@ module.exports = (env) => {
 		},
 		plugins,
 		context: __dirname,
-		mode: devMode ? 'development' : 'production',
 		target: 'web',
 		resolve: {
 			extensions: ['.ts', '.tsx', '.js'],
