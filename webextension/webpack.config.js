@@ -44,6 +44,7 @@ module.exports = (env) => {
 	}));
 
 	const cfg = {
+		mode: devMode ? 'development' : 'production',
 		devtool,
 		devServer: {
 			contentBase: './dist/',
