@@ -5,8 +5,8 @@ import sleep from 'Modules/sleep';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { Browser, Tabs } from 'webextension-polyfill-ts';
 import { Theme, isTheme } from 'Modules/settings';
-import { StorageState } from 'Modules/cache';
-import { BackendRequest, BackendResponse } from 'Comms/shared';
+import { StorageState } from 'Comms/browser';
+import { NativeRequest, NativeResponse } from 'Comms/native';
 import noop from 'Modules/noop';
 
 // Allow use of URL params to manipulate state in the simulator
@@ -38,7 +38,7 @@ let state: StorageState = {
 	hasTriggeredRequest: false,
 };
 
-type Listener = (res: BackendResponse) => void;
+type Listener = (res: NativeResponse) => void;
 let listenerCb: Listener = () => {
 	throw new Error('No custom listener callback registered.');
 };
@@ -51,7 +51,7 @@ const browserMock: DeepPartial<Browser> = {
 				listenerCb = cb;
 			},
 		},
-		sendMessage: (req: BackendRequest) => {
+		sendMessage: (req: NativeRequest) => {
 			if ('requestBookmarks' in req) {
 				sleep(200).then(() => {
 					if (!state.hasTriggeredRequest) {

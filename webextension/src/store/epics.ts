@@ -1,9 +1,14 @@
 import { browser } from 'webextension-polyfill-ts';
 import { Just, Nothing, Maybe } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
-import { sendBackendMessage, requestBookmarks } from 'Comms/frontend';
-import { BackendResponse, onTabActivity } from 'Comms/shared';
-import { getBookmarks, hasTriggeredRequest } from 'Modules/cache';
+import {
+	getBookmarksFromLocalStorage,
+	hasTriggeredRequest,
+	onTabActivity,
+	checkRuntimeErrors,
+	saveBookmarksToLocalStorage,
+} from 'Comms/browser';
+import { checkBinaryVersionFromNative, getBookmarksFromNative } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkActionCreator } from 'Store';
 import { setAllBookmarks, setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
@@ -12,9 +17,10 @@ import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
+import { transform } from 'Modules/bookmarks';
 
 const getAndSetCachedBookmarks = (): ThunkActionCreator => async (dispatch) => {
-	const bookmarksRes = await getBookmarks().run();
+	const bookmarksRes = await getBookmarksFromLocalStorage().run();
 
 	// Ensuring it's a non-empty list as the focused bookmark index relies upon it
 	bookmarksRes.ifJust((bookmarks: NonEmptyList<LocalBookmark>) => {
@@ -23,35 +29,21 @@ const getAndSetCachedBookmarks = (): ThunkActionCreator => async (dispatch) => {
 	});
 };
 
-const listenToBackend = (): ThunkActionCreator => (dispatch) => {
-	// Respond to messages from the backend
-	browser.runtime.onMessage.addListener((res: BackendResponse) => {
-		if ('bookmarksUpdated' in res) {
-			dispatch(getAndSetCachedBookmarks());
-		}
+export const syncBookmarks = (): ThunkActionCreator => async (dispatch) => {
+	const res = await getBookmarksFromNative();
 
-		if ('bookmarkSaved' in res || 'bookmarkUpdated' in res || 'bookmarkDeleted' in res) {
-			requestBookmarks();
-		}
+	Maybe.fromNullable((res && res.success && res.bookmarks) || null)
+		.map(bm => bm.map(transform))
+		.caseOf({
+			Just: bm => saveBookmarksToLocalStorage(bm).then(() => {
+				dispatch(getAndSetCachedBookmarks());
+			}),
+			Nothing: () => {
+				const msg = 'Failed to sync bookmarks.';
 
-		if ('unknownError' in res) {
-			const msg = 'An unknown error occurred.';
-
-			dispatch(pushError(msg));
-		}
-
-		if ('cannotFindBinary' in res) {
-			const msg = 'The binary could not be found. Please refer to the installation instructions.';
-
-			dispatch(pushError(msg));
-		}
-
-		if ('outdatedBinary' in res) {
-			const msg = 'The binary is outdated; please download or build a more recent one.';
-
-			dispatch(pushError(msg));
-		}
-	});
+				dispatch(pushError(msg));
+			},
+		});
 };
 
 export const onLoad = (): ThunkActionCreator => async (dispatch) => {
@@ -63,9 +55,21 @@ export const onLoad = (): ThunkActionCreator => async (dispatch) => {
 		dispatch(setDisplayTutorialMessage(!has));
 	});
 
-	dispatch(listenToBackend());
+	checkBinaryVersionFromNative().run().then((version) => {
+		if (version.isLeft()) {
+			const msg = 'The binary is outdated. Please download or build a more recent one.';
 
-	sendBackendMessage({ checkBinary: true });
+			dispatch(pushError(msg));
+		}
+	});
+
+	checkRuntimeErrors().ifLeft((error) => {
+		const msg = error.message.includes('host not found')
+			? 'The binary could not be found. Please refer to the installation instructions.'
+			: 'An unknown runtime error occurred.';
+
+		dispatch(pushError(msg));
+	});
 
 	dispatch(getAndSetCachedBookmarks());
 

@@ -1,8 +1,7 @@
 import { Maybe } from 'purify-ts/Maybe';
 import { browser } from 'webextension-polyfill-ts';
 import { URLMatch } from 'Modules/compare-urls';
-import { getBookmarks } from 'Modules/cache';
-import { getActiveTab, onTabActivity } from 'Comms/shared';
+import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Comms/browser';
 
 export const colors = {
 	[URLMatch.Exact]: '#4286f4',
@@ -20,18 +19,16 @@ const hrefToUrlReducer = (acc: URL[], href: string): URL[] =>
 			Nothing: () => acc,
 		});
 
-export const fetchBookmarksAndUpdateBadge = async () => {
-	const fetchedBookmarks = await getBookmarks().run();
+const syncBookmarks = async () => {
+	const fetchedBookmarks = await getBookmarksFromLocalStorage().run();
 
 	fetchedBookmarks
 		.map(bms => bms
 			.map(bm => bm.url)
 			.reduce(hrefToUrlReducer, []),
 		)
-		.ifJust((bookmarks) => {
-			urlState = bookmarks;
-
-			updateBadge();
+		.ifJust((urls) => {
+			urlState = urls;
 		});
 };
 
@@ -77,8 +74,14 @@ const updateBadge = async () => {
 		});
 };
 
-export const initBadgeAndWatch = () => {
-	fetchBookmarksAndUpdateBadge();
+export const initBadgeAndWatch = async () => {
+	await syncBookmarks();
+	updateBadge();
 
 	onTabActivity(updateBadge);
+
+	return async () => {
+		await syncBookmarks();
+		updateBadge();
+	};
 };

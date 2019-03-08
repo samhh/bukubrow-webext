@@ -1,8 +1,25 @@
 import { browser } from 'webextension-polyfill-ts';
-import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { Maybe } from 'purify-ts/Maybe';
+import { Either } from 'purify-ts/Either';
+import { List } from 'purify-ts/List';
+import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
+import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
+
+export const checkRuntimeErrors = () => Either.encase(() => {
+	const errMsg = browser.runtime.lastError && browser.runtime.lastError.message;
+
+	if (errMsg) throw new Error(errMsg);
+});
+
+export const getActiveTab = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({ active: true, currentWindow: true })
+	.then(tabs => liftMaybe(List.at(0, tabs))));
+
+export const onTabActivity = (cb: () => void) => {
+	browser.tabs.onActivated.addListener(cb);
+	browser.tabs.onUpdated.addListener(cb);
+};
 
 export interface StorageState {
 	bookmarks: LocalBookmark[];
@@ -11,7 +28,7 @@ export interface StorageState {
 }
 
 // Fetch bookmarks from local storage, and check schema version
-export const getBookmarks = () => MaybeAsync(({ liftMaybe }) => browser.storage.local.get(['bookmarks', 'bookmarksSchemaVersion'])
+export const getBookmarksFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => browser.storage.local.get(['bookmarks', 'bookmarksSchemaVersion'])
 	.then((data: Partial<Pick<StorageState, 'bookmarks' | 'bookmarksSchemaVersion'>>) => {
 		// Once upon a time we tried to store tags as a Set. Chrome's extension
 		// storage implementation didn't like this, but Firefox did. The change was
@@ -30,11 +47,15 @@ export const getBookmarks = () => MaybeAsync(({ liftMaybe }) => browser.storage.
 	}));
 
 // Save bookmarks to local storage
-export const saveBookmarks = (bookmarks: LocalBookmark[]) => browser.storage.local.set({
-	bookmarks,
-	bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
-	hasTriggeredRequest: true,
-});
+export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) => {
+	await browser.storage.local.set({
+		bookmarks,
+		bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
+		hasTriggeredRequest: true,
+	});
+
+	sendIsomorphicMessage(IsomorphicMessage.BookmarksUpdatedInLocalStorage);
+};
 
 export const hasTriggeredRequest = () => browser.storage.local.get('hasTriggeredRequest')
 	.then((res: Partial<Pick<StorageState, 'hasTriggeredRequest'>>) => !!res.hasTriggeredRequest);

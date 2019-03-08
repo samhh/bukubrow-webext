@@ -1,10 +1,9 @@
 import React from 'react';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { connect } from 'react-redux';
-import { requestBookmarks } from 'Comms/frontend';
 import { scrollToTop } from 'Modules/scroll-window';
 import { AppState } from 'Store';
-import { setSearchFilterWithResets } from 'Store/epics';
+import { setSearchFilterWithResets, syncBookmarks } from 'Store/epics';
 import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import SearchControls from './search-controls';
@@ -21,7 +20,7 @@ const SearchControlsContainer: Comp<Props> = props => (
 		updateTextFilter={(text) => { props.setSearchFilter(text); scrollToTop(); }}
 		openAllVisibleBookmarks={props.openAllFilteredBookmarks}
 		refreshBookmarks={() => {
-			requestBookmarks();
+			props.syncBookmarks();
 			props.setDisplayTutorialMessage(false);
 		}}
 		textFilter={props.searchFilter}
@@ -41,6 +40,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = {
+	syncBookmarks,
 	setDisplayTutorialMessage,
 	openAddModal: setAddBookmarkModalDisplay.bind(null, true),
 	setSearchFilter: setSearchFilterWithResets,

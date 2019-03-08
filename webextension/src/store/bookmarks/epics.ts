@@ -1,5 +1,4 @@
 import { Just, Nothing } from 'purify-ts/Maybe';
-import { sendBackendMessage } from 'Comms/frontend';
 import { ThunkActionCreator } from 'Store';
 import { BookmarksActions } from './reducers';
 import {
@@ -7,23 +6,22 @@ import {
 	setAddBookmarkModalDisplay, setEditBookmarkModalDisplay, setDeleteBookmarkModalDisplay,
 } from './actions';
 import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
+import { saveBookmarkToNative, updateBookmarkToNative, deleteBookmarkFromNative } from 'Comms/native';
+import { untransform } from 'Modules/bookmarks';
+import { syncBookmarks } from 'Store/epics';
 
 type BookmarksThunkActionCreator<R = void> = ThunkActionCreator<BookmarksActions, R>;
 
 export const addBookmark = (bookmark: LocalBookmarkUnsaved): BookmarksThunkActionCreator<Promise<void>> => async (dispatch) => {
-	await sendBackendMessage({
-		bookmark,
-		saveBookmark: true,
-	});
+	await saveBookmarkToNative(untransform(bookmark));
+	dispatch(syncBookmarks());
 
 	dispatch(setAddBookmarkModalDisplay(false));
 };
 
 export const updateBookmark = (bookmark: LocalBookmark): BookmarksThunkActionCreator<Promise<void>> => async (dispatch) => {
-	await sendBackendMessage({
-		bookmark,
-		updateBookmark: true,
-	});
+	await updateBookmarkToNative(untransform(bookmark));
+	dispatch(syncBookmarks());
 
 	dispatch(setEditBookmarkModalDisplay(false));
 };
@@ -32,14 +30,11 @@ export const deleteBookmark = (): BookmarksThunkActionCreator<Promise<void>> => 
 	const { bookmarkDeleteId } = getState().bookmarks;
 
 	bookmarkDeleteId.ifJust(async (bookmarkId) => {
-		await sendBackendMessage({
-			bookmarkId,
-			deleteBookmark: true,
-		});
+		await deleteBookmarkFromNative(bookmarkId);
+		dispatch(syncBookmarks());
 
 		dispatch(setDeleteBookmarkModalDisplay(false));
 	});
-
 };
 
 export const initiateBookmarkEdit = (id: LocalBookmark['id']): BookmarksThunkActionCreator => (dispatch) => {
