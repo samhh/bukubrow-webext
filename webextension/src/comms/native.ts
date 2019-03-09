@@ -3,32 +3,6 @@ import { EitherAsync } from 'purify-ts/EitherAsync';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { compareAgainstMinimum } from 'Modules/semantic-versioning';
 
-interface CheckBinaryReq {
-	checkBinary: true;
-}
-
-interface GetBookmarksReq {
-	requestBookmarks: true;
-}
-
-interface SaveBookmarkReq {
-	saveBookmark: true;
-	bookmark: LocalBookmarkUnsaved;
-}
-
-interface UpdateBookmarkReq {
-	updateBookmark: true;
-	bookmark: LocalBookmark;
-}
-
-interface DeleteBookmarkReq {
-	deleteBookmark: true;
-	bookmarkId: RemoteBookmark['id'];
-}
-
-export type NativeRequest =
-	CheckBinaryReq | GetBookmarksReq | SaveBookmarkReq | UpdateBookmarkReq | DeleteBookmarkReq;
-
 type CheckBinaryRes =
 	| { outdatedBinary: true }
 	| { cannotFindBinary: true }
@@ -86,7 +60,7 @@ interface NativeDELETEResponse {
 	success: boolean;
 }
 
-interface NativeRequestData {
+export interface NativeRequestData {
 	GET: undefined;
 	OPTIONS: undefined;
 	POST: { bookmark: RemoteBookmarkUnsaved };
@@ -94,7 +68,7 @@ interface NativeRequestData {
 	DELETE: { bookmark_id: RemoteBookmark['id'] };
 }
 
-interface NativeRequestResult {
+export interface NativeRequestResult {
 	GET: NativeGETResponse;
 	OPTIONS: NativeOPTIONSResponse;
 	POST: NativePOSTResponse;

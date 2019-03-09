@@ -74,7 +74,7 @@ const updateBadge = async () => {
 		});
 };
 
-export const initBadgeAndWatch = async () => {
+export const initBadgeAndListen = async () => {
 	await syncBookmarks();
 	updateBadge();
 

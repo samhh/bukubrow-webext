@@ -6,6 +6,7 @@ import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
+import uuid from 'Modules/uuid';
 
 export const checkRuntimeErrors = () => Either.encase(() => {
 	const errMsg = browser.runtime.lastError && browser.runtime.lastError.message;
@@ -16,6 +17,12 @@ export const checkRuntimeErrors = () => Either.encase(() => {
 export const getActiveTab = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({ active: true, currentWindow: true })
 	.then(tabs => liftMaybe(List.at(0, tabs))));
 
+export const getActiveWindowTabs = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({ currentWindow: true })
+	.then(tabs => liftMaybe(NonEmptyList.fromArray(tabs))));
+
+export const getAllTabs = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({})
+	.then(tabs => liftMaybe(NonEmptyList.fromArray(tabs))));
+
 export const onTabActivity = (cb: () => void) => {
 	browser.tabs.onActivated.addListener(cb);
 	browser.tabs.onUpdated.addListener(cb);
@@ -23,13 +30,18 @@ export const onTabActivity = (cb: () => void) => {
 
 export interface StorageState {
 	bookmarks: LocalBookmark[];
+	stagedBookmarksGroups: StagedBookmarksGroup[];
 	bookmarksSchemaVersion: number;
 	hasTriggeredRequest: boolean;
 }
 
-// Fetch bookmarks from local storage, and check schema version
-export const getBookmarksFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => browser.storage.local.get(['bookmarks', 'bookmarksSchemaVersion'])
-	.then((data: Partial<Pick<StorageState, 'bookmarks' | 'bookmarksSchemaVersion'>>) => {
+const getLocalStorage = <T extends keyof StorageState>(keys: T | T[]) =>
+	browser.storage.local.get(keys) as Promise<Partial<Pick<StorageState, T>>>;
+
+const setLocalStorage = (obj: Partial<StorageState>) => browser.storage.local.set(obj);
+
+export const getBookmarksFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => getLocalStorage(['bookmarks', 'bookmarksSchemaVersion'])
+	.then((data) => {
 		// Once upon a time we tried to store tags as a Set. Chrome's extension
 		// storage implementation didn't like this, but Firefox did. The change was
 		// reverted, but now the tags are sometimes still stored as a set. For some
@@ -46,9 +58,8 @@ export const getBookmarksFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => 
 			}))));
 	}));
 
-// Save bookmarks to local storage
 export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) => {
-	await browser.storage.local.set({
+	await setLocalStorage({
 		bookmarks,
 		bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
 		hasTriggeredRequest: true,
@@ -57,5 +68,32 @@ export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) =>
 	sendIsomorphicMessage(IsomorphicMessage.BookmarksUpdatedInLocalStorage);
 };
 
-export const hasTriggeredRequest = () => browser.storage.local.get('hasTriggeredRequest')
-	.then((res: Partial<Pick<StorageState, 'hasTriggeredRequest'>>) => !!res.hasTriggeredRequest);
+export const getStagedBookmarksGroupsFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => getLocalStorage('stagedBookmarksGroups')
+	.then(({ stagedBookmarksGroups }) => {
+		return liftMaybe(Maybe
+			.fromNullable(stagedBookmarksGroups)
+			.chain(NonEmptyList.fromArray));
+	}));
+
+export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookmarks: NonEmptyList<LocalBookmarkUnsaved>) => {
+	const stagedBookmarksGroupsRes = await getStagedBookmarksGroupsFromLocalStorage().run();
+
+	const groupIds = stagedBookmarksGroupsRes
+		.map(groups => Array.from(groups.map(group => group.id)))
+		.orDefault([]);
+	const newGroupId = uuid(groupIds);
+
+	const stagedBookmarksGroups = stagedBookmarksGroupsRes
+		.map(nonEmptyGroups => Array.from(nonEmptyGroups))
+		.orDefault([]);
+
+	const newGroup: StagedBookmarksGroup = {
+		id: newGroupId,
+		bookmarks: newStagedBookmarks,
+	};
+
+	setLocalStorage({ stagedBookmarksGroups: [...stagedBookmarksGroups, newGroup] });
+}
+
+export const hasTriggeredRequest = () => getLocalStorage('hasTriggeredRequest')
+	.then((res) => !!res.hasTriggeredRequest);

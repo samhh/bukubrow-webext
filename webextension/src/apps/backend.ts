@@ -1,7 +1,8 @@
-import { initBadgeAndWatch } from 'Modules/badge';
+import { initBadgeAndListen } from 'Modules/badge';
+import { initContextMenusAndListen, sendTabsToStagingArea } from 'Modules/context';
 import { listenForIsomorphicMessages, IsomorphicMessage } from 'Comms/isomorphic';
 
-initBadgeAndWatch().then((syncBadge) => {
+initBadgeAndListen().then((syncBadge) => {
 	listenForIsomorphicMessages((msg) => {
 		switch (msg) {
 			case IsomorphicMessage.BookmarksUpdatedInLocalStorage:
@@ -11,3 +12,4 @@ initBadgeAndWatch().then((syncBadge) => {
 	});
 });
 
+initContextMenusAndListen(sendTabsToStagingArea);
