@@ -48,7 +48,7 @@ This project is made up of two parts, the WebExtension and the binary.
 
 ### WebExtension
 
-The WebExtension is written in (mostly) scoped, vanilla CSS and TypeScript, using React as the view library and Redux (and Thunks) for state management. Yarn is used for dependency management and task running. Data is fetched from the binary via communication with the WebExtension backend.
+The WebExtension is written in strict TypeScript, utilising React for rendering and Redux with thunks for state management, and makes heavy use of the functional library Purify for ADT-driven data management and enhanced type safety. Yarn is used for dependency management and task running. Data is fetched from the binary via native messaging.
 
 ### Binary
 
