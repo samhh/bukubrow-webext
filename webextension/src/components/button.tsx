@@ -11,7 +11,6 @@ const Btn = styled.button<{ asIcon: boolean }>`
 	opacity: ${props => props.disabled ? .25 : 1};
 	background: ${props => props.theme.backgroundColorOffset};
 	color: ${props => props.theme.textColor};
-	cursor: pointer;
 	user-select: none;
 	transition: background-color .2s;
 
@@ -27,12 +26,16 @@ const Btn = styled.button<{ asIcon: boolean }>`
 		outline: none !important;
 	}
 
-	&:hover {
-		background-color: ${props => props.theme.backgroundColorOffsetOffset};
-	}
+	&:not(:disabled) {
+		cursor: pointer;
 
-	&:active {
-		transform: translateY(2px);
+		&:hover {
+			background-color: ${props => props.theme.backgroundColorOffsetOffset};
+		}
+
+		&:active {
+			transform: translateY(2px);
+		}
 	}
 `;
 
