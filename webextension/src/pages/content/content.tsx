@@ -2,13 +2,8 @@ import React, { useRef } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import styled from 'Styles';
 
-import BookmarkAddForm from 'Containers/bookmark-add-form/';
-import BookmarkDeleteForm from 'Containers/bookmark-delete-form/';
-import BookmarkEditForm from 'Containers/bookmark-edit-form/';
 import BookmarksList from 'Containers/bookmarks-list/';
-import ErrorMessages from 'Containers/error-messages/';
 import LoadMoreBookmarks from 'Components/load-more-bookmarks';
-import OpenAllBookmarksConfirmation from 'Containers/open-all-bookmarks-confirmation/';
 import SearchControls, { headerHeight } from 'Containers/search-controls/';
 import TutorialMessage from 'Components/tutorial-message';
 
@@ -41,37 +36,27 @@ const ContentPage: Comp<Props> = (props) => {
 	});
 
 	return (
-		<>
-			<BookmarkAddForm />
-			<BookmarkEditForm />
-			<BookmarkDeleteForm />
+		<Content>
+			<SearchControls />
 
-			<OpenAllBookmarksConfirmation />
+			<main>
+				{props.displayTutorialMessage
+					? <TutorialMessage />
+					: (
+						<>
+							<BookmarksList />
 
-			<ErrorMessages />
-
-			<Content>
-				<SearchControls />
-
-				<main>
-					{props.displayTutorialMessage
-						? <TutorialMessage />
-						: (
-							<>
-								<BookmarksList />
-
-								{!!props.numRemainingBookmarks && (
-									<LoadMoreBookmarks
-										numRemainingBookmarks={props.numRemainingBookmarks}
-										renderAllBookmarks={props.onEnableLimitlessRender}
-									/>
-								)}
-							</>
-						)
-					}
-				</main>
-			</Content>
-		</>
+							{!!props.numRemainingBookmarks && (
+								<LoadMoreBookmarks
+									numRemainingBookmarks={props.numRemainingBookmarks}
+									renderAllBookmarks={props.onEnableLimitlessRender}
+								/>
+							)}
+						</>
+					)
+				}
+			</main>
+		</Content>
 	);
 };
 
