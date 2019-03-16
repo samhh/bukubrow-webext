@@ -25,6 +25,7 @@ const SearchControlsContainer: Comp<Props> = props => (
 		}}
 		textFilter={props.searchFilter}
 		shouldEnableSearch={props.searchEnabled}
+		shouldEnableOpenStaged={!!props.numStagedItems}
 		shouldEnableOpenAll={!!props.numFilteredBookmarks}
 		shouldEnableAddBookmark={props.canAddBookmarks}
 		numMatches={props.numFilteredBookmarks}
@@ -36,6 +37,7 @@ const mapStateToProps = (state: AppState) => ({
 	searchEnabled: NonEmptyList.isNonEmpty(state.bookmarks.bookmarks),
 	canAddBookmarks: !state.user.displayTutorialMessage,
 	numFilteredBookmarks: getUnlimitedFilteredBookmarks(state).length,
+	numStagedItems: state.bookmarks.stagedBookmarksGroups.length,
 	displayAdd: state.bookmarks.displayAddBookmarkModal,
 });
 

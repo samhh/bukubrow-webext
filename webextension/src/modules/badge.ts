@@ -15,21 +15,21 @@ const hrefToUrlReducer = (acc: URL[], href: string): URL[] =>
 		// This can throw if the href passed as an argument is invalid
 		.encase(() => new URL(href))
 		.caseOf({
-			Just: (url) => [...acc, url],
+			Just: url => [...acc, url],
 			Nothing: () => acc,
 		});
 
-const syncBookmarks = async () => {
-	const fetchedBookmarks = await getBookmarksFromLocalStorage().run();
+const getBookmarksUrlsFromLocalStorage = getBookmarksFromLocalStorage().map(bms => bms
+	.map(bm => bm.url)
+	.reduce(hrefToUrlReducer, []),
+);
 
-	fetchedBookmarks
-		.map(bms => bms
-			.map(bm => bm.url)
-			.reduce(hrefToUrlReducer, []),
-		)
-		.ifJust((urls) => {
-			urlState = urls;
-		});
+const syncBookmarks = async () => {
+	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage.run();
+
+	bookmarkUrls.ifJust((urls) => {
+		urlState = urls;
+	});
 };
 
 const checkUrl = (url: URL) => {

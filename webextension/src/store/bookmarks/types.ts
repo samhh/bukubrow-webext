@@ -2,6 +2,7 @@ import { Maybe } from 'purify-ts/Maybe';
 
 export interface BookmarksState {
 	bookmarks: Bookmark[];
+	stagedBookmarksGroups: StagedBookmarksGroup[];
 	limitNumRendered: boolean;
 	focusedBookmarkIndex: Maybe<number>;
 	bookmarkEditId: Maybe<Bookmark['id']>;
@@ -13,6 +14,7 @@ export interface BookmarksState {
 
 export enum BookmarksActionTypes {
 	SetAllBookmarks = 'SET_ALL_BOOKMARKS',
+	SetAllStagedBookmarksGroups = 'SET_ALL_STAGED_BOOKMARKS_GROUPS',
 	SetLimitNumRendered = 'SET_LIMIT_NUM_RENDERED',
 	SetFocusedBookmarkIndex = 'SET_FOCUSED_BOOKMARK_INDEX',
 	SetBookmarkEditId = 'SET_BOOKMARK_EDIT_ID',

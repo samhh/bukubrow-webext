@@ -2,6 +2,7 @@ import { Just, Nothing } from 'purify-ts/Maybe';
 import { ThunkActionCreator } from 'Store';
 import { BookmarksActions } from './reducers';
 import {
+	setAllStagedBookmarksGroups,
 	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
 	setAddBookmarkModalDisplay, setEditBookmarkModalDisplay, setDeleteBookmarkModalDisplay,
 } from './actions';
@@ -9,8 +10,15 @@ import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 import { saveBookmarkToNative, updateBookmarkToNative, deleteBookmarkFromNative } from 'Comms/native';
 import { untransform } from 'Modules/bookmarks';
 import { syncBookmarks } from 'Store/epics';
+import { getStagedBookmarksGroupsFromLocalStorage } from 'Comms/browser';
 
 type BookmarksThunkActionCreator<R = void> = ThunkActionCreator<BookmarksActions, R>;
+
+export const syncStagedBookmarksGroups = (): BookmarksThunkActionCreator<Promise<void>> => async (dispatch) => {
+	const stagedBookmarksGroups = await getStagedBookmarksGroupsFromLocalStorage().run().then(res => res.orDefault([]));
+
+	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups));
+};
 
 export const addBookmark = (bookmark: LocalBookmarkUnsaved): BookmarksThunkActionCreator<Promise<void>> => async (dispatch) => {
 	await saveBookmarkToNative(untransform(bookmark));

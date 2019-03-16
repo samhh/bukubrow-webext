@@ -69,23 +69,14 @@ export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) =>
 };
 
 export const getStagedBookmarksGroupsFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => getLocalStorage('stagedBookmarksGroups')
-	.then(({ stagedBookmarksGroups }) => {
-		return liftMaybe(Maybe
-			.fromNullable(stagedBookmarksGroups)
-			.chain(NonEmptyList.fromArray));
-	}));
+	.then(({ stagedBookmarksGroups }) => liftMaybe(Maybe.fromNullable(stagedBookmarksGroups))));
 
 export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookmarks: NonEmptyList<LocalBookmarkUnsaved>) => {
 	const stagedBookmarksGroupsRes = await getStagedBookmarksGroupsFromLocalStorage().run();
+	const stagedBookmarksGroups = stagedBookmarksGroupsRes.orDefault([]);
 
-	const groupIds = stagedBookmarksGroupsRes
-		.map(groups => Array.from(groups.map(group => group.id)))
-		.orDefault([]);
+	const groupIds = stagedBookmarksGroups.map(group => group.id);
 	const newGroupId = uuid(groupIds);
-
-	const stagedBookmarksGroups = stagedBookmarksGroupsRes
-		.map(nonEmptyGroups => Array.from(nonEmptyGroups))
-		.orDefault([]);
 
 	const newGroup: StagedBookmarksGroup = {
 		id: newGroupId,

@@ -63,6 +63,7 @@ interface Props {
 	refreshBookmarks(): void;
 	textFilter: string;
 	shouldEnableSearch: boolean;
+	shouldEnableOpenStaged: boolean;
 	shouldEnableOpenAll: boolean;
 	shouldEnableAddBookmark: boolean;
 	numMatches: number;
@@ -70,6 +71,7 @@ interface Props {
 
 enum HoverState {
 	None,
+	Stage,
 	OpenAll,
 	Add,
 	Refresh,
@@ -96,12 +98,13 @@ const SearchControls: Comp<Props> = (props) => {
 		setHoverState(HoverState.None);
 	};
 
-	const tooltipMessage = (state: HoverState) => {
+	const tooltipMessage = (state: HoverState): string => {
 		switch (state) {
+			case HoverState.Stage: return 'Open staging area';
 			case HoverState.OpenAll: return matchesTerminology(props.numMatches);
 			case HoverState.Add: return 'Add a bookmark';
 			case HoverState.Refresh: return 'Fetch bookmarks';
-			default: return '';
+			case HoverState.None: return '';
 		}
 	};
 
@@ -120,6 +123,18 @@ const SearchControls: Comp<Props> = (props) => {
 					<div>
 						<ControlButton
 							type="button"
+							disabled={!props.shouldEnableOpenStaged}
+							onClick={() => { /* TODO incl/ icon below */ }}
+							iconHTML={AsteriskIcon}
+							onMouseEnter={props.shouldEnableOpenStaged
+								? showTooltip(HoverState.Stage)
+								: undefined
+							}
+							onMouseLeave={hideTooltip}
+						/>
+
+						<ControlButton
+							type="button"
 							disabled={!props.shouldEnableOpenAll}
 							onClick={props.openAllVisibleBookmarks}
 							iconHTML={AsteriskIcon}
@@ -127,10 +142,7 @@ const SearchControls: Comp<Props> = (props) => {
 								? showTooltip(HoverState.OpenAll)
 								: undefined
 							}
-							onMouseLeave={props.shouldEnableOpenAll
-								? hideTooltip
-								: undefined
-							}
+							onMouseLeave={hideTooltip}
 						/>
 
 						<ControlButton
@@ -142,10 +154,7 @@ const SearchControls: Comp<Props> = (props) => {
 								? showTooltip(HoverState.Add)
 								: undefined
 							}
-							onMouseLeave={props.shouldEnableAddBookmark
-								? hideTooltip
-								: undefined
-							}
+							onMouseLeave={hideTooltip}
 						/>
 
 						<RefreshControlButton

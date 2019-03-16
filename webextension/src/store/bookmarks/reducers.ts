@@ -8,6 +8,7 @@ export type BookmarksActions = ActionType<typeof bookmarksActions>;
 
 const initialState = {
 	bookmarks: [],
+	stagedBookmarksGroups: [],
 	limitNumRendered: true,
 	focusedBookmarkIndex: Nothing,
 	bookmarkEditId: Nothing,
@@ -23,6 +24,11 @@ const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = ini
 			return {
 				...state,
 				bookmarks: [...action.payload],
+			};
+		case BookmarksActionTypes.SetAllStagedBookmarksGroups:
+			return {
+				...state,
+				stagedBookmarksGroups: [...action.payload],
 			};
 		case BookmarksActionTypes.SetLimitNumRendered:
 			return {

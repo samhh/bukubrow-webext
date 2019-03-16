@@ -28,7 +28,7 @@ module.exports = (env) => {
 				'content',
 			],
 			// Ensure the webextensionEnv mock is placed in DOM ahead of other scripts
-			chunksSortMode: (a, _b) => a.name === 'webextensionEnv' ? -1 : 1,
+			chunksSortMode: (a, _b) => a.name === 'webextensionEnv' ? 1 : -1,
 		}),
 		new HtmlWebpackPlugin({
 			filename: 'options/options.build.html',

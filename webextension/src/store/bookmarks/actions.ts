@@ -7,6 +7,11 @@ export const setAllBookmarks = (bookmarks: Bookmark[]) => action(
 	bookmarks,
 );
 
+export const setAllStagedBookmarksGroups = (groups: StagedBookmarksGroup[]) => action(
+	BookmarksActionTypes.SetAllStagedBookmarksGroups,
+	groups,
+);
+
 export const setLimitNumRendered = (limit: boolean) => action(
 	BookmarksActionTypes.SetLimitNumRendered,
 	limit,
