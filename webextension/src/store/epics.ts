@@ -10,7 +10,7 @@ import {
 } from 'Comms/browser';
 import { checkBinaryVersionFromNative, getBookmarksFromNative } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
-import { ThunkActionCreator } from 'Store';
+import { ThunkActionCreator, AllActions } from 'Store';
 import {
 	setAllBookmarks, setLimitNumRendered, setFocusedBookmarkIndex,
 	deleteStagedBookmarksGroupBookmark, deleteStagedBookmarksGroup,
@@ -19,12 +19,14 @@ import { setDisplayTutorialMessage, setActiveTheme, setPage } from 'Store/user/a
 import { Page } from 'Store/user/types';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
-import { syncStagedBookmarksGroups } from 'Store/bookmarks/epics';
+import { syncStagedBookmarksGroups, addManyBookmarks } from 'Store/bookmarks/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import { transform } from 'Modules/bookmarks';
 
-const getAndSetCachedBookmarks = (): ThunkActionCreator => async (dispatch) => {
+type GlobalThunkActionCreator<R = void> = ThunkActionCreator<AllActions, R>;
+
+const getAndSetCachedBookmarks = (): GlobalThunkActionCreator<Promise<void>> => async (dispatch) => {
 	const bookmarksRes = await getBookmarksFromLocalStorage().run();
 
 	// Ensuring it's a non-empty list as the focused bookmark index relies upon it
@@ -34,7 +36,7 @@ const getAndSetCachedBookmarks = (): ThunkActionCreator => async (dispatch) => {
 	});
 };
 
-export const syncBookmarks = (): ThunkActionCreator => async (dispatch) => {
+export const syncBookmarks = (): GlobalThunkActionCreator<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();
 
 	Maybe.fromNullable((res && res.success && res.bookmarks) || null)
@@ -51,7 +53,7 @@ export const syncBookmarks = (): ThunkActionCreator => async (dispatch) => {
 		});
 };
 
-export const onLoad = (): ThunkActionCreator => async (dispatch) => {
+export const onLoad = (): GlobalThunkActionCreator<Promise<void>> => async (dispatch) => {
 	getActiveTheme().run().then((theme) => {
 		dispatch(setActiveTheme(theme.orDefault(Theme.Light)));
 	});
@@ -90,7 +92,7 @@ export const onLoad = (): ThunkActionCreator => async (dispatch) => {
 export const openBookmarkAndExit = (
 	bmId: LocalBookmark['id'],
 	stagedBookmarksGroupId: Maybe<StagedBookmarksGroup['id']> = Nothing,
-): ThunkActionCreator => (_, getState) => {
+): GlobalThunkActionCreator => (_, getState) => {
 	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
 
 	stagedBookmarksGroupId
@@ -106,7 +108,7 @@ export const openBookmarkAndExit = (
 		});
 };
 
-export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, getState) => {
+export const openAllFilteredBookmarksAndExit = (): GlobalThunkActionCreator => (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
 	for (const { url } of filteredBookmarks) {
@@ -116,7 +118,7 @@ export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, get
 	window.close();
 };
 
-export const setSearchFilterWithResets = (filter: string): ThunkActionCreator => (dispatch, getState) => {
+export const setSearchFilterWithResets = (filter: string): GlobalThunkActionCreator => (dispatch, getState) => {
 	dispatch(setSearchFilter(filter));
 	dispatch(setLimitNumRendered(true));
 
@@ -125,10 +127,25 @@ export const setSearchFilterWithResets = (filter: string): ThunkActionCreator =>
 	dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(filteredBookmarks) ? Just(0) : Nothing));
 };
 
+export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id']): GlobalThunkActionCreator<Promise<void>> => async (dispatch, getState) => {
+	const { bookmarks: { stagedBookmarksGroups } } = getState();
+
+	const bookmarks = Maybe.fromNullable(stagedBookmarksGroups.find(grp => grp.id === groupId))
+		// Remove local ID else bookmarks will be detected as saved by
+		// untransform overload
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		.map(grp => grp.bookmarks.map(({ id, ...rest }): LocalBookmarkUnsaved => ({ ...rest })))
+		.orDefault([]);
+
+	await dispatch(addManyBookmarks(bookmarks));
+	dispatch(deleteStagedBookmarksGroup(groupId));
+	dispatch(setPage(Page.StagedGroupsList));
+};
+
 export const deleteStagedBookmarksGroupBookmarkOrEntireGroup = (
 	grpId: StagedBookmarksGroup['id'],
 	bmId: LocalBookmark['id'],
-): ThunkActionCreator => (dispatch, getState) => {
+): GlobalThunkActionCreator => (dispatch, getState) => {
 	const { bookmarks: { stagedBookmarksGroups } } = getState();
 
 	const grp = stagedBookmarksGroups.find(g => g.id === grpId);

@@ -8,6 +8,7 @@ import { Page } from 'Store/user/types';
 import { getStagedGroupToEditWeightedBookmarks } from 'Store/selectors';
 import StagedGroupBookmarksList from './staged-group-bookmarks-list';
 import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit } from 'Store/epics';
+import { addAllBookmarksFromStagedGroup } from 'Store/epics';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
@@ -29,6 +30,9 @@ const BookmarksListContainer: Comp<Props> = props => (
 				props.onDeleteBookmark(grpId, id);
 			});
 		}}
+		onPublish={() => {
+			props.stagedGroupId.ifJust(props.saveBookmarks);
+		}}
 	/>
 );
 
@@ -39,6 +43,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = ({
 	setPage,
+	saveBookmarks: addAllBookmarksFromStagedGroup,
 	onOpenBookmark: openBookmarkAndExit,
 	onEditBookmark: setStagedBookmarksGroupBookmarkEditId,
 	onDeleteBookmark: deleteStagedBookmarksGroupBookmarkOrEntireGroup,

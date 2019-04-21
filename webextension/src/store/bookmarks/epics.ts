@@ -27,6 +27,12 @@ export const addBookmark = (bookmark: LocalBookmarkUnsaved): BookmarksThunkActio
 	dispatch(setAddBookmarkModalDisplay(false));
 };
 
+export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): BookmarksThunkActionCreator<Promise<void>> => async (dispatch) => {
+	for (const bookmark of bookmarks) {
+		await dispatch(addBookmark(bookmark));
+	}
+};
+
 export const updateBookmark = (bookmark: LocalBookmark): BookmarksThunkActionCreator<Promise<void>> => async (dispatch) => {
 	await updateBookmarkToNative(untransform(bookmark));
 	dispatch(syncBookmarks());
