@@ -27,7 +27,8 @@
 		"react/display-name": "off",
 		"max-len": "off",
 		"no-confusing-arrow": "off",
-		"no-plusplus": "off"
+		"no-plusplus": "off",
+		"no-console": 1
 	},
 	"env": {
 		"es6": true,
