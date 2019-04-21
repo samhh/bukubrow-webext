@@ -4,15 +4,15 @@ import { AppState } from 'Store';
 import { setLimitNumRendered, setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { openAllFilteredBookmarksAndExit, syncBookmarks } from 'Store/epics';
 import { getNumFilteredUnrenderedBookmarks } from 'Store/selectors';
-import ContentPage from './content';
+import Search from './search';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const ContentContainer: Comp<Props> = props => (
-	<ContentPage
+const SearchContainer: Comp<Props> = props => (
+	<Search
 		onEnableLimitlessRender={props.setLimitNumBookmarksRendered.bind(null, false)}
 		toggleAddBookmarkForm={props.setAddBookmarkModalDisplay.bind(null, !props.displayAddBookmarkModal)}
 		openAllFilteredBookmarksWithoutConfirmation={props.openAllFilteredBookmarks}
@@ -35,4 +35,4 @@ const mapDispatchToProps = {
 	setLimitNumBookmarksRendered: setLimitNumRendered,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchContainer);

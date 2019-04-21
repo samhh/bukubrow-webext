@@ -7,7 +7,8 @@ import LoadMoreBookmarks from 'Components/load-more-bookmarks';
 import SearchControls, { headerHeight } from 'Containers/search-controls/';
 import TutorialMessage from 'Components/tutorial-message';
 
-const Content = styled.div`
+const Wrapper = styled.div`
+	// TODO can remove this line?
 	min-height: 30rem; /* For bookmark form in cases where there are not yet any bookmarks */
 	padding: ${headerHeight} 0 0;
 `;
@@ -21,7 +22,7 @@ interface Props {
 	displayTutorialMessage: boolean;
 }
 
-const ContentPage: Comp<Props> = (props) => {
+const Search: Comp<Props> = (props) => {
 	const propsRef = useRef(props);
 	propsRef.current = props;
 
@@ -36,7 +37,7 @@ const ContentPage: Comp<Props> = (props) => {
 	});
 
 	return (
-		<Content>
+		<Wrapper>
 			<SearchControls />
 
 			<main>
@@ -56,8 +57,8 @@ const ContentPage: Comp<Props> = (props) => {
 					)
 				}
 			</main>
-		</Content>
+		</Wrapper>
 	);
 };
 
-export default ContentPage;
+export default Search;

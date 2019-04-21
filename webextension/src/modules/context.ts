@@ -1,5 +1,5 @@
 import { browser, Tabs } from 'webextension-polyfill-ts';
-import { Maybe } from 'purify-ts/Maybe';
+import { Maybe, Nothing } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from 'Comms/browser';
 import { MaybeTuple } from './adt';
@@ -24,7 +24,7 @@ export const sendTabsToStagingArea = (tabs: NonEmptyList<SufficientTab>) =>
 
 export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>) => void) => {
 	browser.contextMenus.onClicked.addListener(async (info) => {
-		let tabs: Maybe<NonEmptyList<SufficientTab>>;
+		let tabs: Maybe<NonEmptyList<SufficientTab>> = Nothing;
 
 		switch (info.menuItemId) {
 			case ContextMenuEntry.SendAllTabs: {
@@ -32,7 +32,7 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 				tabs = allTabs
 					.map(tabs => tabs
 						.filter((tab): tab is Tabs.Tab & SufficientTab => !!tab.title && !!tab.url)
-						.map((tab): SufficientTab => ({ title: tab.title, url: tab.url }))
+						.map((tab) => ({ title: tab.title, url: tab.url }))
 					)
 					.chain(NonEmptyList.fromArray);
 				break;
@@ -42,7 +42,7 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 				tabs = allWindowTabs
 					.map(tabs => tabs
 						.filter((tab): tab is Tabs.Tab & SufficientTab => !!tab.title && !!tab.url)
-						.map((tab): SufficientTab => ({ title: tab.title, url: tab.url }))
+						.map((tab) => ({ title: tab.title, url: tab.url }))
 					)
 					.chain(NonEmptyList.fromArray);
 				break;
@@ -50,7 +50,7 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 			case ContextMenuEntry.SendActiveTab: {
 				const activeTab = await getActiveTab().run();
 				tabs = activeTab
-					.chain((tab): Maybe<SufficientTab> => MaybeTuple
+					.chain((tab) => MaybeTuple
 						.fromNullable(tab.title, tab.url)
 						.map(([title, url]) => ({ title, url }))
 					)
@@ -63,14 +63,32 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 					.chain(tab => NonEmptyList.fromArray([tab]));
 				break;
 			}
-			default: return;
 		}
 
 		tabs.ifJust(cb);
 	});
 
-	browser.contextMenus.create({ id: ContextMenuEntry.SendAllTabs, title: 'Send all tabs to Bukubrow', contexts: ['page'] });
-	browser.contextMenus.create({ id: ContextMenuEntry.SendActiveWindowTabs, title: 'Send window tabs to Bukubrow', contexts: ['page'] });
-	browser.contextMenus.create({ id: ContextMenuEntry.SendActiveTab, title: 'Send tab to Bukubrow', contexts: ['page'] });
-	browser.contextMenus.create({ id: ContextMenuEntry.SendLink, title: 'Send link to Bukubrow', contexts: ['link'] });
+	browser.contextMenus.create({
+		id: ContextMenuEntry.SendAllTabs,
+		title: 'Send all tabs to Bukubrow',
+		contexts: ['page'],
+	});
+
+	browser.contextMenus.create({
+		id: ContextMenuEntry.SendActiveWindowTabs,
+		title: 'Send window tabs to Bukubrow',
+		contexts: ['page'],
+	});
+
+	browser.contextMenus.create({
+		id: ContextMenuEntry.SendActiveTab,
+		title: 'Send tab to Bukubrow',
+		contexts: ['page'],
+	});
+
+	browser.contextMenus.create({
+		id: ContextMenuEntry.SendLink,
+		title: 'Send link to Bukubrow',
+		contexts: ['link'],
+	});
 };

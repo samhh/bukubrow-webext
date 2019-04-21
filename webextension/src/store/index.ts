@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware, Action } from 'redux';
 import thunk, { ThunkMiddleware, ThunkAction } from 'redux-thunk';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import { onLoad } from 'Store/epics';
+import { saveStagedBookmarksGroupsToLocalStorage } from 'Comms/browser';
 
 import bookmarksReducer, { BookmarksActions } from './bookmarks/reducers';
 import browserReducer, { BrowserActions } from './browser/reducers';
@@ -37,6 +38,13 @@ const store = createStore(
 	// Assertion fixes devtools compose breaking thunk middleware type override
 	composeWithDevTools(middleware) as typeof middleware,
 );
+
+// Keep store in sync with local cache
+store.subscribe(() => {
+	const { bookmarks: { stagedBookmarksGroups } } = store.getState();
+
+	saveStagedBookmarksGroupsToLocalStorage(stagedBookmarksGroups);
+});
 
 store.dispatch(onLoad());
 

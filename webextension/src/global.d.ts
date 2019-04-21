@@ -58,5 +58,6 @@ interface LocalBookmark extends LocalBookmarkUnsaved {
 
 interface StagedBookmarksGroup {
 	id: number;
-	bookmarks: LocalBookmarkUnsaved[];
+	time: number;
+	bookmarks: LocalBookmark[];
 }

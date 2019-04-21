@@ -43,9 +43,11 @@ const genDummyStagedGroups = () => Array(numStagedGroupsToGenerate)
 	.fill(undefined)
 	.map((_, i): StagedBookmarksGroup => ({
 		id: i,
-		bookmarks: Array(Math.floor(Math.random() * 5))
+		time: new Date().getTime() - (Math.random() * 1000000000),
+		bookmarks: Array(Math.ceil(Math.random() * 5))
 			.fill(undefined)
-			.map(() => ({
+			.map((_, i) => ({
+				id: i,
 				title: faker.company.companyName(),
 				desc: '',
 				url: faker.internet.url(),

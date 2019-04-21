@@ -11,6 +11,7 @@ import Bookmark from 'Components/bookmark';
 const WrapperList = styled.ul`
 	margin: 0;
 	padding: 0;
+	border: 1px solid ${props => props.theme.backgroundColorOffset};
 	list-style: none;
 `;
 

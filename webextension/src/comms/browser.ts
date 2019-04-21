@@ -71,6 +71,9 @@ export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) =>
 export const getStagedBookmarksGroupsFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => getLocalStorage('stagedBookmarksGroups')
 	.then(({ stagedBookmarksGroups }) => liftMaybe(Maybe.fromNullable(stagedBookmarksGroups))));
 
+export const saveStagedBookmarksGroupsToLocalStorage = (stagedBookmarksGroups: StagedBookmarksGroup[]) =>
+	setLocalStorage({ stagedBookmarksGroups });
+
 export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookmarks: NonEmptyList<LocalBookmarkUnsaved>) => {
 	const stagedBookmarksGroupsRes = await getStagedBookmarksGroupsFromLocalStorage().run();
 	const stagedBookmarksGroups = stagedBookmarksGroupsRes.orDefault([]);
@@ -80,11 +83,17 @@ export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookm
 
 	const newGroup: StagedBookmarksGroup = {
 		id: newGroupId,
-		bookmarks: newStagedBookmarks,
+		time: new Date().getTime(),
+		// Assign each bookmark a generated ID, and ensure they don't clash with
+		// one another
+		bookmarks: newStagedBookmarks.reduce<LocalBookmark[]>((acc, bm) => [...acc, {
+			...bm,
+			id: uuid(acc.map(b => b.id)),
+		}], []),
 	};
 
 	setLocalStorage({ stagedBookmarksGroups: [...stagedBookmarksGroups, newGroup] });
-}
+};
 
 export const hasTriggeredRequest = () => getLocalStorage('hasTriggeredRequest')
 	.then((res) => !!res.hasTriggeredRequest);

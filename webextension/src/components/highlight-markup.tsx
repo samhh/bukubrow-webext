@@ -8,13 +8,13 @@ const highlightedStyle = {
 
 interface Props {
 	str: string;
-	match: string[];
+	match?: string[];
 }
 
 const HighlightMarkup: Comp<Props> = props => (
 	<Highlighter
 		highlightStyle={highlightedStyle}
-		searchWords={props.match}
+		searchWords={props.match || []}
 		textToHighlight={props.str}
 	/>
 );

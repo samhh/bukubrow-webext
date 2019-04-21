@@ -11,8 +11,12 @@ import {
 import { checkBinaryVersionFromNative, getBookmarksFromNative } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkActionCreator } from 'Store';
-import { setAllBookmarks, setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
-import { setDisplayTutorialMessage, setActiveTheme } from 'Store/user/actions';
+import {
+	setAllBookmarks, setLimitNumRendered, setFocusedBookmarkIndex,
+	deleteStagedBookmarksGroupBookmark, deleteStagedBookmarksGroup,
+} from 'Store/bookmarks/actions';
+import { setDisplayTutorialMessage, setActiveTheme, setPage } from 'Store/user/actions';
+import { Page } from 'Store/user/types';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncStagedBookmarksGroups } from 'Store/bookmarks/epics';
@@ -75,15 +79,26 @@ export const onLoad = (): ThunkActionCreator => async (dispatch) => {
 	dispatch(getAndSetCachedBookmarks());
 	dispatch(syncStagedBookmarksGroups());
 
-	// Sync browser info once now on load and then again whenever there's any tab activity
+	// Sync browser info once now on load and then again whenever there's any tab
+	// activity
 	dispatch(syncBrowserInfo());
 	onTabActivity(() => {
 		dispatch(syncBrowserInfo());
 	});
 };
 
-export const openBookmarkAndExit = (id: LocalBookmark['id']): ThunkActionCreator => (_, getState) => {
-	Maybe.fromNullable(getState().bookmarks.bookmarks.find(bm => bm.id === id))
+export const openBookmarkAndExit = (
+	bmId: LocalBookmark['id'],
+	stagedBookmarksGroupId: Maybe<StagedBookmarksGroup['id']> = Nothing,
+): ThunkActionCreator => (_, getState) => {
+	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
+
+	stagedBookmarksGroupId
+		.caseOf({
+			Just: grpId => Maybe.fromNullable(stagedBookmarksGroups.find(grp => grp.id === grpId))
+				.chain(grp => Maybe.fromNullable(grp.bookmarks.find(bm => bm.id === bmId))),
+			Nothing: () => Maybe.fromNullable(bookmarks.find(bm => bm.id === bmId)),
+		})
 		.ifJust((bookmark) => {
 			browser.tabs.create({ url: bookmark.url });
 
@@ -108,4 +123,24 @@ export const setSearchFilterWithResets = (filter: string): ThunkActionCreator =>
 	const filteredBookmarks = getWeightedLimitedFilteredBookmarks(getState());
 
 	dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(filteredBookmarks) ? Just(0) : Nothing));
+};
+
+export const deleteStagedBookmarksGroupBookmarkOrEntireGroup = (
+	grpId: StagedBookmarksGroup['id'],
+	bmId: LocalBookmark['id'],
+): ThunkActionCreator => (dispatch, getState) => {
+	const { bookmarks: { stagedBookmarksGroups } } = getState();
+
+	const grp = stagedBookmarksGroups.find(g => g.id === grpId);
+	if (!grp) return;
+
+	if (grp.bookmarks.length === 1) {
+		// If deleting last bookmark in group, delete entire group and return to
+		// groups list
+		dispatch(deleteStagedBookmarksGroup(grpId));
+		dispatch(setPage(Page.StagedGroupsList));
+	} else {
+		// Else delete the bookmark leaving group intact
+		dispatch(deleteStagedBookmarksGroupBookmark(grpId, bmId));
+	}
 };

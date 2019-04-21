@@ -13,7 +13,7 @@ import RefreshIcon from 'Assets/refresh.svg';
 export const headerHeight = '50px';
 export const headerItemsMargin = '10px';
 
-const Wrapper = styled.div`
+const Wrapper = styled.nav`
 	width: 100%;
 	height: ${headerHeight};
 	position: fixed;
@@ -22,6 +22,7 @@ const Wrapper = styled.div`
 	display: grid;
 	grid-template-columns: 1fr auto;
 	grid-gap: .5rem;
+	align-items: center;
 	padding: 1rem;
 	background: ${props => props.theme.backgroundColor};
 `;
@@ -38,7 +39,7 @@ const ControlsWrapper = styled.div`
 
 const ControlButtonTooltip = styled(Tooltip)`
 	position: absolute;
-	top: 50%;
+	top: calc(50% - 1px);
 	right: calc(100% + .5rem);
 	transform: translateY(-50%);
 `;
@@ -57,6 +58,7 @@ const RefreshControlButton = styled(ControlButton)`
 `;
 
 interface Props {
+	onStagedBookmarks(): void;
 	onAdd(): void;
 	updateTextFilter(textFilter: string): void;
 	openAllVisibleBookmarks(): void;
@@ -109,70 +111,68 @@ const SearchControls: Comp<Props> = (props) => {
 	};
 
 	return (
-		<nav>
-			<Wrapper>
-				<SearchTextInput
-					value={props.textFilter}
-					onInput={props.updateTextFilter}
-					placeholder="Search..."
-					disabled={!props.shouldEnableSearch}
-					ref={inputRef}
-				/>
+		<Wrapper>
+			<SearchTextInput
+				value={props.textFilter}
+				onInput={props.updateTextFilter}
+				placeholder="Search..."
+				disabled={!props.shouldEnableSearch}
+				ref={inputRef}
+			/>
 
-				<ControlsWrapper>
-					<div>
-						<ControlButton
-							type="button"
-							disabled={!props.shouldEnableOpenStaged}
-							onClick={() => { /* TODO incl/ icon below */ }}
-							iconHTML={AsteriskIcon}
-							onMouseEnter={props.shouldEnableOpenStaged
-								? showTooltip(HoverState.Stage)
-								: undefined
-							}
-							onMouseLeave={hideTooltip}
-						/>
-
-						<ControlButton
-							type="button"
-							disabled={!props.shouldEnableOpenAll}
-							onClick={props.openAllVisibleBookmarks}
-							iconHTML={AsteriskIcon}
-							onMouseEnter={props.shouldEnableOpenAll
-								? showTooltip(HoverState.OpenAll)
-								: undefined
-							}
-							onMouseLeave={hideTooltip}
-						/>
-
-						<ControlButton
-							type="button"
-							disabled={!props.shouldEnableAddBookmark}
-							onClick={props.onAdd}
-							iconHTML={PlusIcon}
-							onMouseEnter={props.shouldEnableAddBookmark
-								? showTooltip(HoverState.Add)
-								: undefined
-							}
-							onMouseLeave={hideTooltip}
-						/>
-
-						<RefreshControlButton
-							type="button"
-							onClick={props.refreshBookmarks}
-							iconHTML={RefreshIcon}
-							onMouseEnter={showTooltip(HoverState.Refresh)}
-							onMouseLeave={hideTooltip}
-						/>
-					</div>
-
-					<ControlButtonTooltip
-						message={tooltipMessage(hoverState)}
-						visible={hoverState !== HoverState.None}
+			<ControlsWrapper>
+				<div>
+					<ControlButton
+						type="button"
+						disabled={!props.shouldEnableOpenStaged}
+						onClick={props.onStagedBookmarks}
+						iconHTML={AsteriskIcon} /* TODO icon */
+						onMouseEnter={props.shouldEnableOpenStaged
+							? showTooltip(HoverState.Stage)
+							: undefined
+						}
+						onMouseLeave={hideTooltip}
 					/>
-				</ControlsWrapper>
-			</Wrapper>
-		</nav>
+
+					<ControlButton
+						type="button"
+						disabled={!props.shouldEnableOpenAll}
+						onClick={props.openAllVisibleBookmarks}
+						iconHTML={AsteriskIcon}
+						onMouseEnter={props.shouldEnableOpenAll
+							? showTooltip(HoverState.OpenAll)
+							: undefined
+						}
+						onMouseLeave={hideTooltip}
+					/>
+
+					<ControlButton
+						type="button"
+						disabled={!props.shouldEnableAddBookmark}
+						onClick={props.onAdd}
+						iconHTML={PlusIcon}
+						onMouseEnter={props.shouldEnableAddBookmark
+							? showTooltip(HoverState.Add)
+							: undefined
+						}
+						onMouseLeave={hideTooltip}
+					/>
+
+					<RefreshControlButton
+						type="button"
+						onClick={props.refreshBookmarks}
+						iconHTML={RefreshIcon}
+						onMouseEnter={showTooltip(HoverState.Refresh)}
+						onMouseLeave={hideTooltip}
+					/>
+				</div>
+
+				<ControlButtonTooltip
+					message={tooltipMessage(hoverState)}
+					visible={hoverState !== HoverState.None}
+				/>
+			</ControlsWrapper>
+		</Wrapper>
 	);
 };
 
