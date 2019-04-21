@@ -11,8 +11,14 @@ const WrapperList = styled.ul`
 	list-style: none;
 `;
 
-const CommitButton = styled(Button)`
-	margin: 1rem;
+const ControlsWrapper = styled.div`
+	padding: 1rem;
+`;
+
+const ControlsButton = styled(Button)`
+	&:not(:last-child) {
+		margin-right: 1rem;
+	}
 `;
 
 interface Props {
@@ -20,6 +26,7 @@ interface Props {
 	onEditBookmark(id: LocalBookmarkWeighted['id']): void;
 	onDeleteBookmark(id: LocalBookmarkWeighted['id']): void;
 	onPublish(): void;
+	onDeleteGroup(): void;
 	bookmarks: LocalBookmarkWeighted[];
 }
 
@@ -43,7 +50,10 @@ const StagedGroupBookmarksList: Comp<Props> = (props) => {
 				))}
 			</WrapperList>
 
-			<CommitButton label="Commit bookmarks to Buku" onClick={props.onPublish} />
+			<ControlsWrapper>
+				<ControlsButton label="Delete Group" onClick={props.onDeleteGroup} />
+				<ControlsButton label="Commit Bookmarks to Buku" onClick={props.onPublish} />
+			</ControlsWrapper>
 		</>
 	);
 };

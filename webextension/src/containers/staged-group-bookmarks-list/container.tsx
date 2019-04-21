@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Just } from 'purify-ts/Maybe';
 import { AppState } from 'Store';
-import { setStagedBookmarksGroupBookmarkEditId } from 'Store/bookmarks/actions';
+import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from 'Store/bookmarks/actions';
 import { setPage } from 'Store/user/actions';
 import { Page } from 'Store/user/types';
 import { getStagedGroupToEditWeightedBookmarks } from 'Store/selectors';
@@ -31,7 +31,16 @@ const BookmarksListContainer: Comp<Props> = props => (
 			});
 		}}
 		onPublish={() => {
-			props.stagedGroupId.ifJust(props.saveBookmarks);
+			props.stagedGroupId.ifJust((grpId) => {
+				props.saveBookmarks(grpId);
+				props.setPage(Page.StagedGroupsList);
+			});
+		}}
+		onDeleteGroup={() => {
+			props.stagedGroupId.ifJust((grpId) => {
+				props.deleteGroup(grpId);
+				props.setPage(Page.StagedGroupsList);
+			});
 		}}
 	/>
 );
@@ -44,6 +53,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = ({
 	setPage,
 	saveBookmarks: addAllBookmarksFromStagedGroup,
+	deleteGroup: deleteStagedBookmarksGroup,
 	onOpenBookmark: openBookmarkAndExit,
 	onEditBookmark: setStagedBookmarksGroupBookmarkEditId,
 	onDeleteBookmark: deleteStagedBookmarksGroupBookmarkOrEntireGroup,

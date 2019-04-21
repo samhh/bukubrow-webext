@@ -139,7 +139,6 @@ export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id
 
 	await dispatch(addManyBookmarks(bookmarks));
 	dispatch(deleteStagedBookmarksGroup(groupId));
-	dispatch(setPage(Page.StagedGroupsList));
 };
 
 export const deleteStagedBookmarksGroupBookmarkOrEntireGroup = (
