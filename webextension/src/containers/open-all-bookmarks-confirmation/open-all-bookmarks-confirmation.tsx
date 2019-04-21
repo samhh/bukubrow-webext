@@ -28,15 +28,8 @@ const OpenAllBookmarksConfirmation: Comp<Props> = props => (
 					<Heading>{matchesTerminology(props.numToOpen)}?</Heading>
 				</header>
 
-				<Button
-					onClick={props.onCancel}
-					label="Cancel"
-				/>
-
-				<ConfirmationButton
-					onClick={props.onConfirm}
-					label="Open"
-				/>
+				<Button onClick={props.onCancel}>Cancel</Button>
+				<ConfirmationButton onClick={props.onConfirm}>Open</ConfirmationButton>
 			</Modal>
 		)}
 	</>

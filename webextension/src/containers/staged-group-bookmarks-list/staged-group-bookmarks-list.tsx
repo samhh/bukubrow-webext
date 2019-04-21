@@ -51,8 +51,8 @@ const StagedGroupBookmarksList: Comp<Props> = (props) => {
 			</WrapperList>
 
 			<ControlsWrapper>
-				<ControlsButton label="Delete Group" onClick={props.onDeleteGroup} />
-				<ControlsButton label="Commit Bookmarks to Buku" onClick={props.onPublish} />
+				<ControlsButton onClick={props.onDeleteGroup}>Delete Group</ControlsButton>
+				<ControlsButton onClick={props.onPublish}>Commit Bookmarks to Buku</ControlsButton>
 			</ControlsWrapper>
 		</>
 	);

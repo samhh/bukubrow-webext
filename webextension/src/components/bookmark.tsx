@@ -4,13 +4,13 @@ import { ParsedInputResult } from 'Modules/parse-search-input';
 import styled, { css } from 'Styles';
 
 import Badge, { mapURLMatchToBadgeWeight } from './badge';
-import BinIcon from 'Assets/bin.svg';
-import Button from 'Components/button';
 import HighlightMarkup from 'Components/highlight-markup';
-import PencilIcon from 'Assets/pencil.svg';
+import IconButton, { idealFeatherIconSize } from './icon-button';
+import ListItem from 'Components/list-item';
 import Tag from 'Components/tag';
-import Tooltip from './tooltip';
-import ListItem from './list-item';
+import Tooltip from 'Components/tooltip';
+
+import { Edit, Trash } from 'react-feather';
 
 const ControlsWrapper = styled.div`
 	display: flex;
@@ -56,7 +56,7 @@ const URL = styled.h2`
 	color: ${props => props.theme.textColorOffset};
 `;
 
-const ControlButton = styled(Button)`
+const ControlButton = styled(IconButton)`
 	&:not(:last-child) {
 		margin-right: .5rem;
 	}
@@ -152,18 +152,20 @@ const Bookmark = memo<Props>((props) => {
 						<ControlButton
 							onClick={handleEdit}
 							type="button"
-							iconHTML={PencilIcon}
 							onMouseEnter={showTooltip('Edit bookmark')}
 							onMouseLeave={hideTooltip}
-						/>
+						>
+							<Edit size={idealFeatherIconSize} />
+						</ControlButton>
 
 						<ControlButton
 							onClick={handleDelete}
 							type="button"
-							iconHTML={BinIcon}
 							onMouseEnter={showTooltip('Delete bookmark')}
 							onMouseLeave={hideTooltip}
-						/>
+						>
+							<Trash size={idealFeatherIconSize} />
+						</ControlButton>
 					</div>
 
 					<ControlButtonTooltip

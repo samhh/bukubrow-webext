@@ -14,7 +14,6 @@ module.exports = {
 	setupFiles: ['jest-webextension-mock'],
 	transform: {
 		'\\.tsx?$': 'ts-jest',
-		'\\.svg$': 'jest-raw-loader',
 	},
 	testRegex: '^.+\\.test.tsx?$',
 	moduleFileExtensions: ['js', 'ts', 'tsx'],

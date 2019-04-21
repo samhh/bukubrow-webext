@@ -27,15 +27,8 @@ const BookmarkDeleteForm: Comp<Props> = props => (
 					<Heading>Delete bookmark <em>{props.bookmark.title}</em>?</Heading>
 				</header>
 
-				<Button
-					onClick={props.onCancel}
-					label="Cancel"
-				/>
-
-				<ConfirmationButton
-					onClick={props.onConfirm}
-					label="Delete"
-				/>
+				<Button onClick={props.onCancel}>Cancel</Button>
+				<ConfirmationButton onClick={props.onConfirm}>Delete</ConfirmationButton>
 			</Modal>
 		)}
 	</>

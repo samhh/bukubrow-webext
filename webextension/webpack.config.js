@@ -69,10 +69,6 @@ module.exports = (env) => {
 		module: {
 			rules: [
 				{
-					test: /\.svg$/,
-					loader: 'svg-inline-loader',
-				},
-				{
 					enforce: 'pre',
 					test: /\.tsx?$/,
 					loader: 'eslint-loader',

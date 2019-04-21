@@ -3,12 +3,11 @@ import { matchesTerminology } from 'Modules/terminology';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import styled from 'Styles';
 
-import AsteriskIcon from 'Assets/asterisk.svg';
-import Button, { buttonIconSize } from 'Components/button';
+import IconButton, { iconButtonSize, idealFeatherIconSize } from 'Components/icon-button';
 import TextInput from 'Components/text-input';
 import Tooltip from 'Components/tooltip';
-import PlusIcon from 'Assets/plus.svg';
-import RefreshIcon from 'Assets/refresh.svg';
+
+import { ArrowUpRight, Layers, Plus, RefreshCw } from 'react-feather';
 
 export const headerHeight = '50px';
 export const headerItemsMargin = '10px';
@@ -28,7 +27,7 @@ const Wrapper = styled.nav`
 `;
 
 const SearchTextInput = styled(TextInput)`
-	height: ${buttonIconSize};
+	height: ${iconButtonSize}px;
 	padding: 0 ${headerItemsMargin};
 	color: ${props => props.theme.textColor};
 `;
@@ -44,17 +43,12 @@ const ControlButtonTooltip = styled(Tooltip)`
 	transform: translateY(-50%);
 `;
 
-const ControlButton = styled(Button)`
+const ControlButton = styled(IconButton)`
 	vertical-align: top;
 
 	&:not(:last-child) {
 		margin-right: .5rem;
 	}
-`;
-
-// For poorly spaced SVG
-const RefreshControlButton = styled(ControlButton)`
-	padding: 2px;
 `;
 
 interface Props {
@@ -123,48 +117,48 @@ const SearchControls: Comp<Props> = (props) => {
 			<ControlsWrapper>
 				<div>
 					<ControlButton
-						type="button"
 						disabled={!props.shouldEnableOpenStaged}
 						onClick={props.onStagedBookmarks}
-						iconHTML={AsteriskIcon} /* TODO icon */
 						onMouseEnter={props.shouldEnableOpenStaged
 							? showTooltip(HoverState.Stage)
 							: undefined
 						}
 						onMouseLeave={hideTooltip}
-					/>
+					>
+						<Layers size={idealFeatherIconSize} />
+					</ControlButton>
 
 					<ControlButton
-						type="button"
 						disabled={!props.shouldEnableOpenAll}
 						onClick={props.openAllVisibleBookmarks}
-						iconHTML={AsteriskIcon}
 						onMouseEnter={props.shouldEnableOpenAll
 							? showTooltip(HoverState.OpenAll)
 							: undefined
 						}
 						onMouseLeave={hideTooltip}
-					/>
+					>
+						<ArrowUpRight size={idealFeatherIconSize} />
+					</ControlButton>
 
 					<ControlButton
-						type="button"
 						disabled={!props.shouldEnableAddBookmark}
 						onClick={props.onAdd}
-						iconHTML={PlusIcon}
 						onMouseEnter={props.shouldEnableAddBookmark
 							? showTooltip(HoverState.Add)
 							: undefined
 						}
 						onMouseLeave={hideTooltip}
-					/>
+					>
+						<Plus size={idealFeatherIconSize} />
+					</ControlButton>
 
-					<RefreshControlButton
-						type="button"
+					<ControlButton
 						onClick={props.refreshBookmarks}
-						iconHTML={RefreshIcon}
 						onMouseEnter={showTooltip(HoverState.Refresh)}
 						onMouseLeave={hideTooltip}
-					/>
+					>
+						<RefreshCw size={idealFeatherIconSize} />
+					</ControlButton>
 				</div>
 
 				<ControlButtonTooltip
