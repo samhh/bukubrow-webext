@@ -55,7 +55,7 @@ const pageMap = (props: Props) => {
 		},
 		[Page.EditStagedBookmark]: {
 			nav: {
-				title: 'TODO!',
+				title: 'Edit Bookmark',
 				exitTarget: Page.StagedGroup,
 			},
 			component: StagedGroupBookmarkEditForm,
