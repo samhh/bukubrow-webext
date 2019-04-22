@@ -1,8 +1,7 @@
 import { Maybe } from 'purify-ts/Maybe';
 import { browser } from 'webextension-polyfill-ts';
 import { URLMatch } from 'Modules/compare-urls';
-import { getBookmarks } from 'Modules/cache';
-import { getActiveTab, onTabActivity } from 'Comms/shared';
+import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Comms/browser';
 
 export const colors = {
 	[URLMatch.Exact]: '#4286f4',
@@ -16,23 +15,21 @@ const hrefToUrlReducer = (acc: URL[], href: string): URL[] =>
 		// This can throw if the href passed as an argument is invalid
 		.encase(() => new URL(href))
 		.caseOf({
-			Just: (url) => [...acc, url],
+			Just: url => [...acc, url],
 			Nothing: () => acc,
 		});
 
-export const fetchBookmarksAndUpdateBadge = async () => {
-	const fetchedBookmarks = await getBookmarks().run();
+const getBookmarksUrlsFromLocalStorage = getBookmarksFromLocalStorage().map(bms => bms
+	.map(bm => bm.url)
+	.reduce(hrefToUrlReducer, []),
+);
 
-	fetchedBookmarks
-		.map(bms => bms
-			.map(bm => bm.url)
-			.reduce(hrefToUrlReducer, []),
-		)
-		.ifJust((bookmarks) => {
-			urlState = bookmarks;
+const syncBookmarks = async () => {
+	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage.run();
 
-			updateBadge();
-		});
+	bookmarkUrls.ifJust((urls) => {
+		urlState = urls;
+	});
 };
 
 const checkUrl = (url: URL) => {
@@ -77,8 +74,14 @@ const updateBadge = async () => {
 		});
 };
 
-export const initBadgeAndWatch = () => {
-	fetchBookmarksAndUpdateBadge();
+export const initBadgeAndListen = async () => {
+	await syncBookmarks();
+	updateBadge();
 
 	onTabActivity(updateBadge);
+
+	return async () => {
+		await syncBookmarks();
+		updateBadge();
+	};
 };

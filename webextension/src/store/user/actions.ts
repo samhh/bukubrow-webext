@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions';
-import { UserActionTypes, Theme } from './types';
+import { UserActionTypes, Theme, Page } from './types';
 
 export const setDisplayTutorialMessage = (display: boolean) => action(
 	UserActionTypes.SetDisplayTutorialMessage,
@@ -14,4 +14,9 @@ export const setActiveTheme = (theme: Theme) => action(
 export const setDisplayOpenAllBookmarksConfirmation = (display: boolean) => action(
 	UserActionTypes.SetDisplayOpenAllBookmarksConfirmation,
 	display,
+);
+
+export const setPage = (page: Page) => action(
+	UserActionTypes.SetPage,
+	page,
 );

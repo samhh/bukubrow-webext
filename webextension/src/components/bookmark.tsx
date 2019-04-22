@@ -4,12 +4,13 @@ import { ParsedInputResult } from 'Modules/parse-search-input';
 import styled, { css } from 'Styles';
 
 import Badge, { mapURLMatchToBadgeWeight } from './badge';
-import BinIcon from 'Assets/bin.svg';
-import Button from 'Components/button';
 import HighlightMarkup from 'Components/highlight-markup';
-import PencilIcon from 'Assets/pencil.svg';
+import IconButton, { idealFeatherIconSize } from './icon-button';
+import ListItem from 'Components/list-item';
 import Tag from 'Components/tag';
-import Tooltip from './tooltip';
+import Tooltip from 'Components/tooltip';
+
+import { Edit, Trash } from 'react-feather';
 
 const ControlsWrapper = styled.div`
 	display: flex;
@@ -18,25 +19,11 @@ const ControlsWrapper = styled.div`
 	float: right;
 `;
 
-const Wrapper = styled.li<{ isFocused: boolean }>`
-	padding: 1rem;
-	border-top: 1px solid ${props => props.theme.backgroundColorOffset};
-	cursor: pointer;
-
-	&:last-child {
-		border-bottom: 1px solid ${props => props.theme.backgroundColorOffset};
-	}
-
-	&:hover {
-		background-color: ${props => props.theme.backgroundColorOffset};
-
-		${ControlsWrapper} {
+const Wrapper = styled(ListItem)<{ clickable: boolean }>`
+	${props => props.clickable && css`
+		&:hover ${ControlsWrapper} {
 			opacity: 1;
 		}
-	}
-
-	${props => props.isFocused && css`
-		background-color: ${props => props.theme.backgroundColorOffset};
 	`}
 `;
 
@@ -69,7 +56,7 @@ const URL = styled.h2`
 	color: ${props => props.theme.textColorOffset};
 `;
 
-const ControlButton = styled(Button)`
+const ControlButton = styled(IconButton)`
 	&:not(:last-child) {
 		margin-right: .5rem;
 	}
@@ -88,12 +75,12 @@ interface Props {
 	url: LocalBookmark['url'];
 	desc: LocalBookmark['desc'];
 	tags: LocalBookmark['tags'];
-	parsedFilter: ParsedInputResult;
-	isFocused: boolean;
 	activeTabURLMatch: URLMatch;
-	openBookmark(id: LocalBookmark['id']): void;
 	onEdit(id: LocalBookmark['id']): void;
 	onDelete(id: LocalBookmark['id']): void;
+	openBookmark?(id: LocalBookmark['id']): void;
+	isFocused?: boolean;
+	parsedFilter?: ParsedInputResult;
 	forwardedRef?: Ref<HTMLElement>;
 }
 
@@ -102,7 +89,7 @@ const Bookmark = memo<Props>((props) => {
 	const [displayTooltip, setDisplayTooltip] = useState(false);
 
 	const handleClick = () => {
-		props.openBookmark(props.id);
+		props.openBookmark && props.openBookmark(props.id);
 	};
 
 	const handleEdit = (evt: MouseEvent<HTMLButtonElement>) => {
@@ -129,6 +116,7 @@ const Bookmark = memo<Props>((props) => {
 	return (
 		<Wrapper
 			isFocused={props.isFocused}
+			clickable={!!handleClick}
 			onClick={handleClick}
 			ref={props.forwardedRef as Ref<HTMLLIElement>}
 		>
@@ -137,7 +125,10 @@ const Bookmark = memo<Props>((props) => {
 					{props.activeTabURLMatch !== URLMatch.None && (
 						<SpacedBadge weight={mapURLMatchToBadgeWeight(props.activeTabURLMatch)} />
 					)}
-					<HighlightMarkup str={props.title} match={[props.parsedFilter.name, ...props.parsedFilter.wildcard]} />
+					<HighlightMarkup
+						str={props.title}
+						match={props.parsedFilter && [props.parsedFilter.name, ...props.parsedFilter.wildcard]}
+					/>
 					&nbsp;
 				</Name>
 
@@ -146,7 +137,12 @@ const Bookmark = memo<Props>((props) => {
 						<Tag
 							key={tag}
 							id={tag}
-							label={() => <HighlightMarkup str={tag} match={[...props.parsedFilter.tags, ...props.parsedFilter.wildcard]} />}
+							label={() => (
+								<HighlightMarkup
+									str={tag}
+									match={props.parsedFilter && [...props.parsedFilter.tags, ...props.parsedFilter.wildcard]}
+								/>
+							)}
 						/>
 					))}
 				</TagsList>
@@ -156,18 +152,20 @@ const Bookmark = memo<Props>((props) => {
 						<ControlButton
 							onClick={handleEdit}
 							type="button"
-							iconHTML={PencilIcon}
 							onMouseEnter={showTooltip('Edit bookmark')}
 							onMouseLeave={hideTooltip}
-						/>
+						>
+							<Edit size={idealFeatherIconSize} />
+						</ControlButton>
 
 						<ControlButton
 							onClick={handleDelete}
 							type="button"
-							iconHTML={BinIcon}
 							onMouseEnter={showTooltip('Delete bookmark')}
 							onMouseLeave={hideTooltip}
-						/>
+						>
+							<Trash size={idealFeatherIconSize} />
+						</ControlButton>
 					</div>
 
 					<ControlButtonTooltip
@@ -179,12 +177,20 @@ const Bookmark = memo<Props>((props) => {
 
 			{props.desc && (
 				<Desc>
-					&#x3E; <HighlightMarkup str={props.desc} match={[...props.parsedFilter.desc, ...props.parsedFilter.wildcard]} />
+					&#x3E;
+					&nbsp;
+					<HighlightMarkup
+						str={props.desc}
+						match={props.parsedFilter && [...props.parsedFilter.desc, ...props.parsedFilter.wildcard]}
+					/>
 				</Desc>
 			)}
 
 			<URL>
-				<HighlightMarkup str={props.url} match={[...props.parsedFilter.url, ...props.parsedFilter.wildcard]} />
+				<HighlightMarkup
+					str={props.url}
+					match={props.parsedFilter && [...props.parsedFilter.url, ...props.parsedFilter.wildcard]}
+				/>
 			</URL>
 		</Wrapper>
 	);

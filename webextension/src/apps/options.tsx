@@ -1,5 +1,5 @@
 import React from 'react';
-import mountPage from 'Modules/mount-page';
+import mount from 'Modules/connected-mount';
 import OptionsPage from 'Pages/options/';
 
-mountPage(<OptionsPage />);
+mount(<OptionsPage />);

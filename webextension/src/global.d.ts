@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-declare module '*.svg' {
-	const content: string;
-	export default content;
-}
-
 type Nullable<T> = T | null;
 
 type SubType<Base, Condition> = Pick<Base, {
@@ -54,4 +49,10 @@ interface LocalBookmarkUnsaved {
 // Bookmark as stored in LocalStorage
 interface LocalBookmark extends LocalBookmarkUnsaved {
 	id: number;
+}
+
+interface StagedBookmarksGroup {
+	id: number;
+	time: number;
+	bookmarks: LocalBookmark[];
 }

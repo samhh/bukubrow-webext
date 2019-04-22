@@ -2,7 +2,30 @@ import { browser } from 'webextension-polyfill-ts';
 import { EitherAsync } from 'purify-ts/EitherAsync';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { compareAgainstMinimum } from 'Modules/semantic-versioning';
-import { BackendResponse } from './shared';
+
+type CheckBinaryRes =
+	| { outdatedBinary: true }
+	| { cannotFindBinary: true }
+	| { unknownError: true };
+
+interface GetBookmarksRes {
+	bookmarksUpdated: true;
+}
+
+interface SaveBookmarkRes {
+	bookmarkSaved: true;
+}
+
+interface UpdateBookmarkRes {
+	bookmarkUpdated: true;
+}
+
+interface DeleteBookmarkRes {
+	bookmarkDeleted: true;
+}
+
+export type NativeResponse =
+	CheckBinaryRes | GetBookmarksRes | SaveBookmarkRes | UpdateBookmarkRes | DeleteBookmarkRes;
 
 export enum NativeRequestMethod {
 	GET = 'GET',
@@ -37,7 +60,7 @@ interface NativeDELETEResponse {
 	success: boolean;
 }
 
-interface NativeRequestData {
+export interface NativeRequestData {
 	GET: undefined;
 	OPTIONS: undefined;
 	POST: { bookmark: RemoteBookmarkUnsaved };
@@ -45,7 +68,7 @@ interface NativeRequestData {
 	DELETE: { bookmark_id: RemoteBookmark['id'] };
 }
 
-interface NativeRequestResult {
+export interface NativeRequestResult {
 	GET: NativeGETResponse;
 	OPTIONS: NativeOPTIONSResponse;
 	POST: NativePOSTResponse;
@@ -53,12 +76,12 @@ interface NativeRequestResult {
 	DELETE: NativeDELETEResponse;
 }
 
-const sendNativeMessage = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) =>
+const sendMessageToNative = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) =>
 	browser.runtime.sendNativeMessage(APP_NAME, { method, data }) as Promise<NativeRequestResult[T]>;
 
 // Ensure binary version is equal to or newer than what we're expecting, but on
 // the same major version (semantic versioning)
-export const checkBinaryVersion = () => EitherAsync<Error, void>(() => sendNativeMessage(NativeRequestMethod.OPTIONS, undefined)
+export const checkBinaryVersionFromNative = () => EitherAsync<Error, void>(() => sendMessageToNative(NativeRequestMethod.OPTIONS, undefined)
 	.then((res) => {
 		const valid = !!(
 			res &&
@@ -70,18 +93,15 @@ export const checkBinaryVersion = () => EitherAsync<Error, void>(() => sendNativ
 		if (!valid) throw new Error('Incompatible version');
 	}));
 
-export const getBookmarks = () =>
-	sendNativeMessage(NativeRequestMethod.GET, undefined);
+export const getBookmarksFromNative = () =>
+	sendMessageToNative(NativeRequestMethod.GET, undefined);
 
-export const saveBookmark = (bookmark: RemoteBookmarkUnsaved) =>
-	sendNativeMessage(NativeRequestMethod.POST, { bookmark });
+export const saveBookmarkToNative = (bookmark: RemoteBookmarkUnsaved) =>
+	sendMessageToNative(NativeRequestMethod.POST, { bookmark });
 
-export const updateBookmark = (bookmark: RemoteBookmark) =>
-	sendNativeMessage(NativeRequestMethod.PUT, { bookmark });
+export const updateBookmarkToNative = (bookmark: RemoteBookmark) =>
+	sendMessageToNative(NativeRequestMethod.PUT, { bookmark });
 
-export const deleteBookmark = (bookmarkId: RemoteBookmark['id']) =>
+export const deleteBookmarkFromNative = (bookmarkId: RemoteBookmark['id']) =>
 	// eslint-disable-next-line @typescript-eslint/camelcase
-	sendNativeMessage(NativeRequestMethod.DELETE, { bookmark_id: bookmarkId });
-
-export const sendFrontendMessage = (response: BackendResponse): Promise<void> =>
-	browser.runtime.sendMessage(response);
+	sendMessageToNative(NativeRequestMethod.DELETE, { bookmark_id: bookmarkId });

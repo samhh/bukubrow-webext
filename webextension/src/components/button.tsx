@@ -1,9 +1,7 @@
-import React, { forwardRef, Ref, MouseEvent } from 'react';
-import styled, { css } from 'Styles';
+import React, { forwardRef, Ref, MouseEvent, ReactNode } from 'react';
+import styled from 'Styles';
 
-export const buttonIconSize = '25px';
-
-const Btn = styled.button<{ asIcon: boolean }>`
+const Btn = styled.button`
 	padding: .5rem 1rem;
 	border: 1px solid ${props => props.theme.backgroundColorOffset};
 	border-radius: ${props => props.theme.borderRadius};
@@ -11,15 +9,8 @@ const Btn = styled.button<{ asIcon: boolean }>`
 	opacity: ${props => props.disabled ? .25 : 1};
 	background: ${props => props.theme.backgroundColorOffset};
 	color: ${props => props.theme.textColor};
-	cursor: pointer;
 	user-select: none;
 	transition: background-color .2s;
-
-	${props => props.asIcon && css`
-		width: ${buttonIconSize};
-		height: ${buttonIconSize};
-		padding: .5rem;
-	`}
 
 	/* Has to be !important to override Firefox default */
 	&,
@@ -27,33 +18,25 @@ const Btn = styled.button<{ asIcon: boolean }>`
 		outline: none !important;
 	}
 
-	&:hover {
-		background-color: ${props => props.theme.backgroundColorOffsetOffset};
-	}
+	&:not(:disabled) {
+		cursor: pointer;
 
-	&:active {
-		transform: translateY(2px);
-	}
-`;
+		&:hover {
+			background-color: ${props => props.theme.backgroundColorOffsetOffset};
+		}
 
-const Icon = styled.span`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	svg {
-		width: 100%;
-		fill: ${props => props.theme.textColor};
+		&:active {
+			transform: translateY(2px);
+		}
 	}
 `;
 
 interface Props {
+	children: ReactNode;
 	forwardedRef?: Ref<HTMLButtonElement>;
 	onClick?(evt: MouseEvent<HTMLButtonElement>): void;
 	onMouseEnter?(evt: MouseEvent<HTMLButtonElement>): void;
 	onMouseLeave?(evt: MouseEvent<HTMLButtonElement>): void;
-	label?: string;
-	iconHTML?: string;
 	type?: 'button' | 'submit';
 	disabled?: boolean;
 	className?: string;
@@ -61,7 +44,6 @@ interface Props {
 
 const Button: Comp<Props> = props => (
 	<Btn
-		asIcon={!!props.iconHTML}
 		type={props.type || 'button'}
 		disabled={props.disabled}
 		onClick={props.onClick}
@@ -70,11 +52,7 @@ const Button: Comp<Props> = props => (
 		className={props.className}
 		ref={props.forwardedRef}
 	>
-		{props.label}
-
-		{props.iconHTML && (
-			<Icon dangerouslySetInnerHTML={{ __html: props.iconHTML }} />
-		)}
+		{props.children}
 	</Btn>
 );
 

@@ -2,17 +2,13 @@ import React, { useRef } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import styled from 'Styles';
 
-import BookmarkAddForm from 'Containers/bookmark-add-form/';
-import BookmarkDeleteForm from 'Containers/bookmark-delete-form/';
-import BookmarkEditForm from 'Containers/bookmark-edit-form/';
 import BookmarksList from 'Containers/bookmarks-list/';
-import ErrorMessages from 'Containers/error-messages/';
 import LoadMoreBookmarks from 'Components/load-more-bookmarks';
-import OpenAllBookmarksConfirmation from 'Containers/open-all-bookmarks-confirmation/';
 import SearchControls, { headerHeight } from 'Containers/search-controls/';
 import TutorialMessage from 'Components/tutorial-message';
 
-const Content = styled.div`
+const Wrapper = styled.div`
+	// TODO can remove this line?
 	min-height: 30rem; /* For bookmark form in cases where there are not yet any bookmarks */
 	padding: ${headerHeight} 0 0;
 `;
@@ -26,7 +22,7 @@ interface Props {
 	displayTutorialMessage: boolean;
 }
 
-const ContentPage: Comp<Props> = (props) => {
+const Search: Comp<Props> = (props) => {
 	const propsRef = useRef(props);
 	propsRef.current = props;
 
@@ -41,38 +37,28 @@ const ContentPage: Comp<Props> = (props) => {
 	});
 
 	return (
-		<>
-			<BookmarkAddForm />
-			<BookmarkEditForm />
-			<BookmarkDeleteForm />
+		<Wrapper>
+			<SearchControls />
 
-			<OpenAllBookmarksConfirmation />
+			<main>
+				{props.displayTutorialMessage
+					? <TutorialMessage />
+					: (
+						<>
+							<BookmarksList />
 
-			<ErrorMessages />
-
-			<Content>
-				<SearchControls />
-
-				<main>
-					{props.displayTutorialMessage
-						? <TutorialMessage />
-						: (
-							<>
-								<BookmarksList />
-
-								{!!props.numRemainingBookmarks && (
-									<LoadMoreBookmarks
-										numRemainingBookmarks={props.numRemainingBookmarks}
-										renderAllBookmarks={props.onEnableLimitlessRender}
-									/>
-								)}
-							</>
-						)
-					}
-				</main>
-			</Content>
-		</>
+							{!!props.numRemainingBookmarks && (
+								<LoadMoreBookmarks
+									numRemainingBookmarks={props.numRemainingBookmarks}
+									renderAllBookmarks={props.onEnableLimitlessRender}
+								/>
+							)}
+						</>
+					)
+				}
+			</main>
+		</Wrapper>
 	);
 };
 
-export default ContentPage;
+export default Search;

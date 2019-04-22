@@ -3,10 +3,12 @@ import { Maybe, Nothing } from 'purify-ts/Maybe';
 import styled from 'Styles';
 
 import Button from 'Components/button';
+import IconButton, { idealFeatherIconSize } from 'Components/icon-button';
 import Modal from 'Components/modal';
-import PlusIcon from 'Assets/plus.svg';
 import Tag from 'Components/tag';
 import TextInput from 'Components/text-input';
+
+import { Plus, X } from 'react-feather';
 
 const Header = styled.header`
 	display: flex;
@@ -28,15 +30,9 @@ const TagInputWrapper = styled.div`
 	margin: 1rem 0 0;
 `;
 
-const AddTagButton = styled(Button)`
+const AddTagButton = styled(IconButton)`
 	align-self: end;
 	margin: 0 0 .5rem;
-`;
-
-const ExitButton = styled(Button)`
-	svg {
-		transform: rotate(45deg);
-	}
 `;
 
 const SubmitButton = styled(Button)`
@@ -133,10 +129,9 @@ const BookmarkForm: Comp<Props> = (props) => {
 						{isEditing ? 'Edit bookmark' : 'Add a bookmark'}
 					</Heading>
 
-					<ExitButton
-						iconHTML={PlusIcon}
-						onClick={props.onClose}
-					/>
+					<IconButton onClick={props.onClose}>
+						<X size={idealFeatherIconSize} />
+					</IconButton>
 				</Header>
 
 				<TextInput
@@ -164,10 +159,9 @@ const BookmarkForm: Comp<Props> = (props) => {
 						label="Tags"
 					/>
 
-					<AddTagButton
-						onClick={handleTagAddition}
-						iconHTML={PlusIcon}
-					/>
+					<AddTagButton onClick={handleTagAddition}>
+						<Plus size={idealFeatherIconSize} />
+					</AddTagButton>
 				</TagInputWrapper>
 
 				<TagList>
@@ -181,10 +175,9 @@ const BookmarkForm: Comp<Props> = (props) => {
 					))}
 				</TagList>
 
-				<SubmitButton
-					type="submit"
-					label={isEditing ? 'Update bookmark' : 'Add bookmark'}
-				/>
+				<SubmitButton type="submit">
+					{isEditing ? 'Update bookmark' : 'Add bookmark'}
+				</SubmitButton>
 			</form>
 		</Modal>
 	);

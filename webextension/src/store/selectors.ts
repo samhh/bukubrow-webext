@@ -20,6 +20,9 @@ const getFocusedBookmarkIndex = (state: AppState) => state.bookmarks.focusedBook
 const getBookmarkEditId = (state: AppState) => state.bookmarks.bookmarkEditId;
 const getBookmarkDeleteId = (state: AppState) => state.bookmarks.bookmarkDeleteId;
 const getLimitNumRendered = (state: AppState) => state.bookmarks.limitNumRendered;
+const getStagedGroups = (state: AppState) => state.bookmarks.stagedBookmarksGroups;
+const getStagedGroupEditId = (state: AppState) => state.bookmarks.stagedBookmarksGroupEditId;
+const getStagedGroupBookmarkEditId = (state: AppState) => state.bookmarks.stagedBookmarksGroupBookmarkEditId;
 const getSearchFilter = (state: AppState) => state.input.searchFilter;
 const getActiveTabHref = (state: AppState) => state.browser.pageUrl;
 
@@ -55,3 +58,22 @@ export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
 
 export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDeleteId,
 	(bookmarks, deleteId) => deleteId.chain(did => Maybe.fromNullable(bookmarks.find(bm => bm.id === did))));
+
+export const getSortedStagedGroups = createSelector(getStagedGroups,
+	(grps) => [...grps].sort((a, b) => b.time - a.time));
+
+export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGroupEditId,
+	(groups, editId) => editId.chain(eid => Maybe.fromNullable(groups.find(grp => grp.id === eid))));
+
+export const getStagedGroupToEditWeightedBookmarks = createSelector(getStagedGroupToEdit, getActiveTabHref,
+	(group, activeTabHref) => group.map(grp => grp.bookmarks.map(addBookmarkWeight(Maybe.encase(() => new URL(activeTabHref))))));
+
+export const getStagedGroupBookmarkToEdit = createSelector(getStagedGroupToEdit, getStagedGroupBookmarkEditId,
+	(group, editId) => MaybeTuple.fromMaybe(group, editId).chain((tup) => {
+		// Destructured like this due to this issue:
+		// https://github.com/gigobyte/purify/issues/84
+		const [grp, eid] = [tup.fst(), tup.snd()];
+
+		return Maybe.fromNullable(grp.bookmarks.find(bm => bm.id === eid));
+	}));
+

@@ -28,7 +28,7 @@ module.exports = (env) => {
 				'content',
 			],
 			// Ensure the webextensionEnv mock is placed in DOM ahead of other scripts
-			chunksSortMode: (a, _b) => a.name === 'webextensionEnv' ? -1 : 1,
+			chunksSortMode: (a, _b) => a.name === 'webextensionEnv' ? 1 : -1,
 		}),
 		new HtmlWebpackPlugin({
 			filename: 'options/options.build.html',
@@ -44,6 +44,7 @@ module.exports = (env) => {
 	}));
 
 	const cfg = {
+		mode: devMode ? 'development' : 'production',
 		devtool,
 		devServer: {
 			contentBase: './dist/',
@@ -58,7 +59,7 @@ module.exports = (env) => {
 		entry: {
 			content: './src/apps/content',
 			options: './src/apps/options',
-			backend: './src/apps/backend.ts',
+			backend: './src/apps/backend',
 			...(serverMode ? { webextensionEnv: './src/webextension-env.ts' } : {}),
 		},
 		output: {
@@ -67,10 +68,6 @@ module.exports = (env) => {
 		},
 		module: {
 			rules: [
-				{
-					test: /\.svg$/,
-					loader: 'svg-inline-loader',
-				},
 				{
 					enforce: 'pre',
 					test: /\.tsx?$/,

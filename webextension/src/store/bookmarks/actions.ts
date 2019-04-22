@@ -7,6 +7,16 @@ export const setAllBookmarks = (bookmarks: Bookmark[]) => action(
 	bookmarks,
 );
 
+export const setAllStagedBookmarksGroups = (groups: StagedBookmarksGroup[]) => action(
+	BookmarksActionTypes.SetAllStagedBookmarksGroups,
+	groups,
+);
+
+export const deleteStagedBookmarksGroup = (groupId: StagedBookmarksGroup['id']) => action(
+	BookmarksActionTypes.DeleteStagedBookmarksGroup,
+	groupId,
+);
+
 export const setLimitNumRendered = (limit: boolean) => action(
 	BookmarksActionTypes.SetLimitNumRendered,
 	limit,
@@ -25,6 +35,26 @@ export const setBookmarkEditId = (id: Maybe<Bookmark['id']>) => action(
 export const setBookmarkDeleteId = (id: Maybe<Bookmark['id']>) => action(
 	BookmarksActionTypes.SetBookmarkDeleteId,
 	id,
+);
+
+export const setStagedBookmarksGroupEditId = (id: Maybe<StagedBookmarksGroup['id']>) => action(
+	BookmarksActionTypes.SetStagedBookmarksGroupEditId,
+	id,
+);
+
+export const setStagedBookmarksGroupBookmarkEditId = (id: Maybe<Bookmark['id']>) => action(
+	BookmarksActionTypes.SetStagedBookmarksGroupBookmarkEditId,
+	id,
+);
+
+export const updateStagedBookmarksGroupBookmark = (grpId: StagedBookmarksGroup['id'], bm: Bookmark) => action(
+	BookmarksActionTypes.UpdateStagedBookmarksGroupBookmark,
+	[grpId, bm] as [typeof grpId, typeof bm], // TODO as const in 3.4!
+);
+
+export const deleteStagedBookmarksGroupBookmark = (grpId: StagedBookmarksGroup['id'], bmId: Bookmark['id']) => action(
+	BookmarksActionTypes.DeleteStagedBookmarksGroupBookmark,
+	[grpId, bmId] as [typeof grpId, typeof bmId], // TODO as const in 3.4
 );
 
 export const setAddBookmarkModalDisplay = (display: boolean) => action(
