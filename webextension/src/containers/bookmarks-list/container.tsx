@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import noop from 'Modules/noop';
 import { AppState } from 'Store';
-import { openBookmarkAndExit } from 'Store/epics';
 import {
 	initiateBookmarkEdit, initiateBookmarkDeletion,
 	attemptFocusedBookmarkIndexIncrement, attemptFocusedBookmarkIndexDecrement,
+	openBookmarkAndExit,
 } from 'Store/bookmarks/epics';
 import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 import BookmarksList from './bookmarks-list';

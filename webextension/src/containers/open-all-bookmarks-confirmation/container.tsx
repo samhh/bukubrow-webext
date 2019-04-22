@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import { setDisplayOpenAllBookmarksConfirmation } from 'Store/user/actions';
-import { openAllFilteredBookmarksAndExit } from 'Store/epics';
+import { openAllFilteredBookmarksAndExit } from 'Store/bookmarks/epics';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import OpenAllBookmarksConfirmation from './open-all-bookmarks-confirmation';
 

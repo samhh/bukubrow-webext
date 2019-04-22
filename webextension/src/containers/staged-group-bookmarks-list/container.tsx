@@ -7,8 +7,7 @@ import { setPage } from 'Store/user/actions';
 import { Page } from 'Store/user/types';
 import { getStagedGroupToEditWeightedBookmarks } from 'Store/selectors';
 import StagedGroupBookmarksList from './staged-group-bookmarks-list';
-import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit } from 'Store/epics';
-import { addAllBookmarksFromStagedGroup } from 'Store/epics';
+import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit, addAllBookmarksFromStagedGroup } from 'Store/bookmarks/epics';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;

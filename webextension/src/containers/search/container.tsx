@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import { setLimitNumRendered, setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
-import { openAllFilteredBookmarksAndExit, syncBookmarks } from 'Store/epics';
+import { openAllFilteredBookmarksAndExit, syncBookmarks } from 'Store/bookmarks/epics';
 import { getNumFilteredUnrenderedBookmarks } from 'Store/selectors';
 import Search from './search';
 
