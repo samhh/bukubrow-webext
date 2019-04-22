@@ -2,6 +2,8 @@
 
 type Nullable<T> = T | null;
 
+type Dictionary<K extends keyof any, V> = Partial<Record<K, V>>;
+
 type SubType<Base, Condition> = Pick<Base, {
 	[Key in keyof Base]: Base[Key] extends Condition ? Key : never;
 }[keyof Base]>;

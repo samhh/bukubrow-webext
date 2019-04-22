@@ -12,7 +12,8 @@ const ErrorMessagesContainer: FC<Props> = ({ errors }) => (
 );
 
 const mapStateToProps = (state: AppState) => ({
-	errors: Object.values(state.notices.errors),
+	errors: Object.values(state.notices.errors)
+		.filter((err): err is string => typeof err === 'string'),
 });
 
 export default connect(mapStateToProps)(ErrorMessagesContainer);
