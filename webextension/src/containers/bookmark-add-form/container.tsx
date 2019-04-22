@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
-import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { addBookmark } from 'Store/bookmarks/epics';
 import BookmarkAddForm from './bookmark-add-form';
 
@@ -14,8 +13,6 @@ const BookmarkAddFormContainer: FC<Props> = props => (
 	<BookmarkAddForm
 		defaultTitle={props.pageTitle}
 		defaultUrl={props.pageUrl}
-		display={props.displayAddForm}
-		onClose={props.setAddBookmarkModalDisplay.bind(null, false)}
 		onSubmit={props.onSubmit}
 	/>
 );
@@ -23,11 +20,9 @@ const BookmarkAddFormContainer: FC<Props> = props => (
 const mapStateToProps = (state: AppState) => ({
 	pageTitle: state.browser.pageTitle,
 	pageUrl: state.browser.pageUrl,
-	displayAddForm: state.bookmarks.displayAddBookmarkModal,
 });
 
 const mapDispatchToProps = ({
-	setAddBookmarkModalDisplay,
 	onSubmit: addBookmark,
 });
 

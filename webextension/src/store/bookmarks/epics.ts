@@ -5,8 +5,7 @@ import { ThunkAC } from 'Store';
 import {
 	setAllStagedBookmarksGroups, deleteStagedBookmarksGroup, deleteStagedBookmarksGroupBookmark,
 	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
-	setAddBookmarkModalDisplay, setEditBookmarkModalDisplay, setDeleteBookmarkModalDisplay,
-	setAllBookmarks,
+	setDeleteBookmarkModalDisplay, setAllBookmarks,
 } from 'Store/bookmarks/actions';
 import { setPage, setHasBinaryComms } from 'Store/user/actions';
 import { pushError } from 'Store/notices/epics';
@@ -109,7 +108,7 @@ export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<voi
 	await saveBookmarkToNative(untransform(bookmark));
 	dispatch(syncBookmarks());
 
-	dispatch(setAddBookmarkModalDisplay(false));
+	dispatch(setPage(Page.Search));
 };
 
 export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
@@ -122,7 +121,7 @@ export const updateBookmark = (bookmark: LocalBookmark): ThunkAC<Promise<void>> 
 	await updateBookmarkToNative(untransform(bookmark));
 	dispatch(syncBookmarks());
 
-	dispatch(setEditBookmarkModalDisplay(false));
+	dispatch(setPage(Page.Search));
 };
 
 export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, getState) => {
@@ -138,7 +137,7 @@ export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, get
 
 export const initiateBookmarkEdit = (id: LocalBookmark['id']): ThunkAC => (dispatch) => {
 	dispatch(setBookmarkEditId(Just(id)));
-	dispatch(setEditBookmarkModalDisplay(true));
+	dispatch(setPage(Page.EditBookmark));
 };
 
 export const initiateBookmarkDeletion = (id: LocalBookmark['id']): ThunkAC => (dispatch) => {

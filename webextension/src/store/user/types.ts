@@ -17,6 +17,8 @@ export enum UserActionTypes {
 
 export enum Page {
 	Search,
+	AddBookmark,
+	EditBookmark,
 	StagedGroupsList,
 	StagedGroup,
 	EditStagedBookmark,

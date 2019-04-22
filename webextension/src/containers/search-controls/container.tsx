@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { scrollToTop } from 'Modules/scroll-window';
 import { AppState } from 'Store';
 import { setSearchFilterWithResets } from 'Store/epics';
-import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import SearchControls from './search-controls';
 import { setDisplayOpenAllBookmarksConfirmation, setPage } from 'Store/user/actions';
@@ -18,8 +17,11 @@ type Props = StateProps & DispatchProps;
 const SearchControlsContainer: FC<Props> = props => (
 	<SearchControls
 		onStagedBookmarks={props.openStagedGroups}
-		onAdd={props.openAddModal}
-		updateTextFilter={(text) => { props.setSearchFilter(text); scrollToTop(); }}
+		onAdd={props.setPage.bind(null, Page.AddBookmark)}
+		updateTextFilter={(text) => {
+			props.setSearchFilter(text);
+			scrollToTop();
+		}}
 		openAllVisibleBookmarks={props.openAllFilteredBookmarks}
 		textFilter={props.searchFilter}
 		shouldEnableSearch={props.searchEnabled}
@@ -36,13 +38,12 @@ const mapStateToProps = (state: AppState) => ({
 	canAddBookmarks: state.user.hasBinaryComms,
 	numFilteredBookmarks: getUnlimitedFilteredBookmarks(state).length,
 	numStagedItems: state.bookmarks.stagedBookmarksGroups.length,
-	displayAdd: state.bookmarks.displayAddBookmarkModal,
 });
 
 const mapDispatchToProps = {
+	setPage,
 	setSearchFilter: setSearchFilterWithResets,
 	openStagedGroups: setPage.bind(null, Page.StagedGroupsList),
-	openAddModal: setAddBookmarkModalDisplay.bind(null, true),
 	openAllFilteredBookmarks: setDisplayOpenAllBookmarksConfirmation.bind(null, true),
 };
 

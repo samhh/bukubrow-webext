@@ -39,6 +39,20 @@ const pageMap = (props: Props) => {
 		[Page.Search]: {
 			component: Search,
 		},
+		[Page.AddBookmark]: {
+			nav: {
+				title: 'Add Bookmark',
+				exitTarget: Page.Search,
+			},
+			component: BookmarkAddForm,
+		},
+		[Page.EditBookmark]: {
+			nav: {
+				title: 'Edit Bookmark',
+				exitTarget: Page.Search,
+			},
+			component: BookmarkEditForm,
+		},
 		[Page.StagedGroupsList]: {
 			nav: {
 				title: 'Staging Area',
@@ -75,8 +89,6 @@ const ContentApp: FC<Props> = (props) => {
 	
 	return (
 		<>
-			<BookmarkAddForm />
-			<BookmarkEditForm />
 			<BookmarkDeleteForm />
 			
 			<OpenAllBookmarksConfirmation />
@@ -101,8 +113,10 @@ const mapStateToProps = (state: AppState) => ({
 	page: state.user.page,
 	stagedGroupTitle: getStagedGroupToEdit(state).map(formatStagedBookmarksGroupTitle),
 });
+
 const mapDispatchToProps = { setPage };
 	
 const ConnectedContentApp = connect(mapStateToProps, mapDispatchToProps)(ContentApp);
+
 mount(<ConnectedContentApp />);
 	

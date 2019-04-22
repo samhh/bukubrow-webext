@@ -15,9 +15,6 @@ type Props = StateProps & DispatchProps;
 const StagedGroupBookmarkEditFormContainer: FC<Props> = props => (
 	<StagedGroupBookmarkEditForm
 		bookmark={props.bookmarkToEdit}
-		onExit={() => {
-			props.setPage(Page.StagedGroup);
-		}}
 		onSubmit={(bm) => {
 			props.groupEditId.ifJust((grpId) => {
 				props.onSubmit(grpId, bm);

@@ -11,8 +11,6 @@ export interface BookmarksState {
 	bookmarkDeleteId: Maybe<Bookmark['id']>;
 	stagedBookmarksGroupEditId: Maybe<StagedBookmarksGroup['id']>;
 	stagedBookmarksGroupBookmarkEditId: Maybe<Bookmark['id']>;
-	displayAddBookmarkModal: boolean;
-	displayEditBookmarkModal: boolean;
 	displayDeleteBookmarkModal: boolean;
 }
 
@@ -28,7 +26,5 @@ export enum BookmarksActionTypes {
 	SetStagedBookmarksGroupBookmarkEditId = 'SET_STAGED_BOOKMARKS_GROUP_BOOKMARK_EDIT_ID',
 	UpdateStagedBookmarksGroupBookmark = 'UPDATE_STAGED_BOOKMARKS_GROUP_BOOKMARK',
 	DeleteStagedBookmarksGroupBookmark = 'DELETE_STAGED_BOOKMARKS_GROUP_BOOKMARK',
-	SetAddBookmarkModalDisplay = 'SET_ADD_BOOKMARK_MODAL_DISPLAY',
-	SetEditBookmarkModalDisplay = 'SET_EDIT_BOOKMARK_MODAL_DISPLAY',
 	SetDeleteBookmarkModalDisplay = 'SET_DELETE_BOOKMARK_MODAL_DISPLAY',
 }

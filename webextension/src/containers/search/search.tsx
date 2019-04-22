@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 
 interface Props {
 	onEnableLimitlessRender(): void;
-	toggleAddBookmarkForm(): void;
+	onGotoAddBookmarkForm(): void;
 	openAllFilteredBookmarksWithoutConfirmation(): void;
 	refreshBookmarks(): void;
 	numRemainingBookmarks: number;
@@ -28,7 +28,7 @@ const Search: FC<Props> = (props) => {
 		const liveProps = propsRef.current;
 
 		if (evt.ctrlKey) {
-			if (evt.key === 'd') liveProps.toggleAddBookmarkForm();
+			if (evt.key === 'd') liveProps.onGotoAddBookmarkForm();
 			if (evt.key === 'o') liveProps.openAllFilteredBookmarksWithoutConfirmation();
 			if (evt.key === 'r') liveProps.refreshBookmarks();
 		}

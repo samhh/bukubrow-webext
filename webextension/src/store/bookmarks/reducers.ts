@@ -15,8 +15,6 @@ const initialState = {
 	bookmarkDeleteId: Nothing,
 	stagedBookmarksGroupEditId: Nothing,
 	stagedBookmarksGroupBookmarkEditId: Nothing,
-	displayAddBookmarkModal: false,
-	displayEditBookmarkModal: false,
 	displayDeleteBookmarkModal: false,
 };
 
@@ -110,18 +108,6 @@ const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = ini
 				}),
 			};
 		}
-
-		case BookmarksActionTypes.SetAddBookmarkModalDisplay:
-			return {
-				...state,
-				displayAddBookmarkModal: action.payload,
-			};
-
-		case BookmarksActionTypes.SetEditBookmarkModalDisplay:
-			return {
-				...state,
-				displayEditBookmarkModal: action.payload,
-			};
 
 		case BookmarksActionTypes.SetDeleteBookmarkModalDisplay:
 			return {

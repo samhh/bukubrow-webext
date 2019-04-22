@@ -57,16 +57,6 @@ export const deleteStagedBookmarksGroupBookmark = (grpId: StagedBookmarksGroup['
 	[grpId, bmId] as [typeof grpId, typeof bmId], // TODO as const in 3.4
 );
 
-export const setAddBookmarkModalDisplay = (display: boolean) => action(
-	BookmarksActionTypes.SetAddBookmarkModalDisplay,
-	display,
-);
-
-export const setEditBookmarkModalDisplay = (display: boolean) => action(
-	BookmarksActionTypes.SetEditBookmarkModalDisplay,
-	display,
-);
-
 export const setDeleteBookmarkModalDisplay = (display: boolean) => action(
 	BookmarksActionTypes.SetDeleteBookmarkModalDisplay,
 	display,

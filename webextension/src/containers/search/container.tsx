@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
-import { setLimitNumRendered, setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
+import { setLimitNumRendered } from 'Store/bookmarks/actions';
 import { openAllFilteredBookmarksAndExit, syncBookmarks } from 'Store/bookmarks/epics';
 import { getNumFilteredUnrenderedBookmarks } from 'Store/selectors';
 import Search from './search';
+import { setPage } from 'Store/user/actions';
+import { Page } from 'Store/user/types';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
@@ -14,7 +16,7 @@ type Props = StateProps & DispatchProps;
 const SearchContainer: FC<Props> = props => (
 	<Search
 		onEnableLimitlessRender={props.setLimitNumBookmarksRendered.bind(null, false)}
-		toggleAddBookmarkForm={props.setAddBookmarkModalDisplay.bind(null, !props.displayAddBookmarkModal)}
+		onGotoAddBookmarkForm={props.setPage.bind(null, Page.AddBookmark)}
 		openAllFilteredBookmarksWithoutConfirmation={props.openAllFilteredBookmarks}
 		refreshBookmarks={props.syncBookmarks}
 		numRemainingBookmarks={props.numRemainingBookmarks}
@@ -23,12 +25,11 @@ const SearchContainer: FC<Props> = props => (
 
 const mapStateToProps = (state: AppState) => ({
 	numRemainingBookmarks: getNumFilteredUnrenderedBookmarks(state),
-	displayAddBookmarkModal: state.bookmarks.displayAddBookmarkModal,
 });
 
 const mapDispatchToProps = {
 	syncBookmarks,
-	setAddBookmarkModalDisplay,
+	setPage,
 	openAllFilteredBookmarks: openAllFilteredBookmarksAndExit,
 	setLimitNumBookmarksRendered: setLimitNumRendered,
 };
