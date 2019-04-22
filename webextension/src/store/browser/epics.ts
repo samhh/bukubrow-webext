@@ -1,9 +1,9 @@
 import { MaybeTuple } from 'Modules/adt';
 import { getActiveTab } from 'Comms/browser';
-import { ThunkActionCreator } from 'Store';
+import { ThunkAC } from 'Store';
 import { setPageMeta } from './actions';
 
-export const syncBrowserInfo = (): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+export const syncBrowserInfo = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const tab = await getActiveTab().run();
 
 	tab

@@ -10,7 +10,7 @@ import {
 } from 'Comms/browser';
 import { checkBinaryVersionFromNative, getBookmarksFromNative } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
-import { ThunkActionCreator } from 'Store';
+import { ThunkAC } from 'Store';
 import {
 	setAllBookmarks, setLimitNumRendered, setFocusedBookmarkIndex,
 	deleteStagedBookmarksGroupBookmark, deleteStagedBookmarksGroup,
@@ -24,7 +24,7 @@ import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import { transform } from 'Modules/bookmarks';
 
-const getAndSetCachedBookmarks = (): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+const getAndSetCachedBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const bookmarksRes = await getBookmarksFromLocalStorage().run();
 
 	// Ensuring it's a non-empty list as the focused bookmark index relies upon it
@@ -34,7 +34,7 @@ const getAndSetCachedBookmarks = (): ThunkActionCreator<Promise<void>> => async 
 	});
 };
 
-export const syncBookmarks = (): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();
 
 	Maybe.fromNullable((res && res.success && res.bookmarks) || null)
@@ -51,7 +51,7 @@ export const syncBookmarks = (): ThunkActionCreator<Promise<void>> => async (dis
 		});
 };
 
-export const onLoad = (): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	getActiveTheme().run().then((theme) => {
 		dispatch(setActiveTheme(theme.orDefault(Theme.Light)));
 	});
@@ -90,7 +90,7 @@ export const onLoad = (): ThunkActionCreator<Promise<void>> => async (dispatch) 
 export const openBookmarkAndExit = (
 	bmId: LocalBookmark['id'],
 	stagedBookmarksGroupId: Maybe<StagedBookmarksGroup['id']> = Nothing,
-): ThunkActionCreator => (_, getState) => {
+): ThunkAC => (_, getState) => {
 	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
 
 	stagedBookmarksGroupId
@@ -106,7 +106,7 @@ export const openBookmarkAndExit = (
 		});
 };
 
-export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, getState) => {
+export const openAllFilteredBookmarksAndExit = (): ThunkAC => (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
 	for (const { url } of filteredBookmarks) {
@@ -116,7 +116,7 @@ export const openAllFilteredBookmarksAndExit = (): ThunkActionCreator => (_, get
 	window.close();
 };
 
-export const setSearchFilterWithResets = (filter: string): ThunkActionCreator => (dispatch, getState) => {
+export const setSearchFilterWithResets = (filter: string): ThunkAC => (dispatch, getState) => {
 	dispatch(setSearchFilter(filter));
 	dispatch(setLimitNumRendered(true));
 
@@ -125,7 +125,7 @@ export const setSearchFilterWithResets = (filter: string): ThunkActionCreator =>
 	dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(filteredBookmarks) ? Just(0) : Nothing));
 };
 
-export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id']): ThunkActionCreator<Promise<void>> => async (dispatch, getState) => {
+export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id']): ThunkAC<Promise<void>> => async (dispatch, getState) => {
 	const { bookmarks: { stagedBookmarksGroups } } = getState();
 
 	const bookmarks = Maybe.fromNullable(stagedBookmarksGroups.find(grp => grp.id === groupId))
@@ -142,7 +142,7 @@ export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id
 export const deleteStagedBookmarksGroupBookmarkOrEntireGroup = (
 	grpId: StagedBookmarksGroup['id'],
 	bmId: LocalBookmark['id'],
-): ThunkActionCreator => (dispatch, getState) => {
+): ThunkAC => (dispatch, getState) => {
 	const { bookmarks: { stagedBookmarksGroups } } = getState();
 
 	const grp = stagedBookmarksGroups.find(g => g.id === grpId);

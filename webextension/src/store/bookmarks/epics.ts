@@ -1,5 +1,5 @@
 import { Just, Nothing } from 'purify-ts/Maybe';
-import { ThunkActionCreator } from 'Store';
+import { ThunkAC } from 'Store';
 import {
 	setAllStagedBookmarksGroups,
 	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
@@ -11,33 +11,33 @@ import { untransform } from 'Modules/bookmarks';
 import { syncBookmarks } from 'Store/epics';
 import { getStagedBookmarksGroupsFromLocalStorage } from 'Comms/browser';
 
-export const syncStagedBookmarksGroups = (): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+export const syncStagedBookmarksGroups = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const stagedBookmarksGroups = await getStagedBookmarksGroupsFromLocalStorage().run().then(res => res.orDefault([]));
 
 	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups));
 };
 
-export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<void>> => async (dispatch) => {
 	await saveBookmarkToNative(untransform(bookmark));
 	dispatch(syncBookmarks());
 
 	dispatch(setAddBookmarkModalDisplay(false));
 };
 
-export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
 	for (const bookmark of bookmarks) {
 		await dispatch(addBookmark(bookmark));
 	}
 };
 
-export const updateBookmark = (bookmark: LocalBookmark): ThunkActionCreator<Promise<void>> => async (dispatch) => {
+export const updateBookmark = (bookmark: LocalBookmark): ThunkAC<Promise<void>> => async (dispatch) => {
 	await updateBookmarkToNative(untransform(bookmark));
 	dispatch(syncBookmarks());
 
 	dispatch(setEditBookmarkModalDisplay(false));
 };
 
-export const deleteBookmark = (): ThunkActionCreator<Promise<void>> => async (dispatch, getState) => {
+export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, getState) => {
 	const { bookmarkDeleteId } = getState().bookmarks;
 
 	bookmarkDeleteId.ifJust(async (bookmarkId) => {
@@ -48,17 +48,17 @@ export const deleteBookmark = (): ThunkActionCreator<Promise<void>> => async (di
 	});
 };
 
-export const initiateBookmarkEdit = (id: LocalBookmark['id']): ThunkActionCreator => (dispatch) => {
+export const initiateBookmarkEdit = (id: LocalBookmark['id']): ThunkAC => (dispatch) => {
 	dispatch(setBookmarkEditId(Just(id)));
 	dispatch(setEditBookmarkModalDisplay(true));
 };
 
-export const initiateBookmarkDeletion = (id: LocalBookmark['id']): ThunkActionCreator => (dispatch) => {
+export const initiateBookmarkDeletion = (id: LocalBookmark['id']): ThunkAC => (dispatch) => {
 	dispatch(setBookmarkDeleteId(Just(id)));
 	dispatch(setDeleteBookmarkModalDisplay(true));
 };
 
-export const attemptFocusedBookmarkIndexIncrement = (): ThunkActionCreator<boolean> => (dispatch, getState) => {
+export const attemptFocusedBookmarkIndexIncrement = (): ThunkAC<boolean> => (dispatch, getState) => {
 	const state = getState();
 	const filteredBookmarks = getWeightedLimitedFilteredBookmarks(state);
 	const focusedBookmarkIndexMaybe = state.bookmarks.focusedBookmarkIndex;
@@ -71,7 +71,7 @@ export const attemptFocusedBookmarkIndexIncrement = (): ThunkActionCreator<boole
 		.isJust();
 };
 
-export const attemptFocusedBookmarkIndexDecrement = (): ThunkActionCreator<boolean> => (dispatch, getState) => {
+export const attemptFocusedBookmarkIndexDecrement = (): ThunkAC<boolean> => (dispatch, getState) => {
 	const { bookmarks: { focusedBookmarkIndex: focusedBookmarkIndexMaybe } } = getState();
 
 	return focusedBookmarkIndexMaybe

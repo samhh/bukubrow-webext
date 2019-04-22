@@ -27,7 +27,7 @@ type AllActions =
 	| NoticesActions
 	| UserActions;
 
-export type ThunkActionCreator<R = void> = ThunkAction<R, AppState, undefined, AllActions>;
+export type ThunkAC<R = void> = ThunkAction<R, AppState, undefined, AllActions>;
 
 const middleware = applyMiddleware(thunk as ThunkMiddleware<AppState, AllActions>);
 const store = createStore(
