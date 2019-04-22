@@ -8,7 +8,7 @@ import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/ac
 import { setActiveTheme } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
-import { syncStagedBookmarksGroups, getAndSetCachedBookmarks } from 'Store/bookmarks/epics';
+import { syncStagedBookmarksGroups, syncBookmarks } from 'Store/bookmarks/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
@@ -33,7 +33,7 @@ export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
 		dispatch(pushError(msg));
 	});
 
-	dispatch(getAndSetCachedBookmarks());
+	dispatch(syncBookmarks());
 	dispatch(syncStagedBookmarksGroups());
 
 	// Sync browser info once now on load and then again whenever there's any tab

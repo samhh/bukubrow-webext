@@ -12,33 +12,25 @@ import { setPage, setHasBinaryComms } from 'Store/user/actions';
 import { pushError } from 'Store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import { saveBookmarkToNative, updateBookmarkToNative, deleteBookmarkFromNative, getBookmarksFromNative } from 'Comms/native';
-import { getStagedBookmarksGroupsFromLocalStorage, saveBookmarksToLocalStorage, getBookmarksFromLocalStorage } from 'Comms/browser';
+import { getStagedBookmarksGroupsFromLocalStorage } from 'Comms/browser';
 import { untransform, transform } from 'Modules/bookmarks';
 import { Page } from 'Store/user/types';
-
-export const getAndSetCachedBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
-	const bookmarksRes = await getBookmarksFromLocalStorage().run();
-
-	// Ensuring it's a non-empty list as the focused bookmark index relies upon it
-	bookmarksRes.ifJust((bookmarks: NonEmptyList<LocalBookmark>) => {
-		dispatch(setAllBookmarks(bookmarks));
-		dispatch(setFocusedBookmarkIndex(Just(0)));
-	});
-};
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();
 
 	Maybe.fromNullable((res && res.success && res.bookmarks) || null)
-		.map(bm => bm.map(transform))
+		.map(bms => bms.map(transform))
 		.caseOf({
-			Just: bm => saveBookmarksToLocalStorage(bm).then(() => {
-				dispatch(getAndSetCachedBookmarks());
+			Just: (bms) => {
+				dispatch(setAllBookmarks(bms));
+				dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(bms) ? Just(0) : Nothing));
 				dispatch(setHasBinaryComms(true));
-			}),
+			},
 			Nothing: () => {
 				const msg = 'Failed to sync bookmarks.';
 
+				dispatch(setHasBinaryComms(false));
 				dispatch(pushError(msg));
 			},
 		});
