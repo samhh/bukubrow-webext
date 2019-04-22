@@ -1,11 +1,11 @@
 import React, { memo, forwardRef, Ref, MouseEvent, useState } from 'react';
 import { URLMatch } from 'Modules/compare-urls';
 import { ParsedInputResult } from 'Modules/parse-search-input';
-import styled, { css } from 'Styles';
+import styled from 'Styles';
 
-import Badge, { mapURLMatchToBadgeWeight } from './badge';
+import Badge, { mapURLMatchToBadgeWeight } from 'Components/badge';
 import HighlightMarkup from 'Components/highlight-markup';
-import IconButton, { idealFeatherIconSize } from './icon-button';
+import IconButton, { idealFeatherIconSize } from 'Components/icon-button';
 import ListItem from 'Components/list-item';
 import Tag from 'Components/tag';
 import Tooltip from 'Components/tooltip';
@@ -15,16 +15,19 @@ import { Edit, Trash } from 'react-feather';
 const ControlsWrapper = styled.div`
 	display: flex;
 	position: relative;
+	white-space: nowrap;
+	align-self: flex-start;
 	opacity: 0;
-	float: right;
+	margin: 0 0 0 1rem;
 `;
 
-const Wrapper = styled(ListItem)<{ clickable: boolean }>`
-	${props => props.clickable && css`
-		&:hover ${ControlsWrapper} {
-			opacity: 1;
-		}
-	`}
+const Wrapper = styled(ListItem)`
+	display: flex;
+	justify-content: space-between;
+
+	&:hover ${ControlsWrapper} {
+		opacity: 1;
+	}
 `;
 
 const TagsList = styled.ul`
@@ -116,21 +119,22 @@ const Bookmark = memo<Props>((props) => {
 	return (
 		<Wrapper
 			isFocused={props.isFocused}
-			clickable={!!handleClick}
 			onClick={handleClick}
 			ref={props.forwardedRef as Ref<HTMLLIElement>}
 		>
-			<header>
-				<Name>
-					{props.activeTabURLMatch !== URLMatch.None && (
-						<SpacedBadge weight={mapURLMatchToBadgeWeight(props.activeTabURLMatch)} />
-					)}
-					<HighlightMarkup
-						str={props.title}
-						match={props.parsedFilter && [props.parsedFilter.name, ...props.parsedFilter.wildcard]}
-					/>
-					&nbsp;
-				</Name>
+			<div>
+				<header>
+					<Name>
+						{props.activeTabURLMatch !== URLMatch.None && (
+							<SpacedBadge weight={mapURLMatchToBadgeWeight(props.activeTabURLMatch)} />
+						)}
+						<HighlightMarkup
+							str={props.title}
+							match={props.parsedFilter && [props.parsedFilter.name, ...props.parsedFilter.wildcard]}
+						/>
+						&nbsp;
+					</Name>
+				</header>
 
 				<TagsList>
 					{props.tags.map(tag => (
@@ -147,51 +151,51 @@ const Bookmark = memo<Props>((props) => {
 					))}
 				</TagsList>
 
-				<ControlsWrapper>
-					<div>
-						<ControlButton
-							onClick={handleEdit}
-							type="button"
-							onMouseEnter={showTooltip('Edit bookmark')}
-							onMouseLeave={hideTooltip}
-						>
-							<Edit size={idealFeatherIconSize} />
-						</ControlButton>
+				{props.desc && (
+					<Desc>
+						&#x3E;
+						&nbsp;
+						<HighlightMarkup
+							str={props.desc}
+							match={props.parsedFilter && [...props.parsedFilter.desc, ...props.parsedFilter.wildcard]}
+						/>
+					</Desc>
+				)}
 
-						<ControlButton
-							onClick={handleDelete}
-							type="button"
-							onMouseEnter={showTooltip('Delete bookmark')}
-							onMouseLeave={hideTooltip}
-						>
-							<Trash size={idealFeatherIconSize} />
-						</ControlButton>
-					</div>
-
-					<ControlButtonTooltip
-						message={tooltipMessage}
-						visible={displayTooltip}
-					/>
-				</ControlsWrapper>
-			</header>
-
-			{props.desc && (
-				<Desc>
-					&#x3E;
-					&nbsp;
+				<URL>
 					<HighlightMarkup
-						str={props.desc}
-						match={props.parsedFilter && [...props.parsedFilter.desc, ...props.parsedFilter.wildcard]}
+						str={props.url}
+						match={props.parsedFilter && [...props.parsedFilter.url, ...props.parsedFilter.wildcard]}
 					/>
-				</Desc>
-			)}
+				</URL>
+			</div>
 
-			<URL>
-				<HighlightMarkup
-					str={props.url}
-					match={props.parsedFilter && [...props.parsedFilter.url, ...props.parsedFilter.wildcard]}
+			<ControlsWrapper>
+				<div>
+					<ControlButton
+						onClick={handleEdit}
+						type="button"
+						onMouseEnter={showTooltip('Edit bookmark')}
+						onMouseLeave={hideTooltip}
+					>
+						<Edit size={idealFeatherIconSize} />
+					</ControlButton>
+
+					<ControlButton
+						onClick={handleDelete}
+						type="button"
+						onMouseEnter={showTooltip('Delete bookmark')}
+						onMouseLeave={hideTooltip}
+					>
+						<Trash size={idealFeatherIconSize} />
+					</ControlButton>
+				</div>
+
+				<ControlButtonTooltip
+					message={tooltipMessage}
+					visible={displayTooltip}
 				/>
-			</URL>
+			</ControlsWrapper>
 		</Wrapper>
 	);
 });
