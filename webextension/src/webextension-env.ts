@@ -60,7 +60,6 @@ let state: StorageState = {
 	bookmarks: [],
 	stagedBookmarksGroups: genDummyStagedGroups(),
 	bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
-	hasTriggeredRequest: false,
 };
 
 let nativeBookmarksState: RemoteBookmark[] = [];
@@ -76,7 +75,6 @@ const browserMock: DeepPartial<Browser> = {
 
 			switch (method) {
 				case NativeRequestMethod.GET: {
-					state.hasTriggeredRequest = true;
 					if (!NonEmptyList.isNonEmpty(nativeBookmarksState)) nativeBookmarksState = genDummyRemoteBookmarks();
 
 					return Promise.resolve({ success: true, bookmarks: nativeBookmarksState });

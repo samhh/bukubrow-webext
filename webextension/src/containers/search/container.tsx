@@ -18,13 +18,11 @@ const SearchContainer: FC<Props> = props => (
 		openAllFilteredBookmarksWithoutConfirmation={props.openAllFilteredBookmarks}
 		refreshBookmarks={props.syncBookmarks}
 		numRemainingBookmarks={props.numRemainingBookmarks}
-		displayTutorialMessage={props.displayTutorialMessage}
 	/>
 );
 
 const mapStateToProps = (state: AppState) => ({
 	numRemainingBookmarks: getNumFilteredUnrenderedBookmarks(state),
-	displayTutorialMessage: state.user.displayTutorialMessage,
 	displayAddBookmarkModal: state.bookmarks.displayAddBookmarkModal,
 });
 

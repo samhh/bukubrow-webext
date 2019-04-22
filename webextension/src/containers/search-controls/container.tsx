@@ -8,7 +8,7 @@ import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { syncBookmarks } from 'Store/bookmarks/epics';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import SearchControls from './search-controls';
-import { setDisplayOpenAllBookmarksConfirmation, setDisplayTutorialMessage, setPage } from 'Store/user/actions';
+import { setDisplayOpenAllBookmarksConfirmation, setPage } from 'Store/user/actions';
 import { Page } from 'Store/user/types';
 
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -22,10 +22,7 @@ const SearchControlsContainer: FC<Props> = props => (
 		onAdd={props.openAddModal}
 		updateTextFilter={(text) => { props.setSearchFilter(text); scrollToTop(); }}
 		openAllVisibleBookmarks={props.openAllFilteredBookmarks}
-		refreshBookmarks={() => {
-			props.syncBookmarks();
-			props.setDisplayTutorialMessage(false);
-		}}
+		refreshBookmarks={props.syncBookmarks}
 		textFilter={props.searchFilter}
 		shouldEnableSearch={props.searchEnabled}
 		shouldEnableOpenStaged={!!props.numStagedItems}
@@ -38,7 +35,7 @@ const SearchControlsContainer: FC<Props> = props => (
 const mapStateToProps = (state: AppState) => ({
 	searchFilter: state.input.searchFilter,
 	searchEnabled: NonEmptyList.isNonEmpty(state.bookmarks.bookmarks),
-	canAddBookmarks: !state.user.displayTutorialMessage,
+	canAddBookmarks: state.user.hasBinaryComms,
 	numFilteredBookmarks: getUnlimitedFilteredBookmarks(state).length,
 	numStagedItems: state.bookmarks.stagedBookmarksGroups.length,
 	displayAdd: state.bookmarks.displayAddBookmarkModal,
@@ -46,7 +43,6 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = {
 	syncBookmarks,
-	setDisplayTutorialMessage,
 	setSearchFilter: setSearchFilterWithResets,
 	openStagedGroups: setPage.bind(null, Page.StagedGroupsList),
 	openAddModal: setAddBookmarkModalDisplay.bind(null, true),

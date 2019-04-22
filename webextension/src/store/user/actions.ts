@@ -1,9 +1,9 @@
 import { action } from 'typesafe-actions';
 import { UserActionTypes, Theme, Page } from './types';
 
-export const setDisplayTutorialMessage = (display: boolean) => action(
-	UserActionTypes.SetDisplayTutorialMessage,
-	display,
+export const setHasBinaryComms = (hasComms: boolean) => action(
+	UserActionTypes.SetHasBinaryComms,
+	hasComms,
 );
 
 export const setActiveTheme = (theme: Theme) => action(

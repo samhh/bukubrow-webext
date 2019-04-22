@@ -6,7 +6,7 @@ import { UserState, UserActionTypes, Theme, Page } from './types';
 export type UserActions = ActionType<typeof userActions>;
 
 const initialState = {
-	displayTutorialMessage: false,
+	hasBinaryComms: false,
 	activeTheme: Theme.Light,
 	displayOpenAllBookmarksConfirmation: false,
 	page: Page.Search,
@@ -14,10 +14,10 @@ const initialState = {
 
 const userReducer: Reducer<UserState, UserActions> = (state = initialState, action) => {
 	switch (action.type) {
-		case UserActionTypes.SetDisplayTutorialMessage:
+		case UserActionTypes.SetHasBinaryComms:
 			return {
 				...state,
-				displayTutorialMessage: action.payload,
+				hasBinaryComms: action.payload,
 			};
 
 		case UserActionTypes.SetActiveTheme:

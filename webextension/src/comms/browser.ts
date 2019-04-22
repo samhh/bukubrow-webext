@@ -32,7 +32,6 @@ export interface StorageState {
 	bookmarks: LocalBookmark[];
 	stagedBookmarksGroups: StagedBookmarksGroup[];
 	bookmarksSchemaVersion: number;
-	hasTriggeredRequest: boolean;
 }
 
 const getLocalStorage = <T extends keyof StorageState>(keys: T | T[]) =>
@@ -62,7 +61,6 @@ export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) =>
 	await setLocalStorage({
 		bookmarks,
 		bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
-		hasTriggeredRequest: true,
 	});
 
 	sendIsomorphicMessage(IsomorphicMessage.BookmarksUpdatedInLocalStorage);
@@ -94,6 +92,3 @@ export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookm
 
 	setLocalStorage({ stagedBookmarksGroups: [...stagedBookmarksGroups, newGroup] });
 };
-
-export const hasTriggeredRequest = () => getLocalStorage('hasTriggeredRequest')
-	.then((res) => !!res.hasTriggeredRequest);

@@ -5,7 +5,6 @@ import styled from 'Styles';
 import BookmarksList from 'Containers/bookmarks-list/';
 import LoadMoreBookmarks from 'Components/load-more-bookmarks';
 import SearchControls, { headerHeight } from 'Containers/search-controls/';
-import TutorialMessage from 'Components/tutorial-message';
 
 const Wrapper = styled.div`
 	// TODO can remove this line?
@@ -19,7 +18,6 @@ interface Props {
 	openAllFilteredBookmarksWithoutConfirmation(): void;
 	refreshBookmarks(): void;
 	numRemainingBookmarks: number;
-	displayTutorialMessage: boolean;
 }
 
 const Search: FC<Props> = (props) => {
@@ -41,21 +39,14 @@ const Search: FC<Props> = (props) => {
 			<SearchControls />
 
 			<main>
-				{props.displayTutorialMessage
-					? <TutorialMessage />
-					: (
-						<>
-							<BookmarksList />
+				<BookmarksList />
 
-							{!!props.numRemainingBookmarks && (
-								<LoadMoreBookmarks
-									numRemainingBookmarks={props.numRemainingBookmarks}
-									renderAllBookmarks={props.onEnableLimitlessRender}
-								/>
-							)}
-						</>
-					)
-				}
+				{!!props.numRemainingBookmarks && (
+					<LoadMoreBookmarks
+						numRemainingBookmarks={props.numRemainingBookmarks}
+						renderAllBookmarks={props.onEnableLimitlessRender}
+					/>
+				)}
 			</main>
 		</Wrapper>
 	);

@@ -1,11 +1,11 @@
 import { Just, Nothing } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
-import { hasTriggeredRequest, onTabActivity, checkRuntimeErrors } from 'Comms/browser';
+import { onTabActivity, checkRuntimeErrors } from 'Comms/browser';
 import { checkBinaryVersionFromNative } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkAC } from 'Store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
-import { setDisplayTutorialMessage, setActiveTheme } from 'Store/user/actions';
+import { setActiveTheme } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
 import { pushError } from 'Store/notices/epics';
 import { syncStagedBookmarksGroups, getAndSetCachedBookmarks } from 'Store/bookmarks/epics';
@@ -15,10 +15,6 @@ import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	getActiveTheme().run().then((theme) => {
 		dispatch(setActiveTheme(theme.orDefault(Theme.Light)));
-	});
-
-	hasTriggeredRequest().then((has) => {
-		dispatch(setDisplayTutorialMessage(!has));
 	});
 
 	checkBinaryVersionFromNative().run().then((version) => {

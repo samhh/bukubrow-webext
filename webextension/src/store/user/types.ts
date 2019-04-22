@@ -2,14 +2,14 @@ import { Theme } from 'Modules/settings';
 export { Theme };
 
 export interface UserState {
-	displayTutorialMessage: boolean;
+	hasBinaryComms: boolean;
 	activeTheme: Theme;
 	displayOpenAllBookmarksConfirmation: boolean;
 	page: Page;
 }
 
 export enum UserActionTypes {
-	SetDisplayTutorialMessage = 'SET_DISPLAY_TUTORIAL_MESSAGE',
+	SetHasBinaryComms = 'SET_HAS_BINARY_COMMS',
 	SetActiveTheme = 'SET_ACTIVE_THEME',
 	SetDisplayOpenAllBookmarksConfirmation = 'SET_OPEN_ALL_BOOKMARKS_CONFIRMATION',
 	SetPage = 'SET_PAGE',
