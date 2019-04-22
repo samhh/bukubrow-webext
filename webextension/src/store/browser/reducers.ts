@@ -18,6 +18,7 @@ const browserReducer: Reducer<BrowserState, BrowserActions> = (state = initialSt
 				pageTitle: action.payload.pageTitle,
 				pageUrl: action.payload.pageUrl,
 			};
+
 		default:
 			return state;
 	}

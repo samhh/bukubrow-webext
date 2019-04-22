@@ -27,46 +27,55 @@ const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = ini
 				...state,
 				bookmarks: [...action.payload],
 			};
+
 		case BookmarksActionTypes.SetAllStagedBookmarksGroups:
 			return {
 				...state,
 				stagedBookmarksGroups: [...action.payload],
 			};
+
 		case BookmarksActionTypes.DeleteStagedBookmarksGroup:
 			return {
 				...state,
 				stagedBookmarksGroups: state.stagedBookmarksGroups.filter(grp => grp.id !== action.payload),
 			};
+
 		case BookmarksActionTypes.SetLimitNumRendered:
 			return {
 				...state,
 				limitNumRendered: action.payload,
 			};
+
 		case BookmarksActionTypes.SetFocusedBookmarkIndex:
 			return {
 				...state,
 				focusedBookmarkIndex: action.payload,
 			};
+
 		case BookmarksActionTypes.SetBookmarkEditId:
 			return {
 				...state,
 				bookmarkEditId: action.payload,
 			};
+
 		case BookmarksActionTypes.SetBookmarkDeleteId:
 			return {
 				...state,
 				bookmarkDeleteId: action.payload,
 			};
+
 		case BookmarksActionTypes.SetStagedBookmarksGroupEditId:
 			return {
 				...state,
 				stagedBookmarksGroupEditId: action.payload,
 			};
+
 		case BookmarksActionTypes.SetStagedBookmarksGroupBookmarkEditId:
 			return {
 				...state,
 				stagedBookmarksGroupBookmarkEditId: action.payload,
 			};
+
 		case BookmarksActionTypes.UpdateStagedBookmarksGroupBookmark: {
 			const [groupId, bookmark] = action.payload;
 
@@ -85,6 +94,7 @@ const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = ini
 				}),
 			};
 		}
+
 		case BookmarksActionTypes.DeleteStagedBookmarksGroupBookmark: {
 			const [groupId, bookmarkId] = action.payload;
 
@@ -100,21 +110,25 @@ const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = ini
 				}),
 			};
 		}
+
 		case BookmarksActionTypes.SetAddBookmarkModalDisplay:
 			return {
 				...state,
 				displayAddBookmarkModal: action.payload,
 			};
+
 		case BookmarksActionTypes.SetEditBookmarkModalDisplay:
 			return {
 				...state,
 				displayEditBookmarkModal: action.payload,
 			};
+
 		case BookmarksActionTypes.SetDeleteBookmarkModalDisplay:
 			return {
 				...state,
 				displayDeleteBookmarkModal: action.payload,
 			};
+
 		default:
 			return state;
 	}

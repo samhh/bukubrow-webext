@@ -62,10 +62,12 @@ const updateBadge = async () => {
 					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Exact] });
 					browser.browserAction.setBadgeText({ text: ' ' });
 					break;
+
 				case URLMatch.Domain:
 					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Domain] });
 					browser.browserAction.setBadgeText({ text: ' ' });
 					break;
+
 				case URLMatch.None:
 					// Empty string disables the badge
 					browser.browserAction.setBadgeText({ text: '' });

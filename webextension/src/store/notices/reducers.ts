@@ -19,6 +19,7 @@ const noticesReducer: Reducer<NoticesState, NoticesActions> = (state = initialSt
 					[action.payload.key]: action.payload.value,
 				},
 			};
+
 		case NoticesActionTypes.DeleteError: {
 			if (!state.errors[action.payload]) return state;
 
@@ -30,6 +31,7 @@ const noticesReducer: Reducer<NoticesState, NoticesActions> = (state = initialSt
 				errors,
 			};
 		}
+
 		default:
 			return state;
 	}

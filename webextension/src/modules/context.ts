@@ -37,6 +37,7 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 					.chain(NonEmptyList.fromArray);
 				break;
 			}
+
 			case ContextMenuEntry.SendActiveWindowTabs: {
 				const allWindowTabs = await getActiveWindowTabs().run();
 				tabs = allWindowTabs
@@ -47,6 +48,7 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 					.chain(NonEmptyList.fromArray);
 				break;
 			}
+
 			case ContextMenuEntry.SendActiveTab: {
 				const activeTab = await getActiveTab().run();
 				tabs = activeTab
@@ -57,6 +59,7 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 					.chain(tab => NonEmptyList.fromArray([tab]));
 				break;
 			}
+
 			case ContextMenuEntry.SendLink: {
 				tabs = Maybe.fromNullable(info.pageUrl)
 					.map(url => ({ url, title: url }))

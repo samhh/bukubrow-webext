@@ -16,6 +16,7 @@ const inputReducer: Reducer<InputState, InputActions> = (state = initialState, a
 				...state,
 				searchFilter: action.payload,
 			};
+
 		default:
 			return state;
 	}

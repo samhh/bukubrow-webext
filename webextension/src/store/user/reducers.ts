@@ -19,21 +19,25 @@ const userReducer: Reducer<UserState, UserActions> = (state = initialState, acti
 				...state,
 				displayTutorialMessage: action.payload,
 			};
+
 		case UserActionTypes.SetActiveTheme:
 			return {
 				...state,
 				activeTheme: action.payload,
 			};
+
 		case UserActionTypes.SetDisplayOpenAllBookmarksConfirmation:
 			return {
 				...state,
 				displayOpenAllBookmarksConfirmation: action.payload,
 			};
+
 		case UserActionTypes.SetPage:
 			return {
 				...state,
 				page: action.payload,
 			};
+
 		default:
 			return state;
 	}
