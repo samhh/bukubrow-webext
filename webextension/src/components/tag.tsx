@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled, { css } from 'Styles';
 
 const TagItem = styled.li<{ removable: boolean }>`
@@ -27,7 +27,7 @@ interface Props {
 	onRemove?(tag: string): void;
 }
 
-const Tag: Comp<Props> = (props) => {
+const Tag: FC<Props> = (props) => {
 	const handleRemove = () => {
 		if (props.onRemove) props.onRemove(props.id);
 	};

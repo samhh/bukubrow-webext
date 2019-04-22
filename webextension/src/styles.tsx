@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import * as styledComponents from 'styled-components';
@@ -63,7 +63,7 @@ const darkTheme: StyledTheme = {
 
 const mapStateToProps = (state: AppState) => ({ theme: state.user.activeTheme });
 type Props = ReturnType<typeof mapStateToProps>;
-const ThemeProvider: Comp<Props> = props => (
+const ThemeProvider: FC<Props> = props => (
 	<styledComponents.ThemeProvider theme={() => {
 		switch (props.theme) {
 			case Theme.Light: return lightTheme;

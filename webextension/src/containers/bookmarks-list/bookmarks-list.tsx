@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, FC } from 'react';
 import { Maybe } from 'purify-ts/Maybe';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import { LocalBookmarkWeighted } from 'Modules/bookmarks';
@@ -29,7 +29,7 @@ interface Props {
 	focusedBookmarkId: Maybe<BookmarkId>;
 }
 
-const BookmarksList: Comp<Props> = (props) => {
+const BookmarksList: FC<Props> = (props) => {
 	const activeBookmarkEl = useRef<HTMLElement>(null);
 
 	const propsRef = useRef(props);

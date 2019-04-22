@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, FC } from 'react';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import styled from 'Styles';
 
@@ -22,7 +22,7 @@ interface Props {
 	displayTutorialMessage: boolean;
 }
 
-const Search: Comp<Props> = (props) => {
+const Search: FC<Props> = (props) => {
 	const propsRef = useRef(props);
 	propsRef.current = props;
 

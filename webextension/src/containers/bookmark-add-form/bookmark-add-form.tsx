@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Just } from 'purify-ts/Maybe';
 import BookmarkForm from 'Components/bookmark-form';
 
@@ -10,7 +10,7 @@ interface Props {
 	defaultUrl: LocalBookmark['url'];
 }
 
-const BookmarkAddForm: Comp<Props> = props => (
+const BookmarkAddForm: FC<Props> = props => (
 	<>
 		{props.display && (
 			<BookmarkForm

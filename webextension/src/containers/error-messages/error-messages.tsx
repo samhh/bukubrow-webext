@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
 import ErrorPopup from 'Components/error-popup';
 
 interface Props {
 	errors: string[];
 }
 
-const ErrorMessages: Comp<Props> = ({ errors }) => (
+const ErrorMessages: FC<Props> = ({ errors }) => (
 	<>
 		{errors.map(error => (
 			<ErrorPopup key={error} msg={error} />

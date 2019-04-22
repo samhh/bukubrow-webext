@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'Styles';
 
 const StyledTooltip = styled.span<{ visible: boolean }>`
@@ -19,7 +19,7 @@ interface Props {
 	className?: string;
 }
 
-const Tooltip: Comp<Props> = props => (
+const Tooltip: FC<Props> = props => (
 	<StyledTooltip
 		visible={props.visible}
 		className={props.className}

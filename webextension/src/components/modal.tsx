@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'Styles';
 
 const Outer = styled.div`
@@ -28,7 +28,7 @@ interface Props {
 	children: React.ReactNode;
 }
 
-const Modal: Comp<Props> = ({ children }) => (
+const Modal: FC<Props> = ({ children }) => (
 	<Outer>
 		<Inner>
 			{children}

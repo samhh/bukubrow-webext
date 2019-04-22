@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'Styles';
 
 const Wrapper = styled.p`
@@ -16,7 +16,7 @@ interface Props {
 	renderAllBookmarks(renderAll: boolean): void;
 }
 
-const LoadMoreBookmarks: Comp<Props> = ({ numRemainingBookmarks, renderAllBookmarks }) => (
+const LoadMoreBookmarks: FC<Props> = ({ numRemainingBookmarks, renderAllBookmarks }) => (
 	<Wrapper onClick={() => { renderAllBookmarks(true); }}>
 		...and {numRemainingBookmarks} more.
 	</Wrapper>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import { Page } from 'Store/user/types';
@@ -13,7 +13,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const SearchContainer: Comp<Props> = props => (
+const SearchContainer: FC<Props> = props => (
 	<StagedGroupsList
 		stagedGroups={props.groups}
 		onGroupClick={(id) => {

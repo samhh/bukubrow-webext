@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Maybe } from 'purify-ts/Maybe';
 import BookmarkForm from 'Components/bookmark-form';
 
@@ -8,7 +8,7 @@ interface Props {
 	bookmark: Maybe<LocalBookmark>;
 }
 
-const StagedGroupBookmarkEditForm: Comp<Props> = props => props.bookmark.caseOf({
+const StagedGroupBookmarkEditForm: FC<Props> = props => props.bookmark.caseOf({
 	Just: () => (
 		<BookmarkForm
 			bookmark={props.bookmark} // Form still wants Maybe TODO

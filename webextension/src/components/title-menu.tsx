@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { ArrowLeft } from 'react-feather';
 import styled from 'Styles';
 
@@ -43,7 +43,7 @@ interface Props {
 	onBack(): void;
 }
 
-const TitleMenu: Comp<Props> = props => (
+const TitleMenu: FC<Props> = props => (
 	<Wrapper>
 		<IconWrapper onClick={props.onBack}>
 			<ArrowLeft size={height - (padding * 4)} />

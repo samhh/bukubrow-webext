@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import noop from 'Modules/noop';
 import { AppState } from 'Store';
@@ -15,7 +15,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const BookmarksListContainer: Comp<Props> = props => (
+const BookmarksListContainer: FC<Props> = props => (
 	<BookmarksList
 		bookmarks={props.bookmarks}
 		focusedBookmarkId={props.focusedBookmark.map(fb => fb.id)}

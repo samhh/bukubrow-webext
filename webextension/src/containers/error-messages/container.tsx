@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import ErrorMessages from './error-messages';
@@ -7,7 +7,7 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 
 type Props = StateProps;
 
-const ErrorMessagesContainer: Comp<Props> = ({ errors }) => (
+const ErrorMessagesContainer: FC<Props> = ({ errors }) => (
 	<ErrorMessages errors={errors} />
 );
 

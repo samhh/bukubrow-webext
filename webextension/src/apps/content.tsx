@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import mount from 'Modules/connected-mount';
 import { connect, ConnectedComponentClass } from 'react-redux';
 import { AppState } from 'Store';
@@ -70,7 +70,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const ContentApp: Comp<Props> = (props) => {
+const ContentApp: FC<Props> = (props) => {
 	const page = pageMap(props);
 	
 	return (

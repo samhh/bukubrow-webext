@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, FC } from 'react';
 import { saveSettings, Theme, isTheme } from 'Modules/settings';
 import styled from 'Styles';
 
@@ -11,7 +11,7 @@ interface Props {
 	setActiveTheme(theme: Theme): void;
 }
 
-const OptionsPage: Comp<Props> = (props) => {
+const OptionsPage: FC<Props> = (props) => {
 	const handleThemeChange = (evt: FormEvent<HTMLSelectElement>) => {
 		const theme = evt.currentTarget.value;
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { LocalBookmarkWeighted } from 'Modules/bookmarks';
 import styled from 'Styles';
 import Bookmark from 'Components/bookmark';
@@ -30,7 +30,7 @@ interface Props {
 	bookmarks: LocalBookmarkWeighted[];
 }
 
-const StagedGroupBookmarksList: Comp<Props> = (props) => {
+const StagedGroupBookmarksList: FC<Props> = (props) => {
 	return (
 		<>
 			<WrapperList>

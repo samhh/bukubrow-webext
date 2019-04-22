@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Maybe } from 'purify-ts/Maybe';
 import BookmarkForm from 'Components/bookmark-form';
 
@@ -9,7 +9,7 @@ interface Props {
 	bookmark: Maybe<LocalBookmark>;
 }
 
-const BookmarkEditForm: Comp<Props> = props => (
+const BookmarkEditForm: FC<Props> = props => (
 	<>
 		{props.display && props.bookmark.isJust() && (
 			<BookmarkForm

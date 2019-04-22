@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, FormEvent } from 'react';
+import React, { forwardRef, Ref, FormEvent, FC } from 'react';
 import { both, complement } from 'ramda';
 import styled from 'Styles';
 
@@ -66,7 +66,7 @@ const exceedsMaxLength = (_: string, newValue: string, max?: number) => typeof m
 const isBackspacing = (oldValue: string, newValue: string) => oldValue.length > newValue.length;
 const isInvalidInput = both(exceedsMaxLength, complement(isBackspacing));
 
-const TextInput: Comp<Props> = (props) => {
+const TextInput: FC<Props> = (props) => {
 	const handleInput = (evt: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { currentTarget: { value } } = evt;
 

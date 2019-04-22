@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'Styles';
 import Button from 'Components/button';
 import Modal from 'Components/modal';
@@ -19,7 +19,7 @@ interface Props {
 	bookmark: LocalBookmark;
 }
 
-const BookmarkDeleteForm: Comp<Props> = props => (
+const BookmarkDeleteForm: FC<Props> = props => (
 	<>
 		{props.display && (
 			<Modal>

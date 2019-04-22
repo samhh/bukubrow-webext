@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { Just } from 'purify-ts/Maybe';
 import { AppState } from 'Store';
@@ -15,7 +15,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const BookmarksListContainer: Comp<Props> = props => (
+const BookmarksListContainer: FC<Props> = props => (
 	<StagedGroupBookmarksList
 		bookmarks={props.bookmarks}
 		onOpenBookmark={(bmId: LocalBookmark['id']) => {

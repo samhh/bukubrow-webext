@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { connect } from 'react-redux';
 import { scrollToTop } from 'Modules/scroll-window';
@@ -15,7 +15,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const SearchControlsContainer: Comp<Props> = props => (
+const SearchControlsContainer: FC<Props> = props => (
 	<SearchControls
 		onStagedBookmarks={props.openStagedGroups}
 		onAdd={props.openAddModal}

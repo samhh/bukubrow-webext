@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'Styles';
 import ListItem from 'Components/list-item';
 import { formatStagedBookmarksGroupTitle } from 'Modules/bookmarks';
@@ -23,7 +23,7 @@ interface Props {
 	stagedGroups: StagedBookmarksGroup[];
 }
 
-const StagedGroupsList: Comp<Props> = props => (
+const StagedGroupsList: FC<Props> = props => (
 	<Wrapper>
 		{props.stagedGroups.length
 			? props.stagedGroups.map(grp => (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled, { css } from 'Styles';
 
 const Wrapper = styled.div<{ visible: boolean }>`
@@ -26,6 +26,6 @@ interface Props {
 	msg: string;
 }
 
-const ErrorPopup: Comp<Props> = ({ msg }) => <Wrapper visible={!!msg}>{msg}</Wrapper>;
+const ErrorPopup: FC<Props> = ({ msg }) => <Wrapper visible={!!msg}>{msg}</Wrapper>;
 
 export default ErrorPopup;

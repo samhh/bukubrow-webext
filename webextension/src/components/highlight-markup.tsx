@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Highlighter from 'react-highlight-words';
 
 const highlightedStyle = {
@@ -11,7 +11,7 @@ interface Props {
 	match?: string[];
 }
 
-const HighlightMarkup: Comp<Props> = props => (
+const HighlightMarkup: FC<Props> = props => (
 	<Highlighter
 		highlightStyle={highlightedStyle}
 		searchWords={props.match || []}

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, FC } from 'react';
 import { matchesTerminology } from 'Modules/terminology';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import styled from 'Styles';
@@ -73,7 +73,7 @@ enum HoverState {
 	Refresh,
 }
 
-const SearchControls: Comp<Props> = (props) => {
+const SearchControls: FC<Props> = (props) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [hoverState, setHoverState] = useState(HoverState.None);
 

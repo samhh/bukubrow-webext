@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { matchesTerminology } from 'Modules/terminology';
 import Button from 'Components/button';
 import Modal from 'Components/modal';
@@ -20,7 +20,7 @@ interface Props {
 	numToOpen: number;
 }
 
-const OpenAllBookmarksConfirmation: Comp<Props> = props => (
+const OpenAllBookmarksConfirmation: FC<Props> = props => (
 	<>
 		{props.display && (
 			<Modal>

@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, MouseEvent, ReactNode } from 'react';
+import React, { forwardRef, Ref, MouseEvent, ReactNode, FC } from 'react';
 import styled from 'Styles';
 
 const Btn = styled.button`
@@ -42,7 +42,7 @@ interface Props {
 	className?: string;
 }
 
-const Button: Comp<Props> = props => (
+const Button: FC<Props> = props => (
 	<Btn
 		type={props.type || 'button'}
 		disabled={props.disabled}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from 'Store';
 import StagedGroupBookmarkEditForm from './staged-group-bookmark-edit-form';
@@ -12,7 +12,7 @@ type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
 type Props = StateProps & DispatchProps;
 
-const StagedGroupBookmarkEditFormContainer: Comp<Props> = props => (
+const StagedGroupBookmarkEditFormContainer: FC<Props> = props => (
 	<StagedGroupBookmarkEditForm
 		bookmark={props.bookmarkToEdit}
 		onExit={() => {
