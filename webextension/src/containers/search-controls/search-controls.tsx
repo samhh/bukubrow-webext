@@ -7,7 +7,7 @@ import IconButton, { iconButtonSize, idealFeatherIconSize } from 'Components/ico
 import TextInput from 'Components/text-input';
 import Tooltip from 'Components/tooltip';
 
-import { ArrowUpRight, Layers, Plus, RefreshCw } from 'react-feather';
+import { ArrowUpRight, Layers, Plus } from 'react-feather';
 
 export const headerHeight = '50px';
 export const headerItemsMargin = '10px';
@@ -56,7 +56,6 @@ interface Props {
 	onAdd(): void;
 	updateTextFilter(textFilter: string): void;
 	openAllVisibleBookmarks(): void;
-	refreshBookmarks(): void;
 	textFilter: string;
 	shouldEnableSearch: boolean;
 	shouldEnableOpenStaged: boolean;
@@ -70,7 +69,6 @@ enum HoverState {
 	Stage,
 	OpenAll,
 	Add,
-	Refresh,
 }
 
 const SearchControls: FC<Props> = (props) => {
@@ -99,7 +97,6 @@ const SearchControls: FC<Props> = (props) => {
 			case HoverState.Stage: return 'Open staging area';
 			case HoverState.OpenAll: return matchesTerminology(props.numMatches);
 			case HoverState.Add: return 'Add a bookmark';
-			case HoverState.Refresh: return 'Fetch bookmarks';
 			case HoverState.None: return '';
 		}
 	};
@@ -150,14 +147,6 @@ const SearchControls: FC<Props> = (props) => {
 						onMouseLeave={hideTooltip}
 					>
 						<Plus size={idealFeatherIconSize} />
-					</ControlButton>
-
-					<ControlButton
-						onClick={props.refreshBookmarks}
-						onMouseEnter={showTooltip(HoverState.Refresh)}
-						onMouseLeave={hideTooltip}
-					>
-						<RefreshCw size={idealFeatherIconSize} />
 					</ControlButton>
 				</div>
 

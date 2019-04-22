@@ -5,7 +5,6 @@ import { scrollToTop } from 'Modules/scroll-window';
 import { AppState } from 'Store';
 import { setSearchFilterWithResets } from 'Store/epics';
 import { setAddBookmarkModalDisplay } from 'Store/bookmarks/actions';
-import { syncBookmarks } from 'Store/bookmarks/epics';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import SearchControls from './search-controls';
 import { setDisplayOpenAllBookmarksConfirmation, setPage } from 'Store/user/actions';
@@ -22,7 +21,6 @@ const SearchControlsContainer: FC<Props> = props => (
 		onAdd={props.openAddModal}
 		updateTextFilter={(text) => { props.setSearchFilter(text); scrollToTop(); }}
 		openAllVisibleBookmarks={props.openAllFilteredBookmarks}
-		refreshBookmarks={props.syncBookmarks}
 		textFilter={props.searchFilter}
 		shouldEnableSearch={props.searchEnabled}
 		shouldEnableOpenStaged={!!props.numStagedItems}
@@ -42,7 +40,6 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = {
-	syncBookmarks,
 	setSearchFilter: setSearchFilterWithResets,
 	openStagedGroups: setPage.bind(null, Page.StagedGroupsList),
 	openAddModal: setAddBookmarkModalDisplay.bind(null, true),
