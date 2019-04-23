@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import mount from 'Modules/connected-mount';
 import { connect, ConnectedComponentClass } from 'react-redux';
+import styled from 'Styles';
 import { AppState } from 'Store';
 import { Page } from 'Store/user/types';
 import { setPage } from 'Store/user/actions';
@@ -79,6 +80,14 @@ const pageMap = (props: Props) => {
 	return map[props.page];
 };
 
+/**
+ * Effectively sets minimum height for the page. This ensures that error
+ * messages are always visible, and that the popup looks reasonable.
+ */
+const MinHeightWrapper = styled.main`
+	min-height: 400px;
+`;
+
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
 
@@ -95,7 +104,7 @@ const ContentApp: FC<Props> = (props) => {
 			
 			<ErrorMessages />
 			
-			<main>
+			<MinHeightWrapper>
 				{'nav' in page && (
 					<TitleMenu
 						title={page.nav.title}
@@ -104,7 +113,7 @@ const ContentApp: FC<Props> = (props) => {
 				)}
 
 				<page.component />
-			</main>
+			</MinHeightWrapper>
 		</>
 	);
 };
