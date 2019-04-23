@@ -49,12 +49,12 @@ export const setStagedBookmarksGroupBookmarkEditId = (id: Maybe<Bookmark['id']>)
 
 export const updateStagedBookmarksGroupBookmark = (grpId: StagedBookmarksGroup['id'], bm: Bookmark) => action(
 	BookmarksActionTypes.UpdateStagedBookmarksGroupBookmark,
-	[grpId, bm] as [typeof grpId, typeof bm], // TODO as const in 3.4!
+	[grpId, bm] as const,
 );
 
 export const deleteStagedBookmarksGroupBookmark = (grpId: StagedBookmarksGroup['id'], bmId: Bookmark['id']) => action(
 	BookmarksActionTypes.DeleteStagedBookmarksGroupBookmark,
-	[grpId, bmId] as [typeof grpId, typeof bmId], // TODO as const in 3.4
+	[grpId, bmId] as const,
 );
 
 export const setDeleteBookmarkModalDisplay = (display: boolean) => action(

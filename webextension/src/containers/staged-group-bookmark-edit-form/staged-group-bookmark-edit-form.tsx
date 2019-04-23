@@ -10,7 +10,7 @@ interface Props {
 const StagedGroupBookmarkEditForm: FC<Props> = props => props.bookmark.caseOf({
 	Just: () => (
 		<BookmarkForm
-			bookmark={props.bookmark} // Form still wants Maybe TODO
+			bookmark={props.bookmark}
 			onSubmit={props.onSubmit}
 		/>
 	),

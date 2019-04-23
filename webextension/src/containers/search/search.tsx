@@ -7,8 +7,6 @@ import LoadMoreBookmarks from 'Components/load-more-bookmarks';
 import SearchControls, { headerHeight } from 'Containers/search-controls/';
 
 const Wrapper = styled.div`
-	// TODO can remove this line?
-	min-height: 30rem; /* For bookmark form in cases where there are not yet any bookmarks */
 	padding: ${headerHeight} 0 0;
 `;
 

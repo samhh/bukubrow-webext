@@ -69,11 +69,15 @@ let nativeBookmarksState: RemoteBookmark[] = [];
 const browserMock: DeepPartial<Browser> = {
 	runtime: {
 		sendMessage: noop,
-		// TODO type this better
-		sendNativeMessage: async <T extends NativeRequestMethod>(_appName: string, { method, data }: { method: T; data: NativeRequestData[T] }): Promise<NativeRequestResult[T]> => {
+		sendNativeMessage: async <T extends NativeRequestMethod>(
+			_appName: string,
+			{ method, data }: { method: T; data: NativeRequestData[T] },
+		): Promise<NativeRequestResult[T]> => {
 			await sleep(latency);
 
-			switch (method) {
+			// This assertion may not be needed once the following is merged:
+			// https://github.com/Microsoft/TypeScript/pull/22348
+			switch (method as NativeRequestMethod) {
 				case NativeRequestMethod.GET: {
 					if (!NonEmptyList.isNonEmpty(nativeBookmarksState)) nativeBookmarksState = genDummyRemoteBookmarks();
 
@@ -112,11 +116,6 @@ const browserMock: DeepPartial<Browser> = {
 					nativeBookmarksState.splice(indexToRemove, 1);
 
 					return Promise.resolve({ success: true });
-				}
-
-				// Fallback only due to bad typing TODO
-				default: {
-					return Promise.resolve({ success: false });
 				}
 			}
 		},
