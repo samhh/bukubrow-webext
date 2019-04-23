@@ -1,7 +1,7 @@
 import { Just, Nothing } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
-import { onTabActivity, checkRuntimeErrors } from 'Comms/browser';
-import { checkBinaryVersionFromNative } from 'Comms/native';
+import { onTabActivity } from 'Comms/browser';
+import { checkBinaryVersionFromNative, OutdatedVersionError } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkAC } from 'Store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
@@ -12,27 +12,13 @@ import { syncStagedBookmarksGroups, syncBookmarks } from 'Store/bookmarks/epics'
 import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
-export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
+const onLoadPreComms = (): ThunkAC => (dispatch) => {
 	getActiveTheme().run().then((theme) => {
 		dispatch(setActiveTheme(theme.orDefault(Theme.Light)));
 	});
+};
 
-	checkBinaryVersionFromNative().run().then((version) => {
-		if (version.isLeft()) {
-			const msg = 'The binary is outdated. Please download or build a more recent one.';
-
-			dispatch(pushError(msg));
-		}
-	});
-
-	checkRuntimeErrors().ifLeft((error) => {
-		const msg = error.message.includes('host not found')
-			? 'The binary could not be found. Please refer to the installation instructions.'
-			: 'An unknown runtime error occurred.';
-
-		dispatch(pushError(msg));
-	});
-
+const onLoadPostComms = (): ThunkAC => (dispatch) => {
 	dispatch(syncBookmarks());
 	dispatch(syncStagedBookmarksGroups());
 
@@ -41,6 +27,26 @@ export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	dispatch(syncBrowserInfo());
 	onTabActivity(() => {
 		dispatch(syncBrowserInfo());
+	});
+};
+
+export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
+	dispatch(onLoadPreComms());
+
+	const versionRes = await checkBinaryVersionFromNative().run();
+	versionRes.caseOf({
+		Left: (err) => {
+			const msg = err instanceof OutdatedVersionError
+				? 'The binary is outdated. Please download or build a more recent one.'
+				: err.message.includes('host not found')
+					? 'The binary could not be found. Please refer to the installation instructions.'
+					: 'An unknown runtime error occurred.';
+
+			dispatch(pushError(msg));
+		},
+		Right: () => {
+			dispatch(onLoadPostComms());
+		},
 	});
 };
 

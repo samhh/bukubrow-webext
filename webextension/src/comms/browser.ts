@@ -1,18 +1,11 @@
 import { browser } from 'webextension-polyfill-ts';
 import { Maybe } from 'purify-ts/Maybe';
-import { Either } from 'purify-ts/Either';
 import { List } from 'purify-ts/List';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
 import uuid from 'Modules/uuid';
-
-export const checkRuntimeErrors = () => Either.encase(() => {
-	const errMsg = browser.runtime.lastError && browser.runtime.lastError.message;
-
-	if (errMsg) throw new Error(errMsg);
-});
 
 export const getActiveTab = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({ active: true, currentWindow: true })
 	.then(tabs => liftMaybe(List.at(0, tabs))));

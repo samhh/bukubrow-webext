@@ -79,19 +79,22 @@ export interface NativeRequestResult {
 const sendMessageToNative = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) =>
 	browser.runtime.sendNativeMessage(APP_NAME, { method, data }) as Promise<NativeRequestResult[T]>;
 
+export class OutdatedVersionError extends Error {}
+
 // Ensure binary version is equal to or newer than what we're expecting, but on
 // the same major version (semantic versioning)
-export const checkBinaryVersionFromNative = () => EitherAsync<Error, void>(() => sendMessageToNative(NativeRequestMethod.OPTIONS, undefined)
-	.then((res) => {
-		const valid = !!(
-			res &&
-			res.success &&
-			res.binaryVersion &&
-			compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
-		);
+export const checkBinaryVersionFromNative = () => EitherAsync<Error | OutdatedVersionError, void>(() =>
+	sendMessageToNative(NativeRequestMethod.OPTIONS, undefined)
+		.then((res) => {
+			const valid = !!(
+				res &&
+				res.success &&
+				res.binaryVersion &&
+				compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
+			);
 
-		if (!valid) throw new Error('Incompatible version');
-	}));
+			if (!valid) throw new OutdatedVersionError();
+		}));
 
 export const getBookmarksFromNative = () =>
 	sendMessageToNative(NativeRequestMethod.GET, undefined);
