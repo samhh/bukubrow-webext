@@ -22,6 +22,10 @@ export const sendTabsToStagingArea = (tabs: NonEmptyList<SufficientTab>) =>
 		flags: 0,
 	})));
 
+/**
+ * Initialise context menu items that each obtain various viable window tabs,
+ * and pass those onto the callback.
+ */
 export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>) => void) => {
 	browser.contextMenus.onClicked.addListener(async (info) => {
 		let tabs: Maybe<NonEmptyList<SufficientTab>> = Nothing;

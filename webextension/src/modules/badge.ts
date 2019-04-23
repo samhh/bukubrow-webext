@@ -76,6 +76,13 @@ const updateBadge = async () => {
 		});
 };
 
+/**
+ * Initialise backend listener that automatically listens for changes to
+ * bookmarks in LocalStorage and window tabs, and displays a badge if there is a
+ * match. It runs and checks immediately after instantiation before listening
+ * for further changes. All badge functionality is encapsulated within this
+ * function's closure.
+ */
 export const initBadgeAndListen = async () => {
 	await syncBookmarks();
 	updateBadge();

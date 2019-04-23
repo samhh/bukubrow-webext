@@ -7,13 +7,16 @@ export interface LocalBookmarkWeighted extends LocalBookmark {
 	weight: URLMatch;
 }
 
+/**
+ * Filter out bookmarks that do not perfectly match the provided test.
+ */
 export const filterBookmarks = (bookmarks: LocalBookmark[], test: ParsedInputResult) => bookmarks.filter((bookmark) => {
 	if (!includes(bookmark.title, test.name)) return false;
 	if (test.desc.some(d => !includes(bookmark.desc, d))) return false;
 	if (test.url.some(u => !includes(bookmark.url, u))) return false;
 	if (test.tags.some(t => !bookmark.tags.some(tag => includes(tag, t)))) return false;
 
-	// ensure all wildcards match something
+	// Ensure all wildcards match something
 	const allWildcardsMatch = test.wildcard.every((wc) => {
 		return (
 			includes(bookmark.title, wc) ||
@@ -26,8 +29,11 @@ export const filterBookmarks = (bookmarks: LocalBookmark[], test: ParsedInputRes
 	return allWildcardsMatch;
 });
 
-export const sortBookmarks = <T extends LocalBookmark & Partial<LocalBookmarkWeighted>>(a: T, b: T) => {
-	const [aw, bw] = [a, b].map(bm => bm.weight || URLMatch.None);
+/**
+ * Sort two weighted bookmarks against each other.
+ */
+export const sortBookmarks = <T extends LocalBookmarkWeighted>(a: T, b: T) => {
+	const [aw, bw] = [a, b].map(bm => bm.weight);
 
 	if (aw === bw) return a.title.localeCompare(b.title);
 	if (aw === URLMatch.Exact) return -1;
@@ -39,6 +45,9 @@ export const sortBookmarks = <T extends LocalBookmark & Partial<LocalBookmarkWei
 
 const bukuDelimiter = ',';
 
+/**
+ * Transform a remote/native bookmark into the local format.
+ */
 export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	id: bookmark.id,
 	title: bookmark.metadata,
@@ -50,6 +59,9 @@ export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	flags: bookmark.flags,
 });
 
+/**
+ * Transform a local bookmark into the remote/native format.
+ */
 export function untransform(bookmark: LocalBookmark): RemoteBookmark;
 export function untransform(bookmark: LocalBookmarkUnsaved): RemoteBookmarkUnsaved;
 export function untransform(bookmark: LocalBookmark | LocalBookmarkUnsaved):

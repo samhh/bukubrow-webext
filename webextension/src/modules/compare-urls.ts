@@ -6,6 +6,9 @@ export enum URLMatch {
 	None = 'none',
 }
 
+/**
+ * Compare two URLs and determine similarity.
+ */
 const compareURLs = (url1: URL, url2: URL) => {
 	const http = ['http:', 'https:'];
 

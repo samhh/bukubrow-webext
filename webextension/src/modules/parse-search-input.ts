@@ -25,6 +25,9 @@ const execMulti = (str: string, r: RegExp) => {
 	return res;
 };
 
+/**
+ * Parse input string into various matches.
+ */
 const parseSearchInput = (input: string): ParsedInputResult => ({
 	name: (input.match(nameRegExp) || [])[0] || '',
 	desc: execMulti(input, descsRegExp),

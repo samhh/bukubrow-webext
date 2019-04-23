@@ -4,6 +4,9 @@ import { Provider } from 'react-redux';
 import store from 'Store';
 import { ThemeProviderWithState } from 'Styles';
 
+/**
+ * Render/mount a component with all providers supplied.
+ */
 const mountPage = (page: ReactNode) => {
 	render((
 		<StrictMode>
