@@ -52,4 +52,4 @@ The WebExtension is written in strict TypeScript, utilising React for rendering 
 
 ### Binary
 
-The binary is written in Rust stable (1.32.0 at time of writing). The messages it expects to receive from the WebExtension backend follow a faux HTTP format; for instance, to get all the bookmarks, you pass it a JSON object of the following format: `{ method: 'GET' }`.
+The binary is written in Rust stable (1.34.0 at time of writing). The messages it expects to receive from the WebExtension backend follow a faux HTTP format; for instance, to get all the bookmarks, you pass it a JSON object of the following format: `{ method: 'GET' }`.

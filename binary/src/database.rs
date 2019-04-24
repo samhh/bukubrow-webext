@@ -32,13 +32,16 @@ impl SqliteDatabase {
         let query = "SELECT * FROM bookmarks;";
         let mut stmt = self.connection.prepare(query)?;
 
-        let rows = stmt.query_map(NO_PARAMS, |row| Bookmark {
-            id: row.get(0),
-            url: row.get(1),
-            metadata: row.get(2),
-            tags: row.get(3),
-            desc: row.get(4),
-            flags: row.get(5),
+        // Supply defaults for nullable fields (per SQLite schema)
+        let rows = stmt.query_map(NO_PARAMS, |row| {
+            Ok(Bookmark {
+                id: row.get(0)?,
+                url: row.get(1).unwrap_or_default(),
+                metadata: row.get(2).unwrap_or_default(),
+                tags: row.get(3).unwrap_or_default(),
+                desc: row.get(4).unwrap_or_default(),
+                flags: row.get(5).unwrap_or_default(),
+            })
         })?;
 
         let bookmarks: Vec<Bookmark> = rows.filter_map(|x| x.ok()).collect();
