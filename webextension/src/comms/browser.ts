@@ -83,5 +83,5 @@ export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookm
 		}], []),
 	};
 
-	setLocalStorage({ stagedBookmarksGroups: [...stagedBookmarksGroups, newGroup] });
+	await setLocalStorage({ stagedBookmarksGroups: [...stagedBookmarksGroups, newGroup] });
 };

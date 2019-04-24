@@ -99,9 +99,9 @@ export const deleteStagedBookmarksGroupBookmarkOrEntireGroup = (
 };
 
 export const syncStagedBookmarksGroups = (): ThunkAC<Promise<void>> => async (dispatch) => {
-	const stagedBookmarksGroups = await getStagedBookmarksGroupsFromLocalStorage().run().then(res => res.orDefault([]));
+	const stagedBookmarksGroups = await getStagedBookmarksGroupsFromLocalStorage().run();
 
-	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups));
+	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups.orDefault([])));
 };
 
 export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<void>> => async (dispatch) => {

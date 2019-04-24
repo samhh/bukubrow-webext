@@ -36,14 +36,16 @@ const store = createStore(
 	composeWithDevTools(middleware) as typeof middleware,
 );
 
-// Keep store in sync with local cache
-store.subscribe(() => {
-	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = store.getState();
-
-	saveBookmarksToLocalStorage(bookmarks);
-	saveStagedBookmarksGroupsToLocalStorage(stagedBookmarksGroups);
-});
-
 store.dispatch(onLoad());
+
+// Keep store in sync with local cache
+export const initAutoStoreSync = () => {
+	store.subscribe(() => {
+		const { bookmarks: { bookmarks, stagedBookmarksGroups } } = store.getState();
+
+		saveBookmarksToLocalStorage(bookmarks);
+		saveStagedBookmarksGroupsToLocalStorage(stagedBookmarksGroups);
+	});
+};
 
 export default store;

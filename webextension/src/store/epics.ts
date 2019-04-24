@@ -3,7 +3,7 @@ import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { onTabActivity } from 'Comms/browser';
 import { checkBinaryVersionFromNative, OutdatedVersionError } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
-import { ThunkAC } from 'Store';
+import { ThunkAC, initAutoStoreSync } from 'Store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
 import { setActiveTheme } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
@@ -19,6 +19,8 @@ const onLoadPreComms = (): ThunkAC => (dispatch) => {
 };
 
 const onLoadPostComms = (): ThunkAC => (dispatch) => {
+	// Store sync initialised here to prevent race condition with staged groups
+	initAutoStoreSync();
 	dispatch(syncBookmarks());
 	dispatch(syncStagedBookmarksGroups());
 
