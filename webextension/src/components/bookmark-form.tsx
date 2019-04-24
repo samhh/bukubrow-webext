@@ -26,7 +26,7 @@ const Heading = styled.h1`
 	font-size: 2rem;
 `;
 
-const TagInputWrapper = styled.div`
+const TagInputWrapper = styled.form`
 	display: grid;
 	grid-template-columns: 1fr auto;
 	grid-gap: 1rem;
@@ -93,7 +93,10 @@ const BookmarkForm: FC<Props> = (props) => {
 		setInputBookmarkPartial({ [key]: input });
 	};
 
-	const handleTagAddition = () => {
+	const handleTagAddition = (evt: FormEvent<HTMLFormElement>) => {
+		evt.preventDefault();
+		evt.stopPropagation();
+
 		const newTag = tagInput.trim();
 
 		// Disallow adding an empty tag or the same tag twice
@@ -149,14 +152,14 @@ const BookmarkForm: FC<Props> = (props) => {
 				label="URL"
 			/>
 
-			<TagInputWrapper>
+			<TagInputWrapper onSubmit={handleTagAddition}>
 				<TextInput
 					value={tagInput}
 					onInput={setTagInput}
 					label="Tags"
 				/>
 
-				<AddTagButton onClick={handleTagAddition}>
+				<AddTagButton type="submit">
 					<Plus size={idealFeatherIconSize} />
 				</AddTagButton>
 			</TagInputWrapper>
