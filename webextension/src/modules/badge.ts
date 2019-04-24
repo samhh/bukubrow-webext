@@ -33,21 +33,22 @@ const syncBookmarks = async () => {
 };
 
 const checkUrl = (url: URL) => {
-	let result = URLMatch.None;
+	let bestMatch = URLMatch.None;
+	let numMatches = 0;
 
 	for (const bookmarkUrl of urlState) {
 		if (bookmarkUrl.href === url.href) {
-			result = URLMatch.Exact;
-			break;
+			bestMatch = URLMatch.Exact;
+			numMatches++;
 		}
-
-		if (bookmarkUrl.hostname === url.hostname) {
-			result = URLMatch.Domain;
+		else if (bookmarkUrl.hostname === url.hostname) {
+			if (bestMatch !== URLMatch.Exact) bestMatch = URLMatch.Domain;
+			numMatches++;
 		}
 	}
 
-	return result;
-}
+	return [bestMatch, numMatches];
+};
 
 const updateBadge = async () => {
 	const activeTab = await getActiveTab().run();
@@ -56,16 +57,16 @@ const updateBadge = async () => {
 		.chain(tab => Maybe.fromNullable(tab.url))
 		.map(href => new URL(href))
 		.map(checkUrl)
-		.ifJust((result) => {
+		.ifJust(([result, numMatches]) => {
 			switch (result) {
 				case URLMatch.Exact:
 					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Exact] });
-					browser.browserAction.setBadgeText({ text: ' ' });
+					browser.browserAction.setBadgeText({ text: String(numMatches) });
 					break;
 
 				case URLMatch.Domain:
 					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Domain] });
-					browser.browserAction.setBadgeText({ text: ' ' });
+					browser.browserAction.setBadgeText({ text: String(numMatches) });
 					break;
 
 				case URLMatch.None:
