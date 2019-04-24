@@ -85,9 +85,7 @@ export const getStagedGroupToEditWeightedBookmarks = createSelector(getStagedGro
 
 export const getStagedGroupBookmarkToEdit = createSelector(getStagedGroupToEdit, getStagedGroupBookmarkEditId,
 	(group, editId) => MaybeTuple.fromMaybe(group, editId).chain((tup) => {
-		// Destructured like this due to this issue:
-		// https://github.com/gigobyte/purify/issues/84
-		const [grp, eid] = [tup.fst(), tup.snd()];
+		const [grp, eid] = tup;
 
 		return Maybe.fromNullable(grp.bookmarks.find(bm => bm.id === eid));
 	}));
