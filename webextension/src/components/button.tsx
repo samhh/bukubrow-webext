@@ -21,7 +21,8 @@ const Btn = styled.button`
 	&:not(:disabled) {
 		cursor: pointer;
 
-		&:hover {
+		&:hover,
+		&:focus {
 			background-color: ${props => props.theme.backgroundColorOffsetOffset};
 		}
 
