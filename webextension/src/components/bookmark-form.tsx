@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, FC } from 'react';
+import React, { useState, useEffect, useRef, FormEvent, FC } from 'react';
 import { Maybe, Nothing } from 'purify-ts/Maybe';
 import styled from 'Styles';
 
@@ -66,6 +66,8 @@ type KeyofStringValues<T> = {
 }[keyof T];
 
 const BookmarkForm: FC<Props> = (props) => {
+	const firstInputRef = useRef<HTMLInputElement>(null);
+
 	const [bookmarkInput, setBookmarkInput] = useState<BookmarkInput>({
 		id: Nothing,
 		title: '',
@@ -80,6 +82,7 @@ const BookmarkForm: FC<Props> = (props) => {
 	const [tagInput, setTagInput] = useState('');
 
 	useEffect(() => {
+		// Copy bookmark props into state
 		props.bookmark.ifJust((bookmark) => {
 			// Ensure not to copy unwanted properties into state
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -87,6 +90,9 @@ const BookmarkForm: FC<Props> = (props) => {
 
 			setInputBookmarkPartial({ ...toCopy, id: Maybe.fromNullable(id) });
 		});
+
+		// Focus first input automatically
+		if (firstInputRef.current) firstInputRef.current.focus();
 	}, []);
 
 	const handleBookmarkTextInput = (key: KeyofStringValues<BookmarkInput>) => (input: string) => {
@@ -138,6 +144,7 @@ const BookmarkForm: FC<Props> = (props) => {
 				value={bookmarkInput.title}
 				onInput={handleBookmarkTextInput('title')}
 				label="Title"
+				ref={firstInputRef}
 			/>
 
 			<TextInput
