@@ -39,6 +39,7 @@ interface Props {
 	onMouseLeave?(evt: MouseEvent<HTMLButtonElement>): void;
 	type?: 'button' | 'submit';
 	disabled?: boolean;
+	tabIndex?: number;
 	className?: string;
 }
 
@@ -46,6 +47,7 @@ const Button: FC<Props> = props => (
 	<Btn
 		type={props.type || 'button'}
 		disabled={props.disabled}
+		tabIndex={props.tabIndex}
 		onClick={props.onClick}
 		onMouseEnter={props.onMouseEnter}
 		onMouseLeave={props.onMouseLeave}
