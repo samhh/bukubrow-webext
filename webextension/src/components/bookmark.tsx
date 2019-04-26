@@ -175,6 +175,7 @@ const Bookmark = memo<Props>((props) => {
 					<ControlButton
 						onClick={handleEdit}
 						type="button"
+						tabIndex={-1}
 						onMouseEnter={showTooltip('Edit bookmark')}
 						onMouseLeave={hideTooltip}
 					>
@@ -184,6 +185,7 @@ const Bookmark = memo<Props>((props) => {
 					<ControlButton
 						onClick={handleDelete}
 						type="button"
+						tabIndex={-1}
 						onMouseEnter={showTooltip('Delete bookmark')}
 						onMouseLeave={hideTooltip}
 					>
