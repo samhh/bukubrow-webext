@@ -159,7 +159,7 @@ const BookmarkForm: FC<Props> = (props) => {
 					label="Tags"
 				/>
 
-				<AddTagButton type="submit">
+				<AddTagButton type="submit" tabIndex={-1}>
 					<Plus size={idealFeatherIconSize} />
 				</AddTagButton>
 			</TagInputWrapper>
