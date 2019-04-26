@@ -7,7 +7,7 @@ import { ThunkAC, initAutoStoreSync } from 'Store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
 import { setActiveTheme } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
-import { pushError } from 'Store/notices/epics';
+import { addPermanentError } from 'Store/notices/epics';
 import { syncStagedBookmarksGroups, syncBookmarks } from 'Store/bookmarks/epics';
 import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
@@ -44,7 +44,7 @@ export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
 					? 'The binary could not be found. Please refer to the installation instructions.'
 					: 'An unknown runtime error occurred.';
 
-			dispatch(pushError(msg));
+			dispatch(addPermanentError(msg));
 		},
 		Right: () => {
 			dispatch(onLoadPostComms());

@@ -2,19 +2,24 @@ import sleep from 'Modules/sleep';
 import { ThunkAC } from 'Store';
 import { addError, deleteError } from './actions';
 import { NoticeId, NoticeMsg } from './types';
+import uuid from 'Modules/uuid';
 
-let id = 0;
-export const pushError = (
+export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (dispatch, getState) => {
+	const errorIds = Object.keys(getState().notices.errors);
+	const newId = String(uuid(errorIds.map(Number)));
+
+	dispatch(addError(newId, errorMsg));
+
+	return newId;
+}; 
+
+export const addTransientError = (
 	errorMsg: NoticeMsg,
-	timeout: number | false = 5000,
+	timeout: number = 5000,
 ): ThunkAC<Promise<void>> => async (dispatch) => {
-	const thisId: NoticeId = String(id++);
-
-	dispatch(addError(thisId, errorMsg));
-
-	if (timeout === false) return;
+	const id = dispatch(addPermanentError(errorMsg));
 
 	await sleep(timeout);
 
-	dispatch(deleteError(thisId));
+	dispatch(deleteError(id));
 };

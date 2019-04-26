@@ -8,7 +8,7 @@ import {
 	setDeleteBookmarkModalDisplay, setAllBookmarks,
 } from 'Store/bookmarks/actions';
 import { setPage, setHasBinaryComms } from 'Store/user/actions';
-import { pushError } from 'Store/notices/epics';
+import { addPermanentError } from 'Store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import { saveBookmarkToNative, updateBookmarkToNative, deleteBookmarkFromNative, getBookmarksFromNative } from 'Comms/native';
 import { getStagedBookmarksGroupsFromLocalStorage } from 'Comms/browser';
@@ -30,7 +30,7 @@ export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 				const msg = 'Failed to sync bookmarks.';
 
 				dispatch(setHasBinaryComms(false));
-				dispatch(pushError(msg));
+				dispatch(addPermanentError(msg));
 			},
 		});
 };
