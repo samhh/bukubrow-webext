@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0] - 2019-04-28
+### Added
+- Send browser tabs to a "staging area" via context menu, wherein they can be easily edited and added to Buku(brow).
+
+### Changed
+- Improved error handling.
+- Removed fetch bookmarks button. They are now implictly fetched from the binary frequently - on load and upon any change.
+- Improved keyboard navigation in bookmark form.
+- Improved overflow behaviour of text in listed bookmarks.
+- Fixed ability to try and add a bookmark without communication with the binary having been achieved.
+
 ## [2.6.0] - 2019-03-03
 ### Added
 - Browser action (WebExtension toolbar icon) displays a badge based upon whether a bookmark with the exact URL or domain of the active tab is present, differentiated by colour.

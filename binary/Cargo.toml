@@ -1,6 +1,6 @@
 [package]
 name = "bukubrow"
-version = "1.2.0"
+version = "1.2.1"
 authors = ["Sam A. Horvath-Hunt"]
 edition = "2018"
 
