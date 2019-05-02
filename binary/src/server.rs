@@ -1,7 +1,7 @@
 use crate::database::{Bookmark, BookmarkId, SqliteDatabase};
 use chrome_native_messaging::{errors, event_loop, write_output};
-use serde_json;
 use clap::crate_version;
+use serde_json;
 use std::error::Error;
 use std::io;
 

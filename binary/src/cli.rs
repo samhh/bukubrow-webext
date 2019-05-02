@@ -1,5 +1,5 @@
 use crate::hosts::paths::Browser;
-use clap::{App, Arg, Error, crate_name, crate_version, crate_authors};
+use clap::{crate_authors, crate_name, crate_version, App, Arg, Error};
 
 pub fn init() -> Result<Vec<Browser>, Error> {
     let chrome_arg = "chrome";
