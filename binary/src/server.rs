@@ -1,7 +1,7 @@
-use crate::config::VERSION;
 use crate::database::{Bookmark, BookmarkId, SqliteDatabase};
 use chrome_native_messaging::{errors, event_loop, write_output};
 use serde_json;
+use clap::crate_version;
 use std::error::Error;
 use std::io;
 
@@ -87,7 +87,7 @@ impl Server {
     fn option() -> JSON {
         json!({
             "success": true,
-            "binaryVersion": VERSION,
+            "binaryVersion": crate_version!(),
         })
     }
 

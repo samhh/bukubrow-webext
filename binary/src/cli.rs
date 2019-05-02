@@ -1,15 +1,14 @@
-use crate::config;
 use crate::hosts::paths::Browser;
-use clap::{App, Arg, Error};
+use clap::{App, Arg, Error, crate_name, crate_version, crate_authors};
 
 pub fn init() -> Result<Vec<Browser>, Error> {
     let chrome_arg = "chrome";
     let chromium_arg = "chromium";
     let firefox_arg = "firefox";
 
-    let matches = App::new("Bukubrow")
-        .version(config::VERSION)
-        .author("Sam A. Horvath-Hunt")
+    let matches = App::new(crate_name!())
+        .version(crate_version!())
+        .author(crate_authors!())
         .about("Bukubrow native messaging host installer")
         .arg(
             Arg::with_name(chrome_arg)
