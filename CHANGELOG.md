@@ -1,8 +1,9 @@
 # Change Log
-All notable changes to this project will be documented in this file.
+This project is versioned according to its compatibility with the [host](https://github.com/SamHH/bukubrow-host) from v4 onwards.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+## [4.0-r1] - WIP
+### Changed
+- Versioning has been changed to move in tandem with the [host](https://github.com/SamHH/bukubrow-host).
 
 ## [3.0.0] - 2019-04-28
 ### Added

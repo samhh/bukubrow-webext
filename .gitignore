@@ -1,8 +1,4 @@
-# WebExtension
 node_modules/
 dist/
+.build/
 release/
-
-# Binary
-binary/target/
-**/*.rs.bk
