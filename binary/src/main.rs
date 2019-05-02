@@ -13,15 +13,11 @@ mod server;
 use crate::database::SqliteDatabase;
 use crate::hosts::installer::install_host;
 use crate::server::Server;
-use clap::ErrorKind;
 
 fn main() {
     // Native messaging can provide its own arguments we don't care about, so
     // ignore any unrecognised arguments
-    let args = cli::init().unwrap_or_else(|err| match err.kind {
-        ErrorKind::HelpDisplayed | ErrorKind::VersionDisplayed => std::process::exit(0),
-        _ => Vec::new(),
-    });
+    let args = cli::init().unwrap_or_else(|err| err.exit());
 
     // If installation arguments are supplied then assume we're installing
     // instead of messaging, so install all requested and exit
