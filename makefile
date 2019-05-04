@@ -27,6 +27,6 @@ wipe:
 .PHONY: webext
 webext:
 	${MAKE} prepare
-	cd webextension && yarn && yarn build
-	cd webextension/dist && zip -r '../../$(RELEASE_DIR)/webext' ./*
+	yarn && yarn build
+	cd dist && zip -r '../$(RELEASE_DIR)/webext' ./*
 	${MAKE} clean
