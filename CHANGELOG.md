@@ -1,7 +1,7 @@
 # Change Log
 This project is versioned according to its compatibility with the [host](https://github.com/SamHH/bukubrow-host) from v4 onwards.
 
-## [4.0-r1] - WIP
+## [4.0.0.1] - 2015-05-04
 ### Changed
 - Versioning has been changed to move in tandem with the [host](https://github.com/SamHH/bukubrow-host).
 
