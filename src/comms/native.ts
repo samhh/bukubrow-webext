@@ -63,9 +63,9 @@ interface NativeDELETEResponse {
 export interface NativeRequestData {
 	GET: undefined;
 	OPTIONS: undefined;
-	POST: { bookmark: RemoteBookmarkUnsaved };
-	PUT: { bookmark: RemoteBookmark };
-	DELETE: { bookmark_id: RemoteBookmark['id'] };
+	POST: { bookmarks: RemoteBookmarkUnsaved[] };
+	PUT: { bookmarks: RemoteBookmark[] };
+	DELETE: { bookmark_ids: RemoteBookmark['id'][] };
 }
 
 export interface NativeRequestResult {
@@ -99,12 +99,13 @@ export const checkBinaryVersionFromNative = () => EitherAsync<Error | OutdatedVe
 export const getBookmarksFromNative = () =>
 	sendMessageToNative(NativeRequestMethod.GET, undefined);
 
-export const saveBookmarkToNative = (bookmark: RemoteBookmarkUnsaved) =>
-	sendMessageToNative(NativeRequestMethod.POST, { bookmark });
+export const saveBookmarksToNative = (bookmarks: RemoteBookmarkUnsaved[]) =>
+	sendMessageToNative(NativeRequestMethod.POST, { bookmarks });
 
-export const updateBookmarkToNative = (bookmark: RemoteBookmark) =>
-	sendMessageToNative(NativeRequestMethod.PUT, { bookmark });
+export const updateBookmarksToNative = (bookmarks: RemoteBookmark[]) =>
+	sendMessageToNative(NativeRequestMethod.PUT, { bookmarks });
 
-export const deleteBookmarkFromNative = (bookmarkId: RemoteBookmark['id']) =>
+export const deleteBookmarksFromNative = (bookmarkIds: RemoteBookmark['id'][]) =>
 	// eslint-disable-next-line @typescript-eslint/camelcase
-	sendMessageToNative(NativeRequestMethod.DELETE, { bookmark_id: bookmarkId });
+	sendMessageToNative(NativeRequestMethod.DELETE, { bookmark_ids: bookmarkIds });
+

@@ -10,7 +10,7 @@ import {
 import { setPage, setHasBinaryComms } from 'Store/user/actions';
 import { addPermanentError } from 'Store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
-import { saveBookmarkToNative, updateBookmarkToNative, deleteBookmarkFromNative, getBookmarksFromNative } from 'Comms/native';
+import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from 'Comms/native';
 import { getStagedBookmarksGroupsFromLocalStorage } from 'Comms/browser';
 import { untransform, transform } from 'Modules/bookmarks';
 import { Page } from 'Store/user/types';
@@ -105,20 +105,18 @@ export const syncStagedBookmarksGroups = (): ThunkAC<Promise<void>> => async (di
 };
 
 export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<void>> => async (dispatch) => {
-	await saveBookmarkToNative(untransform(bookmark));
+	dispatch(addManyBookmarks([bookmark]));
+};
+
+export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
+	await saveBookmarksToNative(bookmarks.map(untransform));
 	dispatch(syncBookmarks());
 
 	dispatch(setPage(Page.Search));
 };
 
-export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
-	for (const bookmark of bookmarks) {
-		await dispatch(addBookmark(bookmark));
-	}
-};
-
 export const updateBookmark = (bookmark: LocalBookmark): ThunkAC<Promise<void>> => async (dispatch) => {
-	await updateBookmarkToNative(untransform(bookmark));
+	await updateBookmarksToNative([untransform(bookmark)]);
 	dispatch(syncBookmarks());
 
 	dispatch(setPage(Page.Search));
@@ -128,7 +126,7 @@ export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, get
 	const { bookmarkDeleteId } = getState().bookmarks;
 
 	bookmarkDeleteId.ifJust(async (bookmarkId) => {
-		await deleteBookmarkFromNative(bookmarkId);
+		await deleteBookmarksFromNative([bookmarkId]);
 		dispatch(syncBookmarks());
 
 		dispatch(setDeleteBookmarkModalDisplay(false));

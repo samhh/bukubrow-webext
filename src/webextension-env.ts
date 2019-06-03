@@ -89,31 +89,39 @@ const browserMock: DeepPartial<Browser> = {
 				}
 
 				case NativeRequestMethod.POST: {
-					const newBookmark = (data as NativeRequestData[NativeRequestMethod.POST]).bookmark;
+					const newBookmarks = (data as NativeRequestData[NativeRequestMethod.POST]).bookmarks;
 					const newId = uuid(nativeBookmarksState.map(bm => bm.id));
-					nativeBookmarksState.push({ ...newBookmark, id: newId });
+
+					for (const newBookmark of newBookmarks) {
+						nativeBookmarksState.push({ ...newBookmark, id: newId });
+					}
 
 					return Promise.resolve({ success: true, id: newId });
 				}
 
 				case NativeRequestMethod.PUT: {
-					const updatedBookmark = (data as NativeRequestData[NativeRequestMethod.PUT]).bookmark;
-					const indexToUpdate = nativeBookmarksState.findIndex(bm => bm.id === updatedBookmark.id);
+					const updatedBookmarks = (data as NativeRequestData[NativeRequestMethod.PUT]).bookmarks;
 
-					if (indexToUpdate === undefined) return Promise.resolve({ success: false });
+					for (const updatedBookmark of updatedBookmarks) {
+						const indexToUpdate = nativeBookmarksState.findIndex(bm => bm.id === updatedBookmark.id);
+						if (indexToUpdate === undefined) return Promise.resolve({ success: false });
 
-					nativeBookmarksState.splice(indexToUpdate, 1, updatedBookmark);
+						nativeBookmarksState.splice(indexToUpdate, 1, updatedBookmark);
+					}
 
 					return Promise.resolve({ success: true });
 				}
 
 				case NativeRequestMethod.DELETE: {
-					const idToRemove = (data as NativeRequestData[NativeRequestMethod.DELETE]).bookmark_id;
-					const indexToRemove = nativeBookmarksState.findIndex(bm => bm.id === idToRemove);
+					const idsToRemove = (data as NativeRequestData[NativeRequestMethod.DELETE]).bookmark_ids;
 
-					if (indexToRemove === undefined) return Promise.resolve({ success: false });
+					for (const idToRemove of idsToRemove) {
+						const indexToRemove = nativeBookmarksState.findIndex(bm => bm.id === idToRemove);
 
-					nativeBookmarksState.splice(indexToRemove, 1);
+						if (indexToRemove === undefined) return Promise.resolve({ success: false });
+
+						nativeBookmarksState.splice(indexToRemove, 1);
+					}
 
 					return Promise.resolve({ success: true });
 				}
