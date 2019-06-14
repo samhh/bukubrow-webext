@@ -43,6 +43,7 @@ interface ErrResponse {
 type NativeGETResponse = {
 	success: true;
 	bookmarks: RemoteBookmark[];
+	moreAvailable: boolean;
 } | ErrResponse;
 
 interface NativeOPTIONSResponse {
@@ -61,7 +62,7 @@ interface NativeDELETEResponse {
 }
 
 export interface NativeRequestData {
-	GET: undefined;
+	GET: { offset: number } | undefined;
 	OPTIONS: undefined;
 	POST: { bookmarks: RemoteBookmarkUnsaved[] };
 	PUT: { bookmarks: RemoteBookmark[] };
@@ -96,8 +97,20 @@ export const checkBinaryVersionFromNative = () => EitherAsync<Error | OutdatedVe
 			if (!valid) throw new OutdatedVersionError();
 		}));
 
-export const getBookmarksFromNative = () =>
-	sendMessageToNative(NativeRequestMethod.GET, undefined);
+export const getBookmarksFromNative = () => {
+	const get = async (prevBookmarks: RemoteBookmark[] = []): Promise<NativeGETResponse> => {
+		const res = await sendMessageToNative(NativeRequestMethod.GET, { offset: prevBookmarks.length });
+
+		if (!res.success) return res;
+
+		const bookmarks = [...prevBookmarks, ...res.bookmarks];
+		return res.moreAvailable
+			? get(bookmarks)
+			: { ...res, bookmarks };
+	};
+
+	return get();
+};
 
 export const saveBookmarksToNative = (bookmarks: RemoteBookmarkUnsaved[]) =>
 	sendMessageToNative(NativeRequestMethod.POST, { bookmarks });
