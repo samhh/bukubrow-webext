@@ -1,7 +1,7 @@
 import { Just, Nothing } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { onTabActivity } from 'Comms/browser';
-import { checkBinaryVersionFromNative, OutdatedVersionError } from 'Comms/native';
+import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkAC, initAutoStoreSync } from 'Store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
@@ -35,21 +35,29 @@ const onLoadPostComms = (): ThunkAC => (dispatch) => {
 export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	dispatch(onLoadPreComms());
 
-	const versionRes = await checkBinaryVersionFromNative().run();
-	versionRes.caseOf({
-		Left: (err) => {
-			const msg = err instanceof OutdatedVersionError
-				? 'The binary is outdated. Please download or build a more recent one.'
-				: err.message.includes('host not found')
-					? 'The binary could not be found. Please refer to the installation instructions.'
-					: 'An unknown runtime error occurred.';
+	const versionRes = await checkBinaryVersionFromNative();
 
-			dispatch(addPermanentError(msg));
-		},
-		Right: () => {
+	switch (versionRes) {
+		case HostVersionCheckResult.Okay:
 			dispatch(onLoadPostComms());
-		},
-	});
+			break;
+
+		case HostVersionCheckResult.HostTooNew:
+			dispatch(addPermanentError('The WebExtension is outdated (relative to the host).'));
+			break;
+
+		case HostVersionCheckResult.HostOutdated:
+			dispatch(addPermanentError('The host is outdated.'));
+			break;
+
+		case HostVersionCheckResult.NoComms:
+			dispatch(addPermanentError('The host could not be found.'));
+			break;
+
+		case HostVersionCheckResult.UnknownError:
+			dispatch(addPermanentError('An unknown error occurred.'));
+			break;
+	}
 };
 
 export const setSearchFilterWithResets = (filter: string): ThunkAC => (dispatch, getState) => {

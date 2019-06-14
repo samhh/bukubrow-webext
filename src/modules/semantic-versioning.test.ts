@@ -1,26 +1,26 @@
-import { compareAgainstMinimum } from 'Modules/semantic-versioning';
+import { compareAgainstMinimum, SemanticVersioningComparison } from 'Modules/semantic-versioning';
 
 describe('compare against minimum semantic version', () => {
 	test('correct format', () => {
-		expect(compareAgainstMinimum('1.0.0', '1.0')).toBe(false);
-		expect(compareAgainstMinimum('1.0', '1.0.0')).toBe(false);
-		expect(compareAgainstMinimum('1.0.0', 'x.0.0')).toBe(false);
-		expect(compareAgainstMinimum('42.51.60', '42.51.60')).toBe(true);
+		expect(compareAgainstMinimum({ minimum: '1.0.0', test: '1.0' })).toBe(SemanticVersioningComparison.BadVersions);
+		expect(compareAgainstMinimum({ minimum: '1.0', test: '1.0.0' })).toBe(SemanticVersioningComparison.BadVersions);
+		expect(compareAgainstMinimum({ minimum: '1.0.0', test: 'x.0.0' })).toBe(SemanticVersioningComparison.BadVersions);
+		expect(compareAgainstMinimum({ minimum: '42.51.60', test: '42.51.60' })).toBe(SemanticVersioningComparison.Okay);
 	});
 
 	test('equal major version', () => {
-		expect(compareAgainstMinimum('1.0.0', '2.0.0')).toBe(false);
-		expect(compareAgainstMinimum('2.0.0', '1.0.0')).toBe(false);
-		expect(compareAgainstMinimum('1.0.0', '1.0.0')).toBe(true);
+		expect(compareAgainstMinimum({ minimum: '1.0.0', test: '2.0.0' })).toBe(SemanticVersioningComparison.TestTooNew);
+		expect(compareAgainstMinimum({ minimum: '2.0.0', test: '1.0.0' })).toBe(SemanticVersioningComparison.TestOutdated);
+		expect(compareAgainstMinimum({ minimum: '1.0.0', test: '1.0.0' })).toBe(SemanticVersioningComparison.Okay);
 	});
 
 	test('equal or newer minor version', () => {
-		expect(compareAgainstMinimum('1.1.0', '1.0.0')).toBe(false);
-		expect(compareAgainstMinimum('1.0.0', '1.1.0')).toBe(true);
+		expect(compareAgainstMinimum({ minimum: '1.1.0', test: '1.0.0' })).toBe(SemanticVersioningComparison.TestOutdated);
+		expect(compareAgainstMinimum({ minimum: '1.0.0', test: '1.1.0' })).toBe(SemanticVersioningComparison.Okay);
 	});
 
 	test('equal or newer patch version', () => {
-		expect(compareAgainstMinimum('1.0.1', '1.0.0')).toBe(false);
-		expect(compareAgainstMinimum('1.0.0', '1.0.1')).toBe(true);
+		expect(compareAgainstMinimum({ minimum: '1.0.1', test: '1.0.0' })).toBe(SemanticVersioningComparison.TestOutdated);
+		expect(compareAgainstMinimum({ minimum: '1.0.0', test: '1.0.1' })).toBe(SemanticVersioningComparison.Okay);
 	});
 });

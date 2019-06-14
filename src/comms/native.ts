@@ -1,7 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
-import { EitherAsync } from 'purify-ts/EitherAsync';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
-import { compareAgainstMinimum } from 'Modules/semantic-versioning';
+import { compareAgainstMinimum, SemanticVersioningComparison } from 'Modules/semantic-versioning';
 
 type CheckBinaryRes =
 	| { outdatedBinary: true }
@@ -80,22 +79,36 @@ export interface NativeRequestResult {
 const sendMessageToNative = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]) =>
 	browser.runtime.sendNativeMessage(APP_NAME, { method, data }) as Promise<NativeRequestResult[T]>;
 
-export class OutdatedVersionError extends Error {}
+export enum HostVersionCheckResult {
+	Okay,
+	HostOutdated,
+	HostTooNew,
+	NoComms,
+	UnknownError,
+}
+
+const mapVersionCheckResult = (err: SemanticVersioningComparison): HostVersionCheckResult => {
+	switch (err) {
+		case SemanticVersioningComparison.BadVersions: return HostVersionCheckResult.UnknownError;
+		case SemanticVersioningComparison.TestTooNew: return HostVersionCheckResult.HostTooNew;
+		case SemanticVersioningComparison.TestOutdated: return HostVersionCheckResult.HostOutdated;
+		case SemanticVersioningComparison.Okay: return HostVersionCheckResult.Okay;
+	}
+};
 
 // Ensure binary version is equal to or newer than what we're expecting, but on
 // the same major version (semantic versioning)
-export const checkBinaryVersionFromNative = () => EitherAsync<Error | OutdatedVersionError, void>(() =>
-	sendMessageToNative(NativeRequestMethod.OPTIONS, undefined)
-		.then((res) => {
-			const valid = !!(
-				res &&
-				res.success &&
-				res.binaryVersion &&
-				compareAgainstMinimum(MINIMUM_BINARY_VERSION, res.binaryVersion)
-			);
+export const checkBinaryVersionFromNative = () => sendMessageToNative(NativeRequestMethod.OPTIONS, undefined)
+	.then((res) => {
+		if (!res || !res.success || !res.binaryVersion) return HostVersionCheckResult.UnknownError;
 
-			if (!valid) throw new OutdatedVersionError();
-		}));
+		return mapVersionCheckResult(compareAgainstMinimum({ minimum: MINIMUM_BINARY_VERSION, test: res.binaryVersion }));
+	})
+	.catch((err: unknown) => {
+		return typeof err === 'string' && err.includes('host not found')
+			? HostVersionCheckResult.NoComms
+			: HostVersionCheckResult.UnknownError;
+	});
 
 export const getBookmarksFromNative = () => {
 	const get = async (prevBookmarks: RemoteBookmark[] = []): Promise<NativeGETResponse> => {

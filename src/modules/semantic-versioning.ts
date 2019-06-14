@@ -1,4 +1,11 @@
-export const compareAgainstMinimum = (minimum: string, test: string): boolean => {
+export enum SemanticVersioningComparison {
+	Okay,
+	BadVersions,
+	TestOutdated,
+	TestTooNew,
+}
+
+export const compareAgainstMinimum = ({ minimum, test }: { minimum: string; test: string }): SemanticVersioningComparison => {
 	const minVer = minimum.split('.').map(str => Number(str));
 	const testVer = test.split('.').map(str => Number(str));
 
@@ -7,19 +14,20 @@ export const compareAgainstMinimum = (minimum: string, test: string): boolean =>
 		testVer.length !== 3 ||
 		minVer.some(num => Number.isNaN(num)) ||
 		testVer.some(num => Number.isNaN(num))
-	) return false;
+	) return SemanticVersioningComparison.BadVersions;
 
-	const [expMajor, expMinor, expPatch] = minVer;
+	const [minMajor, minMinor, minPatch] = minVer;
 	const [testMajor, testMinor, testPatch] = testVer;
 
 	// Ensure equal major version
-	if (testMajor !== expMajor) return false;
+	if (testMajor > minMajor) return SemanticVersioningComparison.TestTooNew;
+	if (testMajor < minMajor) return SemanticVersioningComparison.TestOutdated;
 
 	// Ensure equal or newer minor version
-	if (testMinor < expMinor) return false;
+	if (testMinor < minMinor) return SemanticVersioningComparison.TestOutdated;
 
 	// Ensure equal or newer patch version
-	if (testPatch < expPatch) return false;
+	if (testPatch < minPatch) return SemanticVersioningComparison.TestOutdated;
 
-	return true;
+	return SemanticVersioningComparison.Okay;
 };
