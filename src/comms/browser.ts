@@ -21,6 +21,23 @@ export const onTabActivity = (cb: () => void) => {
 	browser.tabs.onUpdated.addListener(cb);
 };
 
+// The imperfect title includes check is because Firefox's href changes
+// according to the extension in use, if any
+const isNewTabPage = (href: string, title: string) =>
+	['about:blank', 'chrome://newtab/'].includes(href) || title.includes('New Tab');
+
+/// The active tab will not update quickly enough to allow this function to be
+/// called safely in a loop. Therefore, the second argument forces consumers to
+/// verify that this is only the first tab they're opening.
+export const openBookmarkInAppropriateTab = async (url: string, isFirstTabToOpen: boolean) => {
+	const canOpenInCurrentTab = await getActiveTab().run().then(res =>
+		res.mapOrDefault(tab => isNewTabPage(tab.url || '', tab.title || ''), false));
+
+	// Updates active window active tab if no ID specified
+	if (canOpenInCurrentTab && isFirstTabToOpen) browser.tabs.update(undefined, { url });
+	else browser.tabs.create({ url });
+};
+
 export interface StorageState {
 	bookmarks: LocalBookmark[];
 	stagedBookmarksGroups: StagedBookmarksGroup[];

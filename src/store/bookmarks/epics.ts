@@ -1,4 +1,3 @@
-import { browser } from 'webextension-polyfill-ts';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { ThunkAC } from 'Store';
@@ -11,7 +10,7 @@ import { setPage, setHasBinaryComms } from 'Store/user/actions';
 import { addPermanentError } from 'Store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from 'Comms/native';
-import { getStagedBookmarksGroupsFromLocalStorage } from 'Comms/browser';
+import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab } from 'Comms/browser';
 import { untransform, transform } from 'Modules/bookmarks';
 import { Page } from 'Store/user/types';
 
@@ -47,8 +46,8 @@ export const openBookmarkAndExit = (
 				.chain(grp => Maybe.fromNullable(grp.bookmarks.find(bm => bm.id === bmId))),
 			Nothing: () => Maybe.fromNullable(bookmarks.find(bm => bm.id === bmId)),
 		})
-		.ifJust((bookmark) => {
-			browser.tabs.create({ url: bookmark.url });
+		.ifJust(({ url }) => {
+			openBookmarkInAppropriateTab(url, true);
 
 			window.close();
 		});
@@ -57,8 +56,8 @@ export const openBookmarkAndExit = (
 export const openAllFilteredBookmarksAndExit = (): ThunkAC => (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
-	for (const { url } of filteredBookmarks) {
-		browser.tabs.create({ url });
+	for (const [index, { url }] of filteredBookmarks.entries()) {
+		openBookmarkInAppropriateTab(url, index === 0);
 	}
 
 	window.close();
@@ -166,3 +165,4 @@ export const attemptFocusedBookmarkIndexDecrement = (): ThunkAC<boolean> => (dis
 		})
 		.isJust();
 };
+
