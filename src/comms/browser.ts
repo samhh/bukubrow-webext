@@ -34,8 +34,8 @@ export const openBookmarkInAppropriateTab = async (url: string, isFirstTabToOpen
 		res.mapOrDefault(tab => isNewTabPage(tab.url || '', tab.title || ''), false));
 
 	// Updates active window active tab if no ID specified
-	if (canOpenInCurrentTab && isFirstTabToOpen) browser.tabs.update(undefined, { url });
-	else browser.tabs.create({ url });
+	if (canOpenInCurrentTab && isFirstTabToOpen) await browser.tabs.update(undefined, { url });
+	else await browser.tabs.create({ url });
 };
 
 export interface StorageState {

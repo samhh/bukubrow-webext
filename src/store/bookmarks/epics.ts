@@ -46,18 +46,18 @@ export const openBookmarkAndExit = (
 				.chain(grp => Maybe.fromNullable(grp.bookmarks.find(bm => bm.id === bmId))),
 			Nothing: () => Maybe.fromNullable(bookmarks.find(bm => bm.id === bmId)),
 		})
-		.ifJust(({ url }) => {
-			openBookmarkInAppropriateTab(url, true);
+		.ifJust(async ({ url }) => {
+			await openBookmarkInAppropriateTab(url, true);
 
 			window.close();
 		});
 };
 
-export const openAllFilteredBookmarksAndExit = (): ThunkAC => (_, getState) => {
+export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
 	for (const [index, { url }] of filteredBookmarks.entries()) {
-		openBookmarkInAppropriateTab(url, index === 0);
+		await openBookmarkInAppropriateTab(url, index === 0);
 	}
 
 	window.close();
