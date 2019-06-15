@@ -1,6 +1,6 @@
 {
 	"name": "bukubrow",
-	"version": "5.0.0.1",
+	"version": "5.0.0.2",
 	"description": "WebExtension for Buku",
 	"main": "webextension/backend.js",
 	"scripts": {
