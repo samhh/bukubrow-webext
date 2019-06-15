@@ -1,7 +1,15 @@
 # Change Log
 This project is versioned according to its compatibility with the [host](https://github.com/SamHH/bukubrow-host) from v4 onwards.
 
-## [4.0.0.1] - 2015-05-04
+## [5.0.0.1] - 2019-06-15
+### Added
+- Support for very large Buku databases that serialise to over 1MB in size.
+- Settings option to configure the WebExtension's badge.
+
+### Changed
+- Bookmarks will now attempt to open in your active tab if it's a new tab page.
+
+## [4.0.0.1] - 2019-05-04
 ### Changed
 - Versioning has been changed to move in tandem with the [host](https://github.com/SamHH/bukubrow-host).
 
@@ -10,7 +18,6 @@ This project is versioned according to its compatibility with the [host](https:/
 - Send browser tabs to a "staging area" via context menu, wherein they can be easily edited and added to Buku(brow).
 
 ### Changed
-- Improved error handling.
 - Removed fetch bookmarks button. They are now implictly fetched from the binary frequently - on load and upon any change.
 - Improved keyboard navigation in bookmark form.
 - Improved overflow behaviour of text in listed bookmarks.
