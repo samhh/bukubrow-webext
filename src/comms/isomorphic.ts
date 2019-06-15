@@ -5,6 +5,7 @@ import { browser } from 'webextension-polyfill-ts';
 
 export enum IsomorphicMessage {
 	BookmarksUpdatedInLocalStorage = 'bookmarks_updated_in_local_storage',
+	SettingsUpdated = 'settings_updated',
 }
 
 export const sendIsomorphicMessage = (msg: IsomorphicMessage) => browser.runtime.sendMessage(msg);

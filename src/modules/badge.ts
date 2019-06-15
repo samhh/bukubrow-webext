@@ -1,5 +1,6 @@
 import { Maybe } from 'purify-ts/Maybe';
 import { browser } from 'webextension-polyfill-ts';
+import { getBadgeDisplayOpt, BadgeDisplay } from 'Modules/settings';
 import { URLMatch } from 'Modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Comms/browser';
 
@@ -50,7 +51,7 @@ const checkUrl = (url: URL) => {
 	return [bestMatch, numMatches];
 };
 
-const updateBadge = async () => {
+const updateBadge = async (badgeOpt: BadgeDisplay) => {
 	const activeTab = await getActiveTab().run();
 
 	activeTab
@@ -58,20 +59,25 @@ const updateBadge = async () => {
 		.map(href => new URL(href))
 		.map(checkUrl)
 		.ifJust(([result, numMatches]) => {
+			if (badgeOpt === BadgeDisplay.None || result === URLMatch.None) {
+				// Empty string disables the badge
+				browser.browserAction.setBadgeText({ text: '' });
+				return;
+			}
+
+			const text = badgeOpt === BadgeDisplay.WithCount
+				? String(numMatches)
+				: ' ';
+
 			switch (result) {
 				case URLMatch.Exact:
 					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Exact] });
-					browser.browserAction.setBadgeText({ text: String(numMatches) });
+					browser.browserAction.setBadgeText({ text });
 					break;
 
 				case URLMatch.Domain:
 					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Domain] });
-					browser.browserAction.setBadgeText({ text: String(numMatches) });
-					break;
-
-				case URLMatch.None:
-					// Empty string disables the badge
-					browser.browserAction.setBadgeText({ text: '' });
+					browser.browserAction.setBadgeText({ text });
 					break;
 			}
 		});
@@ -84,14 +90,21 @@ const updateBadge = async () => {
  * for further changes. All badge functionality is encapsulated within this
  * function's closure.
  */
-export const initBadgeAndListen = async () => {
-	await syncBookmarks();
-	updateBadge();
+export const initBadgeAndListen = () => {
+	const getBadgeOptOrDefault = () => getBadgeDisplayOpt().run().then(res => res.orDefault(BadgeDisplay.WithCount));
 
-	onTabActivity(updateBadge);
-
-	return async () => {
-		await syncBookmarks();
-		updateBadge();
+	const update = async () => {
+		const badgeOpt = await getBadgeOptOrDefault();
+		if (badgeOpt !== BadgeDisplay.None) await syncBookmarks();
+		updateBadge(badgeOpt);
 	};
+
+	// Update immediately on load
+	update();
+
+	// Update on tab activity
+	onTabActivity(update);
+
+	// Allow updates to be triggered by callback
+	return Promise.resolve(update);
 };

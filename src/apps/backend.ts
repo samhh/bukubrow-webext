@@ -5,6 +5,7 @@ import { listenForIsomorphicMessages, IsomorphicMessage } from 'Comms/isomorphic
 initBadgeAndListen().then((syncBadge) => {
 	listenForIsomorphicMessages((msg) => {
 		switch (msg) {
+			case IsomorphicMessage.SettingsUpdated:
 			case IsomorphicMessage.BookmarksUpdatedInLocalStorage:
 				syncBadge();
 				break;
