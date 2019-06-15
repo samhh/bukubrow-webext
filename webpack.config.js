@@ -49,6 +49,7 @@ module.exports = (env) => {
 		devServer: {
 			contentBase: './dist/',
 		},
+		stats: 'minimal',
 		plugins,
 		context: __dirname,
 		target: 'web',
