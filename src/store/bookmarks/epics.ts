@@ -56,9 +56,7 @@ export const openBookmarkAndExit = (
 export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
-	for (const [index, { url }] of filteredBookmarks.entries()) {
-		await openBookmarkInAppropriateTab(url, index === 0);
-	}
+	await Promise.all(filteredBookmarks.map(({ url }, index) => openBookmarkInAppropriateTab(url, index === 0)));
 
 	window.close();
 };
