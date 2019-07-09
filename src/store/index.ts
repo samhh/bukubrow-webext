@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk, { ThunkMiddleware, ThunkAction } from 'redux-thunk';
 import { composeWithDevTools } from 'remote-redux-devtools';
+import { useSelector as useSelectorUntyped, useDispatch as useDispatchRaw, TypedUseSelectorHook } from 'react-redux';
 import { onLoad } from 'Store/epics';
 import { saveStagedBookmarksGroupsToLocalStorage, saveBookmarksToLocalStorage } from 'Comms/browser';
 
@@ -37,6 +38,10 @@ const store = createStore(
 );
 
 store.dispatch(onLoad());
+
+// Re-export appropriately typed hooks
+export const useSelector: TypedUseSelectorHook<AppState> = useSelectorUntyped;
+export const useDispatch = () => useDispatchRaw<typeof store.dispatch>();
 
 // Keep store in sync with local cache
 export const initAutoStoreSync = () => {
