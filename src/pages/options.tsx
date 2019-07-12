@@ -1,4 +1,6 @@
 import React, { useState, useEffect, FC, FormEvent } from 'react';
+import { useDispatch, useSelector } from 'Store';
+import { setActiveTheme } from 'Store/user/actions';
 import { saveSettings, getBadgeDisplayOpt, Theme, BadgeDisplay, isTheme, isBadgeDisplayOpt } from 'Modules/settings';
 import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
 import styled from 'Styles';
@@ -8,13 +10,12 @@ const Page = styled.main`
 	padding: 2.5rem;
 `;
 
-interface Props {
-	activeTheme: Theme;
-	setActiveTheme(theme: Theme): void;
-}
+const OptionsPage: FC = () => {
+	const activeTheme = useSelector(state => state.user.activeTheme);
+	const dispatch = useDispatch();
 
-const OptionsPage: FC<Props> = (props) => {
-	const [themeOpt, setThemeOpt] = useState(props.activeTheme);
+	// TODO I feel like this theme state isn't needed
+	const [themeOpt, setThemeOpt] = useState(activeTheme);
 	const [badgeOpt, setBadgeOpt] = useState(BadgeDisplay.WithCount);
 
 	useEffect(() => {
@@ -24,8 +25,8 @@ const OptionsPage: FC<Props> = (props) => {
 	}, []);
 
 	useEffect(() => {
-		setThemeOpt(props.activeTheme);
-	}, [props.activeTheme]);
+		setThemeOpt(activeTheme);
+	}, [activeTheme]);
 
 	const handleThemeOptChange = (evt: FormEvent<HTMLSelectElement>) => {
 		const themeOpt = evt.currentTarget.value;
@@ -44,7 +45,7 @@ const OptionsPage: FC<Props> = (props) => {
 	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
 
-		props.setActiveTheme(themeOpt);
+		dispatch(setActiveTheme(themeOpt));
 		sendIsomorphicMessage(IsomorphicMessage.SettingsUpdated);
 		saveSettings({ theme: themeOpt, badgeDisplay: badgeOpt });
 	};

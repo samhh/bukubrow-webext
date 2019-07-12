@@ -1,12 +1,17 @@
 import React, { useRef, useEffect, useState, FC } from 'react';
+import { NonEmptyList } from 'purify-ts/NonEmptyList';
+import { useDispatch, useSelector } from 'Store';
+import { setSearchFilterWithResets } from 'Store/epics';
+import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
+import { setDisplayOpenAllBookmarksConfirmation, setPage } from 'Store/user/actions';
+import { Page } from 'Store/user/types';
+import { scrollToTop } from 'Modules/scroll-window';
 import { matchesTerminology } from 'Modules/terminology';
 import useListenToKeydown from 'Hooks/listen-to-keydown';
 import styled from 'Styles';
-
 import IconButton, { iconButtonSize, idealFeatherIconSize } from 'Components/icon-button';
 import TextInput from 'Components/text-input';
 import Tooltip from 'Components/tooltip';
-
 import { ArrowUpRight, Layers, Plus } from 'react-feather';
 
 export const headerHeight = '50px';
@@ -51,19 +56,6 @@ const ControlButton = styled(IconButton)`
 	}
 `;
 
-interface Props {
-	onStagedBookmarks(): void;
-	onAdd(): void;
-	updateTextFilter(textFilter: string): void;
-	openAllVisibleBookmarks(): void;
-	textFilter: string;
-	shouldEnableSearch: boolean;
-	shouldEnableOpenStaged: boolean;
-	shouldEnableOpenAll: boolean;
-	shouldEnableAddBookmark: boolean;
-	numMatches: number;
-}
-
 enum HoverState {
 	None,
 	Stage,
@@ -71,15 +63,28 @@ enum HoverState {
 	Add,
 }
 
-const SearchControls: FC<Props> = (props) => {
+const SearchControls: FC = () => {
+	const allBookmarks = useSelector(state => state.bookmarks.bookmarks);
+	const hasBinaryComms = useSelector(state => state.user.hasBinaryComms);
+	const numStagedItems = useSelector(state => state.bookmarks.stagedBookmarksGroups.length);
+	const numFilteredBookmarks = useSelector(getUnlimitedFilteredBookmarks).length;
+	const textFilter = useSelector(state => state.input.searchFilter);
+	const dispatch = useDispatch();
+
+	const shouldEnableSearch = NonEmptyList.isNonEmpty(allBookmarks);
+	const shouldEnableOpenStaged = hasBinaryComms && !!numStagedItems;
+	const shouldEnableOpenAll = !!numFilteredBookmarks;
+	const shouldEnableAddBookmark = hasBinaryComms;
+
+
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [hoverState, setHoverState] = useState(HoverState.None);
 
 	const focusInput = () => {
-		if (props.shouldEnableSearch && inputRef.current) inputRef.current.focus();
+		if (shouldEnableSearch && inputRef.current) inputRef.current.focus();
 	};
+	useEffect(focusInput, [shouldEnableSearch]);
 
-	useEffect(focusInput, [props.shouldEnableSearch]);
 	useListenToKeydown((evt) => {
 		if (evt.ctrlKey && evt.key === 'l') focusInput();
 	});
@@ -95,7 +100,7 @@ const SearchControls: FC<Props> = (props) => {
 	const tooltipMessage = (state: HoverState): string => {
 		switch (state) {
 			case HoverState.Stage: return 'Open staging area';
-			case HoverState.OpenAll: return matchesTerminology(props.numMatches);
+			case HoverState.OpenAll: return matchesTerminology(numFilteredBookmarks);
 			case HoverState.Add: return 'Add a bookmark';
 			case HoverState.None: return '';
 		}
@@ -104,19 +109,22 @@ const SearchControls: FC<Props> = (props) => {
 	return (
 		<Wrapper>
 			<SearchTextInput
-				value={props.textFilter}
-				onInput={props.updateTextFilter}
+				value={textFilter}
+				onInput={(text) => {
+					dispatch(setSearchFilterWithResets(text));
+					scrollToTop();
+				}}
 				placeholder="Search..."
-				disabled={!props.shouldEnableSearch}
+				disabled={!shouldEnableSearch}
 				ref={inputRef}
 			/>
 
 			<ControlsWrapper>
 				<div>
 					<ControlButton
-						disabled={!props.shouldEnableOpenStaged}
-						onClick={props.onStagedBookmarks}
-						onMouseEnter={props.shouldEnableOpenStaged
+						disabled={!shouldEnableOpenStaged}
+						onClick={() => dispatch(setPage(Page.StagedGroupsList))}
+						onMouseEnter={shouldEnableOpenStaged
 							? showTooltip(HoverState.Stage)
 							: undefined
 						}
@@ -126,9 +134,9 @@ const SearchControls: FC<Props> = (props) => {
 					</ControlButton>
 
 					<ControlButton
-						disabled={!props.shouldEnableOpenAll}
-						onClick={props.openAllVisibleBookmarks}
-						onMouseEnter={props.shouldEnableOpenAll
+						disabled={!shouldEnableOpenAll}
+						onClick={() => dispatch(setDisplayOpenAllBookmarksConfirmation(true))}
+						onMouseEnter={shouldEnableOpenAll
 							? showTooltip(HoverState.OpenAll)
 							: undefined
 						}
@@ -138,9 +146,9 @@ const SearchControls: FC<Props> = (props) => {
 					</ControlButton>
 
 					<ControlButton
-						disabled={!props.shouldEnableAddBookmark}
-						onClick={props.onAdd}
-						onMouseEnter={props.shouldEnableAddBookmark
+						disabled={!shouldEnableAddBookmark}
+						onClick={() => dispatch(setPage(Page.AddBookmark))}
+						onMouseEnter={shouldEnableAddBookmark
 							? showTooltip(HoverState.Add)
 							: undefined
 						}

@@ -1,26 +1,26 @@
 import React, { FC } from 'react';
+import { Maybe } from 'purify-ts/Maybe';
 import mount from 'Modules/connected-mount';
-import { connect, ConnectedComponentClass } from 'react-redux';
+import { useDispatch, useSelector } from 'Store';
 import styled from 'Styles';
-import { AppState } from 'Store';
 import { Page } from 'Store/user/types';
 import { setPage } from 'Store/user/actions';
 import { getStagedGroupToEdit } from 'Store/selectors';
 import { formatStagedBookmarksGroupTitle } from 'Modules/bookmarks';
 
-import BookmarkAddForm from 'Containers/bookmark-add-form/';
-import BookmarkDeleteForm from 'Containers/bookmark-delete-form/';
-import BookmarkEditForm from 'Containers/bookmark-edit-form/';
-import ErrorMessages from 'Containers/error-messages/';
-import OpenAllBookmarksConfirmation from 'Containers/open-all-bookmarks-confirmation/';
-import Search from 'Containers/search/';
-import StagedGroupBookmarkEditForm from 'Containers/staged-group-bookmark-edit-form/';
-import StagedGroupBookmarksList from 'Containers/staged-group-bookmarks-list/';
-import StagedGroupsList from 'Containers/staged-groups-list/';
+import BookmarkAddForm from 'Containers/bookmark-add-form';
+import BookmarkDeleteForm from 'Containers/bookmark-delete-form';
+import BookmarkEditForm from 'Containers/bookmark-edit-form';
+import ErrorMessages from 'Containers/error-messages';
+import OpenAllBookmarksConfirmation from 'Containers/open-all-bookmarks-confirmation';
+import Search from 'Containers/search';
+import StagedGroupBookmarkEditForm from 'Containers/staged-group-bookmark-edit-form';
+import StagedGroupBookmarksList from 'Containers/staged-group-bookmarks-list';
+import StagedGroupsList from 'Containers/staged-groups-list';
 import TitleMenu from 'Components/title-menu';
 
 interface PageInfoSansTitleMenu {
-	component: ConnectedComponentClass<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+	component: FC;
 }
 
 type PageInfo = {
@@ -35,7 +35,12 @@ type PageInfo = {
 		};
 };
 
-const pageMap = (props: Props) => {
+interface PageMapArg {
+	activePage: Page;
+	stagedGroupTitle: Maybe<string>;
+}
+
+const pageMap = ({ activePage, stagedGroupTitle }: PageMapArg) => {
 	const map: PageInfo = {
 		[Page.Search]: {
 			component: Search,
@@ -63,7 +68,7 @@ const pageMap = (props: Props) => {
 		},
 		[Page.StagedGroup]: {
 			nav: {
-				title: props.stagedGroupTitle.orDefault(''),
+				title: stagedGroupTitle.orDefault(''),
 				exitTarget: Page.StagedGroupsList,
 			},
 			component: StagedGroupBookmarksList,
@@ -76,8 +81,8 @@ const pageMap = (props: Props) => {
 			component: StagedGroupBookmarkEditForm,
 		},
 	};
-	
-	return map[props.page];
+
+	return map[activePage];
 };
 
 /**
@@ -88,27 +93,26 @@ const MinHeightWrapper = styled.main`
 	min-height: 400px;
 `;
 
-type StateProps = ReturnType<typeof mapStateToProps>;
-type DispatchProps = UnwrapThunkActions<typeof mapDispatchToProps>;
+const ContentApp: FC = () => {
+	const activePage = useSelector(state => state.user.page);
+	const stagedGroupTitle = useSelector(getStagedGroupToEdit).map(formatStagedBookmarksGroupTitle);
+	const dispatch = useDispatch();
 
-type Props = StateProps & DispatchProps;
+	const page = pageMap({ activePage, stagedGroupTitle });
 
-const ContentApp: FC<Props> = (props) => {
-	const page = pageMap(props);
-	
 	return (
 		<>
 			<BookmarkDeleteForm />
-			
+
 			<OpenAllBookmarksConfirmation />
-			
+
 			<ErrorMessages />
-			
+
 			<MinHeightWrapper>
 				{'nav' in page && (
 					<TitleMenu
 						title={page.nav.title}
-						onBack={() => { page.nav && props.setPage(page.nav.exitTarget); }}
+						onBack={() => dispatch(setPage(page.nav.exitTarget))}
 					/>
 				)}
 
@@ -118,14 +122,5 @@ const ContentApp: FC<Props> = (props) => {
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	page: state.user.page,
-	stagedGroupTitle: getStagedGroupToEdit(state).map(formatStagedBookmarksGroupTitle),
-});
+mount(<ContentApp />);
 
-const mapDispatchToProps = { setPage };
-	
-const ConnectedContentApp = connect(mapStateToProps, mapDispatchToProps)(ContentApp);
-
-mount(<ConnectedContentApp />);
-	
