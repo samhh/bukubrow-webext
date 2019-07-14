@@ -23,7 +23,6 @@
 	"dependencies": {
 		"date-fns": "^1.30.1",
 		"fp-ts": "^2.0.2",
-		"ramda": "^0.26.1",
 		"react": "^16.8.0-alpha.1",
 		"react-dom": "^16.8.0-alpha.1",
 		"react-feather": "^2.0.3",
@@ -45,7 +44,6 @@
 		"@types/jest": "^24.0.6",
 		"@types/jest-environment-puppeteer": "^4.0.0",
 		"@types/puppeteer": "^1.12.1",
-		"@types/ramda": "^0.26.8",
 		"@types/react": "^16.7.20",
 		"@types/react-dom": "^16.0.11",
 		"@types/react-highlight-words": "^0.16.0",

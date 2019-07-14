@@ -1,5 +1,4 @@
 import React, { forwardRef, Ref, FormEvent, FC } from 'react';
-import { both, complement } from 'ramda';
 import styled from 'Styles';
 
 const Wrapper = styled.div`
@@ -62,9 +61,11 @@ interface Props {
 	className?: string;
 }
 
-const exceedsMaxLength = (_: string, newValue: string, max?: number) => typeof max === 'number' && newValue.length > max;
+const exceedsMaxLength = (newValue: string, max?: number) => typeof max === 'number' && newValue.length > max;
 const isBackspacing = (oldValue: string, newValue: string) => oldValue.length > newValue.length;
-const isInvalidInput = both(exceedsMaxLength, complement(isBackspacing));
+const isInvalidInput = (oldValue: string, newValue: string, max?: number) =>
+	exceedsMaxLength(newValue, max) &&
+	!isBackspacing(oldValue, newValue);
 
 const TextInput: FC<Props> = (props) => {
 	const handleInput = (evt: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {

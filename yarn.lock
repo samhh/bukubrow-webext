@@ -494,11 +494,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ramda@^0.26.8":
-  version "0.26.15"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.15.tgz#217d9d2133f55040bd5db0e67dbbf6ec8509446f"
-  integrity sha512-kmIO8GVOLv0A8UxFr5lJaqp4g8jbXNhH0grBaPL6NgkOqSirRKpV9+5DTmIDXTyq2G18YMdxDhnScEZtY4brtQ==
-
 "@types/react-dom@^16.0.11":
   version "16.8.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.4.tgz#7fb7ba368857c7aa0f4e4511c4710ca2c5a12a88"
@@ -5680,11 +5675,6 @@ querystringify@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.1.1.tgz#60e5a5fd64a7f8bfa4d2ab2ed6fdf4c85bad154e"
   integrity sha512-w7fLxIRCRT7U8Qu53jQnJyPkYZIaR4n5151KMfcJlO/A9397Wxb1amJvROTK6TOnp7PfoAmg/qXiNHI+08jRfA==
-
-ramda@^0.26.1:
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.26.1.tgz#8d41351eb8111c55353617fc3bbffad8e4d35d06"
-  integrity sha512-hLWjpy7EnsDBb0p+Z3B7rPi3GDeRG5ZtiI33kJhTt+ORCd38AbAIjB/9zRIUoeTbE/AVX5ZkU7m6bznsvrf8eQ==
 
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   version "2.1.0"
