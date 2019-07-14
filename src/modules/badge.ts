@@ -1,6 +1,10 @@
-import { Maybe } from 'purify-ts/Maybe';
+import { Option, fromNullable, fromEither, map, chain, getOrElse, isSome } from 'fp-ts/lib/Option';
+import { fold } from 'fp-ts/lib/Either';
+import { Task } from 'fp-ts/lib/Task';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { browser } from 'webextension-polyfill-ts';
 import { getBadgeDisplayOpt, BadgeDisplay } from 'Modules/settings';
+import { createURL } from 'Modules/url';
 import { URLMatch } from 'Modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Comms/browser';
 
@@ -12,25 +16,23 @@ export const colors = {
 let urlState: URL[] = [];
 
 const hrefToUrlReducer = (acc: URL[], href: string): URL[] =>
-	Maybe
-		// This can throw if the href passed as an argument is invalid
-		.encase(() => new URL(href))
-		.caseOf({
-			Just: url => [...acc, url],
-			Nothing: () => acc,
-		});
+	pipe(createURL(href), fold(
+		() => acc,
+		url => [...acc, url],
+	));
 
-const getBookmarksUrlsFromLocalStorage = getBookmarksFromLocalStorage().map(bms => bms
-	.map(bm => bm.url)
-	.reduce(hrefToUrlReducer, []),
-);
+const getBookmarksUrlsFromLocalStorage: Task<Option<URL[]>> = () =>
+	getBookmarksFromLocalStorage().then(map(bms => bms
+		.map(bm => bm.url)
+		.reduce(hrefToUrlReducer, []),
+	));
 
 const syncBookmarks = async () => {
-	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage.run();
+	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage();
 
-	bookmarkUrls.ifJust((urls) => {
-		urlState = urls;
-	});
+	if (isSome(bookmarkUrls)) {
+		urlState = bookmarkUrls.value;
+	}
 };
 
 const checkUrl = (url: URL) => {
@@ -48,39 +50,42 @@ const checkUrl = (url: URL) => {
 		}
 	}
 
-	return [bestMatch, numMatches];
+	return [bestMatch, numMatches] as const;
 };
 
 const updateBadge = async (badgeOpt: BadgeDisplay) => {
-	const activeTab = await getActiveTab().run();
+	const urlRes = pipe(
+		await getActiveTab(),
+		chain(tab => fromNullable(tab.url)),
+		chain(url => fromEither(createURL(url))),
+		map(checkUrl),
+	);
 
-	activeTab
-		.chain(tab => Maybe.fromNullable(tab.url))
-		.map(href => new URL(href))
-		.map(checkUrl)
-		.ifJust(([result, numMatches]) => {
-			if (badgeOpt === BadgeDisplay.None || result === URLMatch.None) {
-				// Empty string disables the badge
-				browser.browserAction.setBadgeText({ text: '' });
-				return;
-			}
+	if (isSome(urlRes)) {
+		const [result, numMatches] = urlRes.value;
 
-			const text = badgeOpt === BadgeDisplay.WithCount
-				? String(numMatches)
-				: ' ';
+		if (badgeOpt === BadgeDisplay.None || result === URLMatch.None) {
+			// Empty string disables the badge
+			browser.browserAction.setBadgeText({ text: '' });
+			return;
+		}
 
-			switch (result) {
-				case URLMatch.Exact:
-					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Exact] });
-					browser.browserAction.setBadgeText({ text });
-					break;
+		const text = badgeOpt === BadgeDisplay.WithCount
+			? String(numMatches)
+			: ' ';
 
-				case URLMatch.Domain:
-					browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Domain] });
-					browser.browserAction.setBadgeText({ text });
-					break;
-			}
-		});
+		switch (result) {
+			case URLMatch.Exact:
+				browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Exact] });
+				browser.browserAction.setBadgeText({ text });
+				break;
+
+			case URLMatch.Domain:
+				browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Domain] });
+				browser.browserAction.setBadgeText({ text });
+				break;
+		}
+	}
 };
 
 /**
@@ -91,7 +96,8 @@ const updateBadge = async (badgeOpt: BadgeDisplay) => {
  * function's closure.
  */
 export const initBadgeAndListen = () => {
-	const getBadgeOptOrDefault = () => getBadgeDisplayOpt().run().then(res => res.orDefault(BadgeDisplay.WithCount));
+	const getBadgeOptOrDefault = () => getBadgeDisplayOpt()
+		.then(getOrElse(() => BadgeDisplay.WithCount));
 
 	const update = async () => {
 		const badgeOpt = await getBadgeOptOrDefault();
@@ -108,3 +114,4 @@ export const initBadgeAndListen = () => {
 	// Allow updates to be triggered by callback
 	return Promise.resolve(update);
 };
+

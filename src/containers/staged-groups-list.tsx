@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Just } from 'purify-ts/Maybe';
+import { some } from 'fp-ts/lib/Option';
 import { formatStagedBookmarksGroupTitle } from 'Modules/bookmarks';
 import { useDispatch, useSelector } from 'Store';
 import { setPage } from 'Store/user/actions';
@@ -28,7 +28,7 @@ const StagedGroupsList: FC = () => {
 	const dispatch = useDispatch();
 
 	const handleGroupClick = (id: number) => {
-		dispatch(setStagedBookmarksGroupEditId(Just(id)));
+		dispatch(setStagedBookmarksGroupEditId(some(id)));
 		dispatch(setPage(Page.StagedGroup));
 	};
 
@@ -47,3 +47,4 @@ const StagedGroupsList: FC = () => {
 };
 
 export default StagedGroupsList;
+

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FC, FormEvent } from 'react';
+import { isSome } from 'fp-ts/lib/Option';
 import { useDispatch, useSelector } from 'Store';
 import { setActiveTheme } from 'Store/user/actions';
 import { saveSettings, getBadgeDisplayOpt, Theme, BadgeDisplay, isTheme, isBadgeDisplayOpt } from 'Modules/settings';
@@ -19,8 +20,10 @@ const OptionsPage: FC = () => {
 	const [badgeOpt, setBadgeOpt] = useState(BadgeDisplay.WithCount);
 
 	useEffect(() => {
-		getBadgeDisplayOpt().run().then((res) => {
-			res.ifJust(setBadgeOpt);
+		getBadgeDisplayOpt().then((res) => {
+			if (isSome(res)) {
+				setBadgeOpt(res.value);
+			}
 		});
 	}, []);
 

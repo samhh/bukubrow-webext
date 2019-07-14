@@ -1,4 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
+import { Either, left, right } from 'fp-ts/lib/Either';
+import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { compareAgainstMinimum, SemanticVersioningComparison } from 'Modules/semantic-versioning';
 
@@ -110,16 +112,16 @@ export const checkBinaryVersionFromNative = () => sendMessageToNative(NativeRequ
 			: HostVersionCheckResult.UnknownError;
 	});
 
-export const getBookmarksFromNative = () => {
-	const get = async (prevBookmarks: RemoteBookmark[] = []): Promise<NativeGETResponse> => {
+export const getBookmarksFromNative: TaskEither<Error, RemoteBookmark[]> = () => {
+	const get = async (prevBookmarks: RemoteBookmark[] = []): Promise<Either<Error, RemoteBookmark[]>> => {
 		const res = await sendMessageToNative(NativeRequestMethod.GET, { offset: prevBookmarks.length });
 
-		if (!res.success) return res;
+		if (!res.success) return left(new Error('Success key is false.'));
 
 		const bookmarks = [...prevBookmarks, ...res.bookmarks];
 		return res.moreAvailable
 			? get(bookmarks)
-			: { ...res, bookmarks };
+			: right(bookmarks);
 	};
 
 	return get();

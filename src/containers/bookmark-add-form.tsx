@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Just } from 'purify-ts/Maybe';
+import { some } from 'fp-ts/lib/Option';
 import { useSelector, useDispatch } from 'Store';
 import { addBookmark } from 'Store/bookmarks/epics';
 import BookmarkForm from 'Components/bookmark-form';
@@ -10,7 +10,7 @@ const BookmarkAddForm: FC = () => {
 
 	return (
 		<BookmarkForm
-			bookmark={Just({
+			bookmark={some({
 				title: pageTitle,
 				url: pageUrl,
 			})}
@@ -20,3 +20,4 @@ const BookmarkAddForm: FC = () => {
 };
 
 export default BookmarkAddForm;
+

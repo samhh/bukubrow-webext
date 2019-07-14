@@ -1,5 +1,4 @@
-import { Just, Nothing } from 'purify-ts/Maybe';
-import { NonEmptyList } from 'purify-ts/NonEmptyList';
+import { some, none, getOrElse } from 'fp-ts/lib/Option';
 import { onTabActivity } from 'Comms/browser';
 import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
@@ -13,9 +12,11 @@ import { syncBrowserInfo } from 'Store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
 const onLoadPreComms = (): ThunkAC => (dispatch) => {
-	getActiveTheme().run().then((theme) => {
-		dispatch(setActiveTheme(theme.orDefault(Theme.Light)));
-	});
+	getActiveTheme()
+		.then(getOrElse(() => Theme.Light))
+		.then((theme) => {
+			dispatch(setActiveTheme(theme));
+		});
 };
 
 const onLoadPostComms = (): ThunkAC => (dispatch) => {
@@ -66,5 +67,6 @@ export const setSearchFilterWithResets = (filter: string): ThunkAC => (dispatch,
 
 	const filteredBookmarks = getWeightedLimitedFilteredBookmarks(getState());
 
-	dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(filteredBookmarks) ? Just(0) : Nothing));
+	dispatch(setFocusedBookmarkIndex(filteredBookmarks.length ? some(0) : none));
 };
+

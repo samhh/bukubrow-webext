@@ -1,8 +1,9 @@
 import { browser, Tabs } from 'webextension-polyfill-ts';
-import { Maybe, Nothing } from 'purify-ts/Maybe';
-import { NonEmptyList } from 'purify-ts/NonEmptyList';
+import { Option, none, fromNullable, map, chain, isSome } from 'fp-ts/lib/Option';
+import { optionTuple } from 'Types/optionTuple';
+import { NonEmptyArray, nonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from 'Comms/browser';
-import { MaybeTuple } from './adt';
 
 enum ContextMenuEntry {
 	SendAllTabs = 'send_all_tabs_to_bukubrow',
@@ -13,8 +14,8 @@ enum ContextMenuEntry {
 
 type SufficientTab = Required<Pick<Tabs.Tab, 'title' | 'url'>>;
 
-export const sendTabsToStagingArea = (tabs: NonEmptyList<SufficientTab>) =>
-	saveStagedBookmarksAsNewGroupToLocalStorage(tabs.map(tab => ({
+export const sendTabsToStagingArea = (tabs: NonEmptyArray<SufficientTab>) =>
+	saveStagedBookmarksAsNewGroupToLocalStorage(nonEmptyArray.map(tabs, tab => ({
 		title: tab.title,
 		desc: '',
 		url: tab.url,
@@ -22,57 +23,60 @@ export const sendTabsToStagingArea = (tabs: NonEmptyList<SufficientTab>) =>
 		flags: 0,
 	})));
 
+const isSufficientTab = (tab: Tabs.Tab): tab is Tabs.Tab & SufficientTab => !!tab.title && !!tab.url;
+const trimSufficientTab = (tab: SufficientTab): SufficientTab => ({ title: tab.title, url: tab.url });
+const toSufficientTabs = (tabs: Tabs.Tab[]) => tabs.filter(isSufficientTab).map(trimSufficientTab);
+
 /**
  * Initialise context menu items that each obtain various viable window tabs,
  * and pass those onto the callback.
  */
-export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>) => void) => {
+export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => void) => {
 	browser.contextMenus.onClicked.addListener(async (info) => {
-		let tabs: Maybe<NonEmptyList<SufficientTab>> = Nothing;
+		let tabs: Option<NonEmptyArray<SufficientTab>> = none;
 
 		switch (info.menuItemId) {
 			case ContextMenuEntry.SendAllTabs: {
-				const allTabs = await getAllTabs().run();
-				tabs = allTabs
-					.map(tabs => tabs
-						.filter((tab): tab is Tabs.Tab & SufficientTab => !!tab.title && !!tab.url)
-						.map((tab) => ({ title: tab.title, url: tab.url }))
-					)
-					.chain(NonEmptyList.fromArray);
+				tabs = pipe(
+					await getAllTabs(),
+					map(toSufficientTabs),
+					chain(fromArray),
+				);
 				break;
 			}
 
 			case ContextMenuEntry.SendActiveWindowTabs: {
-				const allWindowTabs = await getActiveWindowTabs().run();
-				tabs = allWindowTabs
-					.map(tabs => tabs
-						.filter((tab): tab is Tabs.Tab & SufficientTab => !!tab.title && !!tab.url)
-						.map((tab) => ({ title: tab.title, url: tab.url }))
-					)
-					.chain(NonEmptyList.fromArray);
+				tabs = pipe(
+					await getActiveWindowTabs(),
+					map(toSufficientTabs),
+					chain(fromArray),
+				);
 				break;
 			}
 
 			case ContextMenuEntry.SendActiveTab: {
-				const activeTab = await getActiveTab().run();
-				tabs = activeTab
-					.chain((tab) => MaybeTuple
-						.fromNullable(tab.title, tab.url)
-						.map(([title, url]) => ({ title, url }))
-					)
-					.chain(tab => NonEmptyList.fromArray([tab]));
+				tabs = pipe(
+					await getActiveTab(),
+					chain(tab => optionTuple(fromNullable(tab.title), fromNullable(tab.url))),
+					map(([title, url]) => [{ title, url }]),
+					chain(fromArray),
+				);
 				break;
 			}
 
 			case ContextMenuEntry.SendLink: {
-				tabs = Maybe.fromNullable(info.pageUrl)
-					.map(url => ({ url, title: url }))
-					.chain(tab => NonEmptyList.fromArray([tab]));
+				tabs = pipe(
+					fromNullable(info.pageUrl),
+					map(url => [{ url, title: url }]),
+					chain(fromArray),
+				);
 				break;
 			}
 		}
 
-		tabs.ifJust(cb);
+		if (isSome(tabs)) {
+			cb(tabs.value);
+		}
 	});
 
 	browser.contextMenus.create({
@@ -99,3 +103,4 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyList<SufficientTab>
 		contexts: ['link'],
 	});
 };
+

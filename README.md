@@ -31,4 +31,4 @@ Alternatively, you can build the WebExtension manually as follows:
 
 ## Contributing
 
-The WebExtension is written in strict TypeScript, utilising React for rendering and Redux with thunks for state management, and makes heavy use of the functional library Purify for ADT-driven data management and enhanced type safety. Yarn is used for dependency management and task running. Data is fetched from the host via native messaging.
+The WebExtension is written in strict TypeScript, utilising React for rendering and Redux with thunks for state management, and makes heavy use of the functional library `fp-ts` for ADT-driven data management and enhanced type safety. Yarn is used for dependency management and task running. Data is fetched from the host via native messaging.

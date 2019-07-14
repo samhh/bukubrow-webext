@@ -1,4 +1,4 @@
-import { Nothing } from 'purify-ts/Maybe';
+import { none } from 'fp-ts/lib/Option';
 import { Reducer } from 'redux';
 import { ActionType } from 'typesafe-actions';
 import * as bookmarksActions from './actions';
@@ -10,11 +10,11 @@ const initialState = {
 	bookmarks: [],
 	stagedBookmarksGroups: [],
 	limitNumRendered: true,
-	focusedBookmarkIndex: Nothing,
-	bookmarkEditId: Nothing,
-	bookmarkDeleteId: Nothing,
-	stagedBookmarksGroupEditId: Nothing,
-	stagedBookmarksGroupBookmarkEditId: Nothing,
+	focusedBookmarkIndex: none,
+	bookmarkEditId: none,
+	bookmarkDeleteId: none,
+	stagedBookmarksGroupEditId: none,
+	stagedBookmarksGroupBookmarkEditId: none,
 	displayDeleteBookmarkModal: false,
 };
 
@@ -121,3 +121,4 @@ const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = ini
 };
 
 export default bookmarksReducer;
+

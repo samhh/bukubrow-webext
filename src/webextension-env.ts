@@ -9,7 +9,6 @@ import { StorageState } from 'Comms/browser';
 import { NativeRequestMethod, NativeRequestData, NativeRequestResult } from 'Comms/native';
 import uuid from 'Modules/uuid';
 import noop from 'Modules/noop';
-import { NonEmptyList } from 'purify-ts/NonEmptyList';
 
 // Allow use of URL params to manipulate state in the simulator
 const params = new URLSearchParams(window.location.search);
@@ -79,7 +78,7 @@ const browserMock: DeepPartial<Browser> = {
 			// https://github.com/Microsoft/TypeScript/pull/22348
 			switch (method as NativeRequestMethod) {
 				case NativeRequestMethod.GET: {
-					if (!NonEmptyList.isNonEmpty(nativeBookmarksState)) nativeBookmarksState = genDummyRemoteBookmarks();
+					if (!nativeBookmarksState.length) nativeBookmarksState = genDummyRemoteBookmarks();
 
 					return Promise.resolve({ success: true, bookmarks: nativeBookmarksState } as NativeRequestResult[T]);
 				}
@@ -158,3 +157,4 @@ const browserMock: DeepPartial<Browser> = {
 window.browser = browserMock;
 // @ts-ignore
 window.chrome = browserMock;
+

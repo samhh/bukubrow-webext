@@ -1,4 +1,4 @@
-import { Maybe } from 'purify-ts/Maybe';
+import { Option } from 'fp-ts/lib/Option';
 
 export type Bookmark = LocalBookmark;
 
@@ -6,11 +6,11 @@ export interface BookmarksState {
 	bookmarks: Bookmark[];
 	stagedBookmarksGroups: StagedBookmarksGroup[];
 	limitNumRendered: boolean;
-	focusedBookmarkIndex: Maybe<number>;
-	bookmarkEditId: Maybe<Bookmark['id']>;
-	bookmarkDeleteId: Maybe<Bookmark['id']>;
-	stagedBookmarksGroupEditId: Maybe<StagedBookmarksGroup['id']>;
-	stagedBookmarksGroupBookmarkEditId: Maybe<Bookmark['id']>;
+	focusedBookmarkIndex: Option<number>;
+	bookmarkEditId: Option<Bookmark['id']>;
+	bookmarkDeleteId: Option<Bookmark['id']>;
+	stagedBookmarksGroupEditId: Option<StagedBookmarksGroup['id']>;
+	stagedBookmarksGroupBookmarkEditId: Option<Bookmark['id']>;
 	displayDeleteBookmarkModal: boolean;
 }
 

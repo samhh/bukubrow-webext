@@ -1,20 +1,21 @@
-import { browser } from 'webextension-polyfill-ts';
-import { Maybe } from 'purify-ts/Maybe';
-import { List } from 'purify-ts/List';
-import { NonEmptyList } from 'purify-ts/NonEmptyList';
-import { MaybeAsync } from 'purify-ts/MaybeAsync';
+import { browser, Tabs } from 'webextension-polyfill-ts';
+import { Option, fromNullable, fromPredicate, fold, map, chain, getOrElse } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { Task } from 'fp-ts/lib/Task';
+import { NonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
+import { lookup } from 'fp-ts/lib/Array';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
 import uuid from 'Modules/uuid';
 
-export const getActiveTab = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({ active: true, currentWindow: true })
-	.then(tabs => liftMaybe(List.at(0, tabs))));
+export const getActiveTab: Task<Option<Tabs.Tab>> = () => browser.tabs.query({ active: true, currentWindow: true })
+	.then(tabs => lookup(0, tabs));
 
-export const getActiveWindowTabs = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({ currentWindow: true })
-	.then(tabs => liftMaybe(NonEmptyList.fromArray(tabs))));
+export const getActiveWindowTabs: Task<Option<NonEmptyArray<Tabs.Tab>>> = () => browser.tabs.query({ currentWindow: true })
+	.then(tabs => fromArray(tabs));
 
-export const getAllTabs = () => MaybeAsync(({ liftMaybe }) => browser.tabs.query({})
-	.then(tabs => liftMaybe(NonEmptyList.fromArray(tabs))));
+export const getAllTabs: Task<Option<NonEmptyArray<Tabs.Tab>>> = () => browser.tabs.query({})
+	.then(tabs => fromArray(tabs));
 
 export const onTabActivity = (cb: () => void) => {
 	browser.tabs.onActivated.addListener(cb);
@@ -23,15 +24,14 @@ export const onTabActivity = (cb: () => void) => {
 
 // The imperfect title includes check is because Firefox's href changes
 // according to the extension in use, if any
-const isNewTabPage = (href: string, title: string) =>
-	['about:blank', 'chrome://newtab/'].includes(href) || title.includes('New Tab');
+const isNewTabPage = ({ url = '', title = '' }: Pick<Tabs.Tab, 'url' | 'title'>) =>
+	['about:blank', 'chrome://newtab/'].includes(url) || title.includes('New Tab');
 
 /// The active tab will not update quickly enough to allow this function to be
 /// called safely in a loop. Therefore, the second argument forces consumers to
 /// verify that this is only the first tab they're opening.
 export const openBookmarkInAppropriateTab = async (url: string, isFirstTabToOpen: boolean) => {
-	const canOpenInCurrentTab = await getActiveTab().run().then(res =>
-		res.mapOrDefault(tab => isNewTabPage(tab.url || '', tab.title || ''), false));
+	const canOpenInCurrentTab = await getActiveTab().then(fold(() => false, isNewTabPage));
 
 	// Updates active window active tab if no ID specified
 	if (canOpenInCurrentTab && isFirstTabToOpen) await browser.tabs.update(undefined, { url });
@@ -49,23 +49,23 @@ const getLocalStorage = <T extends keyof StorageState>(keys: T | T[]) =>
 
 const setLocalStorage = (obj: Partial<StorageState>) => browser.storage.local.set(obj);
 
-export const getBookmarksFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => getLocalStorage(['bookmarks', 'bookmarksSchemaVersion'])
-	.then((data) => {
-		// Once upon a time we tried to store tags as a Set. Chrome's extension
-		// storage implementation didn't like this, but Firefox did. The change was
-		// reverted, but now the tags are sometimes still stored as a set. For some
-		// reason. This addresses that by ensuring any tags pulled from storage will
-		// be resolved as an array, regardless of whether they're stored as an array
-		// or a Set.
-		return liftMaybe(Maybe
-			.fromFalsy(data.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION)
-			.chain(() => Maybe.fromNullable(data.bookmarks))
-			.chain(NonEmptyList.fromArray)
-			.map(bookmarks => bookmarks.map((bm): LocalBookmark => ({
-				...bm,
-				tags: Array.from(bm.tags),
-			}))));
-	}));
+export const getBookmarksFromLocalStorage = () => getLocalStorage(['bookmarks', 'bookmarksSchemaVersion'])
+	// Once upon a time we tried to store tags as a Set. Chrome's extension
+	// storage implementation didn't like this, but Firefox did. The change was
+	// reverted, but now the tags are sometimes still stored as a set. For some
+	// reason. This addresses that by ensuring any tags pulled from storage will
+	// be resolved as an array, regardless of whether they're stored as an array
+	// or a Set.
+	.then(data => pipe(
+		data,
+		fromPredicate(d => d.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION),
+		chain(d => fromNullable(d.bookmarks)),
+		chain(fromArray),
+		map(bms => bms.map((bm): LocalBookmark => ({
+			...bm,
+			tags: Array.from(bm.tags),
+		}))),
+	));
 
 export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) => {
 	await setLocalStorage({
@@ -76,15 +76,15 @@ export const saveBookmarksToLocalStorage = async (bookmarks: LocalBookmark[]) =>
 	sendIsomorphicMessage(IsomorphicMessage.BookmarksUpdatedInLocalStorage);
 };
 
-export const getStagedBookmarksGroupsFromLocalStorage = () => MaybeAsync(({ liftMaybe }) => getLocalStorage('stagedBookmarksGroups')
-	.then(({ stagedBookmarksGroups }) => liftMaybe(Maybe.fromNullable(stagedBookmarksGroups))));
+export const getStagedBookmarksGroupsFromLocalStorage: Task<Option<StagedBookmarksGroup[]>> = () => getLocalStorage('stagedBookmarksGroups')
+	.then(({ stagedBookmarksGroups }) => fromNullable(stagedBookmarksGroups));
 
 export const saveStagedBookmarksGroupsToLocalStorage = (stagedBookmarksGroups: StagedBookmarksGroup[]) =>
 	setLocalStorage({ stagedBookmarksGroups });
 
-export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookmarks: NonEmptyList<LocalBookmarkUnsaved>) => {
-	const stagedBookmarksGroupsRes = await getStagedBookmarksGroupsFromLocalStorage().run();
-	const stagedBookmarksGroups = stagedBookmarksGroupsRes.orDefault([]);
+export const saveStagedBookmarksAsNewGroupToLocalStorage = async (newStagedBookmarks: NonEmptyArray<LocalBookmarkUnsaved>) => {
+	const stagedBookmarksGroups = await getStagedBookmarksGroupsFromLocalStorage()
+		.then(getOrElse(() => [] as StagedBookmarksGroup[]));
 
 	const groupIds = stagedBookmarksGroups.map(group => group.id);
 	const newGroupId = uuid(groupIds);

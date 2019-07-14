@@ -1,18 +1,22 @@
-import { Maybe } from 'purify-ts/Maybe';
-import { List } from 'purify-ts/List';
-import { MaybeTuple } from 'Modules/adt';
+import { Option, option, map, fromEither, getOrElse } from 'fp-ts/lib/Option';
+import { optionTuple } from 'Types/optionTuple';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { findFirst, lookup } from 'fp-ts/lib/Array';
 import { createSelector } from 'reselect';
 import { AppState } from 'Store';
 import parseSearchInput from 'Modules/parse-search-input';
 import { filterBookmarks, sortBookmarks, LocalBookmarkWeighted } from 'Modules/bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
 import compareURLs, { URLMatch } from 'Modules/compare-urls';
+import { createURL } from 'Modules/url';
 
-const addBookmarkWeight = (activeTabURL: Maybe<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
+const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
-	weight: MaybeTuple.fromMaybe(activeTabURL, Maybe.encase(() => new URL(bookmark.url)))
-		.map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL))
-		.orDefault(URLMatch.None),
+	weight: pipe(
+		optionTuple(activeTabURL, fromEither(createURL(bookmark.url))),
+		map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL)),
+		getOrElse(() => URLMatch.None),
+	),
 });
 
 const getBookmarks = (state: AppState) => state.bookmarks.bookmarks;
@@ -42,7 +46,7 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
  */
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => bookmarks
-		.map(addBookmarkWeight(Maybe.encase(() => new URL(activeTabHref))))
+		.map(addBookmarkWeight(fromEither(createURL(activeTabHref))))
 		.sort(sortBookmarks),
 );
 
@@ -63,30 +67,30 @@ export const getNumFilteredUnrenderedBookmarks = createSelector(getUnlimitedFilt
 	(u, l) => u.slice(l.length).length);
 
 export const getFocusedBookmark = createSelector(getWeightedLimitedFilteredBookmarks, getFocusedBookmarkIndex,
-	(bookmarks, focusedId) => focusedId.chain(fid => List.at(fid, bookmarks)));
+	(bookmarks, focusedId) => option.chain(focusedId, fid => lookup(fid, bookmarks)));
 
 export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
-	(bookmarks, editId) => editId.chain(eid => Maybe.fromNullable(bookmarks.find(bm => bm.id === eid))));
+	(bookmarks, editId) => option.chain(editId, eid => findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks)));
 
 export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDeleteId,
-	(bookmarks, deleteId) => deleteId.chain(did => Maybe.fromNullable(bookmarks.find(bm => bm.id === did))));
+	(bookmarks, deleteId) => option.chain(deleteId, did => findFirst((bm: LocalBookmark) => bm.id === did)(bookmarks)));
 
 export const getSortedStagedGroups = createSelector(getStagedGroups,
 	(grps) => [...grps].sort((a, b) => b.time - a.time));
 
 export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGroupEditId,
-	(groups, editId) => editId.chain(eid => Maybe.fromNullable(groups.find(grp => grp.id === eid))));
+	(groups, editId) => option.chain(editId, eid => findFirst((grp: StagedBookmarksGroup) => grp.id === eid)(groups)));
 
 /**
  * Get weighted bookmarks from the staging area group selected for editing.
  */
 export const getStagedGroupToEditWeightedBookmarks = createSelector(getStagedGroupToEdit, getActiveTabHref,
-	(group, activeTabHref) => group.map(grp => grp.bookmarks.map(addBookmarkWeight(Maybe.encase(() => new URL(activeTabHref))))));
+	(group, activeTabHref) => option.map(group, grp => grp.bookmarks.map(addBookmarkWeight(fromEither(createURL(activeTabHref))))));
 
 export const getStagedGroupBookmarkToEdit = createSelector(getStagedGroupToEdit, getStagedGroupBookmarkEditId,
-	(group, editId) => MaybeTuple.fromMaybe(group, editId).chain((tup) => {
-		const [grp, eid] = tup;
-
-		return Maybe.fromNullable(grp.bookmarks.find(bm => bm.id === eid));
-	}));
+	(group, editId) => option.chain(
+		optionTuple(group, editId),
+		([{ bookmarks }, eid]) => findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks),
+	),
+);
 

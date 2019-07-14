@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { isSome, isNone } from 'fp-ts/lib/Option';
 import { useDispatch, useSelector } from 'Store';
 import { getStagedGroupBookmarkToEdit } from 'Store/selectors';
 import { updateStagedBookmarksGroupBookmark } from 'Store/bookmarks/actions';
@@ -12,21 +13,21 @@ const StagedGroupBookmarkEditForm: FC = () => {
 	const dispatch = useDispatch();
 
 	const handleSubmit = (bm: LocalBookmark) => {
-		groupEditId.ifJust((grpId) => {
-			dispatch(updateStagedBookmarksGroupBookmark(grpId, bm));
+		if (isSome(groupEditId)) {
+			dispatch(updateStagedBookmarksGroupBookmark(groupEditId.value, bm));
 			dispatch(setPage(Page.StagedGroup));
-		});
+		}
 	};
 
-	return bookmark.caseOf({
-		Just: () => (
-			<BookmarkForm
-				bookmark={bookmark}
-				onSubmit={handleSubmit}
-			/>
-		),
-		Nothing: () => null,
-	});
+	if (isNone(bookmark)) return null;
+
+	return (
+		<BookmarkForm
+			bookmark={bookmark}
+			onSubmit={handleSubmit}
+		/>
+	);
 };
 
 export default StagedGroupBookmarkEditForm;
+

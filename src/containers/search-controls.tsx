@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState, FC } from 'react';
-import { NonEmptyList } from 'purify-ts/NonEmptyList';
 import { useDispatch, useSelector } from 'Store';
 import { setSearchFilterWithResets } from 'Store/epics';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
@@ -71,7 +70,7 @@ const SearchControls: FC = () => {
 	const textFilter = useSelector(state => state.input.searchFilter);
 	const dispatch = useDispatch();
 
-	const shouldEnableSearch = NonEmptyList.isNonEmpty(allBookmarks);
+	const shouldEnableSearch = !!allBookmarks.length;
 	const shouldEnableOpenStaged = hasBinaryComms && !!numStagedItems;
 	const shouldEnableOpenAll = !!numFilteredBookmarks;
 	const shouldEnableAddBookmark = hasBinaryComms;
@@ -168,3 +167,4 @@ const SearchControls: FC = () => {
 };
 
 export default SearchControls;
+

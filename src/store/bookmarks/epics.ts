@@ -1,5 +1,7 @@
-import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { NonEmptyList } from 'purify-ts/NonEmptyList';
+import { Option, some, none, isSome, fold, map, chain, getOrElse } from 'fp-ts/lib/Option';
+import { either, isRight } from 'fp-ts/lib/Either';
+import { findFirst } from 'fp-ts/lib/Array';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { ThunkAC } from 'Store';
 import {
 	setAllStagedBookmarksGroups, deleteStagedBookmarksGroup, deleteStagedBookmarksGroupBookmark,
@@ -16,41 +18,44 @@ import { Page } from 'Store/user/types';
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();
+	const mapped = either.map(res, bms => bms.map(transform));
 
-	Maybe.fromNullable((res && res.success && res.bookmarks) || null)
-		.map(bms => bms.map(transform))
-		.caseOf({
-			Just: (bms) => {
-				dispatch(setAllBookmarks(bms));
-				dispatch(setFocusedBookmarkIndex(NonEmptyList.isNonEmpty(bms) ? Just(0) : Nothing));
-				dispatch(setHasBinaryComms(true));
-			},
-			Nothing: () => {
-				const msg = 'Failed to sync bookmarks.';
+	if (isRight(mapped)) {
+		const bms = mapped.right;
 
-				dispatch(setHasBinaryComms(false));
-				dispatch(addPermanentError(msg));
-			},
-		});
+		dispatch(setAllBookmarks(bms));
+		dispatch(setFocusedBookmarkIndex(bms.length ? some(0) : none));
+		dispatch(setHasBinaryComms(true));
+	} else {
+		const msg = 'Failed to sync bookmarks.';
+
+		dispatch(setHasBinaryComms(false));
+		dispatch(addPermanentError(msg));
+	}
 };
 
 export const openBookmarkAndExit = (
 	bmId: LocalBookmark['id'],
-	stagedBookmarksGroupId: Maybe<StagedBookmarksGroup['id']> = Nothing,
-): ThunkAC => (_, getState) => {
+	stagedBookmarksGroupId: Option<StagedBookmarksGroup['id']> = none,
+): ThunkAC => async (_, getState) => {
 	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
 
-	stagedBookmarksGroupId
-		.caseOf({
-			Just: grpId => Maybe.fromNullable(stagedBookmarksGroups.find(grp => grp.id === grpId))
-				.chain(grp => Maybe.fromNullable(grp.bookmarks.find(bm => bm.id === bmId))),
-			Nothing: () => Maybe.fromNullable(bookmarks.find(bm => bm.id === bmId)),
-		})
-		.ifJust(async ({ url }) => {
-			await openBookmarkInAppropriateTab(url, true);
+	const bookmark = fold(
+		() => findFirst((bm: LocalBookmark) => bm.id === bmId)(bookmarks),
+		(grpId: StagedBookmarksGroup['id']) => pipe(
+			stagedBookmarksGroups,
+			findFirst(grp => grp.id === grpId),
+			map(grp => grp.bookmarks),
+			chain(findFirst(bm => bm.id === bmId)),
+		),
+	)(stagedBookmarksGroupId);
 
-			window.close();
-		});
+	if (isSome(bookmark)) {
+		const { url } = bookmark.value;
+		await openBookmarkInAppropriateTab(url, true);
+
+		window.close();
+	}
 };
 
 export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
@@ -64,12 +69,15 @@ export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState
 export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id']): ThunkAC<Promise<void>> => async (dispatch, getState) => {
 	const { bookmarks: { stagedBookmarksGroups } } = getState();
 
-	const bookmarks = Maybe.fromNullable(stagedBookmarksGroups.find(grp => grp.id === groupId))
+	const bookmarks = pipe(
+		stagedBookmarksGroups,
+		findFirst(grp => grp.id === groupId),
 		// Remove local ID else bookmarks will be detected as saved by
 		// untransform overload
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		.map(grp => grp.bookmarks.map(({ id, ...rest }): LocalBookmarkUnsaved => ({ ...rest })))
-		.orDefault([]);
+		map(grp => grp.bookmarks.map(({ id, ...rest }): LocalBookmarkUnsaved => ({ ...rest }))),
+		getOrElse(() => [] as LocalBookmarkUnsaved[]),
+	);
 
 	await dispatch(addManyBookmarks(bookmarks));
 	dispatch(deleteStagedBookmarksGroup(groupId));
@@ -96,9 +104,12 @@ export const deleteStagedBookmarksGroupBookmarkOrEntireGroup = (
 };
 
 export const syncStagedBookmarksGroups = (): ThunkAC<Promise<void>> => async (dispatch) => {
-	const stagedBookmarksGroups = await getStagedBookmarksGroupsFromLocalStorage().run();
+	const stagedBookmarksGroups = pipe(
+		await getStagedBookmarksGroupsFromLocalStorage(),
+		getOrElse(() => [] as StagedBookmarksGroup[]),
+	);
 
-	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups.orDefault([])));
+	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups));
 };
 
 export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<void>> => async (dispatch) => {
@@ -122,45 +133,57 @@ export const updateBookmark = (bookmark: LocalBookmark): ThunkAC<Promise<void>> 
 export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, getState) => {
 	const { bookmarkDeleteId } = getState().bookmarks;
 
-	bookmarkDeleteId.ifJust(async (bookmarkId) => {
+	if (isSome(bookmarkDeleteId)) {
+		const bookmarkId = bookmarkDeleteId.value;
+
 		await deleteBookmarksFromNative([bookmarkId]);
 		dispatch(syncBookmarks());
-
 		dispatch(setDeleteBookmarkModalDisplay(false));
-	});
+	}
 };
 
 export const initiateBookmarkEdit = (id: LocalBookmark['id']): ThunkAC => (dispatch) => {
-	dispatch(setBookmarkEditId(Just(id)));
+	dispatch(setBookmarkEditId(some(id)));
 	dispatch(setPage(Page.EditBookmark));
 };
 
 export const initiateBookmarkDeletion = (id: LocalBookmark['id']): ThunkAC => (dispatch) => {
-	dispatch(setBookmarkDeleteId(Just(id)));
+	dispatch(setBookmarkDeleteId(some(id)));
 	dispatch(setDeleteBookmarkModalDisplay(true));
 };
 
 export const attemptFocusedBookmarkIndexIncrement = (): ThunkAC<boolean> => (dispatch, getState) => {
 	const state = getState();
-	const filteredBookmarks = getWeightedLimitedFilteredBookmarks(state);
-	const focusedBookmarkIndexMaybe = state.bookmarks.focusedBookmarkIndex;
+	const numFilteredBookmarks = getWeightedLimitedFilteredBookmarks(state).length;
 
-	return focusedBookmarkIndexMaybe
-		.chain(fbmi => fbmi === filteredBookmarks.length - 1 ? Nothing : Just(fbmi + 1))
-		.ifJust((fbmi) => {
-			dispatch(setFocusedBookmarkIndex(Just(fbmi)));
-		})
-		.isJust();
+	return pipe(
+		state.bookmarks.focusedBookmarkIndex,
+		chain(fbmi => fbmi === numFilteredBookmarks - 1 ? none : some(fbmi + 1)),
+		fold(
+			() => false,
+			(fbmi) => {
+				dispatch(setFocusedBookmarkIndex(some(fbmi)));
+
+				return true;
+			},
+		),
+	);
 };
 
 export const attemptFocusedBookmarkIndexDecrement = (): ThunkAC<boolean> => (dispatch, getState) => {
 	const { bookmarks: { focusedBookmarkIndex: focusedBookmarkIndexMaybe } } = getState();
 
-	return focusedBookmarkIndexMaybe
-		.chain(fbmi => fbmi === 0 ? Nothing : Just(fbmi - 1))
-		.ifJust((fbmi) => {
-			dispatch(setFocusedBookmarkIndex(Just(fbmi)));
-		})
-		.isJust();
+	return pipe(
+		focusedBookmarkIndexMaybe,
+		chain(fbmi => fbmi === 0 ? none : some(fbmi - 1)),
+		fold(
+			() => false,
+			(fbmi) => {
+				dispatch(setFocusedBookmarkIndex(some(fbmi)));
+
+				return true;
+			},
+		),
+	);
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, FormEvent, FC } from 'react';
-import { Maybe, Nothing } from 'purify-ts/Maybe';
+import { Option, none, fromNullable, toUndefined, chain, isSome } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import styled from 'Styles';
-
 import Button from 'Components/button';
 import IconButton, { idealFeatherIconSize } from 'Components/icon-button';
 import Tag from 'Components/tag';
@@ -50,11 +50,11 @@ const TagList = styled.ul`
 
 interface Props {
 	onSubmit(bookmark: LocalBookmark | LocalBookmarkUnsaved): void;
-	bookmark: Maybe<Partial<LocalBookmark>>;
+	bookmark: Option<Partial<LocalBookmark>>;
 }
 
 interface BookmarkInput {
-	id: Maybe<LocalBookmark['id']>;
+	id: Option<LocalBookmark['id']>;
 	title: LocalBookmark['title'];
 	desc: LocalBookmark['desc'];
 	url: LocalBookmark['url'];
@@ -69,7 +69,7 @@ const BookmarkForm: FC<Props> = (props) => {
 	const firstInputRef = useRef<HTMLInputElement>(null);
 
 	const [bookmarkInput, setBookmarkInput] = useState<BookmarkInput>({
-		id: Nothing,
+		id: none,
 		title: '',
 		desc: '',
 		url: '',
@@ -83,13 +83,13 @@ const BookmarkForm: FC<Props> = (props) => {
 
 	useEffect(() => {
 		// Copy bookmark props into state
-		props.bookmark.ifJust((bookmark) => {
+		if (isSome(props.bookmark)) {
 			// Ensure not to copy unwanted properties into state
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { flags, id, ...toCopy } = bookmark;
+			const { flags, id, ...toCopy } = props.bookmark.value;
 
-			setInputBookmarkPartial({ ...toCopy, id: Maybe.fromNullable(id) });
-		});
+			setInputBookmarkPartial({ ...toCopy, id: fromNullable(id) });
+		}
 
 		// Focus first input automatically
 		if (firstInputRef.current) firstInputRef.current.focus();
@@ -123,14 +123,18 @@ const BookmarkForm: FC<Props> = (props) => {
 
 		const bookmark = {
 			...bookmarkInput,
-			id: bookmarkInput.id.extract(),
+			id: toUndefined(bookmarkInput.id),
 			flags: 0,
 		};
 
 		props.onSubmit(bookmark);
 	};
 
-	const isEditing = props.bookmark.chain(bm => Maybe.fromNullable(bm.id)).isJust();
+	const isEditing = pipe(
+		props.bookmark,
+		chain(bm => fromNullable(bm.id)),
+		isSome,
+	);
 
 	return (
 		<Wrapper onSubmit={handleSubmit}>
@@ -190,3 +194,4 @@ const BookmarkForm: FC<Props> = (props) => {
 };
 
 export default BookmarkForm;
+

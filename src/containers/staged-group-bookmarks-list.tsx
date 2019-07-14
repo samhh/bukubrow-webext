@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
-import { Just } from 'purify-ts/Maybe';
+import { some, getOrElse, fold } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { useDispatch, useSelector } from 'Store';
 import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from 'Store/bookmarks/actions';
 import { setPage } from 'Store/user/actions';
 import { getStagedGroupToEditWeightedBookmarks } from 'Store/selectors';
 import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit, addAllBookmarksFromStagedGroup } from 'Store/bookmarks/epics';
 import { Page } from 'Store/user/types';
+import { LocalBookmarkWeighted } from 'Modules/bookmarks';
 import styled from 'Styles';
 import Bookmark from 'Components/bookmark';
 import Button from 'Components/button';
@@ -27,9 +29,11 @@ const ControlsButton = styled(Button)`
 	}
 `;
 
+import noop from 'Modules/noop';
 const StagedGroupBookmarksList: FC = () => {
 	const stagedGroupId = useSelector(state => state.bookmarks.stagedBookmarksGroupEditId);
-	const bookmarks = useSelector(getStagedGroupToEditWeightedBookmarks).orDefault([]);
+	const bookmarksMaybe = useSelector(getStagedGroupToEditWeightedBookmarks);
+	const bookmarks = getOrElse(() => [] as LocalBookmarkWeighted[])(bookmarksMaybe);
 	const dispatch = useDispatch();
 
 	const handleOpenBookmark = (bmId: number) => {
@@ -37,29 +41,26 @@ const StagedGroupBookmarksList: FC = () => {
 	};
 
 	const handleEditBookmark = (bmId: number) => {
-		dispatch(setStagedBookmarksGroupBookmarkEditId(Just(bmId)));
+		dispatch(setStagedBookmarksGroupBookmarkEditId(some(bmId)));
 		dispatch(setPage(Page.EditStagedBookmark));
 	};
 
-	const handleDeleteBookmark = (bmId: number) => {
-		stagedGroupId.ifJust((grpId) => {
-			dispatch(deleteStagedBookmarksGroupBookmarkOrEntireGroup(grpId, bmId));
-		});
-	};
-
-	const handleDeleteGroup = () => {
-		stagedGroupId.ifJust((grpId) => {
-			dispatch(deleteStagedBookmarksGroup(grpId));
-			dispatch(setPage(Page.StagedGroupsList));
-		});
-	};
-
-	const handlePublish = () => {
-		stagedGroupId.ifJust((grpId) => {
-			dispatch(addAllBookmarksFromStagedGroup(grpId));
-			dispatch(setPage(Page.StagedGroupsList));
-		});
-	};
+	const [handleDeleteBookmark, handleDeleteGroup, handlePublish] = pipe(stagedGroupId, fold(
+		() => [noop, noop, noop],
+		grpId => [
+			(bmId: number) => {
+				dispatch(deleteStagedBookmarksGroupBookmarkOrEntireGroup(grpId, bmId));
+			},
+			() => {
+				dispatch(deleteStagedBookmarksGroup(grpId));
+				dispatch(setPage(Page.StagedGroupsList));
+			},
+			() => {
+				dispatch(addAllBookmarksFromStagedGroup(grpId));
+				dispatch(setPage(Page.StagedGroupsList));
+			},
+		],
+	));
 
 	return (
 		<>
@@ -89,3 +90,4 @@ const StagedGroupBookmarksList: FC = () => {
 };
 
 export default StagedGroupBookmarksList;
+

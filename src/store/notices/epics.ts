@@ -11,7 +11,7 @@ export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (di
 	dispatch(addError(newId, errorMsg));
 
 	return newId;
-}; 
+};
 
 export const addTransientError = (
 	errorMsg: NoticeMsg,
@@ -23,3 +23,4 @@ export const addTransientError = (
 
 	dispatch(deleteError(id));
 };
+

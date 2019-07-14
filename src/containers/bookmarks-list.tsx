@@ -1,4 +1,6 @@
 import React, { useRef, FC } from 'react';
+import { map, isSome, toNullable } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { useSelector, useDispatch } from 'Store';
 import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 import {
@@ -22,7 +24,7 @@ const WrapperList = styled.ul`
 const BookmarksList: FC = () => {
 	const bookmarks = useSelector(getWeightedLimitedFilteredBookmarks);
 	const focusedBookmark = useSelector(getFocusedBookmark);
-	const focusedBookmarkId = focusedBookmark.map(bm => bm.id);
+	const focusedBookmarkId = pipe(focusedBookmark, map(bm => bm.id));
 	const parsedFilter = useSelector(getParsedFilter);
 	const dispatch = useDispatch();
 
@@ -34,9 +36,11 @@ const BookmarksList: FC = () => {
 
 	useListenToKeydown((evt) => {
 		if (evt.key === Key.Enter) {
-			keydownDataRef.current.focusedBookmark.ifJust(({ id }) => {
-				dispatch(openBookmarkAndExit(id));
-			});
+			const { focusedBookmark: liveFocusedBookmark } = keydownDataRef.current;
+
+			if (isSome(liveFocusedBookmark)) {
+				dispatch(openBookmarkAndExit(liveFocusedBookmark.value.id));
+			}
 		}
 
 		// preventDefault to prevent keyboard scrolling
@@ -58,7 +62,7 @@ const BookmarksList: FC = () => {
 	return (
 		<WrapperList>
 			{bookmarks.map((bookmark) => {
-				const isFocused = bookmark.id === focusedBookmarkId.extract();
+				const isFocused = bookmark.id === toNullable(focusedBookmarkId);
 
 				return (
 					<Bookmark
@@ -83,3 +87,4 @@ const BookmarksList: FC = () => {
 };
 
 export default BookmarksList;
+

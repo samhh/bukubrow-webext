@@ -18,7 +18,8 @@
 			"Pages/*": ["./pages/*"],
 			"Store": ["./store/index"],
 			"Store/*": ["./store/*"],
-			"Styles": ["./styles"]
+			"Styles": ["./styles"],
+			"Types/*": ["./types/*"]
 		}
 	}
 }
