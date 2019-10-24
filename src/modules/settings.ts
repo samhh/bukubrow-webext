@@ -7,7 +7,7 @@ export enum Theme {
 	Dark = 'dark',
 }
 
-export const isTheme = (arg: unknown): arg is Theme => Object.values(Theme).includes(arg);
+export const isTheme = (arg: unknown): arg is Theme => (Object.values(Theme) as unknown[]).includes(arg);
 const toMaybeTheme = (arg: unknown): Option<Theme> => isTheme(arg) ? some(arg) : none;
 
 export enum BadgeDisplay {
@@ -16,7 +16,7 @@ export enum BadgeDisplay {
 	None = 'none',
 }
 
-export const isBadgeDisplayOpt = (arg: unknown): arg is BadgeDisplay => Object.values(BadgeDisplay).includes(arg);
+export const isBadgeDisplayOpt = (arg: unknown): arg is BadgeDisplay => (Object.values(BadgeDisplay) as unknown[]).includes(arg);
 const toMaybeBadgeDisplayOpt = (arg: unknown): Option<BadgeDisplay> => isBadgeDisplayOpt(arg) ? some(arg) : none;
 
 export interface Settings {

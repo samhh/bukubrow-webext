@@ -13,10 +13,7 @@ export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (di
 	return newId;
 };
 
-export const addTransientError = (
-	errorMsg: NoticeMsg,
-	timeout: number = 5000,
-): ThunkAC<Promise<void>> => async (dispatch) => {
+export const addTransientError = (errorMsg: NoticeMsg, timeout = 5000): ThunkAC<Promise<void>> => async (dispatch) => {
 	const id = dispatch(addPermanentError(errorMsg));
 
 	await sleep(timeout);

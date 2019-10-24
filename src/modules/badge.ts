@@ -97,7 +97,7 @@ const updateBadge = async (badgeOpt: BadgeDisplay) => {
  */
 export const initBadgeAndListen = () => {
 	const getBadgeOptOrDefault = () => getBadgeDisplayOpt()
-		.then(getOrElse(() => BadgeDisplay.WithCount));
+		.then(getOrElse((): BadgeDisplay => BadgeDisplay.WithCount));
 
 	const update = async () => {
 		const badgeOpt = await getBadgeOptOrDefault();

@@ -14,3 +14,4 @@ initBadgeAndListen().then((syncBadge) => {
 });
 
 initContextMenusAndListen(sendTabsToStagingArea);
+

@@ -1,5 +1,5 @@
 import { ParsedInputResult } from 'Modules/parse-search-input';
-import { distanceInWordsToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { URLMatch } from 'Modules/compare-urls';
 import { includesCaseInsensitive as includes } from 'Modules/string';
 
@@ -82,4 +82,5 @@ RemoteBookmark | RemoteBookmarkUnsaved {
 }
 
 export const formatStagedBookmarksGroupTitle = (group: StagedBookmarksGroup) =>
-	`${group.bookmarks.length} bookmark${group.bookmarks.length === 1 ? '' : 's'}, ${distanceInWordsToNow(group.time)} ago`;
+	`${group.bookmarks.length} bookmark${group.bookmarks.length === 1 ? '' : 's'}, ${formatDistanceToNow(group.time)} ago`;
+

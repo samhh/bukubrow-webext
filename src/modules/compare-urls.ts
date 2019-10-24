@@ -18,6 +18,7 @@ const compareURLs = (url1: URL, url2: URL) => {
 	if (
 		url1.href === url2.href ||
 		// Match URLs as exact even if one is HTTP protocol and the other HTTPS
+		// eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
 		url1.href.substring(endIndexOfAnyOf(url1.href, http)) === url2.href.substring(endIndexOfAnyOf(url2.href, http))
 	) return URLMatch.Exact;
 

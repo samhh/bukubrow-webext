@@ -13,7 +13,7 @@ import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
 const onLoadPreComms = (): ThunkAC => (dispatch) => {
 	getActiveTheme()
-		.then(getOrElse(() => Theme.Light))
+		.then(getOrElse((): Theme => Theme.Light))
 		.then((theme) => {
 			dispatch(setActiveTheme(theme));
 		});

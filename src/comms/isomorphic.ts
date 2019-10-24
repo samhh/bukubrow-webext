@@ -11,7 +11,7 @@ export enum IsomorphicMessage {
 export const sendIsomorphicMessage = (msg: IsomorphicMessage) => browser.runtime.sendMessage(msg);
 
 const isIsomorphicMessage = (msg: unknown): msg is IsomorphicMessage =>
-	Object.values(IsomorphicMessage).includes(msg);
+	(Object.values(IsomorphicMessage) as unknown[]).includes(msg);
 
 export const listenForIsomorphicMessages = (cb: (msg: IsomorphicMessage) => void) => {
 	browser.runtime.onMessage.addListener((msg: unknown) => {

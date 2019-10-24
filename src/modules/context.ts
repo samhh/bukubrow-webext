@@ -32,6 +32,7 @@ const toSufficientTabs = (tabs: Tabs.Tab[]) => tabs.filter(isSufficientTab).map(
  * and pass those onto the callback.
  */
 export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => void) => {
+	// eslint-disable-next-line @typescript-eslint/no-misused-promises
 	browser.contextMenus.onClicked.addListener(async (info) => {
 		let tabs: Option<NonEmptyArray<SufficientTab>> = none;
 

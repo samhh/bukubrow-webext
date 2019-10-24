@@ -15,7 +15,7 @@ const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmar
 	weight: pipe(
 		optionTuple(activeTabURL, fromEither(createURL(bookmark.url))),
 		map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL)),
-		getOrElse(() => URLMatch.None),
+		getOrElse((): URLMatch => URLMatch.None),
 	),
 });
 

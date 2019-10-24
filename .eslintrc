@@ -7,7 +7,9 @@
 	],
 	"extends": [
 		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/recommended-requiring-type-checking",
 		"plugin:react/recommended"
 	],
 	"parserOptions": {
@@ -15,11 +17,11 @@
 		"ecmaVersion": 2018
 	},
 	"rules": {
-		"indent": "off",
-		"no-tabs": "off",
 		"@typescript-eslint/indent": ["error", "tab"],
 		"@typescript-eslint/no-use-before-define": "off",
 		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/no-misused-promises": "off",
+		"@typescript-eslint/unbound-method": "off",
 		"import/no-unresolved": "off",
 		"react/prop-types": "off",
 		"react/jsx-uses-react": 2,

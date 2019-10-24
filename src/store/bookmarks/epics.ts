@@ -113,7 +113,7 @@ export const syncStagedBookmarksGroups = (): ThunkAC<Promise<void>> => async (di
 };
 
 export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<void>> => async (dispatch) => {
-	dispatch(addManyBookmarks([bookmark]));
+	await dispatch(addManyBookmarks([bookmark]));
 };
 
 export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
