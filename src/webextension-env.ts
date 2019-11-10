@@ -109,7 +109,10 @@ const browserMock: DeepPartial<Browser> = {
 					return Promise.resolve({ success: true } as NativeRequestResult[T]);
 				}
 
-				case NativeRequestMethod.DELETE: {
+				// Default case needed because TypeScript isn't being very clever with
+				// the type map
+				case NativeRequestMethod.DELETE:
+				default: {
 					const idsToRemove = (data as NativeRequestData[NativeRequestMethod.DELETE]).bookmark_ids;
 
 					for (const idToRemove of idsToRemove) {
