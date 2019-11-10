@@ -1,4 +1,4 @@
-import { some, none, getOrElse } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { onTabActivity } from 'Comms/browser';
 import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
@@ -13,7 +13,7 @@ import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
 const onLoadPreComms = (): ThunkAC => (dispatch) => {
 	getActiveTheme()
-		.then(getOrElse((): Theme => Theme.Light))
+		.then(O.getOrElse((): Theme => Theme.Light))
 		.then((theme) => {
 			dispatch(setActiveTheme(theme));
 		});
@@ -67,6 +67,6 @@ export const setSearchFilterWithResets = (filter: string): ThunkAC => (dispatch,
 
 	const filteredBookmarks = getWeightedLimitedFilteredBookmarks(getState());
 
-	dispatch(setFocusedBookmarkIndex(filteredBookmarks.length ? some(0) : none));
+	dispatch(setFocusedBookmarkIndex(filteredBookmarks.length ? O.some(0) : O.none));
 };
 

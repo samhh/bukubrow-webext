@@ -1,4 +1,4 @@
-import { Option } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 
 export type Bookmark = LocalBookmark;
 
@@ -6,11 +6,11 @@ export interface BookmarksState {
 	bookmarks: Bookmark[];
 	stagedBookmarksGroups: StagedBookmarksGroup[];
 	limitNumRendered: boolean;
-	focusedBookmarkIndex: Option<number>;
-	bookmarkEditId: Option<Bookmark['id']>;
-	bookmarkDeleteId: Option<Bookmark['id']>;
-	stagedBookmarksGroupEditId: Option<StagedBookmarksGroup['id']>;
-	stagedBookmarksGroupBookmarkEditId: Option<Bookmark['id']>;
+	focusedBookmarkIndex: O.Option<number>;
+	bookmarkEditId: O.Option<Bookmark['id']>;
+	bookmarkDeleteId: O.Option<Bookmark['id']>;
+	stagedBookmarksGroupEditId: O.Option<StagedBookmarksGroup['id']>;
+	stagedBookmarksGroupBookmarkEditId: O.Option<Bookmark['id']>;
 	displayDeleteBookmarkModal: boolean;
 }
 

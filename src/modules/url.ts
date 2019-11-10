@@ -1,6 +1,6 @@
-import { Either, tryCatch } from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 
-export const createURL = (url: string): Either<DOMException, URL> => tryCatch(
+export const createURL = (url: string): E.Either<DOMException, URL> => E.tryCatch(
 	() => new URL(url),
 	err => err instanceof DOMException ? err : new DOMException(),
 );

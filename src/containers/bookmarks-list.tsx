@@ -1,6 +1,6 @@
 import React, { useRef, FC } from 'react';
-import { map, isSome, toNullable } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
 import { useSelector, useDispatch } from 'Store';
 import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 import {
@@ -24,7 +24,7 @@ const WrapperList = styled.ul`
 const BookmarksList: FC = () => {
 	const bookmarks = useSelector(getWeightedLimitedFilteredBookmarks);
 	const focusedBookmark = useSelector(getFocusedBookmark);
-	const focusedBookmarkId = pipe(focusedBookmark, map(bm => bm.id));
+	const focusedBookmarkId = pipe(focusedBookmark, O.map(bm => bm.id));
 	const parsedFilter = useSelector(getParsedFilter);
 	const dispatch = useDispatch();
 
@@ -38,7 +38,7 @@ const BookmarksList: FC = () => {
 		if (evt.key === Key.Enter) {
 			const { focusedBookmark: liveFocusedBookmark } = keydownDataRef.current;
 
-			if (isSome(liveFocusedBookmark)) {
+			if (O.isSome(liveFocusedBookmark)) {
 				dispatch(openBookmarkAndExit(liveFocusedBookmark.value.id));
 			}
 		}
@@ -62,7 +62,7 @@ const BookmarksList: FC = () => {
 	return (
 		<WrapperList>
 			{bookmarks.map((bookmark) => {
-				const isFocused = bookmark.id === toNullable(focusedBookmarkId);
+				const isFocused = bookmark.id === O.toNullable(focusedBookmarkId);
 
 				return (
 					<Bookmark

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, FormEvent, FC } from 'react';
-import { Option, none, fromNullable, toUndefined, chain, isSome } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
 import styled from 'Styles';
 import Button from 'Components/button';
 import IconButton, { idealFeatherIconSize } from 'Components/icon-button';
@@ -50,11 +50,11 @@ const TagList = styled.ul`
 
 interface Props {
 	onSubmit(bookmark: LocalBookmark | LocalBookmarkUnsaved): void;
-	bookmark: Option<Partial<LocalBookmark>>;
+	bookmark: O.Option<Partial<LocalBookmark>>;
 }
 
 interface BookmarkInput {
-	id: Option<LocalBookmark['id']>;
+	id: O.Option<LocalBookmark['id']>;
 	title: LocalBookmark['title'];
 	desc: LocalBookmark['desc'];
 	url: LocalBookmark['url'];
@@ -69,7 +69,7 @@ const BookmarkForm: FC<Props> = (props) => {
 	const firstInputRef = useRef<HTMLInputElement>(null);
 
 	const [bookmarkInput, setBookmarkInput] = useState<BookmarkInput>({
-		id: none,
+		id: O.none,
 		title: '',
 		desc: '',
 		url: '',
@@ -83,12 +83,12 @@ const BookmarkForm: FC<Props> = (props) => {
 
 	useEffect(() => {
 		// Copy bookmark props into state
-		if (isSome(props.bookmark)) {
+		if (O.isSome(props.bookmark)) {
 			// Ensure not to copy unwanted properties into state
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { flags, id, ...toCopy } = props.bookmark.value;
 
-			setInputBookmarkPartial({ ...toCopy, id: fromNullable(id) });
+			setInputBookmarkPartial({ ...toCopy, id: O.fromNullable(id) });
 		}
 
 		// Focus first input automatically
@@ -123,7 +123,7 @@ const BookmarkForm: FC<Props> = (props) => {
 
 		const bookmark = {
 			...bookmarkInput,
-			id: toUndefined(bookmarkInput.id),
+			id: O.toUndefined(bookmarkInput.id),
 			flags: 0,
 		};
 
@@ -132,8 +132,8 @@ const BookmarkForm: FC<Props> = (props) => {
 
 	const isEditing = pipe(
 		props.bookmark,
-		chain(bm => fromNullable(bm.id)),
-		isSome,
+		O.chain(bm => O.fromNullable(bm.id)),
+		O.isSome,
 	);
 
 	return (

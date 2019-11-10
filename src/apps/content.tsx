@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Option, map, getOrElse } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import mount from 'Modules/connected-mount';
 import { useDispatch, useSelector } from 'Store';
 import styled from 'Styles';
@@ -37,7 +37,7 @@ type PageInfo = {
 
 interface PageMapArg {
 	activePage: Page;
-	stagedGroupTitle: Option<string>;
+	stagedGroupTitle: O.Option<string>;
 }
 
 const pageMap = ({ activePage, stagedGroupTitle }: PageMapArg) => {
@@ -68,7 +68,7 @@ const pageMap = ({ activePage, stagedGroupTitle }: PageMapArg) => {
 		},
 		[Page.StagedGroup]: {
 			nav: {
-				title: getOrElse(() => '')(stagedGroupTitle),
+				title: O.getOrElse(() => '')(stagedGroupTitle),
 				exitTarget: Page.StagedGroupsList,
 			},
 			component: StagedGroupBookmarksList,
@@ -95,7 +95,7 @@ const MinHeightWrapper = styled.main`
 
 const ContentApp: FC = () => {
 	const activePage = useSelector(state => state.user.page);
-	const stagedGroupTitle = map(formatStagedBookmarksGroupTitle)(useSelector(getStagedGroupToEdit));
+	const stagedGroupTitle = O.map(formatStagedBookmarksGroupTitle)(useSelector(getStagedGroupToEdit));
 	const dispatch = useDispatch();
 
 	const page = pageMap({ activePage, stagedGroupTitle });

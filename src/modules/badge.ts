@@ -1,41 +1,52 @@
-import { Option, fromNullable, fromEither, map, chain, getOrElse, isSome } from 'fp-ts/lib/Option';
-import { fold } from 'fp-ts/lib/Either';
-import { Task } from 'fp-ts/lib/Task';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { flow } from 'fp-ts/lib/function';
+import * as T from 'fp-ts/lib/Task';
+import * as TE from 'fp-ts/lib/TaskEither';
+import * as TO from 'fp-ts-contrib/lib/TaskOption';
+import * as E from 'fp-ts/lib/Either';
+import * as O from 'fp-ts/lib/Option';
+import * as A from 'fp-ts/lib/Array';
 import { browser } from 'webextension-polyfill-ts';
 import { getBadgeDisplayOpt, BadgeDisplay } from 'Modules/settings';
 import { createURL } from 'Modules/url';
 import { URLMatch } from 'Modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Comms/browser';
+import { snoc_ } from 'Modules/array';
 
 export const colors = {
 	[URLMatch.Exact]: '#4286f4',
 	[URLMatch.Domain]: '#a0c4ff',
 };
 
+const hrefToUrlReducer = (acc: URL[], href: string): URL[] => pipe(
+	createURL(href),
+	E.fold(
+		() => acc,
+		snoc_(acc),
+	),
+);
+
+const getBookmarksUrlsFromLocalStorage: TE.TaskEither<Error, O.Option<URL[]>> = pipe(
+	getBookmarksFromLocalStorage,
+	TE.map(O.map(flow(
+		A.map(bm => bm.url),
+		A.reduce([], hrefToUrlReducer),
+	))),
+);
+
 let urlState: URL[] = [];
 
-const hrefToUrlReducer = (acc: URL[], href: string): URL[] =>
-	pipe(createURL(href), fold(
-		() => acc,
-		url => [...acc, url],
-	));
-
-const getBookmarksUrlsFromLocalStorage: Task<Option<URL[]>> = () =>
-	getBookmarksFromLocalStorage().then(map(bms => bms
-		.map(bm => bm.url)
-		.reduce(hrefToUrlReducer, []),
-	));
-
-const syncBookmarks = async () => {
+const syncBookmarks = async (): Promise<void> => {
 	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage();
 
-	if (isSome(bookmarkUrls)) {
-		urlState = bookmarkUrls.value;
+	if (E.isRight(bookmarkUrls)) {
+		if (O.isSome(bookmarkUrls.right)) {
+			urlState = bookmarkUrls.right.value;
+		}
 	}
 };
 
-const checkUrl = (url: URL) => {
+const checkUrl = (url: URL): [URLMatch, number] => {
 	let bestMatch = URLMatch.None;
 	let numMatches = 0;
 
@@ -50,18 +61,21 @@ const checkUrl = (url: URL) => {
 		}
 	}
 
-	return [bestMatch, numMatches] as const;
+	return [bestMatch, numMatches];
 };
 
-const updateBadge = async (badgeOpt: BadgeDisplay) => {
-	const urlRes = pipe(
-		await getActiveTab(),
-		chain(tab => fromNullable(tab.url)),
-		chain(url => fromEither(createURL(url))),
-		map(checkUrl),
-	);
+const updateBadge = async (badgeOpt: BadgeDisplay): Promise<void> => {
+	const urlRes = await pipe(
+		getActiveTab,
+		TO.chainOption(tab => O.fromNullable(tab.url)),
+		TO.chainOption(flow(
+			createURL,
+			O.fromEither,
+		)),
+		TO.map(checkUrl),
+	)();
 
-	if (isSome(urlRes)) {
+	if (O.isSome(urlRes)) {
 		const [result, numMatches] = urlRes.value;
 
 		if (badgeOpt === BadgeDisplay.None || result === URLMatch.None) {
@@ -96,8 +110,10 @@ const updateBadge = async (badgeOpt: BadgeDisplay) => {
  * function's closure.
  */
 export const initBadgeAndListen = () => {
-	const getBadgeOptOrDefault = () => getBadgeDisplayOpt()
-		.then(getOrElse((): BadgeDisplay => BadgeDisplay.WithCount));
+	const getBadgeOptOrDefault = pipe(
+		getBadgeDisplayOpt,
+		TO.getOrElse(() => T.of(BadgeDisplay.WithCount)),
+	);
 
 	const update = async () => {
 		const badgeOpt = await getBadgeOptOrDefault();

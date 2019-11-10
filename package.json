@@ -23,6 +23,7 @@
 	"dependencies": {
 		"date-fns": "^2.6.0",
 		"fp-ts": "^2.0.2",
+		"fp-ts-contrib": "^0.1.6",
 		"react": "^16.11.0",
 		"react-dom": "^16.11.0",
 		"react-feather": "^2.0.3",

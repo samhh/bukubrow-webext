@@ -1,7 +1,7 @@
-import { Option, option, map, fromEither, getOrElse } from 'fp-ts/lib/Option';
-import { optionTuple } from 'Types/optionTuple';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { findFirst, lookup } from 'fp-ts/lib/Array';
+import * as O from 'fp-ts/lib/Option';
+import * as OT from 'Types/optionTuple';
+import * as A from 'fp-ts/lib/Array';
 import { createSelector } from 'reselect';
 import { AppState } from 'Store';
 import parseSearchInput from 'Modules/parse-search-input';
@@ -10,12 +10,12 @@ import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
 import compareURLs, { URLMatch } from 'Modules/compare-urls';
 import { createURL } from 'Modules/url';
 
-const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
+const addBookmarkWeight = (activeTabURL: O.Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
 	weight: pipe(
-		optionTuple(activeTabURL, fromEither(createURL(bookmark.url))),
-		map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL)),
-		getOrElse((): URLMatch => URLMatch.None),
+		OT.optionTuple(activeTabURL, O.fromEither(createURL(bookmark.url))),
+		O.map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL)),
+		O.getOrElse((): URLMatch => URLMatch.None),
 	),
 });
 
@@ -46,7 +46,7 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
  */
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => bookmarks
-		.map(addBookmarkWeight(fromEither(createURL(activeTabHref))))
+		.map(addBookmarkWeight(O.fromEither(createURL(activeTabHref))))
 		.sort(sortBookmarks),
 );
 
@@ -67,30 +67,30 @@ export const getNumFilteredUnrenderedBookmarks = createSelector(getUnlimitedFilt
 	(u, l) => u.slice(l.length).length);
 
 export const getFocusedBookmark = createSelector(getWeightedLimitedFilteredBookmarks, getFocusedBookmarkIndex,
-	(bookmarks, focusedId) => option.chain(focusedId, fid => lookup(fid, bookmarks)));
+	(bookmarks, focusedId) => O.option.chain(focusedId, fid => A.lookup(fid, bookmarks)));
 
 export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
-	(bookmarks, editId) => option.chain(editId, eid => findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks)));
+	(bookmarks, editId) => O.option.chain(editId, eid => A.findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks)));
 
 export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDeleteId,
-	(bookmarks, deleteId) => option.chain(deleteId, did => findFirst((bm: LocalBookmark) => bm.id === did)(bookmarks)));
+	(bookmarks, deleteId) => O.option.chain(deleteId, did => A.findFirst((bm: LocalBookmark) => bm.id === did)(bookmarks)));
 
 export const getSortedStagedGroups = createSelector(getStagedGroups,
 	(grps) => [...grps].sort((a, b) => b.time - a.time));
 
 export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGroupEditId,
-	(groups, editId) => option.chain(editId, eid => findFirst((grp: StagedBookmarksGroup) => grp.id === eid)(groups)));
+	(groups, editId) => O.option.chain(editId, eid => A.findFirst((grp: StagedBookmarksGroup) => grp.id === eid)(groups)));
 
 /**
  * Get weighted bookmarks from the staging area group selected for editing.
  */
 export const getStagedGroupToEditWeightedBookmarks = createSelector(getStagedGroupToEdit, getActiveTabHref,
-	(group, activeTabHref) => option.map(group, grp => grp.bookmarks.map(addBookmarkWeight(fromEither(createURL(activeTabHref))))));
+	(group, activeTabHref) => O.option.map(group, grp => grp.bookmarks.map(addBookmarkWeight(O.fromEither(createURL(activeTabHref))))));
 
 export const getStagedGroupBookmarkToEdit = createSelector(getStagedGroupToEdit, getStagedGroupBookmarkEditId,
-	(group, editId) => option.chain(
-		optionTuple(group, editId),
-		([{ bookmarks }, eid]) => findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks),
+	(group, editId) => O.option.chain(
+		OT.optionTuple(group, editId),
+		([{ bookmarks }, eid]) => A.findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks),
 	),
 );
 

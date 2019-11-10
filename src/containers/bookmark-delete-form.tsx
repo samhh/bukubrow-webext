@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { fold, isSome } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
 import { useSelector, useDispatch } from 'Store';
 import { setDeleteBookmarkModalDisplay } from 'Store/bookmarks/actions';
 import { deleteBookmark } from 'Store/bookmarks/epics';
@@ -23,10 +23,10 @@ const BookmarkDeleteForm: FC = () => {
 	const shouldDisplay = useSelector(state => state.bookmarks.displayDeleteBookmarkModal);
 	const dispatch = useDispatch();
 
-	const display = shouldDisplay && isSome(bmToDel);
+	const display = shouldDisplay && O.isSome(bmToDel);
 	if (!display) return null;
 
-	const bookmarkTitle = pipe(bmToDel, fold(() => '', bm => bm.title));
+	const bookmarkTitle = pipe(bmToDel, O.fold(() => '', bm => bm.title));
 	return (
 		<Modal>
 			<header>

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { some } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { useSelector, useDispatch } from 'Store';
 import { addBookmark } from 'Store/bookmarks/epics';
 import BookmarkForm from 'Components/bookmark-form';
@@ -10,7 +10,7 @@ const BookmarkAddForm: FC = () => {
 
 	return (
 		<BookmarkForm
-			bookmark={some({
+			bookmark={O.some({
 				title: pageTitle,
 				url: pageUrl,
 			})}

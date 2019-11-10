@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { isSome, isNone } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { useDispatch, useSelector } from 'Store';
 import { getStagedGroupBookmarkToEdit } from 'Store/selectors';
 import { updateStagedBookmarksGroupBookmark } from 'Store/bookmarks/actions';
@@ -13,13 +13,13 @@ const StagedGroupBookmarkEditForm: FC = () => {
 	const dispatch = useDispatch();
 
 	const handleSubmit = (bm: LocalBookmark) => {
-		if (isSome(groupEditId)) {
+		if (O.isSome(groupEditId)) {
 			dispatch(updateStagedBookmarksGroupBookmark(groupEditId.value, bm));
 			dispatch(setPage(Page.StagedGroup));
 		}
 	};
 
-	if (isNone(bookmark)) return null;
+	if (O.isNone(bookmark)) return null;
 
 	return (
 		<BookmarkForm

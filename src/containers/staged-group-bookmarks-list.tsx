@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { some, getOrElse, fold } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { useDispatch, useSelector } from 'Store';
 import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from 'Store/bookmarks/actions';
@@ -33,7 +33,7 @@ import noop from 'Modules/noop';
 const StagedGroupBookmarksList: FC = () => {
 	const stagedGroupId = useSelector(state => state.bookmarks.stagedBookmarksGroupEditId);
 	const bookmarksMaybe = useSelector(getStagedGroupToEditWeightedBookmarks);
-	const bookmarks = getOrElse(() => [] as LocalBookmarkWeighted[])(bookmarksMaybe);
+	const bookmarks = O.getOrElse(() => [] as LocalBookmarkWeighted[])(bookmarksMaybe);
 	const dispatch = useDispatch();
 
 	const handleOpenBookmark = (bmId: number) => {
@@ -41,11 +41,11 @@ const StagedGroupBookmarksList: FC = () => {
 	};
 
 	const handleEditBookmark = (bmId: number) => {
-		dispatch(setStagedBookmarksGroupBookmarkEditId(some(bmId)));
+		dispatch(setStagedBookmarksGroupBookmarkEditId(O.some(bmId)));
 		dispatch(setPage(Page.EditStagedBookmark));
 	};
 
-	const [handleDeleteBookmark, handleDeleteGroup, handlePublish] = pipe(stagedGroupId, fold(
+	const [handleDeleteBookmark, handleDeleteGroup, handlePublish] = pipe(stagedGroupId, O.fold(
 		() => [noop, noop, noop],
 		grpId => [
 			(bmId: number) => {

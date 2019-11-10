@@ -1,8 +1,8 @@
 import { browser, Tabs } from 'webextension-polyfill-ts';
-import { Option, none, fromNullable, map, chain, isSome } from 'fp-ts/lib/Option';
-import { optionTuple } from 'Types/optionTuple';
-import { NonEmptyArray, nonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
+import * as OT from 'Types/optionTuple';
+import * as NEA from 'fp-ts/lib/NonEmptyArray';
 import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from 'Comms/browser';
 
 enum ContextMenuEntry {
@@ -14,8 +14,8 @@ enum ContextMenuEntry {
 
 type SufficientTab = Required<Pick<Tabs.Tab, 'title' | 'url'>>;
 
-export const sendTabsToStagingArea = (tabs: NonEmptyArray<SufficientTab>) =>
-	saveStagedBookmarksAsNewGroupToLocalStorage(nonEmptyArray.map(tabs, tab => ({
+export const sendTabsToStagingArea = (tabs: NEA.NonEmptyArray<SufficientTab>) =>
+	saveStagedBookmarksAsNewGroupToLocalStorage(NEA.nonEmptyArray.map(tabs, tab => ({
 		title: tab.title,
 		desc: '',
 		url: tab.url,
@@ -31,17 +31,17 @@ const toSufficientTabs = (tabs: Tabs.Tab[]) => tabs.filter(isSufficientTab).map(
  * Initialise context menu items that each obtain various viable window tabs,
  * and pass those onto the callback.
  */
-export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => void) => {
+export const initContextMenusAndListen = (cb: (tabs: NEA.NonEmptyArray<SufficientTab>) => void) => {
 	// eslint-disable-next-line @typescript-eslint/no-misused-promises
 	browser.contextMenus.onClicked.addListener(async (info) => {
-		let tabs: Option<NonEmptyArray<SufficientTab>> = none;
+		let tabs: O.Option<NEA.NonEmptyArray<SufficientTab>> = O.none;
 
 		switch (info.menuItemId) {
 			case ContextMenuEntry.SendAllTabs: {
 				tabs = pipe(
 					await getAllTabs(),
-					map(toSufficientTabs),
-					chain(fromArray),
+					O.map(toSufficientTabs),
+					O.chain(NEA.fromArray),
 				);
 				break;
 			}
@@ -49,8 +49,8 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab
 			case ContextMenuEntry.SendActiveWindowTabs: {
 				tabs = pipe(
 					await getActiveWindowTabs(),
-					map(toSufficientTabs),
-					chain(fromArray),
+					O.map(toSufficientTabs),
+					O.chain(NEA.fromArray),
 				);
 				break;
 			}
@@ -58,24 +58,24 @@ export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab
 			case ContextMenuEntry.SendActiveTab: {
 				tabs = pipe(
 					await getActiveTab(),
-					chain(tab => optionTuple(fromNullable(tab.title), fromNullable(tab.url))),
-					map(([title, url]) => [{ title, url }]),
-					chain(fromArray),
+					O.chain(tab => OT.fromNullable(tab.title, tab.url)),
+					O.map(([title, url]) => [{ title, url }]),
+					O.chain(NEA.fromArray),
 				);
 				break;
 			}
 
 			case ContextMenuEntry.SendLink: {
 				tabs = pipe(
-					fromNullable(info.pageUrl),
-					map(url => [{ url, title: url }]),
-					chain(fromArray),
+					O.fromNullable(info.pageUrl),
+					O.map(url => [{ url, title: url }]),
+					O.chain(NEA.fromArray),
 				);
 				break;
 			}
 		}
 
-		if (isSome(tabs)) {
+		if (O.isSome(tabs)) {
 			cb(tabs.value);
 		}
 	});

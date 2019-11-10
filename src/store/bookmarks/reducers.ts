@@ -1,4 +1,4 @@
-import { none } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { Reducer } from 'redux';
 import { ActionType } from 'typesafe-actions';
 import * as bookmarksActions from './actions';
@@ -10,11 +10,11 @@ const initialState = {
 	bookmarks: [],
 	stagedBookmarksGroups: [],
 	limitNumRendered: true,
-	focusedBookmarkIndex: none,
-	bookmarkEditId: none,
-	bookmarkDeleteId: none,
-	stagedBookmarksGroupEditId: none,
-	stagedBookmarksGroupBookmarkEditId: none,
+	focusedBookmarkIndex: O.none,
+	bookmarkEditId: O.none,
+	bookmarkDeleteId: O.none,
+	stagedBookmarksGroupEditId: O.none,
+	stagedBookmarksGroupBookmarkEditId: O.none,
 	displayDeleteBookmarkModal: false,
 };
 
