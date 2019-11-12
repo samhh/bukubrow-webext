@@ -1,11 +1,13 @@
-import uuid from 'Modules/uuid';
+import { testables } from 'Modules/uuid';
 
-describe('uuid', () => {
-	test('generates unique ids', () => {
+describe('createUuidWithMaximum', () => {
+	test('generates unique ids that are not already taken', () => {
+		const create = testables.createUuidWithMaximum;
+
 		const vals: number[] = [];
 
 		for (let i = 0; i < 100; i++) {
-			vals.push(uuid([1], 2));
+			vals.push(create(2)([1]));
 		}
 
 		expect(vals).not.toContain(1);

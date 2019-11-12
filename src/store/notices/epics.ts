@@ -2,11 +2,11 @@ import sleep from 'Modules/sleep';
 import { ThunkAC } from 'Store';
 import { addError, deleteError } from './actions';
 import { NoticeId, NoticeMsg } from './types';
-import uuid from 'Modules/uuid';
+import { createUuid } from 'Modules/uuid';
 
 export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (dispatch, getState) => {
 	const errorIds = Object.keys(getState().notices.errors);
-	const newId = String(uuid(errorIds.map(Number)));
+	const newId = String(createUuid(errorIds.map(Number)));
 
 	dispatch(addError(newId, errorMsg));
 

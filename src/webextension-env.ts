@@ -5,7 +5,7 @@ import { Browser, Tabs } from 'webextension-polyfill-ts';
 import { Theme, isTheme } from 'Modules/settings';
 import { StorageState } from 'Comms/browser';
 import { NativeRequestMethod, NativeRequestData, NativeRequestResult } from 'Comms/native';
-import uuid from 'Modules/uuid';
+import { createUuid } from 'Modules/uuid';
 import noop from 'Modules/noop';
 
 // Allow use of URL params to manipulate state in the simulator
@@ -87,7 +87,7 @@ const browserMock: DeepPartial<Browser> = {
 
 				case NativeRequestMethod.POST: {
 					const newBookmarks = (data as NativeRequestData[NativeRequestMethod.POST]).bookmarks;
-					const newId = uuid(nativeBookmarksState.map(bm => bm.id));
+					const newId = createUuid(nativeBookmarksState.map(bm => bm.id));
 
 					for (const newBookmark of newBookmarks) {
 						nativeBookmarksState.push({ ...newBookmark, id: newId });
