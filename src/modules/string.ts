@@ -14,3 +14,6 @@ export const endIndexOfAnyOf = (test: string, searchStrings: string[]) => {
 
 	return -1;
 };
+
+export const toString = (x: number): string => String(x);
+
