@@ -9,6 +9,7 @@ import * as A from 'fp-ts/lib/Array';
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
 import { browser, Tabs } from 'webextension-polyfill-ts';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
+import { runIO } from 'Modules/fp';
 import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
 import { createUuid } from 'Modules/uuid';
 import { error } from 'Modules/error';
@@ -121,7 +122,7 @@ export const saveStagedBookmarksAsNewGroupToLocalStorage = (newStagedBookmarks: 
 	const newGroup = pipe(
 		stagedBookmarksGroups,
 		TE.map(flow(
-			flow(A.map(group => group.id), createUuid),
+			flow(A.map(group => group.id), createUuid, runIO),
 			(id): StagedBookmarksGroup => ({
 				id,
 				time: new Date().getTime(),
@@ -129,7 +130,7 @@ export const saveStagedBookmarksAsNewGroupToLocalStorage = (newStagedBookmarks: 
 				// one another
 				bookmarks: newStagedBookmarks.reduce<LocalBookmark[]>((acc, bm) => [...acc, {
 					...bm,
-					id: createUuid(acc.map(b => b.id)),
+					id: createUuid(acc.map(b => b.id))(),
 				}], []),
 			}),
 		)),

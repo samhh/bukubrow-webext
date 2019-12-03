@@ -7,7 +7,7 @@ describe('createUuidWithMaximum', () => {
 		const vals: number[] = [];
 
 		for (let i = 0; i < 100; i++) {
-			vals.push(create(2)([1]));
+			vals.push(create(2)([1])());
 		}
 
 		expect(vals).not.toContain(1);

@@ -87,7 +87,7 @@ const browserMock: DeepPartial<Browser> = {
 
 				case NativeRequestMethod.POST: {
 					const newBookmarks = (data as NativeRequestData[NativeRequestMethod.POST]).bookmarks;
-					const newId = createUuid(nativeBookmarksState.map(bm => bm.id));
+					const newId = createUuid(nativeBookmarksState.map(bm => bm.id))();
 
 					for (const newBookmark of newBookmarks) {
 						nativeBookmarksState.push({ ...newBookmark, id: newId });
