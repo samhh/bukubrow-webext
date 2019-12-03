@@ -14,7 +14,7 @@ export interface ParsedInputResult {
 
 // From: https://stackoverflow.com/a/54326240/3369753
 const execMulti = (str: string, r: RegExp) => {
-	let m: Nullable<RegExpExecArray>;
+	let m: RegExpExecArray | null;
 	const res: string[] = [];
 
 	// eslint-disable-next-line no-cond-assign

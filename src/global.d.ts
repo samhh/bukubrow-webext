@@ -1,8 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-type Nullable<T> = T | null;
-
-type Dictionary<K extends keyof any, V> = Partial<Record<K, V>>;
+type Option<A> = import('fp-ts/lib/Option').Option<A>;
+type OptionTuple<A, B> = Option<[A, B]>;
+type Either<E, A> = import('fp-ts/lib/Either').Either<E, A>;
+type Task<A> = import('fp-ts/lib/Task').Task<A>;
+type TaskEither<E, A> = import('fp-ts/lib/TaskEither').TaskEither<E, A>;
+type IO<A> = import('fp-ts/lib/IO').IO<A>;
+type NonEmptyArray<A> = import('fp-ts/lib/NonEmptyArray').NonEmptyArray<A>;
 
 type SubType<Base, Condition> = Pick<Base, {
 	[Key in keyof Base]: Base[Key] extends Condition ? Key : never;
@@ -14,13 +16,6 @@ type DeepPartial<T> = {
 		: T[P] extends ReadonlyArray<infer U>
 			? ReadonlyArray<DeepPartial<U>>
 			: DeepPartial<T[P]>
-};
-
-// Helper, probably unneeded if thunk actions are better typed in this project
-type UnwrapThunkActions<T> = {
-	[K in keyof T]: T[K] extends (...args: infer U) => import('redux-thunk').ThunkAction<infer R, any, any, any>
-		? (...args: U) => R
-		: T[K];
 };
 
 // Bookmark ready to be inserted into Buku database
@@ -56,3 +51,4 @@ interface StagedBookmarksGroup {
 	time: number;
 	bookmarks: LocalBookmark[];
 }
+

@@ -2,7 +2,7 @@ export type NoticeMsg = string;
 export type NoticeId = string;
 
 export interface NoticesState {
-	errors: Dictionary<NoticeId, NoticeMsg>;
+	errors: Record<NoticeId, NoticeMsg | undefined>;
 }
 
 export enum NoticesActionTypes {
