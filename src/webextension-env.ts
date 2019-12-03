@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { constVoid } from 'fp-ts/lib/function';
 import sleep from 'Modules/sleep';
 import { BOOKMARKS_SCHEMA_VERSION, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { Browser, Tabs } from 'webextension-polyfill-ts';
@@ -6,7 +7,6 @@ import { Theme, isTheme } from 'Modules/settings';
 import { StorageState } from 'Comms/browser';
 import { NativeRequestMethod, NativeRequestData, NativeRequestResult } from 'Comms/native';
 import { createUuid } from 'Modules/uuid';
-import noop from 'Modules/noop';
 
 // Allow use of URL params to manipulate state in the simulator
 const params = new URLSearchParams(window.location.search);
@@ -65,7 +65,7 @@ let nativeBookmarksState: RemoteBookmark[] = [];
 // to be mocked
 const browserMock: DeepPartial<Browser> = {
 	runtime: {
-		sendMessage: noop,
+		sendMessage: constVoid,
 		sendNativeMessage: async <T extends NativeRequestMethod>(
 			_appName: string,
 			{ method, data }: { method: T; data: NativeRequestData[T] },
@@ -145,10 +145,10 @@ const browserMock: DeepPartial<Browser> = {
 		query: () => Promise.resolve([{ title: 'Currently Active Tab Page Title', url: 'https://samhh.com' }] as Tabs.Tab[]),
 		create: () => Promise.resolve(),
 		onActivated: {
-			addListener: noop,
+			addListener: constVoid,
 		},
 		onUpdated: {
-			addListener: noop,
+			addListener: constVoid,
 		},
 	},
 };

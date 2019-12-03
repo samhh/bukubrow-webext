@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { constVoid } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { useDispatch, useSelector } from 'Store';
@@ -29,7 +30,6 @@ const ControlsButton = styled(Button)`
 	}
 `;
 
-import noop from 'Modules/noop';
 const StagedGroupBookmarksList: FC = () => {
 	const stagedGroupId = useSelector(state => state.bookmarks.stagedBookmarksGroupEditId);
 	const bookmarksMaybe = useSelector(getStagedGroupToEditWeightedBookmarks);
@@ -46,7 +46,7 @@ const StagedGroupBookmarksList: FC = () => {
 	};
 
 	const [handleDeleteBookmark, handleDeleteGroup, handlePublish] = pipe(stagedGroupId, O.fold(
-		() => [noop, noop, noop],
+		() => [constVoid, constVoid, constVoid],
 		grpId => [
 			(bmId: number) => {
 				dispatch(deleteStagedBookmarksGroupBookmarkOrEntireGroup(grpId, bmId));
