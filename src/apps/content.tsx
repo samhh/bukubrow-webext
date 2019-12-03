@@ -37,7 +37,7 @@ type PageInfo = {
 
 interface PageMapArg {
 	activePage: Page;
-	stagedGroupTitle: O.Option<string>;
+	stagedGroupTitle: Option<string>;
 }
 
 const pageMap = ({ activePage, stagedGroupTitle }: PageMapArg) => {

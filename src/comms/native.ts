@@ -112,8 +112,8 @@ export const checkBinaryVersionFromNative = () => sendMessageToNative(NativeRequ
 			: HostVersionCheckResult.UnknownError;
 	});
 
-export const getBookmarksFromNative: TE.TaskEither<Error, RemoteBookmark[]> = () => {
-	const get = async (prevBookmarks: RemoteBookmark[] = []): Promise<E.Either<Error, RemoteBookmark[]>> => {
+export const getBookmarksFromNative: TaskEither<Error, RemoteBookmark[]> = () => {
+	const get = async (prevBookmarks: RemoteBookmark[] = []): Promise<Either<Error, RemoteBookmark[]>> => {
 		const res = await sendMessageToNative(NativeRequestMethod.GET, { offset: prevBookmarks.length });
 
 		if (!res.success) return E.left(new Error('Success key is false.'));
@@ -127,7 +127,7 @@ export const getBookmarksFromNative: TE.TaskEither<Error, RemoteBookmark[]> = ()
 	return get();
 };
 
-export const saveBookmarksToNative = (bookmarks: RemoteBookmarkUnsaved[]): TE.TaskEither<Error, NativePOSTResponse> =>
+export const saveBookmarksToNative = (bookmarks: RemoteBookmarkUnsaved[]): TaskEither<Error, NativePOSTResponse> =>
 	TE.tryCatch(
 		() => sendMessageToNative(NativeRequestMethod.POST, { bookmarks }),
 		() => new Error('Failed to save bookmark to native'),

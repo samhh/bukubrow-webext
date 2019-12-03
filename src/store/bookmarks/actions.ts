@@ -1,4 +1,3 @@
-import * as O from 'fp-ts/lib/Option';
 import { action } from 'typesafe-actions';
 import { BookmarksActionTypes, Bookmark } from './types';
 
@@ -22,27 +21,27 @@ export const setLimitNumRendered = (limit: boolean) => action(
 	limit,
 );
 
-export const setFocusedBookmarkIndex = (index: O.Option<number>) => action(
+export const setFocusedBookmarkIndex = (index: Option<number>) => action(
 	BookmarksActionTypes.SetFocusedBookmarkIndex,
 	index,
 );
 
-export const setBookmarkEditId = (id: O.Option<Bookmark['id']>) => action(
+export const setBookmarkEditId = (id: Option<Bookmark['id']>) => action(
 	BookmarksActionTypes.SetBookmarkEditId,
 	id,
 );
 
-export const setBookmarkDeleteId = (id: O.Option<Bookmark['id']>) => action(
+export const setBookmarkDeleteId = (id: Option<Bookmark['id']>) => action(
 	BookmarksActionTypes.SetBookmarkDeleteId,
 	id,
 );
 
-export const setStagedBookmarksGroupEditId = (id: O.Option<StagedBookmarksGroup['id']>) => action(
+export const setStagedBookmarksGroupEditId = (id: Option<StagedBookmarksGroup['id']>) => action(
 	BookmarksActionTypes.SetStagedBookmarksGroupEditId,
 	id,
 );
 
-export const setStagedBookmarksGroupBookmarkEditId = (id: O.Option<Bookmark['id']>) => action(
+export const setStagedBookmarksGroupBookmarkEditId = (id: Option<Bookmark['id']>) => action(
 	BookmarksActionTypes.SetStagedBookmarksGroupBookmarkEditId,
 	id,
 );

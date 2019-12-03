@@ -15,20 +15,20 @@ import { error } from 'Modules/error';
 
 const sequenceTTaskEither = sequenceT(TE.taskEither);
 
-const browserTabsQuery = (x: Tabs.QueryQueryInfoType): TO.TaskOption<Tabs.Tab[]> =>
+const browserTabsQuery = (x: Tabs.QueryQueryInfoType): TaskOption<Tabs.Tab[]> =>
 	TO.tryCatch(() => browser.tabs.query(x));
 
-export const getActiveTab: TO.TaskOption<Tabs.Tab> = pipe(
+export const getActiveTab: TaskOption<Tabs.Tab> = pipe(
 	browserTabsQuery({ active: true, currentWindow: true }),
 	TO.chainOption(A.head),
 );
 
-export const getActiveWindowTabs: TO.TaskOption<NEA.NonEmptyArray<Tabs.Tab>> = pipe(
+export const getActiveWindowTabs: TaskOption<NonEmptyArray<Tabs.Tab>> = pipe(
 	browserTabsQuery({ currentWindow: true }),
 	TO.chainOption(NEA.fromArray),
 );
 
-export const getAllTabs: TO.TaskOption<NEA.NonEmptyArray<Tabs.Tab>> = pipe(
+export const getAllTabs: TaskOption<NonEmptyArray<Tabs.Tab>> = pipe(
 	browserTabsQuery({}),
 	TO.chainOption(NEA.fromArray),
 );
@@ -65,19 +65,19 @@ export interface StorageState {
 }
 
 // TODO actually verify the return type with io-ts
-const getLocalStorage = <T extends keyof StorageState>(...ks: T[]): TE.TaskEither<Error, Partial<Pick<StorageState, T>>> =>
+const getLocalStorage = <T extends keyof StorageState>(...ks: T[]): TaskEither<Error, Partial<Pick<StorageState, T>>> =>
 	TE.tryCatch(
 		() => browser.storage.local.get(ks) as Promise<Partial<Pick<StorageState, T>>>,
 		() => new Error('Failed to get local storage'),
 	);
 
-const setLocalStorage = (x: Partial<StorageState>): TE.TaskEither<Error, void> =>
+const setLocalStorage = (x: Partial<StorageState>): TaskEither<Error, void> =>
 	TE.tryCatch(
 		() => browser.storage.local.set(x),
 		() => new Error('Failed to set local storage'),
 	);
 
-export const getBookmarksFromLocalStorage: TE.TaskEither<Error, O.Option<NEA.NonEmptyArray<LocalBookmark>>> = pipe(
+export const getBookmarksFromLocalStorage: TaskEither<Error, Option<NonEmptyArray<LocalBookmark>>> = pipe(
 	getLocalStorage('bookmarks', 'bookmarksSchemaVersion'),
 	// Once upon a time we tried to store tags as a Set. Chrome's extension
 	// storage implementation didn't like this, but Firefox did. The change was
@@ -99,20 +99,20 @@ export const getBookmarksFromLocalStorage: TE.TaskEither<Error, O.Option<NEA.Non
 	)),
 );
 
-export const saveBookmarksToLocalStorage = (bookmarks: LocalBookmark[]): TE.TaskEither<Error, void> => pipe(
+export const saveBookmarksToLocalStorage = (bookmarks: LocalBookmark[]): TaskEither<Error, void> => pipe(
 	setLocalStorage({ bookmarks, bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION }),
 	TE.chain(() => sendIsomorphicMessage(IsomorphicMessage.BookmarksUpdatedInLocalStorage)),
 );
 
-export const getStagedBookmarksGroupsFromLocalStorage: TE.TaskEither<Error, O.Option<StagedBookmarksGroup[]>> = pipe(
+export const getStagedBookmarksGroupsFromLocalStorage: TaskEither<Error, Option<StagedBookmarksGroup[]>> = pipe(
 	getLocalStorage('stagedBookmarksGroups'),
 	TE.map(({ stagedBookmarksGroups }) => O.fromNullable(stagedBookmarksGroups)),
 );
 
-export const saveStagedBookmarksGroupsToLocalStorage = (stagedBookmarksGroups: StagedBookmarksGroup[]): TE.TaskEither<Error, void> =>
+export const saveStagedBookmarksGroupsToLocalStorage = (stagedBookmarksGroups: StagedBookmarksGroup[]): TaskEither<Error, void> =>
 	setLocalStorage({ stagedBookmarksGroups });
 
-export const saveStagedBookmarksAsNewGroupToLocalStorage = (newStagedBookmarks: NEA.NonEmptyArray<LocalBookmarkUnsaved>): TE.TaskEither<Error, void> => {
+export const saveStagedBookmarksAsNewGroupToLocalStorage = (newStagedBookmarks: NonEmptyArray<LocalBookmarkUnsaved>): TaskEither<Error, void> => {
 	const stagedBookmarksGroups = pipe(
 		getStagedBookmarksGroupsFromLocalStorage,
 		TE.map(O.getOrElse((): StagedBookmarksGroup[] => [])),

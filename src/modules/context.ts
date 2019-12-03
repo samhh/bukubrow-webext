@@ -14,7 +14,7 @@ enum ContextMenuEntry {
 
 type SufficientTab = Required<Pick<Tabs.Tab, 'title' | 'url'>>;
 
-export const sendTabsToStagingArea = (tabs: NEA.NonEmptyArray<SufficientTab>) =>
+export const sendTabsToStagingArea = (tabs: NonEmptyArray<SufficientTab>) =>
 	saveStagedBookmarksAsNewGroupToLocalStorage(NEA.nonEmptyArray.map(tabs, tab => ({
 		title: tab.title,
 		desc: '',
@@ -31,10 +31,10 @@ const toSufficientTabs = (tabs: Tabs.Tab[]) => tabs.filter(isSufficientTab).map(
  * Initialise context menu items that each obtain various viable window tabs,
  * and pass those onto the callback.
  */
-export const initContextMenusAndListen = (cb: (tabs: NEA.NonEmptyArray<SufficientTab>) => void) => {
+export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => void) => {
 	// eslint-disable-next-line @typescript-eslint/no-misused-promises
 	browser.contextMenus.onClicked.addListener(async (info) => {
-		let tabs: O.Option<NEA.NonEmptyArray<SufficientTab>> = O.none;
+		let tabs: Option<NonEmptyArray<SufficientTab>> = O.none;
 
 		switch (info.menuItemId) {
 			case ContextMenuEntry.SendAllTabs: {

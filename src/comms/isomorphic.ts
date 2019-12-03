@@ -10,7 +10,7 @@ export enum IsomorphicMessage {
 	SettingsUpdated = 'settings_updated',
 }
 
-export const sendIsomorphicMessage = (msg: IsomorphicMessage): TE.TaskEither<Error, void> => TE.tryCatch(
+export const sendIsomorphicMessage = (msg: IsomorphicMessage): TaskEither<Error, void> => TE.tryCatch(
 	() => browser.runtime.sendMessage(msg),
 	error('Failed to send isomorphic message'),
 );

@@ -3,6 +3,7 @@ type OptionTuple<A, B> = Option<[A, B]>;
 type Either<E, A> = import('fp-ts/lib/Either').Either<E, A>;
 type Task<A> = import('fp-ts/lib/Task').Task<A>;
 type TaskEither<E, A> = import('fp-ts/lib/TaskEither').TaskEither<E, A>;
+type TaskOption<A> = import('fp-ts-contrib/lib/TaskOption').TaskOption<A>;
 type IO<A> = import('fp-ts/lib/IO').IO<A>;
 type NonEmptyArray<A> = import('fp-ts/lib/NonEmptyArray').NonEmptyArray<A>;
 

@@ -50,11 +50,11 @@ const TagList = styled.ul`
 
 interface Props {
 	onSubmit(bookmark: LocalBookmark | LocalBookmarkUnsaved): void;
-	bookmark: O.Option<Partial<LocalBookmark>>;
+	bookmark: Option<Partial<LocalBookmark>>;
 }
 
 interface BookmarkInput {
-	id: O.Option<LocalBookmark['id']>;
+	id: Option<LocalBookmark['id']>;
 	title: LocalBookmark['title'];
 	desc: LocalBookmark['desc'];
 	url: LocalBookmark['url'];

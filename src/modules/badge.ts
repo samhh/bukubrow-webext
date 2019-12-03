@@ -26,7 +26,7 @@ const hrefToUrlReducer = (acc: URL[], href: string): URL[] => pipe(
 	),
 );
 
-const getBookmarksUrlsFromLocalStorage: TE.TaskEither<Error, O.Option<URL[]>> = pipe(
+const getBookmarksUrlsFromLocalStorage: TaskEither<Error, Option<URL[]>> = pipe(
 	getBookmarksFromLocalStorage,
 	TE.map(O.map(flow(
 		A.map(bm => bm.url),

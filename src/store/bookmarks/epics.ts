@@ -36,7 +36,7 @@ export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 
 export const openBookmarkAndExit = (
 	bmId: LocalBookmark['id'],
-	stagedBookmarksGroupId: O.Option<StagedBookmarksGroup['id']> = O.none,
+	stagedBookmarksGroupId: Option<StagedBookmarksGroup['id']> = O.none,
 ): ThunkAC => async (_, getState) => {
 	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
 

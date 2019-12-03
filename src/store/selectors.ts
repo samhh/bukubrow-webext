@@ -10,7 +10,7 @@ import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
 import compareURLs, { URLMatch } from 'Modules/compare-urls';
 import { createURL } from 'Modules/url';
 
-const addBookmarkWeight = (activeTabURL: O.Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
+const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
 	weight: pipe(
 		OT.optionTuple(activeTabURL, O.fromEither(createURL(bookmark.url))),
