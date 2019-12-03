@@ -36,7 +36,7 @@ const getBookmarksUrlsFromLocalStorage: TaskEither<Error, Option<URL[]>> = pipe(
 
 let urlState: URL[] = [];
 
-const syncBookmarks = async (): Promise<void> => {
+const syncBookmarks: Task<void> = async () => {
 	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage();
 
 	if (E.isRight(bookmarkUrls)) {
@@ -64,7 +64,7 @@ const checkUrl = (url: URL): [URLMatch, number] => {
 	return [bestMatch, numMatches];
 };
 
-const updateBadge = async (badgeOpt: BadgeDisplay): Promise<void> => {
+const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async () => {
 	const urlRes = await pipe(
 		getActiveTab,
 		TO.chainOption(tab => O.fromNullable(tab.url)),
@@ -118,7 +118,7 @@ export const initBadgeAndListen = () => {
 	const update = async () => {
 		const badgeOpt = await getBadgeOptOrDefault();
 		if (badgeOpt !== BadgeDisplay.None) await syncBookmarks();
-		updateBadge(badgeOpt);
+		updateBadge(badgeOpt)();
 	};
 
 	// Update immediately on load

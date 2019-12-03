@@ -126,7 +126,7 @@ export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Pro
 };
 
 export const updateBookmark = (bookmark: LocalBookmark): ThunkAC<Promise<void>> => async (dispatch) => {
-	await updateBookmarksToNative([untransform(bookmark)]);
+	await updateBookmarksToNative([untransform(bookmark)])();
 	dispatch(syncBookmarks());
 
 	dispatch(setPage(Page.Search));
@@ -138,7 +138,7 @@ export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, get
 	if (O.isSome(bookmarkDeleteId)) {
 		const bookmarkId = bookmarkDeleteId.value;
 
-		await deleteBookmarksFromNative([bookmarkId]);
+		await deleteBookmarksFromNative([bookmarkId])();
 		dispatch(syncBookmarks());
 		dispatch(setDeleteBookmarkModalDisplay(false));
 	}

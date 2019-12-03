@@ -25,7 +25,7 @@ export interface Settings {
 
 export const saveSettings = (opts: Settings) => browser.storage.sync.set(opts);
 
-const getSettings = (): Promise<Partial<Settings>> => browser.storage.sync.get();
+const getSettings: Task<Partial<Settings>> = () => browser.storage.sync.get();
 
 export const getActiveTheme: Task<Option<Theme>> = () => getSettings()
 	.then(({ theme }) => toMaybeTheme(theme));
