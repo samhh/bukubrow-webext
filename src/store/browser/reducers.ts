@@ -12,7 +12,7 @@ const initialState = {
 
 const browserReducer: Reducer<BrowserState, BrowserActions> = (state = initialState, action) => {
 	switch (action.type) {
-		case BrowserActionTypes.SyncBrowser:
+		case BrowserActionTypes.SyncBrowserSuccess:
 			return {
 				...state,
 				pageTitle: action.payload.pageTitle,

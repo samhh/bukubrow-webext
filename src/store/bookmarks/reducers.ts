@@ -20,7 +20,7 @@ const initialState = {
 
 const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = initialState, action) => {
 	switch (action.type) {
-		case BookmarksActionTypes.SetAllBookmarks:
+		case BookmarksActionTypes.SyncBookmarksSuccess:
 			return {
 				...state,
 				bookmarks: [...action.payload],

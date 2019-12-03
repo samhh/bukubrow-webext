@@ -15,7 +15,17 @@ export interface BookmarksState {
 }
 
 export enum BookmarksActionTypes {
-	SetAllBookmarks = 'SET_ALL_BOOKMARKS',
+	AddBookmarks = 'ADD_BOOKMARKS',
+	SyncBookmarksRequest = 'SYNC_BOOKMARKS_REQUEST',
+	SyncBookmarksSuccess = 'SYNC_BOOKMARKS_SUCCESS',
+	SyncBookmarksFailure = 'SYNC_BOOKMARKS_FAILURE',
+	OpenBookmarkRequest = 'OPEN_BOOKMARK_REQUEST',
+	OpenBookmarkSuccess = 'OPEN_BOOKMARK_SUCCESS',
+	OpenBookmarkFailure = 'OPEN_BOOKMARK_FAILURE',
+	OpenAllFilteredBookmarks = 'OPEN_ALL_FILTERED_BOOKMARKS',
+	AddAllStagedBookmarks = 'ADD_ALL_STAGED_BOOKMARKS',
+	DeleteStagedBookmark = 'DELETE_STAGED_BOOKMARK',
+	SyncStagedGroups = 'SYNC_STAGED_GROUPS',
 	SetAllStagedBookmarksGroups = 'SET_ALL_STAGED_BOOKMARKS_GROUPS',
 	DeleteStagedBookmarksGroup = 'DELETE_STAGED_BOOKMARKS_GROUP',
 	SetLimitNumRendered = 'SET_LIMIT_NUM_RENDERED',

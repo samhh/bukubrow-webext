@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'Store';
 import { matchesTerminology } from 'Modules/terminology';
 import { setDisplayOpenAllBookmarksConfirmation } from 'Store/user/actions';
-import { openAllFilteredBookmarksAndExit } from 'Store/bookmarks/epics';
+import { openAllFilteredBookmarks } from 'Store/bookmarks/actions';
 import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import Button from 'Components/button';
 
@@ -32,7 +32,7 @@ const OpenAllBookmarksConfirmation: FC = () => {
 					</header>
 
 					<Button onClick={() => dispatch(setDisplayOpenAllBookmarksConfirmation(false))}>Cancel</Button>
-					<ConfirmationButton onClick={() => dispatch(openAllFilteredBookmarksAndExit())}>Open</ConfirmationButton>
+					<ConfirmationButton onClick={() => dispatch(openAllFilteredBookmarks())}>Open</ConfirmationButton>
 				</Modal>
 			)}
 		</>

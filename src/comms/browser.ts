@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flow } from 'fp-ts/lib/function';
+import { flow, constFalse } from 'fp-ts/lib/function';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as O from 'fp-ts/lib/Option';
 import * as T from 'fp-ts/lib/Task';
@@ -46,19 +46,17 @@ const isNewTabPage = ({ url = '', title = '' }: Pick<Tabs.Tab, 'url' | 'title'>)
 /// The active tab will not update quickly enough to allow this function to be
 /// called safely in a loop. Therefore, the second argument forces consumers to
 /// verify that this is only the first tab they're opening.
-export const openBookmarkInAppropriateTab = async (url: string, isFirstTabToOpen: boolean) => {
-	const canOpenInCurrentTab = await pipe(
-		getActiveTab,
-		TO.fold(
-			() => T.of(false),
-			flow(isNewTabPage, T.of),
-		),
-	)();
-
-	// Updates active window active tab if no ID specified
-	if (canOpenInCurrentTab && isFirstTabToOpen) await browser.tabs.update(undefined, { url });
-	else await browser.tabs.create({ url });
-};
+export const openBookmarkInAppropriateTab = (url: string, isFirstTab: boolean) => pipe(
+	getActiveTab,
+	T.map(O.fold(
+		constFalse,
+		isNewTabPage,
+	)),
+	T.chain((canOpenInCurrentTab) => () => canOpenInCurrentTab && isFirstTab
+		? browser.tabs.update(undefined, { url })
+		: browser.tabs.create({ url })
+	),
+);
 
 export interface StorageState {
 	bookmarks: LocalBookmark[];

@@ -3,12 +3,11 @@ import { onTabActivity } from 'Comms/browser';
 import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkAC, initAutoStoreSync } from 'Store';
-import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
+import { setLimitNumRendered, setFocusedBookmarkIndex, syncBookmarks, syncStagedGroups } from 'Store/bookmarks/actions';
+import { requestPermanentError } from 'Store/notices/actions';
 import { setActiveTheme } from 'Store/user/actions';
 import { setSearchFilter } from 'Store/input/actions';
-import { addPermanentError } from 'Store/notices/epics';
-import { syncStagedBookmarksGroups, syncBookmarks } from 'Store/bookmarks/epics';
-import { syncBrowserInfo } from 'Store/browser/epics';
+import { setPageMeta } from 'Store/browser/actions';
 import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
 const onLoadPreComms = (): ThunkAC => (dispatch) => {
@@ -22,14 +21,14 @@ const onLoadPreComms = (): ThunkAC => (dispatch) => {
 const onLoadPostComms = (): ThunkAC => (dispatch) => {
 	// Store sync initialised here to prevent race condition with staged groups
 	initAutoStoreSync();
-	dispatch(syncBookmarks());
-	dispatch(syncStagedBookmarksGroups());
+	dispatch(syncBookmarks.request());
+	dispatch(syncStagedGroups());
 
 	// Sync browser info once now on load and then again whenever there's any tab
 	// activity
-	dispatch(syncBrowserInfo());
+	dispatch(setPageMeta.request());
 	onTabActivity(() => {
-		dispatch(syncBrowserInfo());
+		dispatch(setPageMeta.request());
 	});
 };
 
@@ -44,19 +43,19 @@ export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
 			break;
 
 		case HostVersionCheckResult.HostTooNew:
-			dispatch(addPermanentError('The WebExtension is outdated (relative to the host).'));
+			dispatch(requestPermanentError('The WebExtension is outdated (relative to the host).'));
 			break;
 
 		case HostVersionCheckResult.HostOutdated:
-			dispatch(addPermanentError('The host is outdated.'));
+			dispatch(requestPermanentError('The host is outdated.'));
 			break;
 
 		case HostVersionCheckResult.NoComms:
-			dispatch(addPermanentError('The host could not be found.'));
+			dispatch(requestPermanentError('The host could not be found.'));
 			break;
 
 		case HostVersionCheckResult.UnknownError:
-			dispatch(addPermanentError('An unknown error occurred.'));
+			dispatch(requestPermanentError('An unknown error occurred.'));
 			break;
 	}
 };

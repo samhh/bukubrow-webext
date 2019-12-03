@@ -1,133 +1,212 @@
 import { pipe } from 'fp-ts/lib/pipeable';
+import { flow } from 'fp-ts/lib/function';
+import * as T from 'fp-ts/lib/Task';
+import * as TE from 'fp-ts/lib/TaskEither';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
-import { ThunkAC } from 'Store';
+import { asArray } from 'Modules/array';
+import { ofType, fromTask, filterRight, tap_ } from 'Modules/rx';
+import { from, of, concat } from 'rxjs';
+import * as Rx from 'rxjs/operators';
+import { Epic, ThunkAC } from 'Store';
+import { combineEpics } from 'redux-observable';
+import { BookmarksActionTypes } from 'Store/bookmarks/types';
 import {
 	setAllStagedBookmarksGroups, deleteStagedBookmarksGroup, deleteStagedBookmarksGroupBookmark,
-	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
-	setDeleteBookmarkModalDisplay, setAllBookmarks,
+	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex, addBookmarks,
+	setDeleteBookmarkModalDisplay, syncBookmarks, openBookmark,
 } from 'Store/bookmarks/actions';
 import { setPage, setHasBinaryComms } from 'Store/user/actions';
-import { addPermanentError } from 'Store/notices/epics';
+import { requestPermanentError } from 'Store/notices/actions';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
 import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from 'Comms/native';
 import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab } from 'Comms/browser';
 import { untransform, transform } from 'Modules/bookmarks';
 import { Page } from 'Store/user/types';
 
-export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
-	const res = await getBookmarksFromNative();
-	const mapped = pipe(res, E.map(A.map(transform)));
+const getSyncBookmarksActions = pipe(
+	getBookmarksFromNative,
+	TE.map(flow(
+		A.map(transform),
+		(xs) => [
+			syncBookmarks.success(xs),
+			setFocusedBookmarkIndex(xs.length ? O.some(0) : O.none),
+			setHasBinaryComms(true),
+		],
+	)),
+);
 
-	if (E.isRight(mapped)) {
-		const bms = mapped.right;
+const syncBookmarksAttemptEpic: Epic = (a$) => a$.pipe(
+	ofType(BookmarksActionTypes.SyncBookmarksRequest),
+	Rx.switchMap(() => fromTask(getSyncBookmarksActions).pipe(
+		filterRight,
+		Rx.switchMap(from)
+	)),
+);
 
-		dispatch(setAllBookmarks(bms));
-		dispatch(setFocusedBookmarkIndex(bms.length ? O.some(0) : O.none));
-		dispatch(setHasBinaryComms(true));
-	} else {
-		const msg = 'Failed to sync bookmarks.';
+const syncBookmarksFailedEpic: Epic = (a$) => a$.pipe(
+	ofType(BookmarksActionTypes.SyncBookmarksFailure),
+	Rx.switchMap(() => [
+		setHasBinaryComms(false),
+		requestPermanentError('Failed to sync bookmarks'),
+	]),
+);
 
-		dispatch(setHasBinaryComms(false));
-		dispatch(addPermanentError(msg));
-	}
-};
+const filterMapBmById = <K extends keyof LocalBookmark>(k: K) => (id: LocalBookmark['id']) =>
+	(x: LocalBookmark): O.Option<LocalBookmark[K]> => id === x.id
+		? O.some(x[k])
+		: O.none;
 
-export const openBookmarkAndExit = (
-	bmId: LocalBookmark['id'],
-	stagedBookmarksGroupId: O.Option<StagedBookmarksGroup['id']> = O.none,
-): ThunkAC => async (_, getState) => {
-	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
+const openBookmarkAttemptEpic: Epic = (a$, s$) => a$.pipe(
+	ofType(BookmarksActionTypes.OpenBookmarkRequest),
+	Rx.map(({ payload }) => {
+		const filterMapBmUrl = filterMapBmById('url')(payload.bookmarkId);
 
-	const bookmark = O.fold(
-		() => A.findFirst((bm: LocalBookmark) => bm.id === bmId)(bookmarks),
-		(grpId: StagedBookmarksGroup['id']) => pipe(
-			stagedBookmarksGroups,
-			A.findFirst(grp => grp.id === grpId),
-			O.map(grp => grp.bookmarks),
-			O.chain(A.findFirst(bm => bm.id === bmId)),
+		return pipe(
+			payload.stagedBookmarksGroupId,
+			O.fold(
+				() => pipe(
+					s$.value.bookmarks.bookmarks,
+					A.findFirstMap(filterMapBmUrl),
+				),
+				(grpId) => pipe(
+					s$.value.bookmarks.stagedBookmarksGroups,
+					A.findFirstMap(grp => grp.id === grpId ? O.some(grp.bookmarks) : O.none),
+					O.chain(A.findFirstMap(filterMapBmUrl)),
+				),
+			),
+			O.fold<string, ReturnType<typeof openBookmark.failure | typeof openBookmark.success>>(
+				() => openBookmark.failure(),
+				(url) => openBookmark.success(url),
+			),
+		);
+	}),
+);
+
+const openBookmarkSuccessEpic: Epic = (a$) => a$.pipe(
+	ofType(BookmarksActionTypes.OpenBookmarkSuccess),
+	tap_(({ payload }) => {
+		openBookmarkInAppropriateTab(payload, true)().then(window.close);
+	}),
+);
+
+const openAllFilteredBookmarksEpic: Epic = (a$, s$) => a$.pipe(
+	ofType(BookmarksActionTypes.OpenAllFilteredBookmarks),
+	tap_(() => {
+		const xs = pipe(
+			getUnlimitedFilteredBookmarks(s$.value),
+			A.mapWithIndex((i, { url }) => openBookmarkInAppropriateTab(url, i === 0)),
+		);
+
+		Promise.all(xs).then(window.close);
+	}),
+);
+
+const addAllStagedBookmarksEpic: Epic = (a$, s$) => a$.pipe(
+	ofType(BookmarksActionTypes.AddAllStagedBookmarks),
+	Rx.switchMap(({ payload }) => pipe(
+		s$.value.bookmarks.stagedBookmarksGroups,
+		A.findFirst(grp => grp.id === payload),
+		O.fold(
+			() => [],
+			// Remove local ID else bookmarks will be detected as saved by
+			// untransform overload
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			(grp) => grp.bookmarks.map(({ id, ...rest }): LocalBookmarkUnsaved => ({ ...rest })),
 		),
-	)(stagedBookmarksGroupId);
+		(xs) => [
+			addBookmarks(xs),
+			deleteStagedBookmarksGroup(payload),
+		],
+	)),
+);
 
-	if (O.isSome(bookmark)) {
-		const { url } = bookmark.value;
-		await openBookmarkInAppropriateTab(url, true);
+const deleteStagedBookmarkEpic: Epic = (a$, s$) => a$.pipe(
+	ofType(BookmarksActionTypes.DeleteStagedBookmark),
+	Rx.switchMap(({ payload: { groupId, bookmarkId } }) => pipe(
+		s$.value.bookmarks.stagedBookmarksGroups,
+		A.findFirst(g => g.id === groupId),
+		O.fold(
+			() => [],
+			// If deleting last bookmark in group, delete entire group and return to
+			// groups list, else delete the bookmark leaving group intact
+			(g) => g.bookmarks.length === 1
+				? [
+					deleteStagedBookmarksGroup(groupId),
+					setPage(Page.StagedGroupsList),
+				]
+				: [
+					deleteStagedBookmarksGroupBookmark(groupId, bookmarkId),
+				],
+		),
+	)),
+);
 
-		window.close();
-	}
-};
+const syncStagedGroupsEpic: Epic = (a$) => a$.pipe(
+	ofType(BookmarksActionTypes.SyncStagedGroups),
+	Rx.switchMap(() => pipe(
+		getStagedBookmarksGroupsFromLocalStorage,
+		T.map(flow(
+			O.fromEither,
+			O.flatten,
+			O.getOrElse<Array<StagedBookmarksGroup>>(() => []),
+			setAllStagedBookmarksGroups,
+		)),
+		fromTask,
+	)),
+);
 
-export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
-	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
+const addBookmarksEpic: Epic = (a$) => a$.pipe(
+	ofType(BookmarksActionTypes.AddBookmarks),
+	// TODO failing because, whereas switchMap does allow returning array, it does
+	// not (per typings) allow returning an array within an observable, which is
+	// what we want to do given the promise in this flow
+	//Rx.switchMap(({ payload: xs }) => pipe(
+	//	xs,
+	//	asArray,
+	//	A.map(untransform),
+	//	saveBookmarksToNative,
+	//	T.map(E.fold(
+	//		() => [],
+	//		() => [
+	//			syncBookmarks.request(),
+	//			setPage(Page.Search),
+	//		],
+	//	)),
+	//	fromTask,
+	//	r$ => r$.pipe(
+	//		// TODO pretty sure this is not actually working...
+	//		// Rx.mergeMap(x => of(...x)),
+	//		//
+	//		x => x,
+	//	),
+	//)),
 
-	await Promise.all(filteredBookmarks.map(({ url }, index) => openBookmarkInAppropriateTab(url, index === 0)));
+	// array - OK
+	Rx.switchMap(() => [setPage(Page.Search)]),
 
-	window.close();
-};
+	// observable single - OK
+	Rx.switchMap(() => of(setPage(Page.Search))),
 
-export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id']): ThunkAC<Promise<void>> => async (dispatch, getState) => {
-	const { bookmarks: { stagedBookmarksGroups } } = getState();
+	// observable array - FAIL
+	Rx.switchMap(() => of([setPage(Page.Search)])),
+);
 
-	const bookmarks = pipe(
-		stagedBookmarksGroups,
-		A.findFirst(grp => grp.id === groupId),
-		// Remove local ID else bookmarks will be detected as saved by
-		// untransform overload
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		O.map(grp => grp.bookmarks.map(({ id, ...rest }): LocalBookmarkUnsaved => ({ ...rest }))),
-		O.getOrElse(() => [] as LocalBookmarkUnsaved[]),
-	);
+// export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<void>> => async (dispatch) => {
+// 	await dispatch(addManyBookmarks([bookmark]));
+// };
 
-	await dispatch(addManyBookmarks(bookmarks));
-	dispatch(deleteStagedBookmarksGroup(groupId));
-};
+// export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
+// 	await saveBookmarksToNative(bookmarks.map(untransform));
+// 	dispatch(syncBookmarks.request());
 
-export const deleteStagedBookmarksGroupBookmarkOrEntireGroup = (
-	grpId: StagedBookmarksGroup['id'],
-	bmId: LocalBookmark['id'],
-): ThunkAC => (dispatch, getState) => {
-	const { bookmarks: { stagedBookmarksGroups } } = getState();
-
-	const grp = stagedBookmarksGroups.find(g => g.id === grpId);
-	if (!grp) return;
-
-	if (grp.bookmarks.length === 1) {
-		// If deleting last bookmark in group, delete entire group and return to
-		// groups list
-		dispatch(deleteStagedBookmarksGroup(grpId));
-		dispatch(setPage(Page.StagedGroupsList));
-	} else {
-		// Else delete the bookmark leaving group intact
-		dispatch(deleteStagedBookmarksGroupBookmark(grpId, bmId));
-	}
-};
-
-export const syncStagedBookmarksGroups = (): ThunkAC<Promise<void>> => async (dispatch) => {
-	const stagedBookmarksGroups = pipe(
-		await getStagedBookmarksGroupsFromLocalStorage(),
-		O.fromEither,
-		O.flatten,
-		O.getOrElse(() => [] as StagedBookmarksGroup[]),
-	);
-
-	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups));
-};
-
-export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<void>> => async (dispatch) => {
-	await dispatch(addManyBookmarks([bookmark]));
-};
-
-export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
-	await saveBookmarksToNative(bookmarks.map(untransform));
-	dispatch(syncBookmarks());
-
-	dispatch(setPage(Page.Search));
-};
+// 	dispatch(setPage(Page.Search));
+// };
 
 export const updateBookmark = (bookmark: LocalBookmark): ThunkAC<Promise<void>> => async (dispatch) => {
 	await updateBookmarksToNative([untransform(bookmark)]);
-	dispatch(syncBookmarks());
+	dispatch(syncBookmarks.request());
 
 	dispatch(setPage(Page.Search));
 };
@@ -139,7 +218,7 @@ export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, get
 		const bookmarkId = bookmarkDeleteId.value;
 
 		await deleteBookmarksFromNative([bookmarkId]);
-		dispatch(syncBookmarks());
+		dispatch(syncBookmarks.request());
 		dispatch(setDeleteBookmarkModalDisplay(false));
 	}
 };
@@ -188,4 +267,17 @@ export const attemptFocusedBookmarkIndexDecrement = (): ThunkAC<boolean> => (dis
 		),
 	);
 };
+
+const bookmarksEpic = combineEpics(
+	syncBookmarksAttemptEpic,
+	syncBookmarksFailedEpic,
+	openBookmarkAttemptEpic,
+	openBookmarkSuccessEpic,
+	openAllFilteredBookmarksEpic,
+	addAllStagedBookmarksEpic,
+	deleteStagedBookmarkEpic,
+	syncStagedGroupsEpic,
+);
+
+export default bookmarksEpic;
 

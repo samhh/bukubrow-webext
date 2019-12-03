@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk, { ThunkMiddleware, ThunkAction } from 'redux-thunk';
+import { createEpicMiddleware, Epic as UntypedEpic } from 'redux-observable';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import { useSelector as useSelectorUntyped, useDispatch as useDispatchRaw, TypedUseSelectorHook } from 'react-redux';
 import { onLoad } from 'Store/epics';
@@ -21,7 +22,7 @@ const rootReducer = combineReducers({
 
 export type AppState = ReturnType<typeof rootReducer>;
 
-type AllActions =
+export type AllActions =
 	| BookmarksActions
 	| BrowserActions
 	| InputActions
@@ -30,7 +31,10 @@ type AllActions =
 
 export type ThunkAC<R = void> = ThunkAction<R, AppState, undefined, AllActions>;
 
-const middleware = applyMiddleware(thunk as ThunkMiddleware<AppState, AllActions>);
+export type Epic = UntypedEpic<AllActions, AllActions, AppState, unknown>;
+
+const epicMiddleware = createEpicMiddleware();
+const middleware = applyMiddleware(thunk as ThunkMiddleware<AppState, AllActions>, epicMiddleware);
 const store = createStore(
 	rootReducer,
 	// Assertion fixes devtools compose breaking thunk middleware type override

@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'Store';
-import { setLimitNumRendered } from 'Store/bookmarks/actions';
-import { openAllFilteredBookmarksAndExit, syncBookmarks } from 'Store/bookmarks/epics';
+import { setLimitNumRendered, syncBookmarks, openAllFilteredBookmarks } from 'Store/bookmarks/actions';
 import { setPage } from 'Store/user/actions';
 import { getNumFilteredUnrenderedBookmarks } from 'Store/selectors';
 import { Page } from 'Store/user/types';
@@ -23,8 +22,8 @@ const Search: FC = () => {
 		if (!evt.ctrlKey) return;
 
 		if (evt.key === 'd') dispatch(setPage(Page.AddBookmark));
-		if (evt.key === 'o') dispatch(openAllFilteredBookmarksAndExit());
-		if (evt.key === 'r') dispatch(syncBookmarks());
+		if (evt.key === 'o') dispatch(openAllFilteredBookmarks());
+		if (evt.key === 'r') dispatch(syncBookmarks.request());
 	});
 
 	return (

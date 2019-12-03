@@ -1,11 +1,39 @@
 import * as O from 'fp-ts/lib/Option';
-import { action } from 'typesafe-actions';
+import { action, createAsyncAction } from 'typesafe-actions';
 import { BookmarksActionTypes, Bookmark } from './types';
 
-export const setAllBookmarks = (bookmarks: Bookmark[]) => action(
-	BookmarksActionTypes.SetAllBookmarks,
-	bookmarks,
+type URL = string;
+
+export const addBookmarks = (xs: LocalBookmarkUnsaved | Array<LocalBookmarkUnsaved>) => action(
+	BookmarksActionTypes.AddBookmarks,
+	xs,
 );
+
+export const syncBookmarks = createAsyncAction(
+	BookmarksActionTypes.SyncBookmarksRequest,
+	BookmarksActionTypes.SyncBookmarksSuccess,
+	BookmarksActionTypes.SyncBookmarksFailure,
+)<void, Array<Bookmark>, void>();
+
+export const openBookmark = createAsyncAction(
+	BookmarksActionTypes.OpenBookmarkRequest,
+	BookmarksActionTypes.OpenBookmarkSuccess,
+	BookmarksActionTypes.OpenBookmarkFailure,
+)<{ bookmarkId: Bookmark['id']; stagedBookmarksGroupId: O.Option<StagedBookmarksGroup['id']> }, URL, void>();
+
+export const openAllFilteredBookmarks = () => action(BookmarksActionTypes.OpenAllFilteredBookmarks);
+
+export const addAllStagedBookmarks = (x: StagedBookmarksGroup['id']) => action(
+	BookmarksActionTypes.AddAllStagedBookmarks,
+	x,
+);
+
+export const deleteStagedBookmark = (groupId: StagedBookmarksGroup['id'], bookmarkId: Bookmark['id']) => action(
+	BookmarksActionTypes.DeleteStagedBookmark,
+	{ groupId, bookmarkId },
+);
+
+export const syncStagedGroups = () => action(BookmarksActionTypes.SyncStagedGroups);
 
 export const setAllStagedBookmarksGroups = (groups: StagedBookmarksGroup[]) => action(
 	BookmarksActionTypes.SetAllStagedBookmarksGroups,

@@ -1,23 +1,59 @@
-import sleep from 'Modules/sleep';
-import { ThunkAC } from 'Store';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { flow } from 'fp-ts/lib/function';
+import * as A from 'fp-ts/lib/Array';
+import { timer } from 'rxjs';
+import * as Rx from 'rxjs/operators';
+import { ofType } from 'Modules/rx';
+import { combineEpics } from 'redux-observable';
+import { Epic } from 'Store';
 import { addError, deleteError } from './actions';
-import { NoticeId, NoticeMsg } from './types';
+import { NoticesActionTypes, NoticesState, NoticeMsg } from './types';
 import { createUuid } from 'Modules/uuid';
+import { toString } from 'Modules/string';
+import { toNumber } from 'Modules/number';
+import { keysOf } from 'Modules/object';
 
-export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (dispatch, getState) => {
-	const errorIds = Object.keys(getState().notices.errors);
-	const newId = String(createUuid(errorIds.map(Number)));
+type Errors = NoticesState['errors'];
 
-	dispatch(addError(newId, errorMsg));
+const getErrorIds = (x: Errors) => pipe(
+	x,
+	keysOf,
+	A.filterMap(toNumber),
+);
 
-	return newId;
-};
+const createUniqueErrorId = (x: Errors) => pipe(
+	x,
+	getErrorIds,
+	createUuid,
+	toString,
+);
 
-export const addTransientError = (errorMsg: NoticeMsg, timeout = 5000): ThunkAC<Promise<void>> => async (dispatch) => {
-	const id = dispatch(addPermanentError(errorMsg));
+const createError = (msg: NoticeMsg, timeout: number) => flow(
+	createUniqueErrorId,
+	id => addError(id, msg, timeout),
+);
 
-	await sleep(timeout);
+const addPermanentErrorEpic: Epic = (a$, s$) => a$.pipe(
+	ofType(NoticesActionTypes.AddPermanentErrorRequest),
+	Rx.map(({ payload: msg }) => createError(msg, Infinity)(s$.value.notices.errors)),
+);
 
-	dispatch(deleteError(id));
-};
+const addTransientErrorEpic: Epic = (a$, s$) => a$.pipe(
+	ofType(NoticesActionTypes.AddTransientErrorRequest),
+	Rx.map(({ payload: msg }) => createError(msg, 5000)(s$.value.notices.errors)),
+);
+
+const removeTransientErrorEpic: Epic = a$ => a$.pipe(
+	ofType(NoticesActionTypes.AddError),
+	Rx.filter(({ payload: { timeout } }) => timeout !== Infinity),
+	Rx.mergeMap(({ payload: { key, timeout } }) => timer(timeout).pipe(Rx.mapTo(deleteError(key)))),
+);
+
+const noticesEpic = combineEpics(
+	addPermanentErrorEpic,
+	addTransientErrorEpic,
+	removeTransientErrorEpic,
+);
+
+export default noticesEpic;
 

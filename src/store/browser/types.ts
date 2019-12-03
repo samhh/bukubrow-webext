@@ -4,5 +4,7 @@ export interface BrowserState {
 }
 
 export enum BrowserActionTypes {
-	SyncBrowser = 'SYNC_BROWSER',
+	SyncBrowserRequest = 'SYNC_BROWSER_REQUEST',
+	SyncBrowserSuccess = 'SYNC_BROWSER_SUCCESS',
+	SyncBrowserFailure = 'SYNC_BROWSER_FAILURE',
 }

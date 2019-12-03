@@ -3,10 +3,10 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 import { useSelector, useDispatch } from 'Store';
 import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
+import { openBookmark } from 'Store/bookmarks/actions';
 import {
 	initiateBookmarkEdit, initiateBookmarkDeletion,
 	attemptFocusedBookmarkIndexIncrement, attemptFocusedBookmarkIndexDecrement,
-	openBookmarkAndExit,
 } from 'Store/bookmarks/epics';
 import { Key } from 'ts-key-enum';
 import { scrollToEl } from 'Modules/scroll-window';
@@ -39,7 +39,7 @@ const BookmarksList: FC = () => {
 			const { focusedBookmark: liveFocusedBookmark } = keydownDataRef.current;
 
 			if (O.isSome(liveFocusedBookmark)) {
-				dispatch(openBookmarkAndExit(liveFocusedBookmark.value.id));
+				dispatch(openBookmark.request({ bookmarkId: liveFocusedBookmark.value.id, stagedBookmarksGroupId: O.none }));
 			}
 		}
 
@@ -75,7 +75,7 @@ const BookmarksList: FC = () => {
 						parsedFilter={parsedFilter}
 						isFocused={isFocused}
 						activeTabURLMatch={bookmark.weight}
-						openBookmark={bmId => dispatch(openBookmarkAndExit(bmId))}
+						openBookmark={bmId => dispatch(openBookmark.request({ bookmarkId: bmId, stagedBookmarksGroupId: O.none }))}
 						onEdit={bmId => dispatch(initiateBookmarkEdit(bmId))}
 						onDelete={bmId => dispatch(initiateBookmarkDeletion(bmId))}
 						ref={isFocused ? activeBookmarkEl : undefined}

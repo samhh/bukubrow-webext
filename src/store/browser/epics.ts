@@ -1,18 +1,32 @@
+import { pipe } from 'fp-ts/lib/pipeable';
+import { flow } from 'fp-ts/lib/function';
+import * as T from 'fp-ts/lib/Task';
 import * as O from 'fp-ts/lib/Option';
 import * as OT from 'Types/optionTuple';
+import * as Rx from 'rxjs/operators';
+import { ofType, fromTask, filterSome } from 'Modules/rx';
+import { combineEpics } from 'redux-observable';
+import { Epic } from 'Store';
 import { getActiveTab } from 'Comms/browser';
-import { ThunkAC } from 'Store';
+import { BrowserActionTypes } from './types';
 import { setPageMeta } from './actions';
 
-export const syncBrowserInfo = (): ThunkAC<Promise<void>> => async (dispatch) => {
-	const tab = O.option.chain(
-		await getActiveTab(),
-		tab => OT.fromNullable(tab.title, tab.url),
-	);
+type PageMetaAction = ReturnType<typeof setPageMeta.success>;
 
-	if (O.isSome(tab)) {
-		const [title, url] = tab.value;
-		dispatch(setPageMeta(title, url));
-	}
-};
+const setPageMetaFromActiveTab: T.Task<O.Option<PageMetaAction>> = pipe(
+	getActiveTab,
+	T.map(flow(
+		O.chain(tab => OT.fromNullable(tab.title, tab.url)),
+		O.map(([pageTitle, pageUrl]) => setPageMeta.success({ pageTitle, pageUrl })),
+	)),
+);
+
+const syncBrowserInfoEpic: Epic = (a$) => a$.pipe(
+	ofType(BrowserActionTypes.SyncBrowserRequest),
+	Rx.switchMap(() => fromTask(setPageMetaFromActiveTab).pipe(filterSome)),
+);
+
+const browserEpic = combineEpics(syncBrowserInfoEpic);
+
+export default browserEpic;
 

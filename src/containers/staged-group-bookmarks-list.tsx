@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'Store';
 import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from 'Store/bookmarks/actions';
 import { setPage } from 'Store/user/actions';
 import { getStagedGroupToEditWeightedBookmarks } from 'Store/selectors';
-import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit, addAllBookmarksFromStagedGroup } from 'Store/bookmarks/epics';
+import { openBookmark, addAllStagedBookmarks, deleteStagedBookmark } from 'Store/bookmarks/actions';
 import { Page } from 'Store/user/types';
 import { LocalBookmarkWeighted } from 'Modules/bookmarks';
 import styled from 'Styles';
@@ -37,7 +37,7 @@ const StagedGroupBookmarksList: FC = () => {
 	const dispatch = useDispatch();
 
 	const handleOpenBookmark = (bmId: number) => {
-		dispatch(openBookmarkAndExit(bmId, stagedGroupId));
+		dispatch(openBookmark.request({ bookmarkId: bmId, stagedBookmarksGroupId: stagedGroupId }));
 	};
 
 	const handleEditBookmark = (bmId: number) => {
@@ -49,14 +49,14 @@ const StagedGroupBookmarksList: FC = () => {
 		() => [noop, noop, noop],
 		grpId => [
 			(bmId: number) => {
-				dispatch(deleteStagedBookmarksGroupBookmarkOrEntireGroup(grpId, bmId));
+				dispatch(deleteStagedBookmark(grpId, bmId));
 			},
 			() => {
 				dispatch(deleteStagedBookmarksGroup(grpId));
 				dispatch(setPage(Page.StagedGroupsList));
 			},
 			() => {
-				dispatch(addAllBookmarksFromStagedGroup(grpId));
+				dispatch(addAllStagedBookmarks(grpId));
 				dispatch(setPage(Page.StagedGroupsList));
 			},
 		],
