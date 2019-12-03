@@ -52,7 +52,7 @@ export const openBookmarkAndExit = (
 
 	if (O.isSome(bookmark)) {
 		const { url } = bookmark.value;
-		await openBookmarkInAppropriateTab(url, true);
+		await openBookmarkInAppropriateTab(true)(url)();
 
 		window.close();
 	}
@@ -61,7 +61,7 @@ export const openBookmarkAndExit = (
 export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
 	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
 
-	await Promise.all(filteredBookmarks.map(({ url }, index) => openBookmarkInAppropriateTab(url, index === 0)));
+	await Promise.all(filteredBookmarks.map(({ url }, index) => openBookmarkInAppropriateTab(index === 0)(url)()));
 
 	window.close();
 };
@@ -119,7 +119,7 @@ export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<voi
 };
 
 export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
-	await saveBookmarksToNative(bookmarks.map(untransform));
+	await saveBookmarksToNative(bookmarks.map(untransform))();
 	dispatch(syncBookmarks());
 
 	dispatch(setPage(Page.Search));

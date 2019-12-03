@@ -127,8 +127,11 @@ export const getBookmarksFromNative: TE.TaskEither<Error, RemoteBookmark[]> = ()
 	return get();
 };
 
-export const saveBookmarksToNative = (bookmarks: RemoteBookmarkUnsaved[]) =>
-	sendMessageToNative(NativeRequestMethod.POST, { bookmarks });
+export const saveBookmarksToNative = (bookmarks: RemoteBookmarkUnsaved[]): TE.TaskEither<Error, NativePOSTResponse> =>
+	TE.tryCatch(
+		() => sendMessageToNative(NativeRequestMethod.POST, { bookmarks }),
+		() => new Error('Failed to save bookmark to native'),
+	);
 
 export const updateBookmarksToNative = (bookmarks: RemoteBookmark[]) =>
 	sendMessageToNative(NativeRequestMethod.PUT, { bookmarks });
