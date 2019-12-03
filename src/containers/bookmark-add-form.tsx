@@ -14,7 +14,7 @@ const BookmarkAddForm: FC = () => {
 				title: pageTitle,
 				url: pageUrl,
 			})}
-			onSubmit={bm => dispatch(addBookmark(bm))}
+			onSubmit={(bm): void => void dispatch(addBookmark(bm))}
 		/>
 	);
 };

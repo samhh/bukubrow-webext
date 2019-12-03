@@ -31,8 +31,8 @@ const OpenAllBookmarksConfirmation: FC = () => {
 						<Heading>{matchesTerminology(numFilteredBookmarks)}?</Heading>
 					</header>
 
-					<Button onClick={() => dispatch(setDisplayOpenAllBookmarksConfirmation(false))}>Cancel</Button>
-					<ConfirmationButton onClick={() => dispatch(openAllFilteredBookmarksAndExit())}>Open</ConfirmationButton>
+					<Button onClick={(): void => void dispatch(setDisplayOpenAllBookmarksConfirmation(false))}>Cancel</Button>
+					<ConfirmationButton onClick={(): void => dispatch(openAllFilteredBookmarksAndExit())}>Open</ConfirmationButton>
 				</Modal>
 			)}
 		</>
@@ -40,3 +40,4 @@ const OpenAllBookmarksConfirmation: FC = () => {
 };
 
 export default OpenAllBookmarksConfirmation;
+

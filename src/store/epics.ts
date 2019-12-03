@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import * as O from 'fp-ts/lib/Option';
 import { onTabActivity } from 'Comms/browser';
 import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Comms/native';

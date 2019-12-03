@@ -33,8 +33,8 @@ const BookmarkDeleteForm: FC = () => {
 				<Heading>Delete bookmark <em>{bookmarkTitle}</em>?</Heading>
 			</header>
 
-			<Button onClick={() => dispatch(setDeleteBookmarkModalDisplay(false))}>Cancel</Button>
-			<ConfirmationButton onClick={() => dispatch(deleteBookmark())}>Delete</ConfirmationButton>
+			<Button onClick={(): void => void dispatch(setDeleteBookmarkModalDisplay(false))}>Cancel</Button>
+			<ConfirmationButton onClick={(): void => void dispatch(deleteBookmark())}>Delete</ConfirmationButton>
 		</Modal>
 	);
 };

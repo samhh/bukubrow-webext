@@ -27,7 +27,7 @@ const StagedGroupsList: FC = () => {
 	const groups = useSelector(getSortedStagedGroups);
 	const dispatch = useDispatch();
 
-	const handleGroupClick = (id: number) => {
+	const handleGroupClick = (id: number): void => {
 		dispatch(setStagedBookmarksGroupEditId(O.some(id)));
 		dispatch(setPage(Page.StagedGroup));
 	};
@@ -36,7 +36,7 @@ const StagedGroupsList: FC = () => {
 		<Wrapper>
 			{groups.length
 				? groups.map(grp => (
-					<ListItem key={grp.id} onClick={() => { handleGroupClick(grp.id); }}>
+					<ListItem key={grp.id} onClick={(): void => handleGroupClick(grp.id)}>
 						<GroupTitle>{formatStagedBookmarksGroupTitle(grp)}</GroupTitle>
 					</ListItem>
 				))

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { action } from 'typesafe-actions';
 import { NoticesActionTypes, NoticeId, NoticeMsg } from './types';
 
@@ -10,3 +12,4 @@ export const deleteError = (id: NoticeId) => action(
 	NoticesActionTypes.DeleteError,
 	id,
 );
+

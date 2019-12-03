@@ -16,7 +16,7 @@ import Button from 'Components/button';
 const WrapperList = styled.ul`
 	margin: 0;
 	padding: 0;
-	border: 1px solid ${props => props.theme.backgroundColorOffset};
+	border: 1px solid ${(props): string => props.theme.backgroundColorOffset};
 	list-style: none;
 `;
 
@@ -36,11 +36,11 @@ const StagedGroupBookmarksList: FC = () => {
 	const bookmarks = O.getOrElse(() => [] as LocalBookmarkWeighted[])(bookmarksMaybe);
 	const dispatch = useDispatch();
 
-	const handleOpenBookmark = (bmId: number) => {
+	const handleOpenBookmark = (bmId: number): void => {
 		dispatch(openBookmarkAndExit(bmId, stagedGroupId));
 	};
 
-	const handleEditBookmark = (bmId: number) => {
+	const handleEditBookmark = (bmId: number): void => {
 		dispatch(setStagedBookmarksGroupBookmarkEditId(O.some(bmId)));
 		dispatch(setPage(Page.EditStagedBookmark));
 	};
@@ -48,14 +48,14 @@ const StagedGroupBookmarksList: FC = () => {
 	const [handleDeleteBookmark, handleDeleteGroup, handlePublish] = pipe(stagedGroupId, O.fold(
 		() => [constVoid, constVoid, constVoid],
 		grpId => [
-			(bmId: number) => {
+			(bmId: number): void => {
 				dispatch(deleteStagedBookmarksGroupBookmarkOrEntireGroup(grpId, bmId));
 			},
-			() => {
+			(): void => {
 				dispatch(deleteStagedBookmarksGroup(grpId));
 				dispatch(setPage(Page.StagedGroupsList));
 			},
-			() => {
+			(): void => {
 				dispatch(addAllBookmarksFromStagedGroup(grpId));
 				dispatch(setPage(Page.StagedGroupsList));
 			},

@@ -31,26 +31,26 @@ const OptionsPage: FC = () => {
 		setThemeOpt(activeTheme);
 	}, [activeTheme]);
 
-	const handleThemeOptChange = (evt: FormEvent<HTMLSelectElement>) => {
+	const handleThemeOptChange = (evt: FormEvent<HTMLSelectElement>): void => {
 		const themeOpt = evt.currentTarget.value;
 		if (!isTheme(themeOpt)) return;
 
 		setThemeOpt(themeOpt);
 	};
 
-	const handleBadgeOptChange = (evt: FormEvent<HTMLSelectElement>) => {
+	const handleBadgeOptChange = (evt: FormEvent<HTMLSelectElement>): void => {
 		const badgeOpt = evt.currentTarget.value;
 		if (!isBadgeDisplayOpt(badgeOpt)) return;
 
 		setBadgeOpt(badgeOpt);
 	};
 
-	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
 		evt.preventDefault();
 
 		dispatch(setActiveTheme(themeOpt));
 		sendIsomorphicMessage(IsomorphicMessage.SettingsUpdated);
-		saveSettings({ theme: themeOpt, badgeDisplay: badgeOpt });
+		saveSettings({ theme: themeOpt, badgeDisplay: badgeOpt })();
 	};
 
 	return (

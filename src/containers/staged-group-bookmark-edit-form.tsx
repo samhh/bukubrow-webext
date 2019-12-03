@@ -12,7 +12,7 @@ const StagedGroupBookmarkEditForm: FC = () => {
 	const groupEditId = useSelector(state => state.bookmarks.stagedBookmarksGroupEditId);
 	const dispatch = useDispatch();
 
-	const handleSubmit = (bm: LocalBookmark) => {
+	const handleSubmit = (bm: LocalBookmark): void => {
 		if (O.isSome(groupEditId)) {
 			dispatch(updateStagedBookmarksGroupBookmark(groupEditId.value, bm));
 			dispatch(setPage(Page.StagedGroup));

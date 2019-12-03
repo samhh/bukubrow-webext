@@ -3,12 +3,12 @@ import styled from 'Styles';
 
 const Btn = styled.button`
 	padding: .5rem 1rem;
-	border: 1px solid ${props => props.theme.backgroundColorOffset};
-	border-radius: ${props => props.theme.borderRadius};
+	border: 1px solid ${(props): string => props.theme.backgroundColorOffset};
+	border-radius: ${(props): string => props.theme.borderRadius};
 	font-size: 100%;
-	opacity: ${props => props.disabled ? .25 : 1};
-	background: ${props => props.theme.backgroundColorOffset};
-	color: ${props => props.theme.textColor};
+	opacity: ${(props): number => props.disabled ? .25 : 1};
+	background: ${(props): string => props.theme.backgroundColorOffset};
+	color: ${(props): string => props.theme.textColor};
 	user-select: none;
 	transition: background-color .2s;
 
@@ -23,7 +23,7 @@ const Btn = styled.button`
 
 		&:hover,
 		&:focus {
-			background-color: ${props => props.theme.backgroundColorOffsetOffset};
+			background-color: ${(props): string => props.theme.backgroundColorOffsetOffset};
 		}
 
 		&:active {
@@ -62,3 +62,4 @@ const Button: FC<Props> = props => (
 export default forwardRef((props: Props, ref?: Ref<HTMLButtonElement>) => (
 	<Button forwardedRef={ref} {...props} />
 ));
+

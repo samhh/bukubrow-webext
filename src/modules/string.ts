@@ -1,11 +1,12 @@
-export const includesCaseInsensitive = (test: string, searchString: string) =>
+export const includesCaseInsensitive = (test: string, searchString: string): boolean =>
 	test.toLowerCase().includes(searchString.toLowerCase());
 
 /**
  * Return ending index (index plus one) of the first match from a series of
  * tests.
  */
-export const endIndexOfAnyOf = (test: string, searchStrings: string[]) => {
+// TODO use Option
+export const endIndexOfAnyOf = (test: string, searchStrings: string[]): number => {
 	for (const searchString of searchStrings) {
 		const index = test.indexOf(searchString);
 

@@ -12,9 +12,10 @@ const BookmarkEditForm: FC = () => {
 		<BookmarkForm
 			bookmark={bookmarkToEdit}
 			// TODO assertion
-			onSubmit={(bm: LocalBookmark) => dispatch(updateBookmark(bm))}
+			onSubmit={(bm: LocalBookmark): void => void dispatch(updateBookmark(bm))}
 		/>
 	);
 };
 
 export default BookmarkEditForm;
+

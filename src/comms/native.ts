@@ -119,6 +119,7 @@ export const checkBinaryVersionFromNative: Task<HostVersionCheckResult> = pipe(
 );
 
 export const getBookmarksFromNative: TaskEither<Error, RemoteBookmark[]> = () => {
+	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 	const get = (prevBookmarks: RemoteBookmark[] = []): TaskEither<Error, RemoteBookmark[]> => async () => {
 		const resM = await sendMessageToNative(NativeRequestMethod.GET, { offset: prevBookmarks.length })();
 		if (E.isLeft(resM)) return E.left(resM.left);

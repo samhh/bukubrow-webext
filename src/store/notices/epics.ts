@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import sleep from 'Modules/sleep';
 import { ThunkAC } from 'Store';
 import { addError, deleteError } from './actions';
@@ -16,7 +18,7 @@ export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (di
 export const addTransientError = (errorMsg: NoticeMsg, timeout = 5000): ThunkAC<Promise<void>> => async (dispatch) => {
 	const id = dispatch(addPermanentError(errorMsg));
 
-	await sleep(timeout);
+	await sleep(timeout)();
 
 	dispatch(deleteError(id));
 };

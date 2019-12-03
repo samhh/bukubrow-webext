@@ -64,7 +64,7 @@ const checkUrl = (url: URL): [URLMatch, number] => {
 	return [bestMatch, numMatches];
 };
 
-const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async () => {
+const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<void> => {
 	const urlRes = await pipe(
 		getActiveTab,
 		TO.chainOption(tab => O.fromNullable(tab.url)),
@@ -109,13 +109,13 @@ const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async () => {
  * for further changes. All badge functionality is encapsulated within this
  * function's closure.
  */
-export const initBadgeAndListen = () => {
+export const initBadgeAndListen: Task<Task<void>> = () => {
 	const getBadgeOptOrDefault = pipe(
 		getBadgeDisplayOpt,
 		TO.getOrElse(() => T.of(BadgeDisplay.WithCount)),
 	);
 
-	const update = async () => {
+	const update: Task<void> = async () => {
 		const badgeOpt = await getBadgeOptOrDefault();
 		if (badgeOpt !== BadgeDisplay.None) await syncBookmarks();
 		updateBadge(badgeOpt)();

@@ -21,17 +21,17 @@ const Label = styled.label`
 const Counter = styled.span<{ alerted: boolean }>`
 	font-size: 1.3rem;
 	font-weight: 900;
-	color: ${props => props.alerted ? '#ec1d26' : '#989898'};
+	color: ${(props): string => props.alerted ? '#ec1d26' : '#989898'};
 `;
 
 const Input = styled.input`
 	width: 100%;
 	padding:.5rem 1rem;
-	border: 1px solid ${props => props.theme.backgroundColorOffset};
-	border-radius: ${props => props.theme.borderRadius};
+	border: 1px solid ${(props): string => props.theme.backgroundColorOffset};
+	border-radius: ${(props): string => props.theme.borderRadius};
 	border-radius: 3px;
 	background: none;
-	color: ${props => props.theme.textColor};
+	color: ${(props): string => props.theme.textColor};
 
 	&::placeholder {
 		color: '#9d9da3';
@@ -39,7 +39,7 @@ const Input = styled.input`
 
 	&:focus {
 		outline: none;
-		border-color: ${props => props.theme.backgroundColorOffsetOffset};
+		border-color: ${(props): string => props.theme.backgroundColorOffsetOffset};
 	}
 
 	&:disabled {
@@ -61,14 +61,16 @@ interface Props {
 	className?: string;
 }
 
-const exceedsMaxLength = (newValue: string, max?: number) => typeof max === 'number' && newValue.length > max;
-const isBackspacing = (oldValue: string, newValue: string) => oldValue.length > newValue.length;
-const isInvalidInput = (oldValue: string, newValue: string, max?: number) =>
+const exceedsMaxLength = (newValue: string, max?: number): boolean =>
+	typeof max === 'number' && newValue.length > max;
+const isBackspacing = (oldValue: string, newValue: string): boolean =>
+	oldValue.length > newValue.length;
+const isInvalidInput = (oldValue: string, newValue: string, max?: number): boolean =>
 	exceedsMaxLength(newValue, max) &&
 	!isBackspacing(oldValue, newValue);
 
 const TextInput: FC<Props> = (props) => {
-	const handleInput = (evt: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+	const handleInput = (evt: FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
 		const { currentTarget: { value } } = evt;
 
 		if (isInvalidInput(props.value, value, props.max)) return;
@@ -109,3 +111,4 @@ const TextInput: FC<Props> = (props) => {
 export default forwardRef((props: Props, ref?: Ref<HTMLInputElement>) => (
 	<TextInput forwardedRef={ref} {...props} />
 ));
+

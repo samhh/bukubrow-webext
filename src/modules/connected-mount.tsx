@@ -2,18 +2,18 @@ import React, { StrictMode, ReactNode } from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import store from 'Store';
-import { ThemeProviderWithState } from 'Styles';
+import { ThemeProvider } from 'Styles';
 
 /**
  * Render/mount a component with all providers supplied.
  */
-const mountPage = (page: ReactNode) => {
+const mountPage = (page: ReactNode): IO<void> => (): void => {
 	render((
 		<StrictMode>
 			<Provider store={store}>
-				<ThemeProviderWithState>
+				<ThemeProvider>
 					{page}
-				</ThemeProviderWithState>
+				</ThemeProvider>
 			</Provider>
 		</StrictMode>
 	), document.querySelector('.js-root'));

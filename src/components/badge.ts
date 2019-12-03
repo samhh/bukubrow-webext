@@ -28,7 +28,7 @@ const Badge = styled.span<Props>`
 	display: inline-block;
 	vertical-align: middle
 	border-radius: 50%;
-	background: ${(props) => {
+	background: ${(props): string => {
 		switch (props.weight) {
 			case BadgeWeight.Primary: return colors[URLMatch.Exact];
 			case BadgeWeight.Secondary: return colors[URLMatch.Domain];
@@ -38,3 +38,4 @@ const Badge = styled.span<Props>`
 `;
 
 export default Badge;
+

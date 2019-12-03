@@ -13,7 +13,7 @@ export interface ParsedInputResult {
 }
 
 // From: https://stackoverflow.com/a/54326240/3369753
-const execMulti = (str: string, r: RegExp) => {
+const execMulti = (str: string, r: RegExp): string[] => {
 	let m: RegExpExecArray | null;
 	const res: string[] = [];
 

@@ -70,7 +70,7 @@ const browserMock: DeepPartial<Browser> = {
 			_appName: string,
 			{ method, data }: { method: T; data: NativeRequestData[T] },
 		): Promise<NativeRequestResult[T]> => {
-			await sleep(latency);
+			await sleep(latency)();
 
 			// This assertion may not be needed once the following is merged:
 			// https://github.com/Microsoft/TypeScript/pull/22348

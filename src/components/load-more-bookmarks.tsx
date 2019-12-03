@@ -17,9 +17,10 @@ interface Props {
 }
 
 const LoadMoreBookmarks: FC<Props> = ({ numRemainingBookmarks, renderAllBookmarks }) => (
-	<Wrapper onClick={() => { renderAllBookmarks(true); }}>
+	<Wrapper onClick={(): void => renderAllBookmarks(true)}>
 		...and {numRemainingBookmarks} more.
 	</Wrapper>
 );
 
 export default LoadMoreBookmarks;
+

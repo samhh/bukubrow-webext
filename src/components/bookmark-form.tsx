@@ -75,7 +75,7 @@ const BookmarkForm: FC<Props> = (props) => {
 		url: '',
 		tags: [],
 	});
-	const setInputBookmarkPartial = (partialBookmark: Partial<BookmarkInput>) => {
+	const setInputBookmarkPartial = (partialBookmark: Partial<BookmarkInput>): void => {
 		setBookmarkInput({ ...bookmarkInput, ...partialBookmark });
 	};
 
@@ -95,11 +95,11 @@ const BookmarkForm: FC<Props> = (props) => {
 		if (firstInputRef.current) firstInputRef.current.focus();
 	}, []);
 
-	const handleBookmarkTextInput = (key: KeyofStringValues<BookmarkInput>) => (input: string) => {
+	const handleBookmarkTextInput = (key: KeyofStringValues<BookmarkInput>) => (input: string): void => {
 		setInputBookmarkPartial({ [key]: input });
 	};
 
-	const handleTagAddition = (evt: FormEvent<HTMLFormElement>) => {
+	const handleTagAddition = (evt: FormEvent<HTMLFormElement>): void => {
 		evt.preventDefault();
 		evt.stopPropagation();
 
@@ -112,11 +112,11 @@ const BookmarkForm: FC<Props> = (props) => {
 		setTagInput('');
 	};
 
-	const handleTagRemoval = (tagToRemove: string) => {
+	const handleTagRemoval = (tagToRemove: string): void => {
 		setInputBookmarkPartial({ tags: bookmarkInput.tags.filter(tag => tag !== tagToRemove) });
 	};
 
-	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
 		evt.preventDefault();
 
 		if (!bookmarkInput.title || !bookmarkInput.url) return;

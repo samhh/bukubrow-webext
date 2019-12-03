@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AppState } from 'Store';
 import * as styledComponents from 'styled-components';
 import styledSanitize from 'styled-sanitize';
@@ -26,8 +26,8 @@ const GlobalStyles = createGlobalStyle`
 		margin: 0;
 		font-size: 1.6rem;
 		font-family: sans-serif;
-		background: ${props => props.theme.backgroundColor};
-		color: ${props => props.theme.textColor};
+		background: ${(props): string => props.theme.backgroundColor};
+		color: ${(props): string => props.theme.textColor};
 	}
 `;
 
@@ -61,28 +61,30 @@ const darkTheme: StyledTheme = {
 	textColor: '#eee',
 };
 
-const mapStateToProps = (state: AppState) => ({ theme: state.user.activeTheme });
-type Props = ReturnType<typeof mapStateToProps>;
-const ThemeProvider: FC<Props> = props => (
-	<styledComponents.ThemeProvider theme={() => {
-		switch (props.theme) {
-			case Theme.Light: return lightTheme;
-			case Theme.Dark: return darkTheme;
-		}
-	}}>
-		<>
-			<GlobalStyles />
+const ThemeProvider: FC = ({ children }) => {
+	const theme = useSelector((state: AppState) => state.user.activeTheme);
 
-			{props.children}
-		</>
-	</styledComponents.ThemeProvider>
-);
-const ThemeProviderWithState = connect(mapStateToProps)(ThemeProvider);
+	return (
+		<styledComponents.ThemeProvider theme={(): StyledTheme => {
+			switch (theme) {
+				case Theme.Light: return lightTheme;
+				case Theme.Dark: return darkTheme;
+			}
+		}}>
+			<>
+				<GlobalStyles />
+
+				{children}
+			</>
+		</styledComponents.ThemeProvider>
+	);
+};
 
 export {
-	ThemeProviderWithState,
+	ThemeProvider,
 	css,
 	keyframes,
 };
 
 export default styled;
+

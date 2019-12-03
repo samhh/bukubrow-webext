@@ -22,7 +22,7 @@ const Wrapper = styled.nav`
 		position: absolute;
 		top: 100%;
 		left: 0;
-		background: linear-gradient(90deg, transparent 5%, ${props => props.theme.textColor} 50%, transparent 95%);
+		background: linear-gradient(90deg, transparent 5%, ${(props): string => props.theme.textColor} 50%, transparent 95%);
 	}
 `;
 
@@ -54,3 +54,4 @@ const TitleMenu: FC<Props> = props => (
 );
 
 export default TitleMenu;
+

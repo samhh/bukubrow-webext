@@ -10,8 +10,8 @@ initBadgeAndListen().then((syncBadge) => {
 				syncBadge();
 				break;
 		}
-	});
+	})();
 });
 
-initContextMenusAndListen(sendTabsToStagingArea);
+initContextMenusAndListen(sendTabsToStagingArea)();
 

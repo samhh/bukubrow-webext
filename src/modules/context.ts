@@ -14,7 +14,7 @@ enum ContextMenuEntry {
 
 type SufficientTab = Required<Pick<Tabs.Tab, 'title' | 'url'>>;
 
-export const sendTabsToStagingArea = (tabs: NonEmptyArray<SufficientTab>) =>
+export const sendTabsToStagingArea = (tabs: NonEmptyArray<SufficientTab>): TaskEither<Error, void> =>
 	saveStagedBookmarksAsNewGroupToLocalStorage(NEA.nonEmptyArray.map(tabs, tab => ({
 		title: tab.title,
 		desc: '',
@@ -25,13 +25,13 @@ export const sendTabsToStagingArea = (tabs: NonEmptyArray<SufficientTab>) =>
 
 const isSufficientTab = (tab: Tabs.Tab): tab is Tabs.Tab & SufficientTab => !!tab.title && !!tab.url;
 const trimSufficientTab = (tab: SufficientTab): SufficientTab => ({ title: tab.title, url: tab.url });
-const toSufficientTabs = (tabs: Tabs.Tab[]) => tabs.filter(isSufficientTab).map(trimSufficientTab);
+const toSufficientTabs = (tabs: Tabs.Tab[]): SufficientTab[] => tabs.filter(isSufficientTab).map(trimSufficientTab);
 
 /**
  * Initialise context menu items that each obtain various viable window tabs,
  * and pass those onto the callback.
  */
-export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => void) => {
+export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => void): IO<void> => (): void => {
 	// eslint-disable-next-line @typescript-eslint/no-misused-promises
 	browser.contextMenus.onClicked.addListener(async (info) => {
 		let tabs: Option<NonEmptyArray<SufficientTab>> = O.none;

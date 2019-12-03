@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import styled, { css } from 'Styles';
+import { FlattenSimpleInterpolation } from 'styled-components';
 
 const Wrapper = styled.div<{ visible: boolean }>`
 	width: calc(100% - 2rem);
@@ -16,7 +17,7 @@ const Wrapper = styled.div<{ visible: boolean }>`
 	color: #333;
 	transition: all .25s;
 
-	${props => props.visible && css`
+	${(props): FlattenSimpleInterpolation | false => props.visible && css`
 		transform: translateY(0);
 		opacity: 1;
 	`}
@@ -29,3 +30,4 @@ interface Props {
 const ErrorPopup: FC<Props> = ({ msg }) => <Wrapper visible={!!msg}>{msg}</Wrapper>;
 
 export default ErrorPopup;
+

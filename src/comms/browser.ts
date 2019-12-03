@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flow, constFalse } from 'fp-ts/lib/function';
+import { flow, constant, constFalse, Predicate } from 'fp-ts/lib/function';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as O from 'fp-ts/lib/Option';
 import * as T from 'fp-ts/lib/Task';
@@ -14,7 +14,7 @@ import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
 import { createUuid } from 'Modules/uuid';
 import { error } from 'Modules/error';
 
-const sequenceTTaskEither = sequenceT(TE.taskEither);
+const sequenceTTE = sequenceT(TE.taskEither);
 
 const browserTabsQuery = (x: Tabs.QueryQueryInfoType): TaskOption<Tabs.Tab[]> =>
 	TO.tryCatch(() => browser.tabs.query(x));
@@ -34,26 +34,26 @@ export const getAllTabs: TaskOption<NonEmptyArray<Tabs.Tab>> = pipe(
 	TO.chainOption(NEA.fromArray),
 );
 
-export const onTabActivity = (cb: () => void) => {
+export const onTabActivity = (cb: () => void): void => {
 	browser.tabs.onActivated.addListener(cb);
 	browser.tabs.onUpdated.addListener(cb);
 };
 
 // The imperfect title includes check is because Firefox's href changes
 // according to the extension in use, if any
-const isNewTabPage = ({ url = '', title = '' }: Pick<Tabs.Tab, 'url' | 'title'>) =>
+const isNewTabPage: Predicate<Pick<Tabs.Tab, 'url' | 'title'>> = ({ url = '', title = '' }) =>
 	['about:blank', 'chrome://newtab/'].includes(url) || title.includes('New Tab');
 
 /// The active tab will not update quickly enough to allow this function to be
 /// called safely in a loop. Therefore, the second argument forces consumers to
 /// verify that this is only the first tab they're opening.
-export const openBookmarkInAppropriateTab = (isFirstTab: boolean) => (url: string) => pipe(
+export const openBookmarkInAppropriateTab = (isFirstTab: boolean) => (url: string): Task<Tabs.Tab> => pipe(
 	getActiveTab,
 	T.map(O.fold(
 		constFalse,
 		isNewTabPage,
 	)),
-	T.chain((canOpenInCurrentTab) => () => canOpenInCurrentTab && isFirstTab
+	T.chain((canOpenInCurrentTab) => (): Promise<Tabs.Tab> => canOpenInCurrentTab && isFirstTab
 		? browser.tabs.update(undefined, { url })
 		: browser.tabs.create({ url })
 	),
@@ -88,7 +88,7 @@ export const getBookmarksFromLocalStorage: TaskEither<Error, Option<NonEmptyArra
 	// or a Set.
 	TE.chain(TE.fromPredicate(
 		d => d.bookmarksSchemaVersion === BOOKMARKS_SCHEMA_VERSION,
-		error("Bookmark schema versions don't match"),
+		constant(error("Bookmark schema versions don't match")),
 	)),
 	TE.map(flow(
 		d => O.fromNullable(d.bookmarks),
@@ -137,7 +137,7 @@ export const saveStagedBookmarksAsNewGroupToLocalStorage = (newStagedBookmarks: 
 	);
 
 	return pipe(
-		sequenceTTaskEither(stagedBookmarksGroups, newGroup),
+		sequenceTTE(stagedBookmarksGroups, newGroup),
 		TE.chain(([xs, y]) => setLocalStorage({ stagedBookmarksGroups: [...xs, y] })),
 	);
 };

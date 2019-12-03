@@ -1,2 +1,2 @@
-export const error = (x: string) => () => new Error(x);
+export const error = (x: string): Error => new Error(x);
 

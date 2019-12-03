@@ -1,4 +1,4 @@
-import React, { memo, forwardRef, Ref, MouseEvent, useState } from 'react';
+import React, { memo, forwardRef, Ref, MouseEvent, useState, ReactNode } from 'react';
 import { URLMatch } from 'Modules/compare-urls';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import styled from 'Styles';
@@ -44,7 +44,7 @@ const Name = styled.h1`
 	margin: 0;
 	font-size: 1.4rem;
 	font-weight: normal;
-	color: ${props => props.theme.textColor};
+	color: ${(props): string => props.theme.textColor};
 `;
 
 const Desc = styled.p`
@@ -56,7 +56,7 @@ const URL = styled.h2`
 	margin: .3rem 0 0;
 	font-size: 1rem;
 	font-weight: normal;
-	color: ${props => props.theme.textColorOffset};
+	color: ${(props): string => props.theme.textColorOffset};
 `;
 
 const ControlButton = styled(IconButton)`
@@ -91,28 +91,28 @@ const Bookmark = memo<Props>((props) => {
 	const [tooltipMessage, setTooltipMessage] = useState('');
 	const [displayTooltip, setDisplayTooltip] = useState(false);
 
-	const handleClick = () => {
+	const handleClick = (): void => {
 		props.openBookmark && props.openBookmark(props.id);
 	};
 
-	const handleEdit = (evt: MouseEvent<HTMLButtonElement>) => {
+	const handleEdit = (evt: MouseEvent<HTMLButtonElement>): void => {
 		evt.stopPropagation();
 
 		props.onEdit(props.id);
 	};
 
-	const handleDelete = (evt: MouseEvent<HTMLButtonElement>) => {
+	const handleDelete = (evt: MouseEvent<HTMLButtonElement>): void => {
 		evt.stopPropagation();
 
 		props.onDelete(props.id);
 	};
 
-	const showTooltip = (msg: string) => () => {
+	const showTooltip = (msg: string) => (): void => {
 		setTooltipMessage(msg);
 		setDisplayTooltip(true);
 	};
 
-	const hideTooltip = () => {
+	const hideTooltip = (): void => {
 		setDisplayTooltip(false);
 	};
 
@@ -141,7 +141,7 @@ const Bookmark = memo<Props>((props) => {
 						<Tag
 							key={tag}
 							id={tag}
-							label={() => (
+							label={(): ReactNode => (
 								<HighlightMarkup
 									str={tag}
 									match={props.parsedFilter && [...props.parsedFilter.tags, ...props.parsedFilter.wildcard]}
@@ -205,3 +205,4 @@ const Bookmark = memo<Props>((props) => {
 export default forwardRef((props: Props, ref?: Ref<HTMLElement>) => (
 	<Bookmark forwardedRef={ref} {...props} />
 ));
+

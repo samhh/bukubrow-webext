@@ -18,10 +18,10 @@ const Inner = styled.div`
 	width: 100%;
 	max-height: 100%;
 	padding: 2rem 1rem;
-	border: 1px solid ${props => props.theme.backgroundColorOffset};
+	border: 1px solid ${(props): string => props.theme.backgroundColorOffset};
 	overflow-y: scroll;
 	box-shadow: 0px 0px 7px -4px #999;
-	background: ${props => props.theme.backgroundColor};
+	background: ${(props): string => props.theme.backgroundColor};
 `;
 
 interface Props {
@@ -37,3 +37,4 @@ const Modal: FC<Props> = ({ children }) => (
 );
 
 export default Modal;
+

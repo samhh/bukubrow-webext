@@ -23,7 +23,8 @@ export interface Settings {
 	badgeDisplay: BadgeDisplay;
 }
 
-export const saveSettings = (opts: Settings) => browser.storage.sync.set(opts);
+export const saveSettings = (opts: Settings): Task<void> => (): Promise<void> =>
+	browser.storage.sync.set(opts);
 
 const getSettings: Task<Partial<Settings>> = () => browser.storage.sync.get();
 

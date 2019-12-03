@@ -40,6 +40,7 @@ interface PageMapArg {
 	stagedGroupTitle: Option<string>;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const pageMap = ({ activePage, stagedGroupTitle }: PageMapArg) => {
 	const map: PageInfo = {
 		[Page.Search]: {
@@ -112,7 +113,7 @@ const ContentApp: FC = () => {
 				{'nav' in page && (
 					<TitleMenu
 						title={page.nav.title}
-						onBack={() => dispatch(setPage(page.nav.exitTarget))}
+						onBack={(): void => void dispatch(setPage(page.nav.exitTarget))}
 					/>
 				)}
 
@@ -122,5 +123,5 @@ const ContentApp: FC = () => {
 	);
 };
 
-mount(<ContentApp />);
+mount(<ContentApp />)();
 

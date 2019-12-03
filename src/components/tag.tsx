@@ -1,14 +1,15 @@
 import React, { FC } from 'react';
 import styled, { css } from 'Styles';
+import { FlattenSimpleInterpolation } from 'styled-components';
 
 const TagItem = styled.li<{ removable: boolean }>`
 	display: inline-block;
 	margin: 0;
 	font-size: 1.3rem;
 	font-weight: normal;
-	color: ${props => props.theme.textColorOffset};
+	color: ${(props): string => props.theme.textColorOffset};
 
-	${props => props.removable && css`
+	${(props): FlattenSimpleInterpolation | false => props.removable && css`
 		cursor: pointer;
 
 		&:hover {
@@ -28,7 +29,7 @@ interface Props {
 }
 
 const Tag: FC<Props> = (props) => {
-	const handleRemove = () => {
+	const handleRemove = (): void => {
 		if (props.onRemove) props.onRemove(props.id);
 	};
 
@@ -43,3 +44,4 @@ const Tag: FC<Props> = (props) => {
 };
 
 export default Tag;
+

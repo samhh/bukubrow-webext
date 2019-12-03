@@ -1,4 +1,4 @@
-export const matchesTerminology = (num: number) => {
+export const matchesTerminology = (num: number): string => {
 	switch (num) {
 		case 0: return 'No bookmarks to open';
 		case 1: return 'Open bookmark';
@@ -6,3 +6,4 @@ export const matchesTerminology = (num: number) => {
 		default: return `Open all ${num} bookmarks`;
 	}
 };
+

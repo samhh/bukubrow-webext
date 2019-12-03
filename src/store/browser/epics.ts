@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import * as O from 'fp-ts/lib/Option';
 import * as OT from 'Types/optionTuple';
 import { getActiveTab } from 'Comms/browser';

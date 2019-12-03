@@ -12,7 +12,7 @@ describe('content page', () => {
 		await expect(page).not.toMatchElement(bookmarksListTarget);
 		await expect(page).toClick(refreshBtnTarget);
 		await expect(page).toMatchElement(bookmarksListTarget);
-		await sleep(250);
+		await sleep(250)();
 		const bookmarks = await page.$$(bookmarksTarget);
 		expect(bookmarks.length).toBe(10);
 		await expect(page).toClick(moreTarget);

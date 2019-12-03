@@ -10,29 +10,31 @@ export interface LocalBookmarkWeighted extends LocalBookmark {
 /**
  * Filter out bookmarks that do not perfectly match the provided test.
  */
-export const filterBookmarks = (bookmarks: LocalBookmark[], test: ParsedInputResult) => bookmarks.filter((bookmark) => {
-	if (!includes(bookmark.title, test.name)) return false;
-	if (test.desc.some(d => !includes(bookmark.desc, d))) return false;
-	if (test.url.some(u => !includes(bookmark.url, u))) return false;
-	if (test.tags.some(t => !bookmark.tags.some(tag => includes(tag, t)))) return false;
+export const filterBookmarks = (bookmarks: LocalBookmark[], test: ParsedInputResult): LocalBookmark[] =>
+	bookmarks.filter((bookmark) => {
+		if (!includes(bookmark.title, test.name)) return false;
+		if (test.desc.some(d => !includes(bookmark.desc, d))) return false;
+		if (test.url.some(u => !includes(bookmark.url, u))) return false;
+		if (test.tags.some(t => !bookmark.tags.some(tag => includes(tag, t)))) return false;
 
-	// Ensure all wildcards match something
-	const allWildcardsMatch = test.wildcard.every((wc) => {
-		return (
-			includes(bookmark.title, wc) ||
-			includes(bookmark.desc, wc) ||
-			includes(bookmark.url, wc) ||
-			bookmark.tags.some(tag => includes(tag, wc))
-		);
+		// Ensure all wildcards match something
+		const allWildcardsMatch = test.wildcard.every((wc) => {
+			return (
+				includes(bookmark.title, wc) ||
+				includes(bookmark.desc, wc) ||
+				includes(bookmark.url, wc) ||
+				bookmark.tags.some(tag => includes(tag, wc))
+			);
+		});
+
+		return allWildcardsMatch;
 	});
-
-	return allWildcardsMatch;
-});
 
 /**
  * Sort two weighted bookmarks against each other.
  */
-export const sortBookmarks = <T extends LocalBookmarkWeighted>(a: T, b: T) => {
+// TODO use Ord
+export const sortBookmarks = <T extends LocalBookmarkWeighted>(a: T, b: T): number => {
 	const [aw, bw] = [a, b].map(bm => bm.weight);
 
 	if (aw === bw) return a.title.localeCompare(b.title);
@@ -81,6 +83,6 @@ RemoteBookmark | RemoteBookmarkUnsaved {
 	return transformed;
 }
 
-export const formatStagedBookmarksGroupTitle = (group: StagedBookmarksGroup) =>
+export const formatStagedBookmarksGroupTitle = (group: StagedBookmarksGroup): string =>
 	`${group.bookmarks.length} bookmark${group.bookmarks.length === 1 ? '' : 's'}, ${formatDistanceToNow(group.time)} ago`;
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import styled, { css } from 'Styles';
 
 const ListItem = styled.li<{ isFocused?: boolean }>`
@@ -7,14 +9,14 @@ const ListItem = styled.li<{ isFocused?: boolean }>`
     cursor: pointer;
 
     &:hover {
-      background: ${props => props.theme.backgroundColorOffset};
+      background: ${(props): string => props.theme.backgroundColorOffset};
     }
   `}
 
 	${props => props.isFocused && css`
-		background: ${props => props.theme.backgroundColorOffset};
+		background: ${(props): string => props.theme.backgroundColorOffset};
   `}
-  
+
   & + & {
     position: relative;
     margin-top: 1px;
@@ -26,9 +28,10 @@ const ListItem = styled.li<{ isFocused?: boolean }>`
       position: absolute;
       bottom: 100%;
       left: 0;
-      background: ${props => props.theme.backgroundColorOffset};
+      background: ${(props): string => props.theme.backgroundColorOffset};
     }
   }
 `;
 
 export default ListItem;
+

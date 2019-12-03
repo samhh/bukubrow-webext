@@ -37,7 +37,7 @@ const Search: FC = () => {
 				{!!numRemainingBookmarks && (
 					<LoadMoreBookmarks
 						numRemainingBookmarks={numRemainingBookmarks}
-						renderAllBookmarks={() => dispatch(setLimitNumRendered(false))}
+						renderAllBookmarks={(): void => void dispatch(setLimitNumRendered(false))}
 					/>
 				)}
 			</main>
@@ -46,3 +46,4 @@ const Search: FC = () => {
 };
 
 export default Search;
+

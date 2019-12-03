@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { action } from 'typesafe-actions';
 import { BookmarksActionTypes, Bookmark } from './types';
 
@@ -60,3 +62,4 @@ export const setDeleteBookmarkModalDisplay = (display: boolean) => action(
 	BookmarksActionTypes.SetDeleteBookmarkModalDisplay,
 	display,
 );
+

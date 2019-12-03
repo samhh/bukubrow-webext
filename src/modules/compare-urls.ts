@@ -9,7 +9,7 @@ export enum URLMatch {
 /**
  * Compare two URLs and determine similarity.
  */
-const compareURLs = (url1: URL, url2: URL) => {
+const compareURLs = (url1: URL, url2: URL): URLMatch => {
 	const http = ['http:', 'https:'];
 
 	// Never match URLs with non-HTTP(S) protocols
@@ -35,3 +35,4 @@ const compareURLs = (url1: URL, url2: URL) => {
 };
 
 export default compareURLs;
+

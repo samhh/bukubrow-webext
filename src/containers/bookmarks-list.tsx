@@ -17,7 +17,7 @@ import Bookmark from 'Components/bookmark';
 const WrapperList = styled.ul`
 	margin: 0;
 	padding: 0;
-	border: 1px solid ${props => props.theme.backgroundColorOffset};
+	border: 1px solid ${(props): string => props.theme.backgroundColorOffset};
 	list-style: none;
 `;
 
@@ -75,9 +75,9 @@ const BookmarksList: FC = () => {
 						parsedFilter={parsedFilter}
 						isFocused={isFocused}
 						activeTabURLMatch={bookmark.weight}
-						openBookmark={bmId => dispatch(openBookmarkAndExit(bmId))}
-						onEdit={bmId => dispatch(initiateBookmarkEdit(bmId))}
-						onDelete={bmId => dispatch(initiateBookmarkDeletion(bmId))}
+						openBookmark={(bmId): void => dispatch(openBookmarkAndExit(bmId))}
+						onEdit={(bmId): void => dispatch(initiateBookmarkEdit(bmId))}
+						onDelete={(bmId): void => dispatch(initiateBookmarkDeletion(bmId))}
 						ref={isFocused ? activeBookmarkEl : undefined}
 					/>
 				);

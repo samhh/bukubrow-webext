@@ -27,13 +27,13 @@ const Wrapper = styled.nav`
 	grid-gap: .5rem;
 	align-items: center;
 	padding: 1rem;
-	background: ${props => props.theme.backgroundColor};
+	background: ${(props): string => props.theme.backgroundColor};
 `;
 
 const SearchTextInput = styled(TextInput)`
 	height: ${iconButtonSize}px;
 	padding: 0 ${headerItemsMargin};
-	color: ${props => props.theme.textColor};
+	color: ${(props): string => props.theme.textColor};
 `;
 
 const ControlsWrapper = styled.div`
@@ -79,7 +79,7 @@ const SearchControls: FC = () => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [hoverState, setHoverState] = useState(HoverState.None);
 
-	const focusInput = () => {
+	const focusInput = (): void => {
 		if (shouldEnableSearch && inputRef.current) inputRef.current.focus();
 	};
 	useEffect(focusInput, [shouldEnableSearch]);
@@ -88,11 +88,11 @@ const SearchControls: FC = () => {
 		if (evt.ctrlKey && evt.key === 'l') focusInput();
 	});
 
-	const showTooltip = (state: HoverState) => () => {
+	const showTooltip = (state: HoverState) => (): void => {
 		setHoverState(state);
 	};
 
-	const hideTooltip = () => {
+	const hideTooltip = (): void => {
 		setHoverState(HoverState.None);
 	};
 
@@ -109,7 +109,7 @@ const SearchControls: FC = () => {
 		<Wrapper>
 			<SearchTextInput
 				value={textFilter}
-				onInput={(text) => {
+				onInput={(text): void => {
 					dispatch(setSearchFilterWithResets(text));
 					scrollToTop();
 				}}
@@ -122,7 +122,7 @@ const SearchControls: FC = () => {
 				<div>
 					<ControlButton
 						disabled={!shouldEnableOpenStaged}
-						onClick={() => dispatch(setPage(Page.StagedGroupsList))}
+						onClick={(): void => void dispatch(setPage(Page.StagedGroupsList))}
 						onMouseEnter={shouldEnableOpenStaged
 							? showTooltip(HoverState.Stage)
 							: undefined
@@ -134,7 +134,7 @@ const SearchControls: FC = () => {
 
 					<ControlButton
 						disabled={!shouldEnableOpenAll}
-						onClick={() => dispatch(setDisplayOpenAllBookmarksConfirmation(true))}
+						onClick={(): void => void dispatch(setDisplayOpenAllBookmarksConfirmation(true))}
 						onMouseEnter={shouldEnableOpenAll
 							? showTooltip(HoverState.OpenAll)
 							: undefined
@@ -146,7 +146,7 @@ const SearchControls: FC = () => {
 
 					<ControlButton
 						disabled={!shouldEnableAddBookmark}
-						onClick={() => dispatch(setPage(Page.AddBookmark))}
+						onClick={(): void => void dispatch(setPage(Page.AddBookmark))}
 						onMouseEnter={shouldEnableAddBookmark
 							? showTooltip(HoverState.Add)
 							: undefined

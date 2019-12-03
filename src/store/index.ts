@@ -41,10 +41,11 @@ store.dispatch(onLoad());
 
 // Re-export appropriately typed hooks
 export const useSelector: TypedUseSelectorHook<AppState> = useSelectorUntyped;
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useDispatch = () => useDispatchRaw<typeof store.dispatch>();
 
 // Keep store in sync with local cache
-export const initAutoStoreSync = () => {
+export const initAutoStoreSync = (): void => {
 	store.subscribe(() => {
 		const { bookmarks: { bookmarks, stagedBookmarksGroups } } = store.getState();
 
