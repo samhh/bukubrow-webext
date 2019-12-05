@@ -3,7 +3,7 @@
 // Dependencies
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
+const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = (env) => {
 	// Only utilise some features in certain environments
@@ -77,7 +77,7 @@ module.exports = (env) => {
 				},
 				{
 					test: /\.tsx?$/,
-					loader: 'awesome-typescript-loader',
+					loader: 'ts-loader',
 					exclude: /node_modules/,
 				},
 			],
@@ -86,3 +86,4 @@ module.exports = (env) => {
 
 	return cfg;
 };
+
