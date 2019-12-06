@@ -10,8 +10,8 @@ const createUuidWithMaximum = (max: number) => (taken: number[] = []): IO<number
 	IO.chain((id) => pipe(
 		A.elem(eqNumber)(id, taken),
 		B.fold(
-			() => createUuidWithMaximum(max)(taken),
 			() => IO.of(id),
+			() => createUuidWithMaximum(max)(taken),
 		),
 	)),
 );
