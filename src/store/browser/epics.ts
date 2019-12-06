@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import * as O from 'fp-ts/lib/Option';
-import * as OT from 'Types/optionTuple';
-import { getActiveTab } from 'Comms/browser';
+import * as OT from 'Modules/optionTuple';
+import { getActiveTab } from 'Modules/comms/browser';
 import { ThunkAC } from 'Store';
 import { setPageMeta } from './actions';
 

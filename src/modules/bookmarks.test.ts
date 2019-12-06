@@ -1,4 +1,4 @@
-import { filterBookmarks, transform, untransform } from 'Modules/bookmarks';
+import { filterBookmarks, transform, untransform, LocalBookmark, RemoteBookmark } from 'Modules/bookmarks';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 
 describe('filter bookmarks with parsed input case insensitively', () => {

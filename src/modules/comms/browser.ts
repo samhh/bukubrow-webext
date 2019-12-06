@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flow, constant, constFalse, Predicate } from 'fp-ts/lib/function';
+import { flow, constant, constFalse } from 'fp-ts/lib/function';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as O from 'fp-ts/lib/Option';
 import * as T from 'fp-ts/lib/Task';
@@ -10,9 +10,11 @@ import * as NEA from 'fp-ts/lib/NonEmptyArray';
 import { browser, Tabs } from 'webextension-polyfill-ts';
 import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
 import { runIO } from 'Modules/fp';
-import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
+import { sendIsomorphicMessage, IsomorphicMessage } from 'Modules/comms/isomorphic';
 import { createUuid } from 'Modules/uuid';
 import { error } from 'Modules/error';
+import { LocalBookmark, LocalBookmarkUnsaved } from 'Modules/bookmarks';
+import { StagedBookmarksGroup } from 'Modules/staged-groups';
 
 const sequenceTTE = sequenceT(TE.taskEither);
 

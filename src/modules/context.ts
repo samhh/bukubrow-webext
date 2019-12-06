@@ -1,9 +1,9 @@
 import { browser, Tabs } from 'webextension-polyfill-ts';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
-import * as OT from 'Types/optionTuple';
+import * as OT from 'Modules/optionTuple';
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
-import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from 'Comms/browser';
+import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from 'Modules/comms/browser';
 
 enum ContextMenuEntry {
 	SendAllTabs = 'send_all_tabs_to_bukubrow',

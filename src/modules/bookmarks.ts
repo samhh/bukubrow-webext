@@ -2,6 +2,44 @@ import { ParsedInputResult } from 'Modules/parse-search-input';
 import { formatDistanceToNow } from 'date-fns';
 import { URLMatch } from 'Modules/compare-urls';
 import { includesCaseInsensitive as includes } from 'Modules/string';
+import { StagedBookmarksGroup } from 'Modules/staged-groups';
+
+/*
+ * Bookmark ready to be inserted into Buku database.
+ */
+export interface RemoteBookmarkUnsaved {
+	metadata: string;
+	desc: string;
+	url: string;
+	tags: string;
+	flags: number;
+}
+
+/*
+ * Bookmark as stored in Buku database.
+ */
+export interface RemoteBookmark extends RemoteBookmarkUnsaved {
+	id: number;
+}
+
+/*
+ * Bookmark ready to be saved.
+ */
+export interface LocalBookmarkUnsaved {
+	title: string;
+	desc: string;
+	url: string;
+	tags: string[];
+	flags: number;
+}
+
+/*
+ * Bookmark as stored in LocalStorage.
+ */
+export interface LocalBookmark extends LocalBookmarkUnsaved {
+	id: number;
+}
+
 
 export interface LocalBookmarkWeighted extends LocalBookmark {
 	weight: URLMatch;

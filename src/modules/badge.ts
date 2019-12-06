@@ -1,16 +1,17 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flow } from 'fp-ts/lib/function';
+import { flow, constant } from 'fp-ts/lib/function';
 import * as T from 'fp-ts/lib/Task';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as TO from 'fp-ts-contrib/lib/TaskOption';
 import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
+import * as EO from 'Modules/eitherOption';
 import { browser } from 'webextension-polyfill-ts';
 import { getBadgeDisplayOpt, BadgeDisplay } from 'Modules/settings';
 import { createURL } from 'Modules/url';
 import { URLMatch } from 'Modules/compare-urls';
-import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Comms/browser';
+import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Modules/comms/browser';
 import { snoc_ } from 'Modules/array';
 
 export const colors = {
@@ -112,7 +113,7 @@ const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<vo
 export const initBadgeAndListen: Task<Task<void>> = () => {
 	const getBadgeOptOrDefault = pipe(
 		getBadgeDisplayOpt,
-		TO.getOrElse(() => T.of(BadgeDisplay.WithCount)),
+		T.map(EO.getOrElse(constant(BadgeDisplay.WithCount))),
 	);
 
 	const update: Task<void> = async () => {

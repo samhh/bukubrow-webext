@@ -1,6 +1,7 @@
 import React, { memo, forwardRef, Ref, MouseEvent, useState, ReactNode } from 'react';
 import { URLMatch } from 'Modules/compare-urls';
 import { ParsedInputResult } from 'Modules/parse-search-input';
+import { LocalBookmark } from 'Modules/bookmarks';
 import styled from 'Styles';
 
 import Badge, { mapURLMatchToBadgeWeight } from 'Components/badge';

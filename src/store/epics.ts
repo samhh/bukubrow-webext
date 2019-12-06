@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+import { constant } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
-import { onTabActivity } from 'Comms/browser';
-import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Comms/native';
+import * as EO from 'Modules/eitherOption';
+import { onTabActivity } from 'Modules/comms/browser';
+import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Modules/comms/native';
 import { getActiveTheme, Theme } from 'Modules/settings';
 import { ThunkAC, initAutoStoreSync } from 'Store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
@@ -15,7 +17,7 @@ import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
 
 const onLoadPreComms = (): ThunkAC => (dispatch) => {
 	getActiveTheme()
-		.then(O.getOrElse((): Theme => Theme.Light))
+		.then(EO.getOrElse(constant<Theme>(Theme.Light)))
 		.then((theme) => {
 			dispatch(setActiveTheme(theme));
 		});

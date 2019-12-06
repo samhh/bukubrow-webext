@@ -5,6 +5,7 @@ import { getStagedGroupBookmarkToEdit } from 'Store/selectors';
 import { updateStagedBookmarksGroupBookmark } from 'Store/bookmarks/actions';
 import { setPage } from 'Store/user/actions';
 import { Page } from 'Store/user/types';
+import { LocalBookmark } from 'Modules/bookmarks';
 import BookmarkForm from 'Components/bookmark-form';
 
 const StagedGroupBookmarkEditForm: FC = () => {

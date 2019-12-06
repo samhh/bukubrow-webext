@@ -5,6 +5,7 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { compareAgainstMinimum, SemanticVersioningComparison } from 'Modules/semantic-versioning';
+import { RemoteBookmark, RemoteBookmarkUnsaved } from 'Modules/bookmarks';
 
 type CheckBinaryRes =
 	| { outdatedBinary: true }

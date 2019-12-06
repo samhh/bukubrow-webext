@@ -1,18 +1,21 @@
-import faker from 'faker';
 import { constVoid } from 'fp-ts/lib/function';
+import * as O from 'fp-ts/lib/Option';
+import faker from 'faker';
 import sleep from 'Modules/sleep';
 import { BOOKMARKS_SCHEMA_VERSION, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { Browser, Tabs } from 'webextension-polyfill-ts';
-import { Theme, isTheme } from 'Modules/settings';
-import { StorageState } from 'Comms/browser';
-import { NativeRequestMethod, NativeRequestData, NativeRequestResult } from 'Comms/native';
+import { Settings, Theme, isTheme } from 'Modules/settings';
+import { StorageState } from 'Modules/comms/browser';
+import { NativeRequestMethod, NativeRequestData, NativeRequestResult } from 'Modules/comms/native';
 import { createUuid } from 'Modules/uuid';
+import { RemoteBookmark } from 'Modules/bookmarks';
+import { StagedBookmarksGroup } from 'Modules/staged-groups';
 
 // Allow use of URL params to manipulate state in the simulator
 const params = new URLSearchParams(window.location.search);
 const [activeThemeParam, latencyParam, numBookmarksToGenerateParam, numStagedGroupsToGenerateParam] =
 	[params.get('theme'), Number(params.get('latency')), Number(params.get('numBookmarks')), Number(params.get('numStagedGroups'))];
-const activeTheme = isTheme(activeThemeParam)
+const activeTheme = activeThemeParam !== null && isTheme(activeThemeParam)
 	? activeThemeParam
 	: Theme.Light;
 const latency = Number.isNaN(latencyParam) ? 0 : latencyParam;
@@ -23,7 +26,7 @@ const numStagedGroupsToGenerate = Number.isNaN(numStagedGroupsToGenerateParam) |
 	? Math.round(Math.random() * 5)
 	: numStagedGroupsToGenerateParam;
 
-const genDummyRemoteBookmarks = () => Array(numBookmarksToGenerate)
+const genDummyRemoteBookmarks = (): RemoteBookmark[] => Array(numBookmarksToGenerate)
 	.fill(undefined)
 	.map((_, i): RemoteBookmark => ({
 		id: i,
@@ -36,7 +39,7 @@ const genDummyRemoteBookmarks = () => Array(numBookmarksToGenerate)
 		flags: 0,
 	}));
 
-const genDummyStagedGroups = () => Array(numStagedGroupsToGenerate)
+const genDummyStagedGroups = (): StagedBookmarksGroup[] => Array(numStagedGroupsToGenerate)
 	.fill(undefined)
 	.map((_, i): StagedBookmarksGroup => ({
 		id: i,
@@ -130,20 +133,28 @@ const browserMock: DeepPartial<Browser> = {
 	},
 	storage: {
 		local: {
-			get: () => Promise.resolve(state),
-			set: (partialState: StorageState) => {
+			get: (): Promise<StorageState> => Promise.resolve(state),
+			set: (partialState: StorageState): Promise<void> => {
 				state = { ...state, ...partialState };
 
 				return Promise.resolve();
 			},
 		},
 		sync: {
-			get: () => Promise.resolve({ theme: activeTheme }),
+			get: (): Promise<Settings> => Promise.resolve({ theme: O.some(activeTheme), badgeDisplay: O.none }),
 		},
 	},
 	tabs: {
-		query: () => Promise.resolve([{ title: 'Currently Active Tab Page Title', url: 'https://samhh.com' }] as Tabs.Tab[]),
-		create: () => Promise.resolve(),
+		query: (): Promise<Tabs.Tab[]> => Promise.resolve([{
+			title: 'Currently Active Tab Page Title',
+			url: 'https://samhh.com',
+			index: 0,
+			highlighted: true,
+			active: true,
+			pinned: false,
+			incognito: false,
+		}]),
+		create: (): Promise<void> => Promise.resolve(),
 		onActivated: {
 			addListener: constVoid,
 		},

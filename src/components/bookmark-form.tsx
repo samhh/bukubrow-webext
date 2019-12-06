@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, FormEvent, FC } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 import styled from 'Styles';
+import { LocalBookmark, LocalBookmarkUnsaved } from 'Modules/bookmarks';
 import Button from 'Components/button';
 import IconButton, { idealFeatherIconSize } from 'Components/icon-button';
 import Tag from 'Components/tag';

@@ -13,9 +13,10 @@ import {
 import { setPage, setHasBinaryComms } from 'Store/user/actions';
 import { addPermanentError } from 'Store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
-import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from 'Comms/native';
-import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab } from 'Comms/browser';
-import { untransform, transform } from 'Modules/bookmarks';
+import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from 'Modules/comms/native';
+import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab } from 'Modules/comms/browser';
+import { untransform, transform, LocalBookmark, LocalBookmarkUnsaved } from 'Modules/bookmarks';
+import { StagedBookmarksGroup } from 'Modules/staged-groups';
 import { Page } from 'Store/user/types';
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {

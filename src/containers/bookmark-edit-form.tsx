@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useSelector, useDispatch } from 'Store';
 import { getBookmarkToEdit } from 'Store/selectors';
 import { updateBookmark } from 'Store/bookmarks/epics';
+import { LocalBookmark } from 'Modules/bookmarks';
 import BookmarkForm from 'Components/bookmark-form';
 
 const BookmarkEditForm: FC = () => {

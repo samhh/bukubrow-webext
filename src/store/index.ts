@@ -3,7 +3,7 @@ import thunk, { ThunkMiddleware, ThunkAction } from 'redux-thunk';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import { useSelector as useSelectorUntyped, useDispatch as useDispatchRaw, TypedUseSelectorHook } from 'react-redux';
 import { onLoad } from 'Store/epics';
-import { saveStagedBookmarksGroupsToLocalStorage, saveBookmarksToLocalStorage } from 'Comms/browser';
+import { saveStagedBookmarksGroupsToLocalStorage, saveBookmarksToLocalStorage } from 'Modules/comms/browser';
 
 import bookmarksReducer, { BookmarksActions } from './bookmarks/reducers';
 import browserReducer, { BrowserActions } from './browser/reducers';

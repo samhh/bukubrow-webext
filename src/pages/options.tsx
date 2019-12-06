@@ -3,7 +3,7 @@ import * as O from 'fp-ts/lib/Option';
 import { useDispatch, useSelector } from 'Store';
 import { setActiveTheme } from 'Store/user/actions';
 import { saveSettings, getBadgeDisplayOpt, Theme, BadgeDisplay, isTheme, isBadgeDisplayOpt } from 'Modules/settings';
-import { sendIsomorphicMessage, IsomorphicMessage } from 'Comms/isomorphic';
+import { sendIsomorphicMessage, IsomorphicMessage } from 'Modules/comms/isomorphic';
 import styled from 'Styles';
 import Button from 'Components/button';
 

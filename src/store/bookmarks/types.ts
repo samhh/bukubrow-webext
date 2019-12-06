@@ -1,14 +1,15 @@
-export type Bookmark = LocalBookmark;
+import { LocalBookmark } from 'Modules/bookmarks';
+import { StagedBookmarksGroup } from 'Modules/staged-groups';
 
 export interface BookmarksState {
-	bookmarks: Bookmark[];
+	bookmarks: LocalBookmark[];
 	stagedBookmarksGroups: StagedBookmarksGroup[];
 	limitNumRendered: boolean;
 	focusedBookmarkIndex: Option<number>;
-	bookmarkEditId: Option<Bookmark['id']>;
-	bookmarkDeleteId: Option<Bookmark['id']>;
+	bookmarkEditId: Option<LocalBookmark['id']>;
+	bookmarkDeleteId: Option<LocalBookmark['id']>;
 	stagedBookmarksGroupEditId: Option<StagedBookmarksGroup['id']>;
-	stagedBookmarksGroupBookmarkEditId: Option<Bookmark['id']>;
+	stagedBookmarksGroupBookmarkEditId: Option<LocalBookmark['id']>;
 	displayDeleteBookmarkModal: boolean;
 }
 

@@ -10,7 +10,6 @@
 		"jsx": "react",
 		"baseUrl": "./src/",
 		"paths": {
-			"Comms/*": ["./comms/*"],
 			"Components/*": ["./components/*"],
 			"Containers/*": ["./containers/*"],
 			"Hooks/*": ["./hooks/*"],
@@ -18,8 +17,7 @@
 			"Pages/*": ["./pages/*"],
 			"Store": ["./store/index"],
 			"Store/*": ["./store/*"],
-			"Styles": ["./styles"],
-			"Types/*": ["./types/*"]
+			"Styles": ["./styles"]
 		}
 	}
 }

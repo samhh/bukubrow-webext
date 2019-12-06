@@ -1,6 +1,6 @@
 import { initBadgeAndListen } from 'Modules/badge';
 import { initContextMenusAndListen, sendTabsToStagingArea } from 'Modules/context';
-import { listenForIsomorphicMessages, IsomorphicMessage } from 'Comms/isomorphic';
+import { listenForIsomorphicMessages, IsomorphicMessage } from 'Modules/comms/isomorphic';
 
 initBadgeAndListen().then((syncBadge) => {
 	listenForIsomorphicMessages((msg) => {
