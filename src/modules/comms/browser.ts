@@ -36,7 +36,7 @@ export const getAllTabs: TaskOption<NonEmptyArray<Tabs.Tab>> = pipe(
 	TO.chainOption(NEA.fromArray),
 );
 
-export const onTabActivity = (cb: () => void): void => {
+export const onTabActivity = (cb: Lazy<void>): void => {
 	browser.tabs.onActivated.addListener(cb);
 	browser.tabs.onUpdated.addListener(cb);
 };
@@ -71,13 +71,13 @@ export interface StorageState {
 const getLocalStorage = <T extends keyof StorageState>(...ks: T[]): TaskEither<Error, Partial<Pick<StorageState, T>>> =>
 	TE.tryCatch(
 		() => browser.storage.local.get(ks) as Promise<Partial<Pick<StorageState, T>>>,
-		() => new Error('Failed to get local storage'),
+		constant(new Error('Failed to get local storage')),
 	);
 
 const setLocalStorage = (x: Partial<StorageState>): TaskEither<Error, void> =>
 	TE.tryCatch(
 		() => browser.storage.local.set(x),
-		() => new Error('Failed to set local storage'),
+		constant(new Error('Failed to set local storage')),
 	);
 
 export const getBookmarksFromLocalStorage: TaskEither<Error, Option<NonEmptyArray<LocalBookmark>>> = pipe(

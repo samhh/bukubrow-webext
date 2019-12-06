@@ -22,7 +22,7 @@ export const colors = {
 const hrefToUrlReducer = (acc: URL[], href: string): URL[] => pipe(
 	createURL(href),
 	E.fold(
-		() => acc,
+		constant(acc),
 		snoc_(acc),
 	),
 );
@@ -40,10 +40,8 @@ let urlState: URL[] = [];
 const syncBookmarks: Task<void> = async () => {
 	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage();
 
-	if (E.isRight(bookmarkUrls)) {
-		if (O.isSome(bookmarkUrls.right)) {
-			urlState = bookmarkUrls.right.value;
-		}
+	if (EO.isRightSome(bookmarkUrls)) {
+		urlState = bookmarkUrls.right.value;
 	}
 };
 
@@ -111,9 +109,9 @@ const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<vo
  * function's closure.
  */
 export const initBadgeAndListen: Task<Task<void>> = () => {
-	const getBadgeOptOrDefault = pipe(
+	const getBadgeOptOrDefault: Task<BadgeDisplay> = pipe(
 		getBadgeDisplayOpt,
-		T.map(EO.getOrElse(constant(BadgeDisplay.WithCount))),
+		T.map(EO.getOrElse(constant<BadgeDisplay>(BadgeDisplay.WithCount))),
 	);
 
 	const update: Task<void> = async () => {

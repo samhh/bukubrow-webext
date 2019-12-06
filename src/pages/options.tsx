@@ -1,5 +1,6 @@
 import React, { useState, useEffect, FC, FormEvent } from 'react';
 import * as O from 'fp-ts/lib/Option';
+import * as EO from 'Modules/eitherOption';
 import { useDispatch, useSelector } from 'Store';
 import { setActiveTheme } from 'Store/user/actions';
 import { saveSettings, getBadgeDisplayOpt, Theme, BadgeDisplay, isTheme, isBadgeDisplayOpt } from 'Modules/settings';
@@ -21,8 +22,8 @@ const OptionsPage: FC = () => {
 
 	useEffect(() => {
 		getBadgeDisplayOpt().then((res) => {
-			if (O.isSome(res)) {
-				setBadgeOpt(res.value);
+			if (EO.isRightSome(res)) {
+				setBadgeOpt(res.right.value);
 			}
 		});
 	}, []);
@@ -50,7 +51,7 @@ const OptionsPage: FC = () => {
 
 		dispatch(setActiveTheme(themeOpt));
 		sendIsomorphicMessage(IsomorphicMessage.SettingsUpdated);
-		saveSettings({ theme: themeOpt, badgeDisplay: badgeOpt })();
+		saveSettings({ theme: O.some(themeOpt), badgeDisplay: O.some(badgeOpt) })();
 	};
 
 	return (
