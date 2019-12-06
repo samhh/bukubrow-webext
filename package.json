@@ -27,6 +27,7 @@
 		"io-ts": "^2.0.1",
 		"io-ts-types": "^0.5.3",
 		"monocle-ts": "^2.0.0",
+		"newtype-ts": "^0.3.2",
 		"react": "^16.11.0",
 		"react-dom": "^16.11.0",
 		"react-feather": "^2.0.3",
