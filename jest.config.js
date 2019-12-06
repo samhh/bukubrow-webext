@@ -10,8 +10,6 @@ const aliases = Object.entries(tsconfig.compilerOptions.paths).reduce((acc, [tsA
 }, {});
 
 module.exports = {
-	preset: 'jest-puppeteer',
-	setupFiles: ['jest-webextension-mock'],
 	transform: {
 		'\\.tsx?$': 'ts-jest',
 	},
