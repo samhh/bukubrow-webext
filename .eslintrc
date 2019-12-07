@@ -26,9 +26,7 @@
 		"react/jsx-uses-react": 2,
 		"react/jsx-uses-vars": 2,
 		"react/display-name": "off",
-		"max-len": "off",
 		"no-confusing-arrow": "off",
-		"no-plusplus": "off",
 		"no-console": 1
 	},
 	"env": {
