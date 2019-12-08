@@ -16,7 +16,6 @@ const OptionsPage: FC = () => {
 	const activeTheme = useSelector(state => state.user.activeTheme);
 	const dispatch = useDispatch();
 
-	// TODO I feel like this theme state isn't needed
 	const [themeOpt, setThemeOpt] = useState(activeTheme);
 	const [badgeOpt, setBadgeOpt] = useState(BadgeDisplay.WithCount);
 

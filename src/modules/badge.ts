@@ -10,7 +10,7 @@ import * as A from 'fp-ts/lib/Array';
 import * as EO from 'Modules/eitherOption';
 import { browser } from 'webextension-polyfill-ts';
 import { getBadgeDisplayOpt, BadgeDisplay } from 'Modules/settings';
-import { createURL } from 'Modules/url';
+import { fromString } from 'Modules/url';
 import { URLMatch, match, ordURLMatch } from 'Modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Modules/comms/browser';
 import { snoc_ } from 'Modules/array';
@@ -22,7 +22,7 @@ export const colors = {
 };
 
 const hrefToUrlReducer = (acc: Array<URL>, href: string): Array<URL> => pipe(
-	createURL(href),
+	fromString(href),
 	E.fold(
 		constant(acc),
 		snoc_(acc),
@@ -59,7 +59,7 @@ const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<vo
 		getActiveTab,
 		TO.chainOption(tab => O.fromNullable(tab.url)),
 		TO.chainOption(flow(
-			createURL,
+			fromString,
 			O.fromEither,
 		)),
 		TO.map(flip(checkUrl)(urlState)),

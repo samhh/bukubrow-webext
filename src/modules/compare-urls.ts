@@ -1,5 +1,9 @@
+import { flow, not } from 'fp-ts/lib/function';
 import { ordNumber, contramap } from 'fp-ts/lib/Ord';
-import { endIndexOfAnyOf } from 'Modules/string';
+import { eqString } from 'fp-ts/lib/Eq';
+import { equal, mapBoth } from 'Modules/tuple'
+import { some } from 'Modules/array';
+import { hrefSansProtocol, isHttpOrHttps, domain } from 'Modules/url';
 
 export enum URLMatch {
 	Exact = 'exact',
@@ -7,30 +11,24 @@ export enum URLMatch {
 	None = 'none',
 }
 
+const eqS = equal(eqString);
+const eqHref = flow(mapBoth(hrefSansProtocol), eqS);
+const eqDomain = flow(mapBoth(domain), eqS);
+
 /**
  * Compare two URLs and determine similarity.
  */
 export const match = (x: URL) => (y: URL): URLMatch => {
-	const http = ['http:', 'https:'];
+	const zs: [URL, URL] = [x, y];
 
 	// Never match URLs with non-HTTP(S) protocols
-	if ([x.protocol, y.protocol].some(protocol => !http.includes(protocol))) return URLMatch.None;
+	if (some(not(isHttpOrHttps))(zs)) return URLMatch.None;
 
-	if (
-		x.href === y.href ||
-		// Match URLs as exact even if one is HTTP protocol and the other HTTPS
-		// eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
-		x.href.substring(endIndexOfAnyOf(x.href, http)) === y.href.substring(endIndexOfAnyOf(y.href, http))
-	) return URLMatch.Exact;
+	// Match URLs as exact irrespective of protocol equality
+	if (eqHref(zs)) return URLMatch.Exact;
 
-	if (x.hostname === y.hostname) return URLMatch.Domain;
-
-	// Match subdomain. Note that this will in exceptionally rare circumstances
-	// lead to a false positive
-	if (
-		(x.hostname.endsWith(y.hostname) && x.hostname[x.hostname.length - y.hostname.length - 1] === '.') ||
-		(y.hostname.endsWith(x.hostname) && y.hostname[y.hostname.length - x.hostname.length - 1] === '.')
-	) return URLMatch.Domain;
+	// Check equality of domain (ignoring subdomain(s))
+	if (eqDomain(zs)) return URLMatch.Domain;
 
 	return URLMatch.None;
 };

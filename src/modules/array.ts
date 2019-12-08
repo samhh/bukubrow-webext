@@ -1,5 +1,10 @@
+import { Predicate } from 'fp-ts/lib/function';
 import { Eq } from 'fp-ts/lib/Eq';
 import * as A from 'fp-ts/lib/Array';
+
+export const includes = <A>(xs: Array<A>): Predicate<A> => (y): boolean => xs.includes(y);
+
+export const some = <A>(f: Predicate<A>) => (xs: Array<A>): boolean => xs.some(f);
 
 export const lookupC = (i: number) => <T>(xs: Array<T>): Option<T> => A.lookup(i, xs);
 

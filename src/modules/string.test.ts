@@ -1,3 +1,4 @@
+import * as O from 'fp-ts/lib/Option';
 import { includesCaseInsensitive, endIndexOfAnyOf } from 'Modules/string';
 
 describe('includesCaseInsensitive', () => {
@@ -11,13 +12,13 @@ describe('includesCaseInsensitive', () => {
 
 describe('endIndexOfAnyOf', () => {
 	test('returns first matching index', () => {
-		expect(endIndexOfAnyOf('abca', ['a'])).toBe(1);
-		expect(endIndexOfAnyOf('abca', ['c'])).toBe(3);
-		expect(endIndexOfAnyOf('abcaA', ['A'])).toBe(5);
-		expect(endIndexOfAnyOf('oh, hello there', ['hello', 'oh'])).toBe(9);
+		expect(endIndexOfAnyOf('abca')(['a'])).toEqual(O.some(1));
+		expect(endIndexOfAnyOf('abca')(['c'])).toEqual(O.some(3));
+		expect(endIndexOfAnyOf('abcaA')(['A'])).toEqual(O.some(5));
+		expect(endIndexOfAnyOf('oh, hello there')(['hello', 'oh'])).toEqual(O.some(9));
 	});
 
 	test('returns -1 when no matches', () => {
-		expect(endIndexOfAnyOf('abc', ['d', 'e', 'f'])).toBe(-1);
+		expect(endIndexOfAnyOf('abc')(['d', 'e', 'f'])).toEqual(O.none);
 	});
 });

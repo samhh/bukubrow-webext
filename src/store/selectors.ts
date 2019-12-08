@@ -10,13 +10,13 @@ import parseSearchInput from 'Modules/parse-search-input';
 import { filterBookmarks, sortBookmarks, LocalBookmark, LocalBookmarkWeighted } from 'Modules/bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
 import { URLMatch, match } from 'Modules/compare-urls';
-import { createURL } from 'Modules/url';
+import { fromString } from 'Modules/url';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
 
 const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
 	weight: pipe(
-		OT.optionTuple(activeTabURL, O.fromEither(createURL(bookmark.url))),
+		OT.optionTuple(activeTabURL, O.fromEither(fromString(bookmark.url))),
 		O.map(([activeURL, bmURL]) => match(activeURL)(bmURL)),
 		O.getOrElse((): URLMatch => URLMatch.None),
 	),
@@ -49,7 +49,7 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
  */
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => bookmarks
-		.map(addBookmarkWeight(O.fromEither(createURL(activeTabHref))))
+		.map(addBookmarkWeight(O.fromEither(fromString(activeTabHref))))
 		.sort(sortBookmarks),
 );
 
@@ -88,7 +88,7 @@ export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGro
  * Get weighted bookmarks from the staging area group selected for editing.
  */
 export const getStagedGroupToEditWeightedBookmarks = createSelector(getStagedGroupToEdit, getActiveTabHref,
-	(group, activeTabHref) => O.option.map(group, grp => grp.bookmarks.map(addBookmarkWeight(O.fromEither(createURL(activeTabHref))))));
+	(group, activeTabHref) => O.option.map(group, grp => grp.bookmarks.map(addBookmarkWeight(O.fromEither(fromString(activeTabHref))))));
 
 export const getStagedGroupBookmarkToEdit = createSelector(getStagedGroupToEdit, getStagedGroupBookmarkEditId,
 	(group, editId) => O.option.chain(
