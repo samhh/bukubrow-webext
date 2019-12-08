@@ -35,9 +35,9 @@ export const match = (x: URL) => (y: URL): URLMatch => {
 
 export const ordURLMatch = contramap<number, URLMatch>((x) => {
 	switch (x) {
-		case URLMatch.Exact: return 2;
+		case URLMatch.Exact: return 0
 		case URLMatch.Domain: return 1;
-		case URLMatch.None: return 0;
+		case URLMatch.None: return 2;
 	}
 })(ordNumber);
 

@@ -1,8 +1,11 @@
-import { ParsedInputResult } from 'Modules/parse-search-input';
+import { ordString, contramap, Ord, getSemigroup } from 'fp-ts/lib/Ord';
+import { Lens } from 'monocle-ts';
 import { formatDistanceToNow } from 'date-fns';
-import { URLMatch } from 'Modules/compare-urls';
+import { ParsedInputResult } from 'Modules/parse-search-input';
+import { URLMatch, ordURLMatch } from 'Modules/compare-urls';
 import { includesCaseInsensitive as includes } from 'Modules/string';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
+import { delimiter } from 'Modules/buku';
 
 /*
  * Bookmark ready to be inserted into Buku database.
@@ -45,6 +48,13 @@ export interface LocalBookmarkWeighted extends LocalBookmark {
 	weight: URLMatch;
 }
 
+export const title = Lens.fromProp<LocalBookmarkUnsaved>()('title');
+export const weight = Lens.fromProp<LocalBookmarkWeighted>()('weight');
+
+const ordTitle: Ord<LocalBookmarkUnsaved> = contramap<string, LocalBookmarkUnsaved>(title.get)(ordString);
+const ordWeight: Ord<LocalBookmarkWeighted> = contramap<URLMatch, LocalBookmarkWeighted>(weight.get)(ordURLMatch)
+export const ordLocalBookmarkWeighted = getSemigroup<LocalBookmarkWeighted>().concat(ordWeight, ordTitle);
+
 /**
  * Filter out bookmarks that do not perfectly match the provided test.
  */
@@ -69,23 +79,6 @@ export const filterBookmarks = (bookmarks: Array<LocalBookmark>, test: ParsedInp
 	});
 
 /**
- * Sort two weighted bookmarks against each other.
- */
-// TODO use Ord
-export const sortBookmarks = <T extends LocalBookmarkWeighted>(a: T, b: T): number => {
-	const [aw, bw] = [a, b].map(bm => bm.weight);
-
-	if (aw === bw) return a.title.localeCompare(b.title);
-	if (aw === URLMatch.Exact) return -1;
-	if (bw === URLMatch.Exact) return 1;
-	if (aw === URLMatch.Domain) return -1;
-	if (bw === URLMatch.Domain) return 1;
-	return a.title.localeCompare(b.title);
-};
-
-const bukuDelimiter = ',';
-
-/**
  * Transform a remote/native bookmark into the local format.
  */
 export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
@@ -93,7 +86,7 @@ export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	title: bookmark.metadata,
 	// Buku uses commas as delimiters including at the start and end of the
 	// string, so filter those out
-	tags: bookmark.tags.split(bukuDelimiter).filter(tag => tag !== ''),
+	tags: bookmark.tags.split(delimiter).filter(tag => tag !== ''),
 	url: bookmark.url,
 	desc: bookmark.desc,
 	flags: bookmark.flags,
@@ -108,7 +101,7 @@ export function untransform(bookmark: LocalBookmark | LocalBookmarkUnsaved):
 RemoteBookmark | RemoteBookmarkUnsaved {
 	const base: RemoteBookmarkUnsaved = {
 		metadata: bookmark.title,
-		tags: bukuDelimiter + bookmark.tags.join(bukuDelimiter) + bukuDelimiter,
+		tags: delimiter + bookmark.tags.join(delimiter) + delimiter,
 		url: bookmark.url,
 		desc: bookmark.desc,
 		flags: bookmark.flags,

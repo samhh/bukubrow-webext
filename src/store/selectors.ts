@@ -7,7 +7,7 @@ import * as A from 'fp-ts/lib/Array';
 import { createSelector } from 'reselect';
 import { AppState } from 'Store';
 import parseSearchInput from 'Modules/parse-search-input';
-import { filterBookmarks, sortBookmarks, LocalBookmark, LocalBookmarkWeighted } from 'Modules/bookmarks';
+import { filterBookmarks, ordLocalBookmarkWeighted, LocalBookmark, LocalBookmarkWeighted } from 'Modules/bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
 import { URLMatch, match } from 'Modules/compare-urls';
 import { fromString } from 'Modules/url';
@@ -50,7 +50,7 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => bookmarks
 		.map(addBookmarkWeight(O.fromEither(fromString(activeTabHref))))
-		.sort(sortBookmarks),
+		.sort(ordLocalBookmarkWeighted.compare),
 );
 
 /**
