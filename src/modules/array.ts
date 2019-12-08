@@ -14,3 +14,7 @@ export const elemC = <A>(eq: Eq<A>) => (x: A) => (ys: Array<A>): boolean => A.el
 
 export const join = (y: string) => (xs: Array<string>): string => xs.join(y);
 
+export const consC = <A>(xs: Array<A>) => (y: A): NonEmptyArray<A> => A.cons(y, xs);
+
+export const snocC = <A>(xs: Array<A>) => (y: A): NonEmptyArray<A> => A.snoc(xs, y);
+

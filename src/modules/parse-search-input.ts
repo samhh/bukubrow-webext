@@ -1,3 +1,9 @@
+import { pipe } from 'fp-ts/lib/pipeable';
+import { constant } from 'fp-ts/lib/function';
+import * as O from 'fp-ts/lib/Option';
+import * as A from 'fp-ts/lib/Array';
+import { exec, execMulti } from 'Modules/regex';
+
 const nameRegExp = /^.*?(?:(?=^[#>:*].+)|(?= +[#>:*].+)|$)/;
 const descsRegExp = /(?:^| )>(.+?)(?= +[#>:*]|$)/g;
 const urlsRegExp = /(?:^| ):(.+?)(?= +[#>:*]|$)/g;
@@ -12,29 +18,20 @@ export interface ParsedInputResult {
 	wildcard: string[];
 }
 
-// From: https://stackoverflow.com/a/54326240/3369753
-const execMulti = (str: string, r: RegExp): string[] => {
-	let m: RegExpExecArray | null;
-	const res: string[] = [];
-
-	// eslint-disable-next-line no-cond-assign
-	while (m = r.exec(str)) {
-		res.push(m[1]);
-	}
-
-	return res;
-};
-
 /**
  * Parse input string into various matches.
  */
-const parseSearchInput = (input: string): ParsedInputResult => ({
-	name: (nameRegExp.exec(input) || [])[0] || '',
-	desc: execMulti(input, descsRegExp),
-	url: execMulti(input, urlsRegExp),
-	tags: execMulti(input, tagsRegExp),
-	wildcard: execMulti(input, wildcardsRegExp),
-});
+const parseSearchInput = (x: string): ParsedInputResult => {
+	const f = execMulti(x);
+
+	return {
+		name: pipe(x, exec(nameRegExp), O.chain(A.head), O.getOrElse(constant(''))),
+		desc: f(descsRegExp),
+		url: f(urlsRegExp),
+		tags: f(tagsRegExp),
+		wildcard: f(wildcardsRegExp),
+	};
+};
 
 export default parseSearchInput;
 
