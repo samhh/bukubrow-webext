@@ -1,12 +1,12 @@
 import * as O from 'fp-ts/lib/Option';
-import { includesCaseInsensitive, endIndexOfAnyOf } from 'Modules/string';
+import { includesCI, endIndexOfAnyOf } from 'Modules/string';
 
-describe('includesCaseInsensitive', () => {
+describe('includesCI', () => {
 	test('string contains string case insensitively', () => {
-		expect(includesCaseInsensitive('abc', 'ab')).toBe(true);
-		expect(includesCaseInsensitive('abc', 'bC')).toBe(true);
-		expect(includesCaseInsensitive('abc', 'd')).toBe(false);
-		expect(includesCaseInsensitive('abc', 'EF')).toBe(false);
+		expect(includesCI('ab')('abc')).toBe(true);
+		expect(includesCI('bC')('abc')).toBe(true);
+		expect(includesCI('d')('abc')).toBe(false);
+		expect(includesCI('EF')('abc')).toBe(false);
 	});
 });
 
@@ -18,7 +18,7 @@ describe('endIndexOfAnyOf', () => {
 		expect(endIndexOfAnyOf('oh, hello there')(['hello', 'oh'])).toEqual(O.some(9));
 	});
 
-	test('returns -1 when no matches', () => {
+	test('returns None when no matches', () => {
 		expect(endIndexOfAnyOf('abc')(['d', 'e', 'f'])).toEqual(O.none);
 	});
 });

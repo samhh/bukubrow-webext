@@ -1,19 +1,23 @@
+import { Predicate } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import { prismNonNegativeInteger, NonNegativeInteger } from 'newtype-ts/lib/NonNegativeInteger';
 
-export const includes = (x: string) => (y: string): boolean => y.includes(x);
+export const includes = (x: string): Predicate<string> => (y): boolean => y.includes(x);
 
-// TODO curry and shorten name?
-export const includesCaseInsensitive = (test: string, searchString: string): boolean =>
-	test.toLowerCase().includes(searchString.toLowerCase());
+/**
+ * Includes, but case-insensitive.
+ */
+export const includesCI = (x: string): Predicate<string> => (y): boolean =>
+	y.toLowerCase().includes(x.toLowerCase());
 
 /**
  * Return ending index (index plus one) of the first match from a series of
  * tests.
  */
-export const endIndexOfAnyOf = (test: string) => (searchStrings: Array<string>): Option<NonNegativeInteger> => {
-	for (const searchString of searchStrings) {
-		const index = test.indexOf(searchString);
+// TODO
+export const endIndexOfAnyOf = (x: string) => (ys: Array<string>): Option<NonNegativeInteger> => {
+	for (const searchString of ys) {
+		const index = x.indexOf(searchString);
 
 		if (index !== -1) return prismNonNegativeInteger.getOption(index + searchString.length);
 	}
@@ -23,7 +27,7 @@ export const endIndexOfAnyOf = (test: string) => (searchStrings: Array<string>):
 
 export const fromNumber = (x: number): string => String(x);
 
-export const take = (start: number) => (x: string): string => x.substring(start);
+export const take = (i: number) => (x: string): string => x.substring(i);
 
 export const split = (x: string | RegExp) => (y: string): Array<string> => y.split(x);
 

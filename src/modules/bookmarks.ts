@@ -1,9 +1,12 @@
+import { pipe } from 'fp-ts/lib/pipeable';
 import { ordString, contramap, Ord, getSemigroup } from 'fp-ts/lib/Ord';
+import * as A from 'fp-ts/lib/Array';
 import { Lens } from 'monocle-ts';
+import { isNonEmptyString } from 'newtype-ts/lib/NonEmptyString';
 import { formatDistanceToNow } from 'date-fns';
 import { ParsedInputResult } from 'Modules/parse-search-input';
 import { URLMatch, ordURLMatch } from 'Modules/compare-urls';
-import { includesCaseInsensitive as includes } from 'Modules/string';
+import { includesCI, split } from 'Modules/string';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
 import { delimiter } from 'Modules/buku';
 
@@ -60,18 +63,18 @@ export const ordLocalBookmarkWeighted = getSemigroup<LocalBookmarkWeighted>().co
  */
 export const filterBookmarks = (bookmarks: Array<LocalBookmark>, test: ParsedInputResult): Array<LocalBookmark> =>
 	bookmarks.filter((bookmark) => {
-		if (!includes(bookmark.title, test.name)) return false;
-		if (test.desc.some(d => !includes(bookmark.desc, d))) return false;
-		if (test.url.some(u => !includes(bookmark.url, u))) return false;
-		if (test.tags.some(t => !bookmark.tags.some(tag => includes(tag, t)))) return false;
+		if (!includesCI(test.name)(bookmark.title)) return false;
+		if (test.desc.some(d => !includesCI(d)(bookmark.desc))) return false;
+		if (test.url.some(u => !includesCI(u)(bookmark.url))) return false;
+		if (test.tags.some(t => !bookmark.tags.some(tag => includesCI(t)(tag)))) return false;
 
 		// Ensure all wildcards match something
 		const allWildcardsMatch = test.wildcard.every((wc) => {
 			return (
-				includes(bookmark.title, wc) ||
-				includes(bookmark.desc, wc) ||
-				includes(bookmark.url, wc) ||
-				bookmark.tags.some(tag => includes(tag, wc))
+				includesCI(wc)(bookmark.title) ||
+				includesCI(wc)(bookmark.desc) ||
+				includesCI(wc)(bookmark.url) ||
+				bookmark.tags.some(tag => includesCI(wc)(tag))
 			);
 		});
 
@@ -86,7 +89,7 @@ export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	title: bookmark.metadata,
 	// Buku uses commas as delimiters including at the start and end of the
 	// string, so filter those out
-	tags: bookmark.tags.split(delimiter).filter(tag => tag !== ''),
+	tags: pipe(bookmark.tags, split(delimiter), A.filter(isNonEmptyString)),
 	url: bookmark.url,
 	desc: bookmark.desc,
 	flags: bookmark.flags,
