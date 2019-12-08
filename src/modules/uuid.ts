@@ -5,7 +5,7 @@ import * as IO from 'fp-ts/lib/IO';
 import * as A from 'fp-ts/lib/Array';
 import * as B from 'fp-ts/lib/boolean';
 
-const createUuidWithMaximum = (max: number) => (taken: number[] = []): IO<number> => pipe(
+const createUuidWithMaximum = (max: number) => (taken: Array<number> = []): IO<number> => pipe(
 	randomInt(1, max),
 	IO.chain((id) => pipe(
 		A.elem(eqNumber)(id, taken),

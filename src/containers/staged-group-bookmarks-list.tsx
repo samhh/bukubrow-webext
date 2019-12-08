@@ -33,7 +33,7 @@ const ControlsButton = styled(Button)`
 const StagedGroupBookmarksList: FC = () => {
 	const stagedGroupId = useSelector(state => state.bookmarks.stagedBookmarksGroupEditId);
 	const bookmarksMaybe = useSelector(getStagedGroupToEditWeightedBookmarks);
-	const bookmarks = O.getOrElse(() => [] as LocalBookmarkWeighted[])(bookmarksMaybe);
+	const bookmarks = O.getOrElse(() => [] as Array<LocalBookmarkWeighted>)(bookmarksMaybe);
 	const dispatch = useDispatch();
 
 	const handleOpenBookmark = (bmId: number): void => {

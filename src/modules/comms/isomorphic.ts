@@ -17,7 +17,7 @@ export const sendIsomorphicMessage = (msg: IsomorphicMessage): TaskEither<Error,
 );
 
 const isIsomorphicMessage = (msg: unknown): msg is IsomorphicMessage =>
-	(Object.values(IsomorphicMessage) as unknown[]).includes(msg);
+	(Object.values(IsomorphicMessage) as Array<unknown>).includes(msg);
 
 export const listenForIsomorphicMessages = (cb: (msg: IsomorphicMessage) => void): IO<void> => (): void => {
 	browser.runtime.onMessage.addListener((msg: unknown) => {

@@ -46,7 +46,7 @@ interface ErrResponse {
 
 type NativeGETResponse = {
 	success: true;
-	bookmarks: RemoteBookmark[];
+	bookmarks: Array<RemoteBookmark>;
 	moreAvailable: boolean;
 } | ErrResponse;
 
@@ -68,9 +68,9 @@ interface NativeDELETEResponse {
 export interface NativeRequestData {
 	GET: { offset: number } | undefined;
 	OPTIONS: undefined;
-	POST: { bookmarks: RemoteBookmarkUnsaved[] };
-	PUT: { bookmarks: RemoteBookmark[] };
-	DELETE: { bookmark_ids: RemoteBookmark['id'][] };
+	POST: { bookmarks: Array<RemoteBookmarkUnsaved> };
+	PUT: { bookmarks: Array<RemoteBookmark> };
+	DELETE: { bookmark_ids: Array<RemoteBookmark['id']> };
 }
 
 export interface NativeRequestResult {
@@ -119,9 +119,9 @@ export const checkBinaryVersionFromNative: Task<HostVersionCheckResult> = pipe(
 	)),
 );
 
-export const getBookmarksFromNative: TaskEither<Error, RemoteBookmark[]> = () => {
+export const getBookmarksFromNative: TaskEither<Error, Array<RemoteBookmark>> = () => {
 	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-	const get = (prevBookmarks: RemoteBookmark[] = []): TaskEither<Error, RemoteBookmark[]> => async () => {
+	const get = (prevBookmarks: Array<RemoteBookmark> = []): TaskEither<Error, Array<RemoteBookmark>> => async () => {
 		const resM = await sendMessageToNative(NativeRequestMethod.GET, { offset: prevBookmarks.length })();
 		if (E.isLeft(resM)) return E.left(resM.left);
 		const res = resM.right;
@@ -137,13 +137,13 @@ export const getBookmarksFromNative: TaskEither<Error, RemoteBookmark[]> = () =>
 	return get()();
 };
 
-export const saveBookmarksToNative = (bookmarks: RemoteBookmarkUnsaved[]): TaskEither<Error, NativePOSTResponse> =>
+export const saveBookmarksToNative = (bookmarks: Array<RemoteBookmarkUnsaved>): TaskEither<Error, NativePOSTResponse> =>
 	sendMessageToNative(NativeRequestMethod.POST, { bookmarks });
 
-export const updateBookmarksToNative = (bookmarks: RemoteBookmark[]): TaskEither<Error, NativePUTResponse> =>
+export const updateBookmarksToNative = (bookmarks: Array<RemoteBookmark>): TaskEither<Error, NativePUTResponse> =>
 	sendMessageToNative(NativeRequestMethod.PUT, { bookmarks });
 
-export const deleteBookmarksFromNative = (bookmarkIds: RemoteBookmark['id'][]): TaskEither<Error, NativeDELETEResponse> =>
+export const deleteBookmarksFromNative = (bookmarkIds: Array<RemoteBookmark['id']>): TaskEither<Error, NativeDELETEResponse> =>
 	// eslint-disable-next-line @typescript-eslint/camelcase
 	sendMessageToNative(NativeRequestMethod.DELETE, { bookmark_ids: bookmarkIds });
 

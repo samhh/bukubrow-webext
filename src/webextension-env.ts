@@ -26,7 +26,7 @@ const numStagedGroupsToGenerate = Number.isNaN(numStagedGroupsToGenerateParam) |
 	? Math.round(Math.random() * 5)
 	: numStagedGroupsToGenerateParam;
 
-const genDummyRemoteBookmarks = (): RemoteBookmark[] => Array(numBookmarksToGenerate)
+const genDummyRemoteBookmarks = (): Array<RemoteBookmark> => Array(numBookmarksToGenerate)
 	.fill(undefined)
 	.map((_, i): RemoteBookmark => ({
 		id: i,
@@ -39,7 +39,7 @@ const genDummyRemoteBookmarks = (): RemoteBookmark[] => Array(numBookmarksToGene
 		flags: 0,
 	}));
 
-const genDummyStagedGroups = (): StagedBookmarksGroup[] => Array(numStagedGroupsToGenerate)
+const genDummyStagedGroups = (): Array<StagedBookmarksGroup> => Array(numStagedGroupsToGenerate)
 	.fill(undefined)
 	.map((_, i): StagedBookmarksGroup => ({
 		id: i,
@@ -62,7 +62,7 @@ let state: StorageState = {
 	bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION,
 };
 
-let nativeBookmarksState: RemoteBookmark[] = [];
+let nativeBookmarksState: Array<RemoteBookmark> = [];
 
 // Note that only the interfaces used by the frontend of the WebExtension needs
 // to be mocked
@@ -145,7 +145,7 @@ const browserMock: DeepPartial<Browser> = {
 		},
 	},
 	tabs: {
-		query: (): Promise<Tabs.Tab[]> => Promise.resolve([{
+		query: (): Promise<Array<Tabs.Tab>> => Promise.resolve([{
 			title: 'Currently Active Tab Page Title',
 			url: 'https://samhh.com',
 			index: 0,

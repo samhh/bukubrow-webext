@@ -21,7 +21,7 @@ export const colors = {
 	[URLMatch.Domain]: '#a0c4ff',
 };
 
-const hrefToUrlReducer = (acc: URL[], href: string): URL[] => pipe(
+const hrefToUrlReducer = (acc: Array<URL>, href: string): Array<URL> => pipe(
 	createURL(href),
 	E.fold(
 		constant(acc),
@@ -29,7 +29,7 @@ const hrefToUrlReducer = (acc: URL[], href: string): URL[] => pipe(
 	),
 );
 
-const getBookmarksUrlsFromLocalStorage: TaskEither<Error, Option<URL[]>> = pipe(
+const getBookmarksUrlsFromLocalStorage: TaskEither<Error, Option<Array<URL>>> = pipe(
 	getBookmarksFromLocalStorage,
 	TE.map(O.map(flow(
 		A.map(bm => bm.url),
@@ -37,7 +37,7 @@ const getBookmarksUrlsFromLocalStorage: TaskEither<Error, Option<URL[]>> = pipe(
 	))),
 );
 
-let urlState: URL[] = [];
+let urlState: Array<URL> = [];
 
 const syncBookmarks: Task<void> = async () => {
 	const bookmarkUrls = await getBookmarksUrlsFromLocalStorage();
@@ -50,7 +50,7 @@ const syncBookmarks: Task<void> = async () => {
 const reduceMatch = ([x, y]: [URLMatch, number]) => (z: URLMatch): [URLMatch, number] =>
 	[max(ordURLMatch)(x, z), z === URLMatch.None ? y : y + 1];
 
-const checkUrl = (x: URL) => (ys: URL[]): [URLMatch, number] =>
+const checkUrl = (x: URL) => (ys: Array<URL>): [URLMatch, number] =>
 	A.reduce<URL, [URLMatch, number]>([URLMatch.None, 0], (acc, y) =>
 		reduceMatch(acc)(match(x)(y)))(ys);
 

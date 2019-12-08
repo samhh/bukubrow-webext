@@ -15,8 +15,8 @@ type Predicate<A> = import('fp-ts/lib/function').Predicate<A>;
 type Refinement<A, B> = import('fp-ts/lib/function').Refinement<A, B>;
 
 type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends (infer U)[]
-		? DeepPartial<U>[]
+	[P in keyof T]?: T[P] extends Array<infer U>
+		? Array<DeepPartial<U>>
 		: T[P] extends ReadonlyArray<infer U>
 			? ReadonlyArray<DeepPartial<U>>
 			: DeepPartial<T[P]>

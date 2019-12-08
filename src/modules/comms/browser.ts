@@ -18,7 +18,7 @@ import { StagedBookmarksGroup } from 'Modules/staged-groups';
 
 const sequenceTTE = sequenceT(TE.taskEither);
 
-const browserTabsQuery = (x: Tabs.QueryQueryInfoType): TaskOption<Tabs.Tab[]> =>
+const browserTabsQuery = (x: Tabs.QueryQueryInfoType): TaskOption<Array<Tabs.Tab>> =>
 	TO.tryCatch(() => browser.tabs.query(x));
 
 export const getActiveTab: TaskOption<Tabs.Tab> = pipe(
@@ -62,13 +62,13 @@ export const openBookmarkInAppropriateTab = (isFirstTab: boolean) => (url: strin
 );
 
 export interface StorageState {
-	bookmarks: LocalBookmark[];
-	stagedBookmarksGroups: StagedBookmarksGroup[];
+	bookmarks: Array<LocalBookmark>;
+	stagedBookmarksGroups: Array<StagedBookmarksGroup>;
 	bookmarksSchemaVersion: number;
 }
 
 // TODO actually verify the return type with io-ts
-const getLocalStorage = <T extends keyof StorageState>(...ks: T[]): TaskEither<Error, Partial<Pick<StorageState, T>>> =>
+const getLocalStorage = <T extends keyof StorageState>(...ks: Array<T>): TaskEither<Error, Partial<Pick<StorageState, T>>> =>
 	TE.tryCatch(
 		() => browser.storage.local.get(ks) as Promise<Partial<Pick<StorageState, T>>>,
 		constant(new Error('Failed to get local storage')),
@@ -102,23 +102,23 @@ export const getBookmarksFromLocalStorage: TaskEither<Error, Option<NonEmptyArra
 	)),
 );
 
-export const saveBookmarksToLocalStorage = (bookmarks: LocalBookmark[]): TaskEither<Error, void> => pipe(
+export const saveBookmarksToLocalStorage = (bookmarks: Array<LocalBookmark>): TaskEither<Error, void> => pipe(
 	setLocalStorage({ bookmarks, bookmarksSchemaVersion: BOOKMARKS_SCHEMA_VERSION }),
 	TE.chain(() => sendIsomorphicMessage(IsomorphicMessage.BookmarksUpdatedInLocalStorage)),
 );
 
-export const getStagedBookmarksGroupsFromLocalStorage: TaskEither<Error, Option<StagedBookmarksGroup[]>> = pipe(
+export const getStagedBookmarksGroupsFromLocalStorage: TaskEither<Error, Option<Array<StagedBookmarksGroup>>> = pipe(
 	getLocalStorage('stagedBookmarksGroups'),
 	TE.map(({ stagedBookmarksGroups }) => O.fromNullable(stagedBookmarksGroups)),
 );
 
-export const saveStagedBookmarksGroupsToLocalStorage = (stagedBookmarksGroups: StagedBookmarksGroup[]): TaskEither<Error, void> =>
+export const saveStagedBookmarksGroupsToLocalStorage = (stagedBookmarksGroups: Array<StagedBookmarksGroup>): TaskEither<Error, void> =>
 	setLocalStorage({ stagedBookmarksGroups });
 
 export const saveStagedBookmarksAsNewGroupToLocalStorage = (newStagedBookmarks: NonEmptyArray<LocalBookmarkUnsaved>): TaskEither<Error, void> => {
 	const stagedBookmarksGroups = pipe(
 		getStagedBookmarksGroupsFromLocalStorage,
-		TE.map(O.getOrElse((): StagedBookmarksGroup[] => [])),
+		TE.map(O.getOrElse((): Array<StagedBookmarksGroup> => [])),
 	);
 
 	const newGroup = pipe(
@@ -130,7 +130,7 @@ export const saveStagedBookmarksAsNewGroupToLocalStorage = (newStagedBookmarks: 
 				time: new Date().getTime(),
 				// Assign each bookmark a generated ID, and ensure they don't clash with
 				// one another
-				bookmarks: newStagedBookmarks.reduce<LocalBookmark[]>((acc, bm) => [...acc, {
+				bookmarks: newStagedBookmarks.reduce<Array<LocalBookmark>>((acc, bm) => [...acc, {
 					...bm,
 					id: createUuid(acc.map(b => b.id))(),
 				}], []),

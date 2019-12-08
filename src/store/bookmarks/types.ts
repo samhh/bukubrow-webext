@@ -2,8 +2,8 @@ import { LocalBookmark } from 'Modules/bookmarks';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
 
 export interface BookmarksState {
-	bookmarks: LocalBookmark[];
-	stagedBookmarksGroups: StagedBookmarksGroup[];
+	bookmarks: Array<LocalBookmark>;
+	stagedBookmarksGroups: Array<StagedBookmarksGroup>;
 	limitNumRendered: boolean;
 	focusedBookmarkIndex: Option<number>;
 	bookmarkEditId: Option<LocalBookmark['id']>;

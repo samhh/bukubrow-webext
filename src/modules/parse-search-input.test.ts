@@ -45,7 +45,7 @@ describe('parse search input', () => {
 			wildcard: [],
 		};
 
-		const testCases: [string, Partial<ParsedInputResult>][] = [
+		const testCases: Array<[string, Partial<ParsedInputResult>]> = [
 			['a', { name: 'a' }],
 			['a :', { name: 'a :' }],
 			['a :u', { name: 'a', url: ['u'] }],

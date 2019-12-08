@@ -5,12 +5,12 @@ import { LocalBookmark } from 'Modules/bookmarks';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
 import { BookmarksActionTypes } from './types';
 
-export const setAllBookmarks = (bookmarks: LocalBookmark[]) => action(
+export const setAllBookmarks = (bookmarks: Array<LocalBookmark>) => action(
 	BookmarksActionTypes.SetAllBookmarks,
 	bookmarks,
 );
 
-export const setAllStagedBookmarksGroups = (groups: StagedBookmarksGroup[]) => action(
+export const setAllStagedBookmarksGroups = (groups: Array<StagedBookmarksGroup>) => action(
 	BookmarksActionTypes.SetAllStagedBookmarksGroups,
 	groups,
 );

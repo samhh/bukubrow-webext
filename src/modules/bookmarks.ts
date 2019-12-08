@@ -29,7 +29,7 @@ export interface LocalBookmarkUnsaved {
 	title: string;
 	desc: string;
 	url: string;
-	tags: string[];
+	tags: Array<string>;
 	flags: number;
 }
 
@@ -48,7 +48,7 @@ export interface LocalBookmarkWeighted extends LocalBookmark {
 /**
  * Filter out bookmarks that do not perfectly match the provided test.
  */
-export const filterBookmarks = (bookmarks: LocalBookmark[], test: ParsedInputResult): LocalBookmark[] =>
+export const filterBookmarks = (bookmarks: Array<LocalBookmark>, test: ParsedInputResult): Array<LocalBookmark> =>
 	bookmarks.filter((bookmark) => {
 		if (!includes(bookmark.title, test.name)) return false;
 		if (test.desc.some(d => !includes(bookmark.desc, d))) return false;

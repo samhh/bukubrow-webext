@@ -21,6 +21,7 @@ module.exports = {
 		'@typescript-eslint/no-use-before-define': 0,
 		'@typescript-eslint/no-misused-promises': 0,
 		'@typescript-eslint/unbound-method': 0,
+		'@typescript-eslint/array-type': [2, { default: 'generic', readonly: 'generic' }],
 		'import/no-unresolved': 0,
 		'react/prop-types': 0,
 		'react/jsx-uses-react': 2,

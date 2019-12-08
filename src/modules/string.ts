@@ -6,7 +6,7 @@ export const includesCaseInsensitive = (test: string, searchString: string): boo
  * tests.
  */
 // TODO use Option
-export const endIndexOfAnyOf = (test: string, searchStrings: string[]): number => {
+export const endIndexOfAnyOf = (test: string, searchStrings: Array<string>): number => {
 	for (const searchString of searchStrings) {
 		const index = test.indexOf(searchString);
 

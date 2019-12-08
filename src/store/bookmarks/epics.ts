@@ -79,7 +79,7 @@ export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id
 		// untransform overload
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		O.map(grp => grp.bookmarks.map(({ id, ...rest }): LocalBookmarkUnsaved => ({ ...rest }))),
-		O.getOrElse(() => [] as LocalBookmarkUnsaved[]),
+		O.getOrElse(() => [] as Array<LocalBookmarkUnsaved>),
 	);
 
 	await dispatch(addManyBookmarks(bookmarks));
@@ -111,7 +111,7 @@ export const syncStagedBookmarksGroups = (): ThunkAC<Promise<void>> => async (di
 		await getStagedBookmarksGroupsFromLocalStorage(),
 		O.fromEither,
 		O.flatten,
-		O.getOrElse(() => [] as StagedBookmarksGroup[]),
+		O.getOrElse(() => [] as Array<StagedBookmarksGroup>),
 	);
 
 	dispatch(setAllStagedBookmarksGroups(stagedBookmarksGroups));
@@ -121,7 +121,7 @@ export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<voi
 	await dispatch(addManyBookmarks([bookmark]));
 };
 
-export const addManyBookmarks = (bookmarks: LocalBookmarkUnsaved[]): ThunkAC<Promise<void>> => async (dispatch) => {
+export const addManyBookmarks = (bookmarks: Array<LocalBookmarkUnsaved>): ThunkAC<Promise<void>> => async (dispatch) => {
 	await saveBookmarksToNative(bookmarks.map(untransform))();
 	dispatch(syncBookmarks());
 

@@ -6,7 +6,7 @@ import * as E from 'fp-ts/lib/Either';
 import { join } from 'Modules/array';
 import { error } from 'Modules/error';
 
-const report = (es: t.Errors): string[] => PathReporter.report(E.left(es));
+const report = (es: t.Errors): Array<string> => PathReporter.report(E.left(es));
 
 // For this reason: https://github.com/gcanti/fp-ts/issues/904
 export const decode = <A, O>(x: t.Type<A, O>) => (y: unknown): Either<Error, A> => pipe(

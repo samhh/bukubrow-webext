@@ -12,10 +12,10 @@ const wildcardsRegExp = /(?:^| )\*(.+?)(?= +[#>:*]|$)/g;
 
 export interface ParsedInputResult {
 	name: string;
-	desc: string[];
-	url: string[];
-	tags: string[];
-	wildcard: string[];
+	desc: Array<string>;
+	url: Array<string>;
+	tags: Array<string>;
+	wildcard: Array<string>;
 }
 
 /**

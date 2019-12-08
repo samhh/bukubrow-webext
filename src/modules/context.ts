@@ -25,7 +25,7 @@ export const sendTabsToStagingArea = (tabs: NonEmptyArray<SufficientTab>): TaskE
 
 const isSufficientTab = (tab: Tabs.Tab): tab is Tabs.Tab & SufficientTab => !!tab.title && !!tab.url;
 const trimSufficientTab = (tab: SufficientTab): SufficientTab => ({ title: tab.title, url: tab.url });
-const toSufficientTabs = (tabs: Tabs.Tab[]): SufficientTab[] => tabs.filter(isSufficientTab).map(trimSufficientTab);
+const toSufficientTabs = (tabs: Array<Tabs.Tab>): Array<SufficientTab> => tabs.filter(isSufficientTab).map(trimSufficientTab);
 
 /**
  * Initialise context menu items that each obtain various viable window tabs,

@@ -8,7 +8,7 @@ export const exec = (x: RegExp) => (y: string): Option<RegExpExecArray> =>
 
 // This works as it does without mutating `x` because `RegExp.prototype.exec`
 // is stateful under the hood for global and sticky `RegExp` objects
-export const execMulti = (x: string) => (r: RegExp): string[] => {
+export const execMulti = (x: string) => (r: RegExp): Array<string> => {
 	const f = exec(r);
 
 	const g = (ys: Array<string> = []): Array<string> => pipe(

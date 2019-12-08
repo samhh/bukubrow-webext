@@ -8,7 +8,7 @@ const highlightedStyle = {
 
 interface Props {
 	str: string;
-	match?: string[];
+	match?: Array<string>;
 }
 
 const HighlightMarkup: FC<Props> = props => (
