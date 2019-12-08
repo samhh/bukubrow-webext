@@ -1,4 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
+import { max } from 'fp-ts/lib/Ord';
 import { flow, constant } from 'fp-ts/lib/function';
 import * as T from 'fp-ts/lib/Task';
 import * as TE from 'fp-ts/lib/TaskEither';
@@ -10,9 +11,10 @@ import * as EO from 'Modules/eitherOption';
 import { browser } from 'webextension-polyfill-ts';
 import { getBadgeDisplayOpt, BadgeDisplay } from 'Modules/settings';
 import { createURL } from 'Modules/url';
-import { URLMatch } from 'Modules/compare-urls';
+import { URLMatch, match, ordURLMatch } from 'Modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Modules/comms/browser';
 import { snoc_ } from 'Modules/array';
+import { flip } from 'Modules/fp';
 
 export const colors = {
 	[URLMatch.Exact]: '#4286f4',
@@ -45,23 +47,12 @@ const syncBookmarks: Task<void> = async () => {
 	}
 };
 
-const checkUrl = (url: URL): [URLMatch, number] => {
-	let bestMatch = URLMatch.None;
-	let numMatches = 0;
+const reduceMatch = ([x, y]: [URLMatch, number]) => (z: URLMatch): [URLMatch, number] =>
+	[max(ordURLMatch)(x, z), z === URLMatch.None ? y : y + 1];
 
-	for (const bookmarkUrl of urlState) {
-		if (bookmarkUrl.href === url.href) {
-			bestMatch = URLMatch.Exact;
-			numMatches++;
-		}
-		else if (bookmarkUrl.hostname === url.hostname) {
-			if (bestMatch !== URLMatch.Exact) bestMatch = URLMatch.Domain;
-			numMatches++;
-		}
-	}
-
-	return [bestMatch, numMatches];
-};
+const checkUrl = (x: URL) => (ys: URL[]): [URLMatch, number] =>
+	A.reduce<URL, [URLMatch, number]>([URLMatch.None, 0], (acc, y) =>
+		reduceMatch(acc)(match(x)(y)))(ys);
 
 const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<void> => {
 	const urlRes = await pipe(
@@ -71,7 +62,7 @@ const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<vo
 			createURL,
 			O.fromEither,
 		)),
-		TO.map(checkUrl),
+		TO.map(flip(checkUrl)(urlState)),
 	)();
 
 	if (O.isSome(urlRes)) {

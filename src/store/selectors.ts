@@ -9,7 +9,7 @@ import { AppState } from 'Store';
 import parseSearchInput from 'Modules/parse-search-input';
 import { filterBookmarks, sortBookmarks, LocalBookmark, LocalBookmarkWeighted } from 'Modules/bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
-import compareURLs, { URLMatch } from 'Modules/compare-urls';
+import { URLMatch, match } from 'Modules/compare-urls';
 import { createURL } from 'Modules/url';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
 
@@ -17,7 +17,7 @@ const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmar
 	...bookmark,
 	weight: pipe(
 		OT.optionTuple(activeTabURL, O.fromEither(createURL(bookmark.url))),
-		O.map(([activeURL, bmURL]) => compareURLs(activeURL, bmURL)),
+		O.map(([activeURL, bmURL]) => match(activeURL)(bmURL)),
 		O.getOrElse((): URLMatch => URLMatch.None),
 	),
 });
