@@ -14,7 +14,7 @@ import { createURL } from 'Modules/url';
 import { URLMatch, match, ordURLMatch } from 'Modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Modules/comms/browser';
 import { snoc_ } from 'Modules/array';
-import { flip } from 'Modules/fp';
+import { flip, _ } from 'Modules/fp';
 
 export const colors = {
 	[URLMatch.Exact]: '#4286f4',
@@ -115,7 +115,7 @@ export const initBadgeAndListen: Task<Task<void>> = () => {
 	update();
 
 	// Update on tab activity
-	onTabActivity(update);
+	onTabActivity(_(update));
 
 	// Allow updates to be triggered by callback
 	return Promise.resolve(update);
