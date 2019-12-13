@@ -1,4 +1,4 @@
-import { Predicate } from 'fp-ts/lib/function';
+import { Predicate, flow } from 'fp-ts/lib/function';
 import { Eq } from 'fp-ts/lib/Eq';
 import * as A from 'fp-ts/lib/Array';
 
@@ -22,4 +22,7 @@ export const join = (y: string) => (xs: Array<string>): string => xs.join(y);
 export const consC = <A>(xs: Array<A>) => (y: A): NonEmptyArray<A> => A.cons(y, xs);
 
 export const snocC = <A>(xs: Array<A>) => (y: A): NonEmptyArray<A> => A.snoc(xs, y);
+
+export const mapByPredicate = <A>(g: Endomorphism<A>) => (f: Predicate<A>): Endomorphism<Array<A>> =>
+	flow(A.map((x) => f(x) ? g(x) : x));
 
