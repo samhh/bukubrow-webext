@@ -7,6 +7,7 @@ import { saveSettings, getBadgeDisplayOpt, Theme, BadgeDisplay, isTheme, isBadge
 import { sendIsomorphicMessage, IsomorphicMessage } from 'Modules/comms/isomorphic';
 import styled from 'Styles';
 import Button from 'Components/button';
+import { runTask } from 'Modules/fp';
 
 const Page = styled.main`
 	padding: 2.5rem;
@@ -50,7 +51,7 @@ const OptionsPage: FC = () => {
 
 		dispatch(setActiveTheme(themeOpt));
 		sendIsomorphicMessage(IsomorphicMessage.SettingsUpdated);
-		saveSettings({ theme: O.some(themeOpt), badgeDisplay: O.some(badgeOpt) })();
+		runTask(saveSettings({ theme: O.some(themeOpt), badgeDisplay: O.some(badgeOpt) }));
 	};
 
 	return (

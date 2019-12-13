@@ -7,6 +7,7 @@ import { Page } from 'Store/user/types';
 import { setPage } from 'Store/user/actions';
 import { getStagedGroupToEdit } from 'Store/selectors';
 import { formatStagedBookmarksGroupTitle } from 'Modules/bookmarks';
+import { runIO } from 'Modules/fp';
 
 import BookmarkAddForm from 'Containers/bookmark-add-form';
 import BookmarkDeleteForm from 'Containers/bookmark-delete-form';
@@ -123,5 +124,5 @@ const ContentApp: FC = () => {
 	);
 };
 
-mount(<ContentApp />)();
+runIO(mount(<ContentApp />));
 

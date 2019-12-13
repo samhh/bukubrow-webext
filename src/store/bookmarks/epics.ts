@@ -18,6 +18,7 @@ import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab 
 import { untransform, transform, LocalBookmark, LocalBookmarkUnsaved } from 'Modules/bookmarks';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
 import { Page } from 'Store/user/types';
+import { runTask, seqT } from 'Modules/fp';
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();
@@ -55,16 +56,19 @@ export const openBookmarkAndExit = (
 
 	if (O.isSome(bookmark)) {
 		const { url } = bookmark.value;
-		await openBookmarkInAppropriateTab(true)(url)();
+		await runTask(openBookmarkInAppropriateTab(true)(url));
 
 		window.close();
 	}
 };
 
 export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
-	const filteredBookmarks = getUnlimitedFilteredBookmarks(getState());
-
-	await Promise.all(filteredBookmarks.map(({ url }, index) => openBookmarkInAppropriateTab(index === 0)(url)()));
+	await pipe(
+		getUnlimitedFilteredBookmarks(getState()),
+		A.mapWithIndex((i, { url }) => openBookmarkInAppropriateTab(i === 0)(url)),
+		seqT,
+		runTask,
+	);
 
 	window.close();
 };
@@ -79,7 +83,7 @@ export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id
 		// untransform overload
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		O.map(grp => grp.bookmarks.map(({ id, ...rest }): LocalBookmarkUnsaved => ({ ...rest }))),
-		O.getOrElse(() => [] as Array<LocalBookmarkUnsaved>),
+		O.getOrElse<Array<LocalBookmarkUnsaved>>(() => []),
 	);
 
 	await dispatch(addManyBookmarks(bookmarks));
@@ -122,14 +126,14 @@ export const addBookmark = (bookmark: LocalBookmarkUnsaved): ThunkAC<Promise<voi
 };
 
 export const addManyBookmarks = (bookmarks: Array<LocalBookmarkUnsaved>): ThunkAC<Promise<void>> => async (dispatch) => {
-	await saveBookmarksToNative(bookmarks.map(untransform))();
+	await runTask(saveBookmarksToNative(bookmarks.map(untransform)));
 	dispatch(syncBookmarks());
 
 	dispatch(setPage(Page.Search));
 };
 
 export const updateBookmark = (bookmark: LocalBookmark): ThunkAC<Promise<void>> => async (dispatch) => {
-	await updateBookmarksToNative([untransform(bookmark)])();
+	await runTask(updateBookmarksToNative([untransform(bookmark)]));
 	dispatch(syncBookmarks());
 
 	dispatch(setPage(Page.Search));
@@ -141,7 +145,7 @@ export const deleteBookmark = (): ThunkAC<Promise<void>> => async (dispatch, get
 	if (O.isSome(bookmarkDeleteId)) {
 		const bookmarkId = bookmarkDeleteId.value;
 
-		await deleteBookmarksFromNative([bookmarkId])();
+		await runTask(deleteBookmarksFromNative([bookmarkId]));
 		dispatch(syncBookmarks());
 		dispatch(setDeleteBookmarkModalDisplay(false));
 	}

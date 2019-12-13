@@ -1,19 +1,17 @@
-import { browser } from 'webextension-polyfill-ts';
 import * as t from 'io-ts';
 import { optionFromNullable } from 'io-ts-types/lib/optionFromNullable';
 import { fromRefinement } from 'io-ts-types/lib/fromRefinement';
 import { Lens } from 'monocle-ts';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flow, constant } from 'fp-ts/lib/function';
+import { flow } from 'fp-ts/lib/function';
 import { eqString } from 'fp-ts/lib/Eq';
 import * as T from 'fp-ts/lib/Task';
-import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
 import { elemC } from 'Modules/array';
 import { values } from 'Modules/record';
-import { error } from 'Modules/error';
 import { decode } from 'Modules/io';
+import { getSyncStorage, setSyncStorage } from 'Modules/sync';
 
 export enum Theme {
 	Light = 'light',
@@ -56,14 +54,10 @@ export type Settings = t.TypeOf<typeof settingsCodec>;
 const theme = Lens.fromProp<Settings>()('theme');
 const badgeDisplay = Lens.fromProp<Settings>()('badgeDisplay');
 
-export const saveSettings = (opts: Settings): Task<void> => (): Promise<void> =>
-	browser.storage.sync.set(opts);
+export const saveSettings = (opts: Settings): TaskEither<Error, void> => setSyncStorage(opts);
 
 const getSettings: TaskEither<Error, Settings> = pipe(
-	TE.tryCatch(
-		(): Promise<unknown> => browser.storage.sync.get(),
-		constant(error('Failed to get settings')),
-	),
+	getSyncStorage(['theme', 'badgeDisplay']),
 	T.map(E.chain(decode(settingsCodec))),
 );
 

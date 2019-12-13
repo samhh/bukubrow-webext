@@ -10,6 +10,7 @@ import { NativeRequestMethod, NativeRequestData, NativeRequestResult } from 'Mod
 import { createUuid } from 'Modules/uuid';
 import { RemoteBookmark } from 'Modules/bookmarks';
 import { StagedBookmarksGroup } from 'Modules/staged-groups';
+import { runTask, runIO } from 'Modules/fp';
 
 // Allow use of URL params to manipulate state in the simulator
 const params = new URLSearchParams(window.location.search);
@@ -73,7 +74,7 @@ const browserMock: DeepPartial<Browser> = {
 			_appName: string,
 			{ method, data }: { method: T; data: NativeRequestData[T] },
 		): Promise<NativeRequestResult[T]> => {
-			await sleep(latency)();
+			await runTask(sleep(latency));
 
 			// This assertion may not be needed once the following is merged:
 			// https://github.com/Microsoft/TypeScript/pull/22348
@@ -90,7 +91,7 @@ const browserMock: DeepPartial<Browser> = {
 
 				case NativeRequestMethod.POST: {
 					const newBookmarks = (data as NativeRequestData[NativeRequestMethod.POST]).bookmarks;
-					const newId = createUuid(nativeBookmarksState.map(bm => bm.id))();
+					const newId = runIO(createUuid(nativeBookmarksState.map(bm => bm.id)));
 
 					for (const newBookmark of newBookmarks) {
 						nativeBookmarksState.push({ ...newBookmark, id: newId });

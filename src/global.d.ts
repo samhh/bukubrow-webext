@@ -13,6 +13,7 @@ type NonEmptyArray<A> = import('fp-ts/lib/NonEmptyArray').NonEmptyArray<A>;
 type Lazy<A> = import('fp-ts/lib/function').Lazy<A>;
 type Predicate<A> = import('fp-ts/lib/function').Predicate<A>;
 type Refinement<A, B> = import('fp-ts/lib/function').Refinement<A, B>;
+type Endomorphism<A> = import('fp-ts/lib/function').Endomorphism<A>;
 
 type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends Array<infer U>

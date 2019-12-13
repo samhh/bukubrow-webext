@@ -1,10 +1,11 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { Predicate } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
 import { prismNonNegativeInteger, NonNegativeInteger } from 'newtype-ts/lib/NonNegativeInteger';
 import { prismModifyOption } from 'Modules/prism';
 import { add } from 'Modules/math';
+
+export const isString: Refinement<unknown, string> = (x): x is string => typeof x === 'string';
 
 export const includes = (x: string): Predicate<string> => (y): boolean => y.includes(x);
 

@@ -6,6 +6,13 @@ import * as E from 'fp-ts/lib/Either';
 import { APP_NAME, MINIMUM_BINARY_VERSION } from 'Modules/config';
 import { compareAgainstMinimum, SemanticVersioningComparison } from 'Modules/semantic-versioning';
 import { RemoteBookmark, RemoteBookmarkUnsaved } from 'Modules/bookmarks';
+import { asError } from 'Modules/error';
+import { runTask } from 'Modules/fp';
+
+const sendNativeMessageSetup = (a: string) => (d: unknown): TaskEither<Error, unknown> =>
+	TE.tryCatch(() => browser.runtime.sendNativeMessage(a, d), asError);
+
+const sendNativeMessage = sendNativeMessageSetup(APP_NAME);
 
 type CheckBinaryRes =
 	| { outdatedBinary: true }
@@ -82,11 +89,10 @@ export interface NativeRequestResult {
 }
 
 // TODO verify these payloads with io-ts
-const sendMessageToNative = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]): TaskEither<Error, NativeRequestResult[T]> =>
-	TE.tryCatch(
-		() => browser.runtime.sendNativeMessage(APP_NAME, { method, data }),
-		(e) => new Error(`Failed to communicate with native messenger: ${e}`),
-	);
+const sendMessageToNative = <T extends NativeRequestMethod>(method: T, data: NativeRequestData[T]): TaskEither<Error, NativeRequestResult[T]> => pipe(
+	sendNativeMessage({ method, data }),
+	TE.map(x => x as NativeRequestResult[T]),
+);
 
 export enum HostVersionCheckResult {
 	Okay,
@@ -122,7 +128,7 @@ export const checkBinaryVersionFromNative: Task<HostVersionCheckResult> = pipe(
 export const getBookmarksFromNative: TaskEither<Error, Array<RemoteBookmark>> = () => {
 	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 	const get = (prevBookmarks: Array<RemoteBookmark> = []): TaskEither<Error, Array<RemoteBookmark>> => async () => {
-		const resM = await sendMessageToNative(NativeRequestMethod.GET, { offset: prevBookmarks.length })();
+		const resM = await runTask(sendMessageToNative(NativeRequestMethod.GET, { offset: prevBookmarks.length }));
 		if (E.isLeft(resM)) return E.left(resM.left);
 		const res = resM.right;
 
@@ -134,7 +140,7 @@ export const getBookmarksFromNative: TaskEither<Error, Array<RemoteBookmark>> = 
 			: E.right(bookmarks);
 	};
 
-	return get()();
+	return runTask(get());
 };
 
 export const saveBookmarksToNative = (bookmarks: Array<RemoteBookmarkUnsaved>): TaskEither<Error, NativePOSTResponse> =>

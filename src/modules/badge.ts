@@ -14,7 +14,18 @@ import { fromString } from 'Modules/url';
 import { URLMatch, match, ordURLMatch } from 'Modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Modules/comms/browser';
 import { snoc_ } from 'Modules/array';
-import { flip, _ } from 'Modules/fp';
+import { flip, _, runTask, runIO } from 'Modules/fp';
+
+const setBadge = (color: string) => (text: string): IO<void> => (): void => {
+	browser.browserAction.setBadgeBackgroundColor({ color });
+	browser.browserAction.setBadgeText({ text });
+};
+
+const disableBadge: IO<void> = () => {
+	// Empty string disables the badge
+	browser.browserAction.setBadgeText({ text: '' });
+};
+
 
 export const colors = {
 	[URLMatch.Exact]: '#4286f4',
@@ -63,14 +74,14 @@ const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<vo
 			O.fromEither,
 		)),
 		TO.map(flip(checkUrl)(urlState)),
-	)();
+		runTask,
+	);
 
 	if (O.isSome(urlRes)) {
 		const [result, numMatches] = urlRes.value;
 
 		if (badgeOpt === BadgeDisplay.None || result === URLMatch.None) {
-			// Empty string disables the badge
-			browser.browserAction.setBadgeText({ text: '' });
+			disableBadge();
 			return;
 		}
 
@@ -80,13 +91,11 @@ const updateBadge = (badgeOpt: BadgeDisplay): Task<void> => async (): Promise<vo
 
 		switch (result) {
 			case URLMatch.Exact:
-				browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Exact] });
-				browser.browserAction.setBadgeText({ text });
+				runIO(setBadge(colors[URLMatch.Exact])(text));
 				break;
 
 			case URLMatch.Domain:
-				browser.browserAction.setBadgeBackgroundColor({ color: colors[URLMatch.Domain] });
-				browser.browserAction.setBadgeText({ text });
+				runIO(setBadge(colors[URLMatch.Domain])(text));
 				break;
 		}
 	}
@@ -108,7 +117,8 @@ export const initBadgeAndListen: Task<Task<void>> = () => {
 	const update: Task<void> = async () => {
 		const badgeOpt = await getBadgeOptOrDefault();
 		if (badgeOpt !== BadgeDisplay.None) await syncBookmarks();
-		updateBadge(badgeOpt)();
+
+		runTask(updateBadge(badgeOpt));
 	};
 
 	// Update immediately on load

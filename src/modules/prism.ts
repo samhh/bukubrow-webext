@@ -1,3 +1,4 @@
+import { pipe } from 'fp-ts/lib/pipeable';
 import { Endomorphism } from 'fp-ts/lib/function';
 import { Prism } from 'monocle-ts';
 
