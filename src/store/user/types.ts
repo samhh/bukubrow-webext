@@ -1,3 +1,4 @@
+import { Lens } from 'monocle-ts';
 import { Theme } from 'Modules/settings';
 export { Theme };
 
@@ -7,6 +8,11 @@ export interface UserState {
 	displayOpenAllBookmarksConfirmation: boolean;
 	page: Page;
 }
+
+export const hasBinaryComms = Lens.fromProp<UserState>()('hasBinaryComms');
+export const activeTheme = Lens.fromProp<UserState>()('activeTheme');
+export const displayOpenAllBookmarksConfirmation = Lens.fromProp<UserState>()('displayOpenAllBookmarksConfirmation');
+export const page = Lens.fromProp<UserState>()('page');
 
 export enum UserActionTypes {
 	SetHasBinaryComms = 'SET_HAS_BINARY_COMMS',

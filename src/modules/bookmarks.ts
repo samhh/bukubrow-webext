@@ -51,6 +51,7 @@ export interface LocalBookmarkWeighted extends LocalBookmark {
 	weight: URLMatch;
 }
 
+export const id = Lens.fromProp<LocalBookmark>()('id');
 export const title = Lens.fromProp<LocalBookmarkUnsaved>()('title');
 export const weight = Lens.fromProp<LocalBookmarkWeighted>()('weight');
 

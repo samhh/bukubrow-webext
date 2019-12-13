@@ -1,25 +1,25 @@
-import { Reducer } from 'redux';
 import { ActionType } from 'typesafe-actions';
+import { identity } from 'fp-ts/lib/function';
 import * as inputActions from './actions';
-import { InputState, InputActionTypes } from './types';
+import { InputState, InputActionTypes, searchFilter } from './types';
+import { curryReducer } from 'Modules/redux';
 
 export type InputActions = ActionType<typeof inputActions>;
 
-const initialState = {
+const initialState: InputState = {
 	searchFilter: '',
 };
 
-const inputReducer: Reducer<InputState, InputActions> = (state = initialState, action) => {
-	switch (action.type) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const inputReducer = curryReducer<InputActions, InputState>((a) => (_s) => {
+	switch (a.type) {
 		case InputActionTypes.SetSearchFilter:
-			return {
-				...state,
-				searchFilter: action.payload,
-			};
+			return searchFilter.set(a.payload);
 
 		default:
-			return state;
+			return identity;
 	}
-};
+})(initialState);
 
 export default inputReducer;
+

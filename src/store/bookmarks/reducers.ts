@@ -1,12 +1,23 @@
+import { identity, constant, flow, not } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
-import { Reducer } from 'redux';
+import * as A from 'fp-ts/lib/Array';
 import { ActionType } from 'typesafe-actions';
 import * as bookmarksActions from './actions';
-import { BookmarksState, BookmarksActionTypes } from './types';
+import {
+	BookmarksState, BookmarksActionTypes, bookmarks, stagedBookmarksGroups,
+	limitNumRendered, focusedBookmarkIndex, bookmarkEditId, bookmarkDeleteId,
+	stagedBookmarksGroupEditId, stagedBookmarksGroupBookmarkEditId,
+	displayDeleteBookmarkModal,
+} from './types';
+import { curryReducer } from 'Modules/redux';
+import { id as grpId, bookmarks as grpBms } from 'Modules/staged-groups';
+import { mapByPredicate } from 'Modules/array';
+import { id as bmId } from 'Modules/bookmarks';
+import { eqNumber } from 'Modules/eq';
 
 export type BookmarksActions = ActionType<typeof bookmarksActions>;
 
-const initialState = {
+const initialState: BookmarksState = {
 	bookmarks: [],
 	stagedBookmarksGroups: [],
 	limitNumRendered: true,
@@ -18,107 +29,63 @@ const initialState = {
 	displayDeleteBookmarkModal: false,
 };
 
-const bookmarksReducer: Reducer<BookmarksState, BookmarksActions> = (state = initialState, action) => {
-	switch (action.type) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const bookmarksReducer = curryReducer<BookmarksActions, BookmarksState>((a) => (_s) => {
+	switch (a.type) {
 		case BookmarksActionTypes.SetAllBookmarks:
-			return {
-				...state,
-				bookmarks: [...action.payload],
-			};
+			return bookmarks.set(a.payload);
 
 		case BookmarksActionTypes.SetAllStagedBookmarksGroups:
-			return {
-				...state,
-				stagedBookmarksGroups: [...action.payload],
-			};
+			return stagedBookmarksGroups.set(a.payload);
 
 		case BookmarksActionTypes.DeleteStagedBookmarksGroup:
-			return {
-				...state,
-				stagedBookmarksGroups: state.stagedBookmarksGroups.filter(grp => grp.id !== action.payload),
-			};
+			return stagedBookmarksGroups.modify(A.filter(x => x.id !== a.payload));
 
 		case BookmarksActionTypes.SetLimitNumRendered:
-			return {
-				...state,
-				limitNumRendered: action.payload,
-			};
+			return limitNumRendered.set(a.payload);
 
 		case BookmarksActionTypes.SetFocusedBookmarkIndex:
-			return {
-				...state,
-				focusedBookmarkIndex: action.payload,
-			};
+			return focusedBookmarkIndex.set(a.payload);
 
 		case BookmarksActionTypes.SetBookmarkEditId:
-			return {
-				...state,
-				bookmarkEditId: action.payload,
-			};
+			return bookmarkEditId.set(a.payload);
 
 		case BookmarksActionTypes.SetBookmarkDeleteId:
-			return {
-				...state,
-				bookmarkDeleteId: action.payload,
-			};
+			return bookmarkDeleteId.set(a.payload);
 
 		case BookmarksActionTypes.SetStagedBookmarksGroupEditId:
-			return {
-				...state,
-				stagedBookmarksGroupEditId: action.payload,
-			};
+			return stagedBookmarksGroupEditId.set(a.payload);
 
 		case BookmarksActionTypes.SetStagedBookmarksGroupBookmarkEditId:
-			return {
-				...state,
-				stagedBookmarksGroupBookmarkEditId: action.payload,
-			};
+			return stagedBookmarksGroupBookmarkEditId.set(a.payload);
 
 		case BookmarksActionTypes.UpdateStagedBookmarksGroupBookmark: {
-			const [groupId, bookmark] = action.payload;
+			const [newGrpId, newBm] = a.payload;
+			const eqGrp = flow(grpId.get, eqNumber(newGrpId));
+			const eqBm = flow(bmId.get, eqNumber(newBm.id));
 
-			return {
-				...state,
-				stagedBookmarksGroups: state.stagedBookmarksGroups.map((group) => {
-					if (group.id !== groupId) return group;
-
-					return {
-						...group,
-						bookmarks: group.bookmarks.map(oldBookmark => oldBookmark.id === bookmark.id
-							? bookmark
-							: oldBookmark,
-						),
-					};
-				}),
-			};
+			return stagedBookmarksGroups.modify(mapByPredicate(
+				grpBms.modify(mapByPredicate(constant(newBm))(eqBm))
+			)(eqGrp));
 		}
 
 		case BookmarksActionTypes.DeleteStagedBookmarksGroupBookmark: {
-			const [groupId, bookmarkId] = action.payload;
+			const [newGrpId, newBmId] = a.payload;
+			const eqGrp = flow(grpId.get, eqNumber(newGrpId));
+			const eqBm = flow(bmId.get, eqNumber(newBmId));
 
-			return {
-				...state,
-				stagedBookmarksGroups: state.stagedBookmarksGroups.map((group) => {
-					if (group.id !== groupId) return group;
-
-					return {
-						...group,
-						bookmarks: group.bookmarks.filter(bm => bm.id !== bookmarkId),
-					};
-				}),
-			};
+			return stagedBookmarksGroups.modify(mapByPredicate(
+				grpBms.modify(A.filter(not(eqBm))),
+			)(eqGrp));
 		}
 
 		case BookmarksActionTypes.SetDeleteBookmarkModalDisplay:
-			return {
-				...state,
-				displayDeleteBookmarkModal: action.payload,
-			};
+			return displayDeleteBookmarkModal.set(a.payload);
 
 		default:
-			return state;
+			return identity;
 	}
-};
+})(initialState);
 
 export default bookmarksReducer;
 

@@ -1,46 +1,40 @@
-import { Reducer } from 'redux';
 import { ActionType } from 'typesafe-actions';
 import * as userActions from './actions';
-import { UserState, UserActionTypes, Theme, Page } from './types';
+import {
+	UserState, UserActionTypes, Theme, Page,
+	hasBinaryComms, activeTheme, displayOpenAllBookmarksConfirmation, page,
+} from './types';
+import {identity} from 'fp-ts/lib/function';
+import { curryReducer } from 'Modules/redux';
 
 export type UserActions = ActionType<typeof userActions>;
 
-const initialState = {
+const initialState: UserState = {
 	hasBinaryComms: false,
 	activeTheme: Theme.Light,
 	displayOpenAllBookmarksConfirmation: false,
 	page: Page.Search,
 };
 
-const userReducer: Reducer<UserState, UserActions> = (state = initialState, action) => {
-	switch (action.type) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const userReducer = curryReducer<UserActions, UserState>((a) => (_s) => {
+	switch (a.type) {
 		case UserActionTypes.SetHasBinaryComms:
-			return {
-				...state,
-				hasBinaryComms: action.payload,
-			};
+			return hasBinaryComms.set(a.payload);
 
 		case UserActionTypes.SetActiveTheme:
-			return {
-				...state,
-				activeTheme: action.payload,
-			};
+			return activeTheme.set(a.payload);
 
 		case UserActionTypes.SetDisplayOpenAllBookmarksConfirmation:
-			return {
-				...state,
-				displayOpenAllBookmarksConfirmation: action.payload,
-			};
+			return displayOpenAllBookmarksConfirmation.set(a.payload);
 
 		case UserActionTypes.SetPage:
-			return {
-				...state,
-				page: action.payload,
-			};
+			return page.set(a.payload);
 
 		default:
-			return state;
+			return identity;
 	}
-};
+})(initialState);
 
 export default userReducer;
+

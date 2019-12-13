@@ -1,40 +1,29 @@
-import { Reducer } from 'redux';
 import { ActionType } from 'typesafe-actions';
+import { identity } from 'fp-ts/lib/function';
+import * as R from 'fp-ts/lib/Record';
 import * as noticesActions from './actions';
-import { NoticesState, NoticesActionTypes } from './types';
+import { NoticesState, NoticesActionTypes, errors } from './types';
+import { curryReducer } from 'Modules/redux';
 
 export type NoticesActions = ActionType<typeof noticesActions>;
 
-const initialState = {
+const initialState: NoticesState = {
 	errors: {},
 };
 
-const noticesReducer: Reducer<NoticesState, NoticesActions> = (state = initialState, action) => {
-	switch (action.type) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const noticesReducer = curryReducer<NoticesActions, NoticesState>((a) => (_s) => {
+	switch (a.type) {
 		case NoticesActionTypes.AddError:
-			return {
-				...state,
-				errors: {
-					...state.errors,
-					[action.payload.key]: action.payload.value,
-				},
-			};
+			return errors.modify(R.insertAt<string, string | undefined>(a.payload.key, a.payload.value));
 
-		case NoticesActionTypes.DeleteError: {
-			if (!state.errors[action.payload]) return state;
-
-			const errors = { ...state.errors };
-			delete errors[action.payload];
-
-			return {
-				...state,
-				errors,
-			};
-		}
+		case NoticesActionTypes.DeleteError:
+			return errors.modify(R.deleteAt(a.payload));
 
 		default:
-			return state;
+			return identity;
 	}
-};
+})(initialState);
 
 export default noticesReducer;
+
