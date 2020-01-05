@@ -1,6 +1,6 @@
 import { Lens } from 'monocle-ts';
-import { LocalBookmark } from 'Modules/bookmarks';
-import { StagedBookmarksGroup } from 'Modules/staged-groups';
+import { LocalBookmark } from '~/modules/bookmarks';
+import { StagedBookmarksGroup } from '~/modules/staged-groups';
 
 export interface BookmarksState {
 	bookmarks: Array<LocalBookmark>;

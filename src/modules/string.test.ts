@@ -1,5 +1,5 @@
 import * as O from 'fp-ts/lib/Option';
-import { includesCI, endIndexOfAnyOf } from 'Modules/string';
+import { includesCI, endIndexOfAnyOf } from '~/modules/string';
 
 describe('includesCI', () => {
 	test('string contains string case insensitively', () => {

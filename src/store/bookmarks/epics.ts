@@ -4,21 +4,21 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
-import { ThunkAC } from 'Store';
+import { ThunkAC } from '~/store';
 import {
 	setAllStagedBookmarksGroups, deleteStagedBookmarksGroup, deleteStagedBookmarksGroupBookmark,
 	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
 	setDeleteBookmarkModalDisplay, setAllBookmarks,
-} from 'Store/bookmarks/actions';
-import { setPage, setHasBinaryComms } from 'Store/user/actions';
-import { addPermanentError } from 'Store/notices/epics';
-import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from 'Store/selectors';
-import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from 'Modules/comms/native';
-import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab } from 'Modules/comms/browser';
-import { untransform, transform, LocalBookmark, LocalBookmarkUnsaved } from 'Modules/bookmarks';
-import { StagedBookmarksGroup } from 'Modules/staged-groups';
-import { Page } from 'Store/user/types';
-import { runTask, seqT } from 'Modules/fp';
+} from '~/store/bookmarks/actions';
+import { setPage, setHasBinaryComms } from '~/store/user/actions';
+import { addPermanentError } from '~/store/notices/epics';
+import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from '~/store/selectors';
+import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from '~/modules/comms/native';
+import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab } from '~/modules/comms/browser';
+import { untransform, transform, LocalBookmark, LocalBookmarkUnsaved } from '~/modules/bookmarks';
+import { StagedBookmarksGroup } from '~/modules/staged-groups';
+import { Page } from '~/store/user/types';
+import { runTask, seqT } from '~/modules/fp';
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();

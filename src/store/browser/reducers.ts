@@ -2,7 +2,7 @@ import { ActionType } from 'typesafe-actions';
 import { identity, constant } from 'fp-ts/lib/function';
 import * as browserActions from './actions';
 import { BrowserState, BrowserActionTypes } from './types';
-import { curryReducer } from 'Modules/redux';
+import { curryReducer } from '~/modules/redux';
 
 export type BrowserActions = ActionType<typeof browserActions>;
 

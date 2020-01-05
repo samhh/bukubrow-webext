@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import sleep from 'Modules/sleep';
-import { ThunkAC } from 'Store';
+import sleep from '~/modules/sleep';
+import { ThunkAC } from '~/store';
 import { addError, deleteError } from './actions';
 import { NoticeId, NoticeMsg } from './types';
-import { createUuid } from 'Modules/uuid';
-import { runTask } from 'Modules/fp';
+import { createUuid } from '~/modules/uuid';
+import { runTask } from '~/modules/fp';
 
 export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (dispatch, getState) => {
 	const errorIds = Object.keys(getState().notices.errors);

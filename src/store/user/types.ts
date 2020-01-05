@@ -1,5 +1,5 @@
 import { Lens } from 'monocle-ts';
-import { Theme } from 'Modules/settings';
+import { Theme } from '~/modules/settings';
 export { Theme };
 
 export interface UserState {

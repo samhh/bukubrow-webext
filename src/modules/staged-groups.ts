@@ -1,5 +1,5 @@
 import { Lens } from 'monocle-ts';
-import { LocalBookmark } from 'Modules/bookmarks';
+import { LocalBookmark } from '~/modules/bookmarks';
 
 export interface StagedBookmarksGroup {
 	id: number;

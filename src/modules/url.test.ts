@@ -1,6 +1,6 @@
-import { domain, hrefSansProtocol } from 'Modules/url';
+import { domain, hrefSansProtocol } from '~/modules/url';
 
-describe('Modules/url', () => {
+describe('~/modules/url', () => {
 	test('domain', () => {
 		expect(domain(new URL('http://www.samhh.com'))).toEqual('samhh.com');
 		expect(domain(new URL('https://vvv.www.samhh.com'))).toEqual('samhh.com');

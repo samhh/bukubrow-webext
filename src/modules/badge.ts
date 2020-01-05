@@ -7,14 +7,14 @@ import * as TO from 'fp-ts-contrib/lib/TaskOption';
 import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
-import * as EO from 'Modules/eitherOption';
+import * as EO from '~/modules/eitherOption';
 import { browser } from 'webextension-polyfill-ts';
-import { getBadgeDisplayOpt, BadgeDisplay } from 'Modules/settings';
-import { fromString } from 'Modules/url';
-import { URLMatch, match, ordURLMatch } from 'Modules/compare-urls';
-import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from 'Modules/comms/browser';
-import { snoc_ } from 'Modules/array';
-import { flip, _, runTask, runIO } from 'Modules/fp';
+import { getBadgeDisplayOpt, BadgeDisplay } from '~/modules/settings';
+import { fromString } from '~/modules/url';
+import { URLMatch, match, ordURLMatch } from '~/modules/compare-urls';
+import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from '~/modules/comms/browser';
+import { snoc_ } from '~/modules/array';
+import { flip, _, runTask, runIO } from '~/modules/fp';
 
 const setBadge = (color: string) => (text: string): IO<void> => (): void => {
 	browser.browserAction.setBadgeBackgroundColor({ color });

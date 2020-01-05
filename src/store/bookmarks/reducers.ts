@@ -9,11 +9,11 @@ import {
 	stagedBookmarksGroupEditId, stagedBookmarksGroupBookmarkEditId,
 	displayDeleteBookmarkModal,
 } from './types';
-import { curryReducer } from 'Modules/redux';
-import { id as grpId, bookmarks as grpBms } from 'Modules/staged-groups';
-import { mapByPredicate } from 'Modules/array';
-import { id as bmId } from 'Modules/bookmarks';
-import { eqNumber } from 'Modules/eq';
+import { curryReducer } from '~/modules/redux';
+import { id as grpId, bookmarks as grpBms } from '~/modules/staged-groups';
+import { mapByPredicate } from '~/modules/array';
+import { id as bmId } from '~/modules/bookmarks';
+import { eqNumber } from '~/modules/eq';
 
 export type BookmarksActions = ActionType<typeof bookmarksActions>;
 

@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
-import { useSelector, useDispatch } from 'Store';
-import { setDeleteBookmarkModalDisplay } from 'Store/bookmarks/actions';
-import { deleteBookmark } from 'Store/bookmarks/epics';
-import { getBookmarkToDelete } from 'Store/selectors';
-import styled from 'Styles';
-import Button from 'Components/button';
-import Modal from 'Components/modal';
+import { useSelector, useDispatch } from '~/store';
+import { setDeleteBookmarkModalDisplay } from '~/store/bookmarks/actions';
+import { deleteBookmark } from '~/store/bookmarks/epics';
+import { getBookmarkToDelete } from '~/store/selectors';
+import styled from '~/styles';
+import Button from '~/components/button';
+import Modal from '~/components/modal';
 
 const Heading = styled.h1`
 	margin: 0 0 1rem;

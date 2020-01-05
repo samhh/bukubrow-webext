@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, FormEvent, FC } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
-import styled from 'Styles';
-import { LocalBookmark, LocalBookmarkUnsaved } from 'Modules/bookmarks';
-import Button from 'Components/button';
-import IconButton, { idealFeatherIconSize } from 'Components/icon-button';
-import Tag from 'Components/tag';
-import TextInput from 'Components/text-input';
+import styled from '~/styles';
+import { LocalBookmark, LocalBookmarkUnsaved } from '~/modules/bookmarks';
+import Button from '~/components/button';
+import IconButton, { idealFeatherIconSize } from '~/components/icon-button';
+import Tag from '~/components/tag';
+import TextInput from '~/components/text-input';
 
 import { Plus } from 'react-feather';
 

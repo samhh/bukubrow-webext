@@ -1,6 +1,6 @@
-import { URLMatch, match } from 'Modules/compare-urls';
+import { URLMatch, match } from '~/modules/compare-urls';
 
-describe('Modules/compare-urls', () => {
+describe('~/modules/compare-urls', () => {
 	describe('match', () => {
 		test('matches exact URL', () => {
 			const url1 = new URL('https://samhh.com');

@@ -1,4 +1,4 @@
-import { isString } from 'Modules/string';
+import { isString } from '~/modules/string';
 
 export const error = (x: string): Error => new Error(x);
 

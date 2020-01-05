@@ -2,16 +2,16 @@
 
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
-import * as OT from 'Modules/optionTuple';
+import * as OT from '~/modules/optionTuple';
 import * as A from 'fp-ts/lib/Array';
 import { createSelector } from 'reselect';
-import { AppState } from 'Store';
-import parseSearchInput from 'Modules/parse-search-input';
-import { filterBookmarks, ordLocalBookmarkWeighted, LocalBookmark, LocalBookmarkWeighted } from 'Modules/bookmarks';
-import { MAX_BOOKMARKS_TO_RENDER } from 'Modules/config';
-import { URLMatch, match } from 'Modules/compare-urls';
-import { fromString } from 'Modules/url';
-import { StagedBookmarksGroup } from 'Modules/staged-groups';
+import { AppState } from '~/store';
+import parseSearchInput from '~/modules/parse-search-input';
+import { filterBookmarks, ordLocalBookmarkWeighted, LocalBookmark, LocalBookmarkWeighted } from '~/modules/bookmarks';
+import { MAX_BOOKMARKS_TO_RENDER } from '~/modules/config';
+import { URLMatch, match } from '~/modules/compare-urls';
+import { fromString } from '~/modules/url';
+import { StagedBookmarksGroup } from '~/modules/staged-groups';
 
 const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,

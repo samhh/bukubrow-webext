@@ -1,7 +1,7 @@
 import { pipe } from 'fp-ts/lib/pipeable';
 import { constant, flow } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
-import { lookupC, snocC } from 'Modules/array';
+import { lookupC, snocC } from '~/modules/array';
 
 export const exec = (x: RegExp) => (y: string): Option<RegExpExecArray> =>
 	pipe(x.exec(y), O.fromNullable);

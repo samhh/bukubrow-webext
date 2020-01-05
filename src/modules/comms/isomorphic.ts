@@ -11,10 +11,10 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import * as TO from 'fp-ts-contrib/lib/TaskOption';
 import * as O from 'fp-ts/lib/Option';
 import { browser } from 'webextension-polyfill-ts';
-import { asError } from 'Modules/error';
-import { values } from 'Modules/record';
-import { includes } from 'Modules/array';
-import { flip, runTask } from 'Modules/fp';
+import { asError } from '~/modules/error';
+import { values } from '~/modules/record';
+import { includes } from '~/modules/array';
+import { flip, runTask } from '~/modules/fp';
 
 const createIsomorphicMessageListener = <A>(g: (a: A) => void) => (f: (x: unknown) => TaskOption<A>): IO<void> => (): void =>
 	browser.contextMenus.onClicked.addListener((x) => {

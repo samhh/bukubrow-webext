@@ -8,13 +8,13 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import * as A from 'fp-ts/lib/Array';
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
 import { browser, Tabs } from 'webextension-polyfill-ts';
-import { BOOKMARKS_SCHEMA_VERSION } from 'Modules/config';
-import { runIO } from 'Modules/fp';
-import { sendIsomorphicMessage, IsomorphicMessage } from 'Modules/comms/isomorphic';
-import { createUuid } from 'Modules/uuid';
-import { error } from 'Modules/error';
-import { LocalBookmark, LocalBookmarkUnsaved } from 'Modules/bookmarks';
-import { StagedBookmarksGroup } from 'Modules/staged-groups';
+import { BOOKMARKS_SCHEMA_VERSION } from '~/modules/config';
+import { runIO } from '~/modules/fp';
+import { sendIsomorphicMessage, IsomorphicMessage } from '~/modules/comms/isomorphic';
+import { createUuid } from '~/modules/uuid';
+import { error } from '~/modules/error';
+import { LocalBookmark, LocalBookmarkUnsaved } from '~/modules/bookmarks';
+import { StagedBookmarksGroup } from '~/modules/staged-groups';
 
 const sequenceTTE = sequenceT(TE.taskEither);
 
