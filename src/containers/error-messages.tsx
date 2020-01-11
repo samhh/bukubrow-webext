@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useSelector } from 'Store';
-import ErrorPopup from 'Components/error-popup';
+import { useSelector } from '~/store';
+import ErrorPopup from '~/components/error-popup';
 
 const ErrorMessages: FC = () => {
 	const errors = useSelector(state => state.notices.errors);

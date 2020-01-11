@@ -1,5 +1,5 @@
 import React, { forwardRef, Ref, MouseEvent, ReactNode, FC } from 'react';
-import styled from 'Styles';
+import styled from '~/styles';
 
 const Btn = styled.button`
 	padding: .5rem 1rem;

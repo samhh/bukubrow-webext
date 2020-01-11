@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import styled from 'Styles';
+import styled from '~/styles';
 
 const StyledTooltip = styled.span<{ visible: boolean }>`
 	padding: .5rem 1rem;

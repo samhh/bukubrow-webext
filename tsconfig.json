@@ -1,23 +1,16 @@
 {
 	"compilerOptions": {
-		"module": "es6",
+		"module": "esnext",
 		"allowSyntheticDefaultImports": true,
 		"moduleResolution": "node",
-		"target": "es2015",
+		"target": "esnext",
 		"strict": true,
 		"sourceMap": true,
 		"lib": ["esnext", "dom"],
 		"jsx": "react",
 		"baseUrl": "./src/",
 		"paths": {
-			"Components/*": ["./components/*"],
-			"Containers/*": ["./containers/*"],
-			"Hooks/*": ["./hooks/*"],
-			"Modules/*": ["./modules/*"],
-			"Pages/*": ["./pages/*"],
-			"Store": ["./store/index"],
-			"Store/*": ["./store/*"],
-			"Styles": ["./styles"]
+			"~*": ["./*"]
 		}
 	}
 }

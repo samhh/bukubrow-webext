@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ArrowLeft } from 'react-feather';
-import styled from 'Styles';
+import styled from '~/styles';
 
 const height = 40;
 const padding = 5;

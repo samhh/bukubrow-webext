@@ -1,24 +1,24 @@
 import React, { FC } from 'react';
 import * as O from 'fp-ts/lib/Option';
-import mount from 'Modules/connected-mount';
-import { useDispatch, useSelector } from 'Store';
-import styled from 'Styles';
-import { Page } from 'Store/user/types';
-import { setPage } from 'Store/user/actions';
-import { getStagedGroupToEdit } from 'Store/selectors';
-import { formatStagedBookmarksGroupTitle } from 'Modules/bookmarks';
-import { runIO } from 'Modules/fp';
+import mount from '~/modules/connected-mount';
+import { useDispatch, useSelector } from '~/store';
+import styled from '~/styles';
+import { Page } from '~/store/user/types';
+import { setPage } from '~/store/user/actions';
+import { getStagedGroupToEdit } from '~/store/selectors';
+import { formatStagedBookmarksGroupTitle } from '~/modules/bookmarks';
+import { runIO } from '~/modules/fp';
 
-import BookmarkAddForm from 'Containers/bookmark-add-form';
-import BookmarkDeleteForm from 'Containers/bookmark-delete-form';
-import BookmarkEditForm from 'Containers/bookmark-edit-form';
-import ErrorMessages from 'Containers/error-messages';
-import OpenAllBookmarksConfirmation from 'Containers/open-all-bookmarks-confirmation';
-import Search from 'Containers/search';
-import StagedGroupBookmarkEditForm from 'Containers/staged-group-bookmark-edit-form';
-import StagedGroupBookmarksList from 'Containers/staged-group-bookmarks-list';
-import StagedGroupsList from 'Containers/staged-groups-list';
-import TitleMenu from 'Components/title-menu';
+import BookmarkAddForm from '~/containers/bookmark-add-form';
+import BookmarkDeleteForm from '~/containers/bookmark-delete-form';
+import BookmarkEditForm from '~/containers/bookmark-edit-form';
+import ErrorMessages from '~/containers/error-messages';
+import OpenAllBookmarksConfirmation from '~/containers/open-all-bookmarks-confirmation';
+import Search from '~/containers/search';
+import StagedGroupBookmarkEditForm from '~/containers/staged-group-bookmark-edit-form';
+import StagedGroupBookmarksList from '~/containers/staged-group-bookmarks-list';
+import StagedGroupsList from '~/containers/staged-groups-list';
+import TitleMenu from '~/components/title-menu';
 
 interface PageInfoSansTitleMenu {
 	component: FC;

@@ -1,7 +1,7 @@
-import { initBadgeAndListen } from 'Modules/badge';
-import { initContextMenusAndListen, sendTabsToStagingArea } from 'Modules/context';
-import { listenForIsomorphicMessages, IsomorphicMessage } from 'Modules/comms/isomorphic';
-import { runIO } from 'Modules/fp';
+import { initBadgeAndListen } from '~/modules/badge';
+import { initContextMenusAndListen, sendTabsToStagingArea } from '~/modules/context';
+import { listenForIsomorphicMessages, IsomorphicMessage } from '~/modules/comms/isomorphic';
+import { runIO } from '~/modules/fp';
 
 initBadgeAndListen().then((f) => {
 	runIO(listenForIsomorphicMessages((x) => {

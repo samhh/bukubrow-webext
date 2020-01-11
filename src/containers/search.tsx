@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
-import { useDispatch, useSelector } from 'Store';
-import { setLimitNumRendered } from 'Store/bookmarks/actions';
-import { openAllFilteredBookmarksAndExit, syncBookmarks } from 'Store/bookmarks/epics';
-import { setPage } from 'Store/user/actions';
-import { getNumFilteredUnrenderedBookmarks } from 'Store/selectors';
-import { Page } from 'Store/user/types';
-import useListenToKeydown from 'Hooks/listen-to-keydown';
-import styled from 'Styles';
-import BookmarksList from 'Containers/bookmarks-list';
-import LoadMoreBookmarks from 'Components/load-more-bookmarks';
-import SearchControls, { headerHeight } from 'Containers/search-controls';
+import { useDispatch, useSelector } from '~/store';
+import { setLimitNumRendered } from '~/store/bookmarks/actions';
+import { openAllFilteredBookmarksAndExit, syncBookmarks } from '~/store/bookmarks/epics';
+import { setPage } from '~/store/user/actions';
+import { getNumFilteredUnrenderedBookmarks } from '~/store/selectors';
+import { Page } from '~/store/user/types';
+import useListenToKeydown from '~/hooks/listen-to-keydown';
+import styled from '~/styles';
+import BookmarksList from '~/containers/bookmarks-list';
+import LoadMoreBookmarks from '~/components/load-more-bookmarks';
+import SearchControls, { headerHeight } from '~/containers/search-controls';
 
 const Wrapper = styled.div`
 	padding: ${headerHeight} 0 0;

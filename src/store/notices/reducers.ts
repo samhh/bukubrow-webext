@@ -3,7 +3,7 @@ import { identity } from 'fp-ts/lib/function';
 import * as R from 'fp-ts/lib/Record';
 import * as noticesActions from './actions';
 import { NoticesState, NoticesActionTypes, errors } from './types';
-import { curryReducer } from 'Modules/redux';
+import { curryReducer } from '~/modules/redux';
 
 export type NoticesActions = ActionType<typeof noticesActions>;
 

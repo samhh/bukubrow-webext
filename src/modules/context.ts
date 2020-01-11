@@ -4,13 +4,13 @@ import { flow } from 'fp-ts/lib/function';
 import * as TO from 'fp-ts-contrib/lib/TaskOption';
 import * as T from 'fp-ts/lib/Task';
 import * as O from 'fp-ts/lib/Option';
-import * as OT from 'Modules/optionTuple';
+import * as OT from '~/modules/optionTuple';
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
 import * as A from 'fp-ts/lib/Array';
-import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from 'Modules/comms/browser';
-import { values } from 'Modules/record';
-import { includes } from 'Modules/array';
-import { flip, runTask, runIOs_ } from 'Modules/fp';
+import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from '~/modules/comms/browser';
+import { values } from '~/modules/record';
+import { includes } from '~/modules/array';
+import { flip, runTask, runIOs_ } from '~/modules/fp';
 
 const createContextMenuEntry = (x: Menus.CreateCreatePropertiesType): IO<void> => (): void =>
 	void browser.contextMenus.create(x);

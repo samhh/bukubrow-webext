@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
-import { useDispatch, useSelector } from 'Store';
-import { matchesTerminology } from 'Modules/terminology';
-import { setDisplayOpenAllBookmarksConfirmation } from 'Store/user/actions';
-import { openAllFilteredBookmarksAndExit } from 'Store/bookmarks/epics';
-import { getUnlimitedFilteredBookmarks } from 'Store/selectors';
-import Button from 'Components/button';
+import { useDispatch, useSelector } from '~/store';
+import { matchesTerminology } from '~/modules/terminology';
+import { setDisplayOpenAllBookmarksConfirmation } from '~/store/user/actions';
+import { openAllFilteredBookmarksAndExit } from '~/store/bookmarks/epics';
+import { getUnlimitedFilteredBookmarks } from '~/store/selectors';
+import Button from '~/components/button';
 
-import Modal from 'Components/modal';
-import styled from 'Styles';
+import Modal from '~/components/modal';
+import styled from '~/styles';
 
 const Heading = styled.h1`
 	margin: 0 0 1rem;

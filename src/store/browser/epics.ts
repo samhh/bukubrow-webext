@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import * as O from 'fp-ts/lib/Option';
-import * as OT from 'Modules/optionTuple';
-import { getActiveTab } from 'Modules/comms/browser';
-import { ThunkAC } from 'Store';
+import * as OT from '~/modules/optionTuple';
+import { getActiveTab } from '~/modules/comms/browser';
+import { ThunkAC } from '~/store';
 import { setPageMeta } from './actions';
 
 export const syncBrowserInfo = (): ThunkAC<Promise<void>> => async (dispatch) => {

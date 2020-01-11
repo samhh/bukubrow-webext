@@ -8,10 +8,10 @@ import { eqString } from 'fp-ts/lib/Eq';
 import * as T from 'fp-ts/lib/Task';
 import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
-import { elemC } from 'Modules/array';
-import { values } from 'Modules/record';
-import { decode } from 'Modules/io';
-import { getSyncStorage, setSyncStorage } from 'Modules/sync';
+import { elemC } from '~/modules/array';
+import { values } from '~/modules/record';
+import { decode } from '~/modules/io';
+import { getSyncStorage, setSyncStorage } from '~/modules/sync';
 
 export enum Theme {
 	Light = 'light',

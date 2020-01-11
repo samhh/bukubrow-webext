@@ -5,7 +5,7 @@ import {
 	hasBinaryComms, activeTheme, displayOpenAllBookmarksConfirmation, page,
 } from './types';
 import {identity} from 'fp-ts/lib/function';
-import { curryReducer } from 'Modules/redux';
+import { curryReducer } from '~/modules/redux';
 
 export type UserActions = ActionType<typeof userActions>;
 

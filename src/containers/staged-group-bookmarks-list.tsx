@@ -2,16 +2,16 @@ import React, { FC } from 'react';
 import { constVoid } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { useDispatch, useSelector } from 'Store';
-import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from 'Store/bookmarks/actions';
-import { setPage } from 'Store/user/actions';
-import { getStagedGroupToEditWeightedBookmarks } from 'Store/selectors';
-import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit, addAllBookmarksFromStagedGroup } from 'Store/bookmarks/epics';
-import { Page } from 'Store/user/types';
-import { LocalBookmarkWeighted } from 'Modules/bookmarks';
-import styled from 'Styles';
-import Bookmark from 'Components/bookmark';
-import Button from 'Components/button';
+import { useDispatch, useSelector } from '~/store';
+import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from '~/store/bookmarks/actions';
+import { setPage } from '~/store/user/actions';
+import { getStagedGroupToEditWeightedBookmarks } from '~/store/selectors';
+import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit, addAllBookmarksFromStagedGroup } from '~/store/bookmarks/epics';
+import { Page } from '~/store/user/types';
+import { LocalBookmarkWeighted } from '~/modules/bookmarks';
+import styled from '~/styles';
+import Bookmark from '~/components/bookmark';
+import Button from '~/components/button';
 
 const WrapperList = styled.ul`
 	margin: 0;

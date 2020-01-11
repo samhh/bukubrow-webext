@@ -1,18 +1,18 @@
 import React, { useRef, FC } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
-import { useSelector, useDispatch } from 'Store';
-import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
+import { useSelector, useDispatch } from '~/store';
+import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from '~/store/selectors';
 import {
 	initiateBookmarkEdit, initiateBookmarkDeletion,
 	attemptFocusedBookmarkIndexIncrement, attemptFocusedBookmarkIndexDecrement,
 	openBookmarkAndExit,
-} from 'Store/bookmarks/epics';
-import { Key } from 'ts-key-enum';
-import { scrollToEl } from 'Modules/scroll-window';
-import useListenToKeydown from 'Hooks/listen-to-keydown';
-import styled from 'Styles';
-import Bookmark from 'Components/bookmark';
+} from '~/store/bookmarks/epics';
+// import { Key } from 'ts-key-enum';
+import { scrollToEl } from '~/modules/scroll-window';
+import useListenToKeydown from '~/hooks/listen-to-keydown';
+import styled from '~/styles';
+import Bookmark from '~/components/bookmark';
 
 const WrapperList = styled.ul`
 	margin: 0;
@@ -35,7 +35,7 @@ const BookmarksList: FC = () => {
 	const activeBookmarkEl = useRef<HTMLElement>(null);
 
 	useListenToKeydown((evt) => {
-		if (evt.key === Key.Enter) {
+		if (evt.key === 'Enter') {
 			const { focusedBookmark: liveFocusedBookmark } = keydownDataRef.current;
 
 			if (O.isSome(liveFocusedBookmark)) {
@@ -44,14 +44,14 @@ const BookmarksList: FC = () => {
 		}
 
 		// preventDefault to prevent keyboard scrolling
-		if (evt.key === Key.ArrowUp) {
+		if (evt.key === 'ArrowUp') {
 			evt.preventDefault();
 			dispatch(attemptFocusedBookmarkIndexDecrement());
 
 			if (activeBookmarkEl && activeBookmarkEl.current) scrollToEl(activeBookmarkEl.current);
 		}
 
-		if (evt.key === Key.ArrowDown) {
+		if (evt.key === 'ArrowDown') {
 			evt.preventDefault();
 			dispatch(attemptFocusedBookmarkIndexIncrement());
 

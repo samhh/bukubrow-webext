@@ -1,15 +1,15 @@
 import React, { memo, forwardRef, Ref, MouseEvent, useState, ReactNode } from 'react';
-import { URLMatch } from 'Modules/compare-urls';
-import { ParsedInputResult } from 'Modules/parse-search-input';
-import { LocalBookmark } from 'Modules/bookmarks';
-import styled from 'Styles';
+import { URLMatch } from '~/modules/compare-urls';
+import { ParsedInputResult } from '~/modules/parse-search-input';
+import { LocalBookmark } from '~/modules/bookmarks';
+import styled from '~/styles';
 
-import Badge, { mapURLMatchToBadgeWeight } from 'Components/badge';
-import HighlightMarkup from 'Components/highlight-markup';
-import IconButton, { idealFeatherIconSize } from 'Components/icon-button';
-import ListItem from 'Components/list-item';
-import Tag from 'Components/tag';
-import Tooltip from 'Components/tooltip';
+import Badge, { mapURLMatchToBadgeWeight } from '~/components/badge';
+import HighlightMarkup from '~/components/highlight-markup';
+import IconButton, { idealFeatherIconSize } from '~/components/icon-button';
+import ListItem from '~/components/list-item';
+import Tag from '~/components/tag';
+import Tooltip from '~/components/tooltip';
 
 import { Edit, Trash } from 'react-feather';
 

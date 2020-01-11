@@ -2,18 +2,18 @@
 
 import { constant } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
-import * as EO from 'Modules/eitherOption';
-import { onTabActivity } from 'Modules/comms/browser';
-import { checkBinaryVersionFromNative, HostVersionCheckResult } from 'Modules/comms/native';
-import { getActiveTheme, Theme } from 'Modules/settings';
-import { ThunkAC, initAutoStoreSync } from 'Store';
-import { setLimitNumRendered, setFocusedBookmarkIndex } from 'Store/bookmarks/actions';
-import { setActiveTheme } from 'Store/user/actions';
-import { setSearchFilter } from 'Store/input/actions';
-import { addPermanentError } from 'Store/notices/epics';
-import { syncStagedBookmarksGroups, syncBookmarks } from 'Store/bookmarks/epics';
-import { syncBrowserInfo } from 'Store/browser/epics';
-import { getWeightedLimitedFilteredBookmarks } from 'Store/selectors';
+import * as EO from '~/modules/eitherOption';
+import { onTabActivity } from '~/modules/comms/browser';
+import { checkBinaryVersionFromNative, HostVersionCheckResult } from '~/modules/comms/native';
+import { getActiveTheme, Theme } from '~/modules/settings';
+import { ThunkAC, initAutoStoreSync } from '~/store';
+import { setLimitNumRendered, setFocusedBookmarkIndex } from '~/store/bookmarks/actions';
+import { setActiveTheme } from '~/store/user/actions';
+import { setSearchFilter } from '~/store/input/actions';
+import { addPermanentError } from '~/store/notices/epics';
+import { syncStagedBookmarksGroups, syncBookmarks } from '~/store/bookmarks/epics';
+import { syncBrowserInfo } from '~/store/browser/epics';
+import { getWeightedLimitedFilteredBookmarks } from '~/store/selectors';
 
 const onLoadPreComms = (): ThunkAC => (dispatch) => {
 	getActiveTheme()

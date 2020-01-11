@@ -1,6 +1,6 @@
-import { mapByPredicate } from 'Modules/array';
+import { mapByPredicate } from '~/modules/array';
 
-describe('Modules/array', () => {
+describe('~/modules/array', () => {
 	test('mapByPredicate', () => {
 		const xs = [1, 2, 3, 4, 5];
 		const ys = [1, 4, 3, 8, 5];

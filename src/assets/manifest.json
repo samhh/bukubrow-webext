@@ -4,20 +4,20 @@
 	"manifest_version": 2,
 	"description": "Synchronise your browser bookmarks with Buku",
 	"icons": {
-		"128": "assets/icon-128.png",
-		"256": "assets/icon-256.png"
+		"128": "icon-128.png",
+		"256": "icon-256.png"
 	},
 	"homepage_url": "https://github.com/samhh/bukubrow",
 	"browser_action": {
-		"default_icon": "assets/icon-256.png",
-		"default_popup": "content/content.build.html"
+		"default_icon": "icon-256.png",
+		"default_popup": "content.html"
 	},
 	"options_ui": {
-		"page": "options/options.build.html"
+		"page": "options.html"
 	},
 	"background": {
 		"scripts": [
-			"backend/backend.build.js"
+			"backend.js"
 		]
 	},
 	"permissions": [

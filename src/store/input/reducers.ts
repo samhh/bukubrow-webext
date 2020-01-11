@@ -2,7 +2,7 @@ import { ActionType } from 'typesafe-actions';
 import { identity } from 'fp-ts/lib/function';
 import * as inputActions from './actions';
 import { InputState, InputActionTypes, searchFilter } from './types';
-import { curryReducer } from 'Modules/redux';
+import { curryReducer } from '~/modules/redux';
 
 export type InputActions = ActionType<typeof inputActions>;
 
