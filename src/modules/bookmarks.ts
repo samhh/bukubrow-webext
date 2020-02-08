@@ -1,5 +1,7 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { ordString, contramap, Ord, getSemigroup } from 'fp-ts/lib/Ord';
+import { flow } from 'fp-ts/lib/function';
+import { ordString, contramap, Ord, getMonoid, fromCompare } from 'fp-ts/lib/Ord';
+import { invert } from 'fp-ts/lib/Ordering';
 import * as A from 'fp-ts/lib/Array';
 import { Lens } from 'monocle-ts';
 import { isNonEmptyString } from 'newtype-ts/lib/NonEmptyString';
@@ -57,7 +59,9 @@ export const weight = Lens.fromProp<LocalBookmarkWeighted>()('weight');
 
 const ordTitle: Ord<LocalBookmarkUnsaved> = contramap<string, LocalBookmarkUnsaved>(title.get)(ordString);
 const ordWeight: Ord<LocalBookmarkWeighted> = contramap<URLMatch, LocalBookmarkWeighted>(weight.get)(ordURLMatch)
-export const ordLocalBookmarkWeighted = getSemigroup<LocalBookmarkWeighted>().concat(ordWeight, ordTitle);
+// The ordering of bookmark weight should be inverted for the UI
+const ordWeightForUI: Ord<LocalBookmarkWeighted> = fromCompare(flow(ordWeight.compare, invert));
+export const ordLocalBookmarkWeighted = getMonoid<LocalBookmarkWeighted>().concat(ordWeightForUI, ordTitle);
 
 /**
  * Filter out bookmarks that do not perfectly match the provided test.

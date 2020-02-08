@@ -1,4 +1,5 @@
-import { URLMatch, match } from '~/modules/compare-urls';
+import { URLMatch, match, ordURLMatch } from '~/modules/compare-urls';
+import { ordNumber } from 'fp-ts/lib/Ord';
 
 describe('~/modules/compare-urls', () => {
 	describe('match', () => {
@@ -47,6 +48,13 @@ describe('~/modules/compare-urls', () => {
 			const url4 = new URL('ftp://samhh.com');
 			expect(match(url3)(url4)).toBe(URLMatch.None);
 		});
+	});
+
+	test('ordURLMatch', () => {
+		expect(ordNumber.compare(10, 5)).toBe(1); // for reference
+		expect(ordURLMatch.compare(URLMatch.Exact, URLMatch.Domain)).toBe(1);
+		expect(ordURLMatch.compare(URLMatch.Domain, URLMatch.None)).toBe(1);
+		expect(ordURLMatch.compare(URLMatch.None, URLMatch.Exact)).toBe(-1);
 	});
 });
 
