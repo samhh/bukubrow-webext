@@ -1,13 +1,5 @@
 const tsconfig = require('./tsconfig.json');
-
-const aliases = Object.entries(tsconfig.compilerOptions.paths).reduce((acc, [tsAlias, [tsPath]]) => {
-	const matcher = '^' + tsAlias.replace(/\/\*$/, '/(.*)$');
-	const target = tsPath.replace(/^\.\//, '<rootDir>/src/').replace(/\/\*$/, '/$1');
-
-	acc[matcher] = target;
-
-	return acc;
-}, {});
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
 
 module.exports = {
 	transform: {
@@ -15,6 +7,6 @@ module.exports = {
 	},
 	testRegex: '^.+\\.test.tsx?$',
 	moduleFileExtensions: ['js', 'ts', 'tsx'],
-	moduleNameMapper: aliases,
+	moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, { prefix: '<rootDir>/src/' }),
 };
 
