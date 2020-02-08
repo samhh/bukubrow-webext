@@ -25,7 +25,7 @@
 	"browserslist": [
 		"last 2 Chrome versions",
 		"last 2 Firefox versions"
-  ],
+	],
 	"dependencies": {
 		"date-fns": "^2.6.0",
 		"fp-ts": "^2.0.2",
@@ -43,13 +43,13 @@
 		"redux-thunk": "^2.3.0",
 		"remote-redux-devtools": "^0.5.16",
 		"reselect": "^4.0.0",
-		"styled-components": "^4.1.3",
+		"styled-components": "^5.0.1",
 		"styled-sanitize": "^1.1.1",
 		"typesafe-actions": "^5.1.0",
-		"webextension-polyfill-ts": "^0.11.0"
+		"webextension-polyfill-ts": "^0.12.0"
 	},
 	"devDependencies": {
-		"@types/jest": "^24.0.6",
+		"@types/jest": "^25.1.2",
 		"@types/react": "^16.7.20",
 		"@types/react-dom": "^16.0.11",
 		"@types/react-highlight-words": "^0.16.0",
@@ -61,10 +61,10 @@
 		"eslint": "^6.0.1",
 		"eslint-plugin-jest": "^23.0.2",
 		"eslint-plugin-react": "^7.12.4",
-		"jest": "^24.1.0",
+		"jest": "^25.1.0",
 		"jest-webextension-mock": "^3.5.0",
 		"parcel-bundler": "^1.12.4",
-		"ts-jest": "^24.0.0",
+		"ts-jest": "^25.2.0",
 		"typescript": "^3.2.4"
 	}
 }
