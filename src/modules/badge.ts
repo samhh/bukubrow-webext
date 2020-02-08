@@ -58,8 +58,10 @@ const syncBookmarks: Task<void> = async () => {
 	}
 };
 
-const reduceMatch = ([x, y]: [URLMatch, number]) => (z: URLMatch): [URLMatch, number] =>
-	[max(ordURLMatch)(x, z), z === URLMatch.None ? y : y + 1];
+const reduceMatch = ([x, y]: [URLMatch, number]) => (z: URLMatch): [URLMatch, number] => [
+	max(ordURLMatch)(x, z),
+	z === URLMatch.None ? y : y + 1,
+];
 
 const checkUrl = (x: URL) => (ys: Array<URL>): [URLMatch, number] =>
 	A.reduce<URL, [URLMatch, number]>([URLMatch.None, 0], (acc, y) =>
@@ -115,14 +117,15 @@ export const initBadgeAndListen: Task<Task<void>> = () => {
 	);
 
 	const update: Task<void> = async () => {
-		const badgeOpt = await getBadgeOptOrDefault();
-		if (badgeOpt !== BadgeDisplay.None) await syncBookmarks();
+		// We don't want to sync bookmarks at all if badge option is set to none
+		const badgeOpt = await runTask(getBadgeOptOrDefault);
+		if (badgeOpt !== BadgeDisplay.None) await runTask(syncBookmarks);
 
-		runTask(updateBadge(badgeOpt));
+		await runTask(updateBadge(badgeOpt));
 	};
 
 	// Update immediately on load
-	update();
+	runTask(update);
 
 	// Update on tab activity
 	onTabActivity(_(update));
