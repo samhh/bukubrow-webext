@@ -48,10 +48,11 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
  * weight.
  */
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
-	(bookmarks, activeTabHref) => bookmarks
-		.map(addBookmarkWeight(O.fromEither(fromString(activeTabHref))))
-		.sort(ordLocalBookmarkWeighted.compare),
-);
+	(bookmarks, activeTabHref) => pipe(
+		bookmarks,
+		A.map(pipe(activeTabHref, fromString, O.fromEither, addBookmarkWeight)),
+		A.sort(ordLocalBookmarkWeighted),
+	));
 
 /**
  * Filter all bookmarks by search filter, apply weighting, sort them by weight,
