@@ -1,6 +1,10 @@
 # Change Log
 This project is versioned according to its compatibility with the [host](https://github.com/SamHH/bukubrow-host) from v4 onwards.
 
+## [5.0.0.3] - 2020-02-08
+### Changed
+- Fix opening multiple bookmarks in Chromium-based browsers.
+
 ## [5.0.0.2] - 2019-06-15
 ### Changed
 - Fix race condition in Firefox where browser popup will close before it can open requested bookmarks.
