@@ -26,7 +26,7 @@ const Badge = styled.span<Props>`
 	width: ${size};
 	height: ${size};
 	display: inline-block;
-	vertical-align: middle
+	vertical-align: middle;
 	border-radius: 50%;
 	background: ${(props): string => {
 		switch (props.weight) {
