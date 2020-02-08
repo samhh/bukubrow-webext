@@ -50,11 +50,17 @@ const settingsCodec = t.type({
 });
 
 export type Settings = t.TypeOf<typeof settingsCodec>;
+type SaveableSettings = Partial<UnwrapOptions<Settings>>;
+
+const saveableSettings = (x: Settings): SaveableSettings => ({
+	theme: O.toUndefined(x.theme),
+	badgeDisplay: O.toUndefined(x.badgeDisplay),
+});
 
 const theme = Lens.fromProp<Settings>()('theme');
 const badgeDisplay = Lens.fromProp<Settings>()('badgeDisplay');
 
-export const saveSettings = (opts: Settings): TaskEither<Error, void> => setSyncStorage(opts);
+export const saveSettings = flow(saveableSettings, setSyncStorage);
 
 const getSettings: TaskEither<Error, Settings> = pipe(
 	getSyncStorage(['theme', 'badgeDisplay']),

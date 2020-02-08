@@ -23,3 +23,7 @@ type DeepPartial<T> = {
 			: DeepPartial<T[P]>
 };
 
+type UnwrapOptions<T> = {
+	[K in keyof T]: T[K] extends Option<infer U> ? U : T[K];
+};
+
