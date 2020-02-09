@@ -36,3 +36,7 @@ export const split = (x: string | RegExp) => (y: string): Array<string> => y.spl
 export const indexOf = (x: string) => (y: string): Option<NonNegativeInteger> =>
 	pipe(y.indexOf(x), prismNonNegativeInteger.getOption);
 
+export const startsWith = (x: string) => (y: string): boolean => y.startsWith(x);
+
+export const endsWith = (x: string) => (y: string): boolean => y.endsWith(x);
+
