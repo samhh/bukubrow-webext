@@ -33,3 +33,9 @@ export const flip = <
 	C,
 >(f: (...a: A) => (...b: B) => C) => (...b: B) => (...a: A): C => f(...a)(...b);
 
+export const tap = (m = '') => <A>(x: A): A => {
+	// eslint-disable-next-line no-console
+	console.log(m, x);
+	return x;
+};
+
