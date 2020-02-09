@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import styled, { css } from '~/styles';
+import styled, { css } from '~~/styles';
 import { FlattenSimpleInterpolation } from 'styled-components';
 
 const Wrapper = styled.div<{ visible: boolean }>`

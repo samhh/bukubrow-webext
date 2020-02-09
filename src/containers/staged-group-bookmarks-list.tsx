@@ -2,16 +2,16 @@ import React, { FC } from 'react';
 import { constVoid } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { useDispatch, useSelector } from '~/store';
-import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from '~/store/bookmarks/actions';
-import { setPage } from '~/store/user/actions';
-import { getStagedGroupToEditWeightedBookmarks } from '~/store/selectors';
-import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit, addAllBookmarksFromStagedGroup } from '~/store/bookmarks/epics';
-import { Page } from '~/store/user/types';
-import { LocalBookmarkWeighted } from '~/modules/bookmarks';
-import styled from '~/styles';
-import Bookmark from '~/components/bookmark';
-import Button from '~/components/button';
+import { useDispatch, useSelector } from '~~/store';
+import { setStagedBookmarksGroupBookmarkEditId, deleteStagedBookmarksGroup } from '~~/store/bookmarks/actions';
+import { setPage } from '~~/store/user/actions';
+import { getStagedGroupToEditWeightedBookmarks } from '~~/store/selectors';
+import { deleteStagedBookmarksGroupBookmarkOrEntireGroup, openBookmarkAndExit, addAllBookmarksFromStagedGroup } from '~~/store/bookmarks/epics';
+import { Page } from '~~/store/user/types';
+import { LocalBookmarkWeighted } from '~~/modules/bookmarks';
+import styled from '~~/styles';
+import Bookmark from '~~/components/bookmark';
+import Button from '~~/components/button';
 
 const WrapperList = styled.ul`
 	margin: 0;

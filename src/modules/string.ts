@@ -2,8 +2,8 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
 import { prismNonNegativeInteger, NonNegativeInteger } from 'newtype-ts/lib/NonNegativeInteger';
-import { prismModifyOption } from '~/modules/prism';
-import { add } from '~/modules/math';
+import { prismModifyOption } from '~~/modules/prism';
+import { add } from '~~/modules/math';
 
 export const isString: Refinement<unknown, string> = (x): x is string => typeof x === 'string';
 

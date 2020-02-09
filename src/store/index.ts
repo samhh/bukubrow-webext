@@ -2,9 +2,9 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk, { ThunkMiddleware, ThunkAction } from 'redux-thunk';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import { useSelector as useSelectorUntyped, useDispatch as useDispatchRaw, TypedUseSelectorHook } from 'react-redux';
-import { onLoad } from '~/store/epics';
-import { saveStagedBookmarksGroupsToLocalStorage, saveBookmarksToLocalStorage } from '~/modules/comms/browser';
-import { runTask } from '~/modules/fp';
+import { onLoad } from '~~/store/epics';
+import { saveStagedBookmarksGroupsToLocalStorage, saveBookmarksToLocalStorage } from '~~/modules/comms/browser';
+import { runTask } from '~~/modules/fp';
 
 import bookmarksReducer, { BookmarksActions } from './bookmarks/reducers';
 import browserReducer, { BrowserActions } from './browser/reducers';

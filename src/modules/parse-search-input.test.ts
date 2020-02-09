@@ -1,4 +1,4 @@
-import parseSearchInput, { ParsedInputResult } from '~/modules/parse-search-input';
+import parseSearchInput, { ParsedInputResult } from '~~/modules/parse-search-input';
 
 describe('parse search input', () => {
 	test('correctly parse ideal input', () => {

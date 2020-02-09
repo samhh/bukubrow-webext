@@ -3,8 +3,8 @@ import { flow } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
 import { Lens } from 'monocle-ts';
-import { includes, join } from '~/modules/array';
-import { split } from '~/modules/string';
+import { includes, join } from '~~/modules/array';
+import { split } from '~~/modules/string';
 
 export const fromString = (url: string): Either<DOMException, URL> => E.tryCatch(
 	() => new URL(url),

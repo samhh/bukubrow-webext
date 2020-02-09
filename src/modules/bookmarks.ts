@@ -6,11 +6,11 @@ import * as A from 'fp-ts/lib/Array';
 import { Lens } from 'monocle-ts';
 import { isNonEmptyString } from 'newtype-ts/lib/NonEmptyString';
 import { formatDistanceToNow } from 'date-fns';
-import { ParsedInputResult } from '~/modules/parse-search-input';
-import { URLMatch, ordURLMatch } from '~/modules/compare-urls';
-import { includesCI, split } from '~/modules/string';
-import { StagedBookmarksGroup } from '~/modules/staged-groups';
-import { delimiter } from '~/modules/buku';
+import { ParsedInputResult } from '~~/modules/parse-search-input';
+import { URLMatch, ordURLMatch } from '~~/modules/compare-urls';
+import { includesCI, split } from '~~/modules/string';
+import { StagedBookmarksGroup } from '~~/modules/staged-groups';
+import { delimiter } from '~~/modules/buku';
 
 /*
  * Bookmark ready to be inserted into Buku database.

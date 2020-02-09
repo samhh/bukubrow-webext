@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { action } from 'typesafe-actions';
-import { LocalBookmark } from '~/modules/bookmarks';
-import { StagedBookmarksGroup } from '~/modules/staged-groups';
+import { LocalBookmark } from '~~/modules/bookmarks';
+import { StagedBookmarksGroup } from '~~/modules/staged-groups';
 import { BookmarksActionTypes } from './types';
 
 export const setAllBookmarks = (bookmarks: Array<LocalBookmark>) => action(

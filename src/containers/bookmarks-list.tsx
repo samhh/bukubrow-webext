@@ -1,18 +1,18 @@
 import React, { useRef, FC } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
-import { useSelector, useDispatch } from '~/store';
-import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from '~/store/selectors';
+import { useSelector, useDispatch } from '~~/store';
+import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from '~~/store/selectors';
 import {
 	initiateBookmarkEdit, initiateBookmarkDeletion,
 	attemptFocusedBookmarkIndexIncrement, attemptFocusedBookmarkIndexDecrement,
 	openBookmarkAndExit,
-} from '~/store/bookmarks/epics';
+} from '~~/store/bookmarks/epics';
 // import { Key } from 'ts-key-enum';
-import { scrollToEl } from '~/modules/scroll-window';
-import useListenToKeydown from '~/hooks/listen-to-keydown';
-import styled from '~/styles';
-import Bookmark from '~/components/bookmark';
+import { scrollToEl } from '~~/modules/scroll-window';
+import useListenToKeydown from '~~/hooks/listen-to-keydown';
+import styled from '~~/styles';
+import Bookmark from '~~/components/bookmark';
 
 const WrapperList = styled.ul`
 	margin: 0;

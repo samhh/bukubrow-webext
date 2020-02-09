@@ -1,5 +1,5 @@
 import { Newtype, prism } from 'newtype-ts';
-import { startsWith } from '~/modules/string';
+import { startsWith } from '~~/modules/string';
 
 export const isBookmarkletCode: Predicate<string> = startsWith('javascript:');
 

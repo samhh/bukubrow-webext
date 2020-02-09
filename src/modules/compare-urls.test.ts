@@ -1,7 +1,7 @@
-import { URLMatch, match, ordURLMatch } from '~/modules/compare-urls';
+import { URLMatch, match, ordURLMatch } from '~~/modules/compare-urls';
 import { ordNumber } from 'fp-ts/lib/Ord';
 
-describe('~/modules/compare-urls', () => {
+describe('~~/modules/compare-urls', () => {
 	describe('match', () => {
 		test('matches exact URL', () => {
 			const url1 = new URL('https://samhh.com');

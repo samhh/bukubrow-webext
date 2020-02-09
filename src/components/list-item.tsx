@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import styled, { css } from '~/styles';
+import styled, { css } from '~~/styles';
 
 const ListItem = styled.li<{ isFocused?: boolean }>`
 	padding: 1rem;

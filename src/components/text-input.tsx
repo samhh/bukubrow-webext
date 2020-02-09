@@ -1,5 +1,5 @@
 import React, { forwardRef, Ref, FormEvent, FC } from 'react';
-import styled from '~/styles';
+import styled from '~~/styles';
 
 const Wrapper = styled.div`
 	width: 100%;

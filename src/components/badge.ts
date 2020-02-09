@@ -1,6 +1,6 @@
-import styled from '~/styles';
-import { URLMatch } from '~/modules/compare-urls';
-import { colors } from '~/modules/badge';
+import styled from '~~/styles';
+import { URLMatch } from '~~/modules/compare-urls';
+import { colors } from '~~/modules/badge';
 
 export enum BadgeWeight {
 	Primary,

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { AppState } from '~/store';
+import { AppState } from '~~/store';
 import * as styledComponents from 'styled-components';
 import styledSanitize from 'styled-sanitize';
-import { Theme } from '~/modules/settings';
+import { Theme } from '~~/modules/settings';
 
 const {
 	default: styled,

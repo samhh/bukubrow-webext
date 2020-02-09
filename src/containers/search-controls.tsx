@@ -1,16 +1,16 @@
 import React, { useRef, useEffect, useState, FC } from 'react';
-import { useDispatch, useSelector } from '~/store';
-import { setSearchFilterWithResets } from '~/store/epics';
-import { getUnlimitedFilteredBookmarks } from '~/store/selectors';
-import { setDisplayOpenAllBookmarksConfirmation, setPage } from '~/store/user/actions';
-import { Page } from '~/store/user/types';
-import { scrollToTop } from '~/modules/scroll-window';
-import { matchesTerminology } from '~/modules/terminology';
-import useListenToKeydown from '~/hooks/listen-to-keydown';
-import styled from '~/styles';
-import IconButton, { iconButtonSize, idealFeatherIconSize } from '~/components/icon-button';
-import TextInput from '~/components/text-input';
-import Tooltip from '~/components/tooltip';
+import { useDispatch, useSelector } from '~~/store';
+import { setSearchFilterWithResets } from '~~/store/epics';
+import { getUnlimitedFilteredBookmarks } from '~~/store/selectors';
+import { setDisplayOpenAllBookmarksConfirmation, setPage } from '~~/store/user/actions';
+import { Page } from '~~/store/user/types';
+import { scrollToTop } from '~~/modules/scroll-window';
+import { matchesTerminology } from '~~/modules/terminology';
+import useListenToKeydown from '~~/hooks/listen-to-keydown';
+import styled from '~~/styles';
+import IconButton, { iconButtonSize, idealFeatherIconSize } from '~~/components/icon-button';
+import TextInput from '~~/components/text-input';
+import Tooltip from '~~/components/tooltip';
 import { ArrowUpRight, Layers, Plus } from 'react-feather';
 
 export const headerHeight = '50px';

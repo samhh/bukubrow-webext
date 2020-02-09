@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import * as O from 'fp-ts/lib/Option';
-import { formatStagedBookmarksGroupTitle } from '~/modules/bookmarks';
-import { useDispatch, useSelector } from '~/store';
-import { setPage } from '~/store/user/actions';
-import { getSortedStagedGroups } from '~/store/selectors';
-import { setStagedBookmarksGroupEditId } from '~/store/bookmarks/actions';
-import styled from '~/styles';
-import { Page } from '~/store/user/types';
-import ListItem from '~/components/list-item';
+import { formatStagedBookmarksGroupTitle } from '~~/modules/bookmarks';
+import { useDispatch, useSelector } from '~~/store';
+import { setPage } from '~~/store/user/actions';
+import { getSortedStagedGroups } from '~~/store/selectors';
+import { setStagedBookmarksGroupEditId } from '~~/store/bookmarks/actions';
+import styled from '~~/styles';
+import { Page } from '~~/store/user/types';
+import ListItem from '~~/components/list-item';
 
 const Wrapper = styled.ol`
 	list-style: none;

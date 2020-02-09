@@ -2,7 +2,6 @@
 	"name": "bukubrow",
 	"version": "5.0.1.0",
 	"description": "WebExtension for Buku",
-	"main": "webextension/backend.js",
 	"scripts": {
 		"prepare": "rm -rf ./dist/ && mkdir ./dist/ && cp ./src/assets/* ./dist/",
 		"check": "tsc --noEmit",
@@ -22,6 +21,9 @@
 		"url": "https://github.com/SamHH/bukubrow/issues"
 	},
 	"homepage": "https://github.com/SamHH/bukubrow",
+	"alias": {
+		"~~/": "./src/"
+	},
 	"browserslist": [
 		"last 2 Chrome versions",
 		"last 2 Firefox versions"
@@ -63,7 +65,7 @@
 		"eslint-plugin-react": "^7.12.4",
 		"jest": "^25.1.0",
 		"jest-webextension-mock": "^3.5.0",
-		"parcel-bundler": "^1.12.4",
+		"parcel": "^2.0.0-alpha.3.2",
 		"ts-jest": "^25.2.0",
 		"typescript": "^3.2.4"
 	}

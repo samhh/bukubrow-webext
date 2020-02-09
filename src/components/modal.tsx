@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import styled from '~/styles';
+import styled from '~~/styles';
 
 const Outer = styled.div`
 	width: 100vw;

@@ -1,4 +1,4 @@
-import { testables } from '~/modules/uuid';
+import { testables } from '~~/modules/uuid';
 
 describe('createUuidWithMaximum', () => {
 	test('generates unique ids that are not already taken', () => {

@@ -1,9 +1,9 @@
 import { flow, not } from 'fp-ts/lib/function';
 import { ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { eqString } from 'fp-ts/lib/Eq';
-import { equal, mapBoth } from '~/modules/tuple'
-import { some } from '~/modules/array';
-import { hrefSansProtocol, isHttpOrHttps, domain } from '~/modules/url';
+import { equal, mapBoth } from '~~/modules/tuple'
+import { some } from '~~/modules/array';
+import { hrefSansProtocol, isHttpOrHttps, domain } from '~~/modules/url';
 
 export enum URLMatch {
 	Exact = 'exact',

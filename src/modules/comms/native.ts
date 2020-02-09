@@ -3,11 +3,11 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as T from 'fp-ts/lib/Task';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
-import { APP_NAME, MINIMUM_BINARY_VERSION } from '~/modules/config';
-import { compareAgainstMinimum, SemanticVersioningComparison } from '~/modules/semantic-versioning';
-import { RemoteBookmark, RemoteBookmarkUnsaved } from '~/modules/bookmarks';
-import { asError } from '~/modules/error';
-import { runTask } from '~/modules/fp';
+import { APP_NAME, MINIMUM_BINARY_VERSION } from '~~/modules/config';
+import { compareAgainstMinimum, SemanticVersioningComparison } from '~~/modules/semantic-versioning';
+import { RemoteBookmark, RemoteBookmarkUnsaved } from '~~/modules/bookmarks';
+import { asError } from '~~/modules/error';
+import { runTask } from '~~/modules/fp';
 
 const sendNativeMessageSetup = (a: string) => (d: unknown): TaskEither<Error, unknown> =>
 	TE.tryCatch(() => browser.runtime.sendNativeMessage(a, d), asError);
