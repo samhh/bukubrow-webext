@@ -27,7 +27,7 @@ wipe:
 .PHONY: nuke
 nuke:
 	${MAKE} wipe
-	rm -rf node_modules/ .cache/
+	rm -rf node_modules/ .cache/ dist/
 
 
 # Build WebExtension via Yarn and zip into release dir
