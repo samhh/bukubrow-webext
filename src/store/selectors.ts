@@ -13,8 +13,6 @@ import { MAX_BOOKMARKS_TO_RENDER } from '~/modules/config';
 import { URLMatch, match } from '~/modules/compare-urls';
 import { fromString } from '~/modules/url';
 import { StagedBookmarksGroup, ordStagedBookmarksGroup, bookmarks } from '~/modules/staged-groups';
-import { lookupC } from '~/modules/array';
-import { flip } from '~/modules/fp';
 
 const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
@@ -78,7 +76,7 @@ export const getNumFilteredUnrenderedBookmarks = createSelector(getUnlimitedFilt
 export const getFocusedBookmark = createSelector(getWeightedLimitedFilteredBookmarks, getFocusedBookmarkIndex,
 	(bookmarks, focusedId) => pipe(
 		focusedId,
-		O.chain(flip(lookupC)(bookmarks)),
+		O.chain((i) => A.lookup(i, bookmarks)),
 	));
 
 export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
@@ -93,7 +91,7 @@ export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDelet
 		O.chain(did => A.findFirst<LocalBookmark>(bm => bm.id === did)(bookmarks)),
 	));
 
-export const getSortedStagedGroups = createSelector(getStagedGroups, A.sort(ordStagedBookmarksGroup), A.reverse);
+export const getSortedStagedGroups = createSelector(getStagedGroups, flow(A.sort(ordStagedBookmarksGroup), A.reverse));
 
 export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGroupEditId,
 	(groups, editId) => pipe(
