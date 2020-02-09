@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { pipe } from 'fp-ts/lib/pipeable';
+import { constant, identity } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import * as OT from '~/modules/optionTuple';
 import * as A from 'fp-ts/lib/Array';
@@ -11,14 +12,16 @@ import { filterBookmarks, ordLocalBookmarkWeighted, LocalBookmark, LocalBookmark
 import { MAX_BOOKMARKS_TO_RENDER } from '~/modules/config';
 import { URLMatch, match } from '~/modules/compare-urls';
 import { fromString } from '~/modules/url';
-import { StagedBookmarksGroup } from '~/modules/staged-groups';
+import { StagedBookmarksGroup, ordStagedBookmarksGroup } from '~/modules/staged-groups';
+import { lookupC } from '~/modules/array';
+import { flip } from '~/modules/fp';
 
 const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
 	weight: pipe(
-		OT.optionTuple(activeTabURL, O.fromEither(fromString(bookmark.url))),
+		OT.optionTuple(activeTabURL, pipe(bookmark.url, fromString, O.fromEither)),
 		O.map(([activeURL, bmURL]) => match(activeURL)(bmURL)),
-		O.getOrElse((): URLMatch => URLMatch.None),
+		O.getOrElse<URLMatch>(constant(URLMatch.None)),
 	),
 });
 
@@ -59,42 +62,55 @@ export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimited
  * and potentially return only a limited subset of them according to the store.
  */
 export const getWeightedLimitedFilteredBookmarks = createSelector(getWeightedUnlimitedFilteredBookmarks, getLimitNumRendered,
-	(bookmarks, limitNumRendered) => limitNumRendered
-		? bookmarks.slice(0, MAX_BOOKMARKS_TO_RENDER)
-		: bookmarks,
-);
+	(bookmarks, limitNumRendered) => pipe(
+		bookmarks,
+		limitNumRendered ? A.takeLeft(MAX_BOOKMARKS_TO_RENDER) : identity,
+	));
 
 /**
  * Return the number of bookmarks matching the filter being removed by the limit.
  */
 export const getNumFilteredUnrenderedBookmarks = createSelector(getUnlimitedFilteredBookmarks, getWeightedLimitedFilteredBookmarks,
-	(u, l) => u.slice(l.length).length);
+	(us, ls) => Math.max(0, us.length - ls.length));
 
 export const getFocusedBookmark = createSelector(getWeightedLimitedFilteredBookmarks, getFocusedBookmarkIndex,
-	(bookmarks, focusedId) => O.option.chain(focusedId, fid => A.lookup(fid, bookmarks)));
+	(bookmarks, focusedId) => pipe(
+		focusedId,
+		O.chain(flip(lookupC)(bookmarks)),
+	));
 
 export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
-	(bookmarks, editId) => O.option.chain(editId, eid => A.findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks)));
+	(bookmarks, editId) => pipe(
+		editId,
+		O.chain(eid => A.findFirst<LocalBookmark>(bm => bm.id === eid)(bookmarks)),
+	));
 
 export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDeleteId,
-	(bookmarks, deleteId) => O.option.chain(deleteId, did => A.findFirst((bm: LocalBookmark) => bm.id === did)(bookmarks)));
+	(bookmarks, deleteId) => pipe(
+		deleteId,
+		O.chain(did => A.findFirst<LocalBookmark>(bm => bm.id === did)(bookmarks)),
+	));
 
-export const getSortedStagedGroups = createSelector(getStagedGroups,
-	(grps) => [...grps].sort((a, b) => b.time - a.time));
+export const getSortedStagedGroups = createSelector(getStagedGroups, A.sort(ordStagedBookmarksGroup));
 
 export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGroupEditId,
-	(groups, editId) => O.option.chain(editId, eid => A.findFirst((grp: StagedBookmarksGroup) => grp.id === eid)(groups)));
+	(groups, editId) => pipe(
+		editId,
+		O.chain(eid => A.findFirst<StagedBookmarksGroup>(grp => grp.id === eid)(groups)),
+	));
 
 /**
  * Get weighted bookmarks from the staging area group selected for editing.
  */
 export const getStagedGroupToEditWeightedBookmarks = createSelector(getStagedGroupToEdit, getActiveTabHref,
-	(group, activeTabHref) => O.option.map(group, grp => grp.bookmarks.map(addBookmarkWeight(O.fromEither(fromString(activeTabHref))))));
+	(group, activeTabHref) => pipe(
+		group,
+		O.map(grp => grp.bookmarks.map(pipe(activeTabHref, fromString, O.fromEither, addBookmarkWeight))),
+	));
 
 export const getStagedGroupBookmarkToEdit = createSelector(getStagedGroupToEdit, getStagedGroupBookmarkEditId,
-	(group, editId) => O.option.chain(
+	(group, editId) => pipe(
 		OT.optionTuple(group, editId),
-		([{ bookmarks }, eid]) => A.findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks),
-	),
-);
+		O.chain(([{ bookmarks }, eid]) => A.findFirst((bm: LocalBookmark) => bm.id === eid)(bookmarks)),
+	));
 
