@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { pipe } from 'fp-ts/lib/pipeable';
-import { constant, identity } from 'fp-ts/lib/function';
+import { constant, identity, flow } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import * as OT from '~/modules/optionTuple';
 import * as A from 'fp-ts/lib/Array';
@@ -12,7 +12,7 @@ import { filterBookmarks, ordLocalBookmarkWeighted, LocalBookmark, LocalBookmark
 import { MAX_BOOKMARKS_TO_RENDER } from '~/modules/config';
 import { URLMatch, match } from '~/modules/compare-urls';
 import { fromString } from '~/modules/url';
-import { StagedBookmarksGroup, ordStagedBookmarksGroup } from '~/modules/staged-groups';
+import { StagedBookmarksGroup, ordStagedBookmarksGroup, bookmarks } from '~/modules/staged-groups';
 import { lookupC } from '~/modules/array';
 import { flip } from '~/modules/fp';
 
@@ -24,6 +24,8 @@ const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmar
 		O.getOrElse<URLMatch>(constant(URLMatch.None)),
 	),
 });
+
+const withWeight = flow(fromString, O.fromEither, addBookmarkWeight);
 
 const getBookmarks = (state: AppState) => state.bookmarks.bookmarks;
 const getFocusedBookmarkIndex = (state: AppState) => state.bookmarks.focusedBookmarkIndex;
@@ -53,7 +55,7 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => pipe(
 		bookmarks,
-		A.map(pipe(activeTabHref, fromString, O.fromEither, addBookmarkWeight)),
+		A.map(withWeight(activeTabHref)),
 		A.sort(ordLocalBookmarkWeighted),
 	));
 
@@ -105,7 +107,7 @@ export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGro
 export const getStagedGroupToEditWeightedBookmarks = createSelector(getStagedGroupToEdit, getActiveTabHref,
 	(group, activeTabHref) => pipe(
 		group,
-		O.map(grp => grp.bookmarks.map(pipe(activeTabHref, fromString, O.fromEither, addBookmarkWeight))),
+		O.map(flow(bookmarks.get, A.map(withWeight(activeTabHref)))),
 	));
 
 export const getStagedGroupBookmarkToEdit = createSelector(getStagedGroupToEdit, getStagedGroupBookmarkEditId,
