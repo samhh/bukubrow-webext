@@ -91,7 +91,7 @@ export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDelet
 		O.chain(did => A.findFirst<LocalBookmark>(bm => bm.id === did)(bookmarks)),
 	));
 
-export const getSortedStagedGroups = createSelector(getStagedGroups, A.sort(ordStagedBookmarksGroup));
+export const getSortedStagedGroups = createSelector(getStagedGroups, A.sort(ordStagedBookmarksGroup), A.reverse);
 
 export const getStagedGroupToEdit = createSelector(getStagedGroups, getStagedGroupEditId,
 	(groups, editId) => pipe(
