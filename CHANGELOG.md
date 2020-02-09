@@ -1,6 +1,10 @@
 # Change Log
 This project is versioned according to its compatibility with the [host](https://github.com/SamHH/bukubrow-host) from v4 onwards.
 
+## [5.0.1.0] - 2020-02-09
+### Added
+- Support for bookmarklets. This is why the `activeTab` permission is being newly requested.
+
 ## [5.0.0.3] - 2020-02-08
 ### Changed
 - Fix opening multiple bookmarks in Chromium-based browsers.
