@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { pipe } from 'fp-ts/lib/pipeable';
+import { flow, constVoid } from 'fp-ts/lib/function';
+import * as T from 'fp-ts/lib/Task';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
@@ -14,11 +16,12 @@ import { setPage, setHasBinaryComms } from '~/store/user/actions';
 import { addPermanentError } from '~/store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from '~/store/selectors';
 import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from '~/modules/comms/native';
-import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab } from '~/modules/comms/browser';
+import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab, executeCodeInActiveTab } from '~/modules/comms/browser';
 import { untransform, transform, LocalBookmark, LocalBookmarkUnsaved } from '~/modules/bookmarks';
 import { StagedBookmarksGroup } from '~/modules/staged-groups';
 import { Page } from '~/store/user/types';
 import { runTask, seqT } from '~/modules/fp';
+import { mkBookmarkletCode } from '~/modules/bookmarklet';
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();
@@ -56,7 +59,15 @@ export const openBookmarkAndExit = (
 
 	if (O.isSome(bookmark)) {
 		const { url } = bookmark.value;
-		await runTask(openBookmarkInAppropriateTab(true)(url));
+		const action: Task<void> = pipe(
+			mkBookmarkletCode(url),
+			O.fold(
+				() => pipe(openBookmarkInAppropriateTab(true)(url), T.map(constVoid)),
+				flow(executeCodeInActiveTab, T.map(constVoid)),
+			),
+		);
+
+		await runTask(action);
 
 		window.close();
 	}

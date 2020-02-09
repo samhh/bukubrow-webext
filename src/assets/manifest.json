@@ -24,7 +24,8 @@
 		"nativeMessaging",
 		"storage",
 		"tabs",
-		"contextMenus"
+		"contextMenus",
+		"activeTab"
 	],
 	"commands": {
 		"_execute_browser_action": {

@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flow, constant, constFalse } from 'fp-ts/lib/function';
+import { flow, constant, constFalse, constVoid } from 'fp-ts/lib/function';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as O from 'fp-ts/lib/Option';
 import * as T from 'fp-ts/lib/Task';
@@ -15,6 +15,7 @@ import { createUuid } from '~/modules/uuid';
 import { error } from '~/modules/error';
 import { LocalBookmark, LocalBookmarkUnsaved } from '~/modules/bookmarks';
 import { StagedBookmarksGroup } from '~/modules/staged-groups';
+import { BookmarkletCode, unBookmarkletCode } from '~/modules/bookmarklet';
 
 const sequenceTTE = sequenceT(TE.taskEither);
 
@@ -60,6 +61,12 @@ export const openBookmarkInAppropriateTab = (isFirstTab: boolean) => (url: strin
 		: browser.tabs.create({ url })
 	),
 );
+
+export const executeCodeInActiveTab = (x: BookmarkletCode): TaskEither<Error, void> =>
+	TE.tryCatch(
+		() => browser.tabs.executeScript({ code: unBookmarkletCode(x) }).then(constVoid),
+		constant(new Error('Failed to execute code in active tab')),
+	);
 
 export interface StorageState {
 	bookmarks: Array<LocalBookmark>;
