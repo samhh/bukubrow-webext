@@ -10,7 +10,7 @@ import * as A from 'fp-ts/lib/Array';
 import { getActiveTab, getAllTabs, getActiveWindowTabs, saveStagedBookmarksAsNewGroupToLocalStorage } from '~/modules/comms/browser';
 import { values } from '~/modules/record';
 import { includes } from '~/modules/array';
-import { flip, runTask, runIOs_ } from '~/modules/fp';
+import { flip, runTask, runIOs_, runIO } from '~/modules/fp';
 
 const createContextMenuEntry = (x: Menus.CreateCreatePropertiesType): IO<void> => (): void =>
 	void browser.contextMenus.create(x);
@@ -46,10 +46,10 @@ const sufficientTabExact: Endomorphism<SufficientTab> = (tab: SufficientTab) =>
 
 const sufficientTabsExact = flow(A.filter(isSufficientTab), A.map(sufficientTabExact));
 
-const createContextMenuListener = <A>(g: (a: A) => void) => (f: (x: Menus.OnClickData) => TaskOption<A>): IO<void> => (): void =>
+const createContextMenuListener = <A>(g: (a: A) => IO<void>) => (f: (x: Menus.OnClickData) => TaskOption<A>): IO<void> => (): void =>
 	browser.contextMenus.onClicked.addListener((x) => {
 		runTask(f(x)).then((y) => {
-			if (O.isSome(y)) g(y.value);
+			if (O.isSome(y)) runIO(g(y.value));
 		});
 	});
 
@@ -97,7 +97,7 @@ const handleCtxClick = (x: Menus.OnClickData): TaskOption<NonEmptyArray<Sufficie
  * Initialise context menu items that each obtain various viable window tabs,
  * and pass those onto the callback.
  */
-export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => void): IO<void> => (): void => runIOs_(
+export const initContextMenusAndListen = (cb: (tabs: NonEmptyArray<SufficientTab>) => IO<void>): IO<void> => (): void => runIOs_(
 	createContextMenuListener(cb)(handleCtxClick),
 
 	createContextMenuEntry({
