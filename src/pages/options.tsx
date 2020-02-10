@@ -50,7 +50,7 @@ const OptionsPage: FC = () => {
 		evt.preventDefault();
 
 		dispatch(setActiveTheme(themeOpt));
-		sendIsomorphicMessage(IsomorphicMessage.SettingsUpdated);
+		runTask(sendIsomorphicMessage(IsomorphicMessage.SettingsUpdated));
 		runTask(saveSettings({ theme: O.some(themeOpt), badgeDisplay: O.some(badgeOpt) }));
 	};
 
