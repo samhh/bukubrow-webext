@@ -52,6 +52,7 @@ interface Props {
 	value: string;
 	onInput(value: string): void;
 	forwardedRef?: Ref<HTMLInputElement>;
+	form?: string;
 	label?: string;
 	placeholder?: string;
 	max?: number;
@@ -96,6 +97,7 @@ const TextInput: FC<Props> = (props) => {
 
 			<Input
 				type="text"
+				form={props.form}
 				disabled={props.disabled}
 				onChange={handleInput}
 				value={props.value}
