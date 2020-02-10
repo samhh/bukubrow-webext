@@ -3,9 +3,14 @@ Bukubrow
 
 Bukubrow is a WebExtension for [Buku](https://github.com/jarun/Buku), a command-line bookmark manager.
 
-A corresponding [native host](https://github.com/SamHH/bukubrow-host) is used to interface with your Buku database. Communication between the host and the browser extension is handled via [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
+- Display, open, add, edit, and delete bookmarks
+- Automatically save open tabs to the _staging area_ from the context menu, from which they can be optionally edited and saved
+- Filter bookmarks with any of the following syntax: `:url`, `>description`, `#tag`, `*wildcard`
+- Bookmarklet (arbitrary JavaScript scripting) support, simply prepend your "URL" with `javascript:`, for example: `javascript:document.body.style.background = 'red'`
 
 ## Prerequisites
+
+A corresponding [native host](https://github.com/SamHH/bukubrow-host) is used to interface with your Buku database. Communication between the host and the browser extension is handled via [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
 
 - Buku
 - Bukubrow Host
