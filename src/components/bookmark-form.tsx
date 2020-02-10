@@ -7,10 +7,9 @@ import Button from '~/components/button';
 import IconButton, { idealFeatherIconSize } from '~/components/icon-button';
 import Tag from '~/components/tag';
 import TextInput from '~/components/text-input';
-
 import { Plus } from 'react-feather';
 
-const Wrapper = styled.form`
+const Wrapper = styled.div`
 	padding: 2rem 1rem;
 `;
 
@@ -27,7 +26,7 @@ const Heading = styled.h1`
 	font-size: 2rem;
 `;
 
-const TagInputWrapper = styled.form`
+const TagInputWrapper = styled.div`
 	display: grid;
 	grid-template-columns: 1fr auto;
 	grid-gap: 1rem;
@@ -138,59 +137,72 @@ const BookmarkForm: FC<Props> = (props) => {
 	);
 
 	return (
-		<Wrapper onSubmit={handleSubmit}>
-			<Header>
-				<Heading>
-					{isEditing ? 'Edit bookmark' : 'Add a bookmark'}
-				</Heading>
-			</Header>
+		<>
+			<form id="main" onSubmit={handleSubmit} />
+			<form id="tags" onSubmit={handleTagAddition} />
 
-			<TextInput
-				value={bookmarkInput.title}
-				onInput={handleBookmarkTextInput('title')}
-				label="Title"
-				ref={firstInputRef}
-			/>
+			<Wrapper>
+				<Header>
+					<Heading>
+						{isEditing ? 'Edit bookmark' : 'Add a bookmark'}
+					</Heading>
+				</Header>
 
-			<TextInput
-				value={bookmarkInput.desc}
-				onInput={handleBookmarkTextInput('desc')}
-				label="Description"
-			/>
-
-			<TextInput
-				value={bookmarkInput.url}
-				onInput={handleBookmarkTextInput('url')}
-				label="URL"
-			/>
-
-			<TagInputWrapper onSubmit={handleTagAddition}>
 				<TextInput
-					value={tagInput}
-					onInput={setTagInput}
-					label="Tags"
+					value={bookmarkInput.title}
+					onInput={handleBookmarkTextInput('title')}
+					form="main"
+					label="Title"
+					ref={firstInputRef}
 				/>
 
-				<AddTagButton type="submit" tabIndex={-1}>
-					<Plus size={idealFeatherIconSize} />
-				</AddTagButton>
-			</TagInputWrapper>
+				<TextInput
+					value={bookmarkInput.desc}
+					onInput={handleBookmarkTextInput('desc')}
+					form="main"
+					label="Description"
+				/>
 
-			<TagList>
-				{bookmarkInput.tags.map(tag => (
-					<Tag
-						key={tag}
-						id={tag}
-						label={tag}
-						onRemove={handleTagRemoval}
+				<TextInput
+					value={bookmarkInput.url}
+					onInput={handleBookmarkTextInput('url')}
+					form="main"
+					label="URL"
+				/>
+
+				<TagInputWrapper>
+					<TextInput
+						value={tagInput}
+						onInput={setTagInput}
+						form="tags"
+						label="Tags"
 					/>
-				))}
-			</TagList>
 
-			<SubmitButton type="submit">
-				{isEditing ? 'Update bookmark' : 'Add bookmark'}
-			</SubmitButton>
-		</Wrapper>
+					<AddTagButton
+						type="submit"
+						form="tags"
+						tabIndex={-1}
+					>
+						<Plus size={idealFeatherIconSize} />
+					</AddTagButton>
+				</TagInputWrapper>
+
+				<TagList>
+					{bookmarkInput.tags.map(tag => (
+						<Tag
+							key={tag}
+							id={tag}
+							label={tag}
+							onRemove={handleTagRemoval}
+						/>
+					))}
+				</TagList>
+
+				<SubmitButton type="submit" form="main">
+					{isEditing ? 'Update bookmark' : 'Add bookmark'}
+				</SubmitButton>
+			</Wrapper>
+		</>
 	);
 };
 
