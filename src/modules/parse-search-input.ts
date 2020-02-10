@@ -4,10 +4,10 @@ import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
 import { exec, execMulti } from '~/modules/regex';
 
-const nameRegExp = /^.*?(?:(?=^[#>:*].+)|(?= +[#>:*].+)|$)/;
-const descsRegExp = /(?:^| )>(.+?)(?= +[#>:*]|$)/g;
-const urlsRegExp = /(?:^| ):(.+?)(?= +[#>:*]|$)/g;
-const tagsRegExp = /(?:^| )#(.+?)(?= +[#>:*]|$)/g;
+const nameRegExp      = /^.*?(?:(?=^[#>:*].+)|(?= +[#>:*].+)|$)/;
+const descsRegExp     = /(?:^| )>(.+?)(?= +[#>:*]|$)/g;
+const urlsRegExp      = /(?:^| ):(.+?)(?= +[#>:*]|$)/g;
+const tagsRegExp      = /(?:^| )#(.+?)(?= +[#>:*]|$)/g;
 const wildcardsRegExp = /(?:^| )\*(.+?)(?= +[#>:*]|$)/g;
 
 export interface ParsedInputResult {

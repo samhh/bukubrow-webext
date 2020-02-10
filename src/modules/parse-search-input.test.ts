@@ -49,6 +49,7 @@ describe('parse search input', () => {
 			['a', { name: 'a' }],
 			['a :', { name: 'a :' }],
 			['a :u', { name: 'a', url: ['u'] }],
+			[String.raw`a \:u`, { name: String.raw`a \:u` }],
 			['a:a', { name: 'a:a' }],
 			['a:a :', { name: 'a:a :' }],
 			['a:a :u', { name: 'a:a', url: ['u'] }],
