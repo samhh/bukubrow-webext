@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState, FC } from 'react';
 import { useDispatch, useSelector } from '~/store';
+import * as A from 'fp-ts/lib/Array';
+import * as R from 'fp-ts/lib/Record';
 import { setSearchFilterWithResets } from '~/store/epics';
 import { getUnlimitedFilteredBookmarks } from '~/store/selectors';
 import { setDisplayOpenAllBookmarksConfirmation, setPage } from '~/store/user/actions';
@@ -65,16 +67,16 @@ enum HoverState {
 const SearchControls: FC = () => {
 	const allBookmarks = useSelector(state => state.bookmarks.bookmarks);
 	const hasBinaryComms = useSelector(state => state.user.hasBinaryComms);
-	const numStagedItems = useSelector(state => state.bookmarks.stagedBookmarksGroups.length);
-	const numFilteredBookmarks = useSelector(getUnlimitedFilteredBookmarks).length;
+	const stagedGroups = useSelector(state => state.bookmarks.stagedBookmarksGroups);
+	const filteredBookmarks = useSelector(getUnlimitedFilteredBookmarks);
 	const textFilter = useSelector(state => state.input.searchFilter);
 	const dispatch = useDispatch();
 
-	const shouldEnableSearch = !!allBookmarks.length;
-	const shouldEnableOpenStaged = hasBinaryComms && !!numStagedItems;
-	const shouldEnableOpenAll = !!numFilteredBookmarks;
+	const numFilteredBookmarks = R.size(filteredBookmarks);
+	const shouldEnableSearch = !R.isEmpty(allBookmarks);
+	const shouldEnableOpenStaged = hasBinaryComms && !A.isEmpty(stagedGroups);
+	const shouldEnableOpenAll = !R.isEmpty(filteredBookmarks);
 	const shouldEnableAddBookmark = hasBinaryComms;
-
 
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [hoverState, setHoverState] = useState(HoverState.None);

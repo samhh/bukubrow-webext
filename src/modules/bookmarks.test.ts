@@ -1,4 +1,4 @@
-import { filterBookmarks, transform, untransform, LocalBookmark, RemoteBookmark } from '~/modules/bookmarks';
+import { filterBookmark, transform, untransform, LocalBookmark, RemoteBookmark } from '~/modules/bookmarks';
 import { ParsedInputResult } from '~/modules/parse-search-input';
 
 describe('filter bookmarks with parsed input case insensitively', () => {
@@ -38,7 +38,6 @@ describe('filter bookmarks with parsed input case insensitively', () => {
 		flags: 999,
 	};
 
-	const allBookmarks = [coolBookmark, superBookmark, incredibleBookmark, unstoppableBookmark];
 	const emptyParsedInput: ParsedInputResult = {
 		name: '',
 		desc: [],
@@ -48,33 +47,39 @@ describe('filter bookmarks with parsed input case insensitively', () => {
 	};
 
 	test('filter by title', () => {
-		const titleFilter = filterBookmarks(allBookmarks, {
+		const titleFilter = filterBookmark({
 			...emptyParsedInput,
 			name: 'awesome',
 		});
 
-		const expectedTitleResult = [superBookmark];
-		expect(titleFilter).toStrictEqual(expectedTitleResult);
+		expect(titleFilter(coolBookmark)).toStrictEqual(false);
+		expect(titleFilter(superBookmark)).toStrictEqual(true);
+		expect(titleFilter(incredibleBookmark)).toStrictEqual(false);
+		expect(titleFilter(unstoppableBookmark)).toStrictEqual(false);
 	});
 
 	test('filter by url', () => {
-		const urlFilter = filterBookmarks(allBookmarks, {
+		const urlFilter = filterBookmark({
 			...emptyParsedInput,
 			url: ['samhh.com'],
 		});
 
-		const expectedUrlResult = [superBookmark, incredibleBookmark, unstoppableBookmark];
-		expect(urlFilter).toStrictEqual(expectedUrlResult);
+		expect(urlFilter(coolBookmark)).toStrictEqual(false);
+		expect(urlFilter(superBookmark)).toStrictEqual(true);
+		expect(urlFilter(incredibleBookmark)).toStrictEqual(true);
+		expect(urlFilter(unstoppableBookmark)).toStrictEqual(true);
 	});
 
 	test('filter by wildcard', () => {
-		const wildcardFilter = filterBookmarks(allBookmarks, {
+		const wildcardFilter = filterBookmark({
 			...emptyParsedInput,
 			wildcard: ['supreme', 'duckduck'],
 		});
 
-		const expectedWildcardResult = [coolBookmark];
-		expect(wildcardFilter).toStrictEqual(expectedWildcardResult);
+		expect(wildcardFilter(coolBookmark)).toStrictEqual(true);
+		expect(wildcardFilter(superBookmark)).toStrictEqual(false);
+		expect(wildcardFilter(incredibleBookmark)).toStrictEqual(false);
+		expect(wildcardFilter(unstoppableBookmark)).toStrictEqual(false);
 	});
 });
 

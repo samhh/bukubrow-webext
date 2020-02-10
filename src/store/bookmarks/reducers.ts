@@ -1,3 +1,4 @@
+import { pipe } from 'fp-ts/lib/pipeable';
 import { identity, constant, flow, not } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
@@ -12,13 +13,15 @@ import {
 import { curryReducer } from '~/modules/redux';
 import { id as grpId, bookmarks as grpBms } from '~/modules/staged-groups';
 import { mapByPredicate } from '~/modules/array';
-import { id as bmId } from '~/modules/bookmarks';
+import { id as bmId, id } from '~/modules/bookmarks';
 import { eqNumber } from '~/modules/eq';
+import { fromArray } from '~/modules/record';
+import { fromNumber } from '~/modules/string';
 
 export type BookmarksActions = ActionType<typeof bookmarksActions>;
 
 const initialState: BookmarksState = {
-	bookmarks: [],
+	bookmarks: {},
 	stagedBookmarksGroups: [],
 	limitNumRendered: true,
 	focusedBookmarkIndex: O.none,
@@ -33,7 +36,7 @@ const initialState: BookmarksState = {
 const bookmarksReducer = curryReducer<BookmarksActions, BookmarksState>((a) => (_s) => {
 	switch (a.type) {
 		case BookmarksActionTypes.SetAllBookmarks:
-			return bookmarks.set(a.payload);
+			return pipe(a.payload, fromArray(flow(id.get, fromNumber)), bookmarks.set);
 
 		case BookmarksActionTypes.SetAllStagedBookmarksGroups:
 			return stagedBookmarksGroups.set(a.payload);

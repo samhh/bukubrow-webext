@@ -6,6 +6,7 @@ import * as T from 'fp-ts/lib/Task';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
+import * as R from 'fp-ts/lib/Record';
 import { ThunkAC } from '~/store';
 import {
 	setAllStagedBookmarksGroups, deleteStagedBookmarksGroup, deleteStagedBookmarksGroupBookmark,
@@ -22,6 +23,7 @@ import { StagedBookmarksGroup } from '~/modules/staged-groups';
 import { Page } from '~/store/user/types';
 import { runTask, seqT } from '~/modules/fp';
 import { mkBookmarkletCode } from '~/modules/bookmarklet';
+import { values } from '~/modules/record';
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();
@@ -48,7 +50,7 @@ export const openBookmarkAndExit = (
 	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
 
 	const bookmark = O.fold(
-		() => A.findFirst((bm: LocalBookmark) => bm.id === bmId)(bookmarks),
+		() => R.lookup(String(bmId), bookmarks),
 		(grpId: StagedBookmarksGroup['id']) => pipe(
 			stagedBookmarksGroups,
 			A.findFirst(grp => grp.id === grpId),
@@ -76,6 +78,7 @@ export const openBookmarkAndExit = (
 export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
 	await pipe(
 		getUnlimitedFilteredBookmarks(getState()),
+		values,
 		A.mapWithIndex((i, { url }) => openBookmarkInAppropriateTab(i === 0)(url)),
 		seqT,
 		runTask,

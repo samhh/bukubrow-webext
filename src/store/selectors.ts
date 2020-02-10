@@ -5,14 +5,17 @@ import { constant, identity, flow } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import * as OT from '~/modules/optionTuple';
 import * as A from 'fp-ts/lib/Array';
+import * as R from 'fp-ts/lib/Record';
 import { createSelector } from 'reselect';
 import { AppState } from '~/store';
 import parseSearchInput from '~/modules/parse-search-input';
-import { filterBookmarks, ordLocalBookmarkWeighted, LocalBookmark, LocalBookmarkWeighted } from '~/modules/bookmarks';
+import { filterBookmark, ordLocalBookmarkWeighted, LocalBookmark, LocalBookmarkWeighted } from '~/modules/bookmarks';
 import { MAX_BOOKMARKS_TO_RENDER } from '~/modules/config';
 import { URLMatch, match } from '~/modules/compare-urls';
 import { fromString } from '~/modules/url';
 import { StagedBookmarksGroup, ordStagedBookmarksGroup, bookmarks } from '~/modules/staged-groups';
+import { values } from '~/modules/record';
+import { fromNumber } from '~/modules/string';
 
 const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
@@ -44,7 +47,11 @@ export const getParsedFilter = createSelector(getSearchFilter, parseSearchInput)
 /**
  * Filter all bookmarks by search filter.
  */
-export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getParsedFilter, filterBookmarks);
+export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getParsedFilter,
+	(bookmarks, inputFilter) => pipe(
+		bookmarks,
+		R.filter(filterBookmark(inputFilter)),
+	));
 
 /**
  * Filter all bookmarks by search filter, apply weighting, and sort them by
@@ -53,7 +60,8 @@ export const getUnlimitedFilteredBookmarks = createSelector(getBookmarks, getPar
 export const getWeightedUnlimitedFilteredBookmarks = createSelector(getUnlimitedFilteredBookmarks, getActiveTabHref,
 	(bookmarks, activeTabHref) => pipe(
 		bookmarks,
-		A.map(withWeight(activeTabHref)),
+		R.map(withWeight(activeTabHref)),
+		values,
 		A.sort(ordLocalBookmarkWeighted),
 	));
 
@@ -71,7 +79,7 @@ export const getWeightedLimitedFilteredBookmarks = createSelector(getWeightedUnl
  * Return the number of bookmarks matching the filter being removed by the limit.
  */
 export const getNumFilteredUnrenderedBookmarks = createSelector(getUnlimitedFilteredBookmarks, getWeightedLimitedFilteredBookmarks,
-	(us, ls) => Math.max(0, us.length - ls.length));
+	(us, ls) => Math.max(0, R.size(us) - ls.length));
 
 export const getFocusedBookmark = createSelector(getWeightedLimitedFilteredBookmarks, getFocusedBookmarkIndex,
 	(bookmarks, focusedId) => pipe(
@@ -82,13 +90,15 @@ export const getFocusedBookmark = createSelector(getWeightedLimitedFilteredBookm
 export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
 	(bookmarks, editId) => pipe(
 		editId,
-		O.chain(eid => A.findFirst<LocalBookmark>(bm => bm.id === eid)(bookmarks)),
+		O.map(fromNumber),
+		O.chain(eid => R.lookup(eid, bookmarks)),
 	));
 
 export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDeleteId,
 	(bookmarks, deleteId) => pipe(
 		deleteId,
-		O.chain(did => A.findFirst<LocalBookmark>(bm => bm.id === did)(bookmarks)),
+		O.map(fromNumber),
+		O.chain(did => R.lookup(did, bookmarks)),
 	));
 
 export const getSortedStagedGroups = createSelector(getStagedGroups, flow(A.sort(ordStagedBookmarksGroup), A.reverse));

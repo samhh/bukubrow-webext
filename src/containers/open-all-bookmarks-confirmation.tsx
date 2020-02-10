@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from '~/store';
+import * as R from 'fp-ts/lib/Record';
 import { matchesTerminology } from '~/modules/terminology';
 import { setDisplayOpenAllBookmarksConfirmation } from '~/store/user/actions';
 import { openAllFilteredBookmarksAndExit } from '~/store/bookmarks/epics';
@@ -20,8 +21,10 @@ const ConfirmationButton = styled(Button)`
 
 const OpenAllBookmarksConfirmation: FC = () => {
 	const display = useSelector(state => state.user.displayOpenAllBookmarksConfirmation);
-	const numFilteredBookmarks = useSelector(getUnlimitedFilteredBookmarks).length;
+	const filteredBookmarks = useSelector(getUnlimitedFilteredBookmarks);
 	const dispatch = useDispatch();
+
+	const numFilteredBookmarks = R.size(filteredBookmarks);
 
 	return (
 		<>

@@ -5,6 +5,7 @@ import { useSelector as useSelectorUntyped, useDispatch as useDispatchRaw, Typed
 import { onLoad } from '~/store/epics';
 import { saveStagedBookmarksGroupsToLocalStorage, saveBookmarksToLocalStorage } from '~/modules/comms/browser';
 import { runTask } from '~/modules/fp';
+import { values } from '~/modules/record';
 
 import bookmarksReducer, { BookmarksActions } from './bookmarks/reducers';
 import browserReducer, { BrowserActions } from './browser/reducers';
@@ -50,9 +51,10 @@ export const initAutoStoreSync = (): void => {
 	store.subscribe(() => {
 		const { bookmarks: { bookmarks, stagedBookmarksGroups } } = store.getState();
 
-		runTask(saveBookmarksToLocalStorage(bookmarks));
+		runTask(saveBookmarksToLocalStorage(values(bookmarks)));
 		runTask(saveStagedBookmarksGroupsToLocalStorage(stagedBookmarksGroups));
 	});
 };
 
 export default store;
+

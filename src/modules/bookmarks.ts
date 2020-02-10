@@ -48,7 +48,6 @@ export interface LocalBookmark extends LocalBookmarkUnsaved {
 	id: number;
 }
 
-
 export interface LocalBookmarkWeighted extends LocalBookmark {
 	weight: URLMatch;
 }
@@ -66,25 +65,24 @@ export const ordLocalBookmarkWeighted = getMonoid<LocalBookmarkWeighted>().conca
 /**
  * Filter out bookmarks that do not perfectly match the provided test.
  */
-export const filterBookmarks = (bookmarks: Array<LocalBookmark>, test: ParsedInputResult): Array<LocalBookmark> =>
-	bookmarks.filter((bookmark) => {
-		if (!includesCI(test.name)(bookmark.title)) return false;
-		if (test.desc.some(d => !includesCI(d)(bookmark.desc))) return false;
-		if (test.url.some(u => !includesCI(u)(bookmark.url))) return false;
-		if (test.tags.some(t => !bookmark.tags.some(tag => includesCI(t)(tag)))) return false;
+export const filterBookmark = (test: ParsedInputResult): Predicate<LocalBookmark> => (bookmark): boolean => {
+	if (!includesCI(test.name)(bookmark.title)) return false;
+	if (test.desc.some(d => !includesCI(d)(bookmark.desc))) return false;
+	if (test.url.some(u => !includesCI(u)(bookmark.url))) return false;
+	if (test.tags.some(t => !bookmark.tags.some(tag => includesCI(t)(tag)))) return false;
 
-		// Ensure all wildcards match something
-		const allWildcardsMatch = test.wildcard.every((wc) => {
-			return (
-				includesCI(wc)(bookmark.title) ||
-				includesCI(wc)(bookmark.desc) ||
-				includesCI(wc)(bookmark.url) ||
-				bookmark.tags.some(tag => includesCI(wc)(tag))
-			);
-		});
-
-		return allWildcardsMatch;
+	// Ensure all wildcards match something
+	const allWildcardsMatch = test.wildcard.every((wc) => {
+		return (
+			includesCI(wc)(bookmark.title) ||
+			includesCI(wc)(bookmark.desc) ||
+			includesCI(wc)(bookmark.url) ||
+			bookmark.tags.some(tag => includesCI(wc)(tag))
+		);
 	});
+
+	return allWildcardsMatch;
+};
 
 /**
  * Transform a remote/native bookmark into the local format.

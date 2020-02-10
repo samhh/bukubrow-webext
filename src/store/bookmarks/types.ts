@@ -3,7 +3,11 @@ import { LocalBookmark } from '~/modules/bookmarks';
 import { StagedBookmarksGroup } from '~/modules/staged-groups';
 
 export interface BookmarksState {
-	bookmarks: Array<LocalBookmark>;
+	/**
+	 * The `Record` type is unsafe with index access, be sure to utilise the
+	 * helper methods from `fp-ts` for lookups.
+	 */
+	bookmarks: Record<string, LocalBookmark>;
 	stagedBookmarksGroups: Array<StagedBookmarksGroup>;
 	limitNumRendered: boolean;
 	focusedBookmarkIndex: Option<number>;
