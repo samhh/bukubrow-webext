@@ -3,14 +3,13 @@ import { URLMatch } from '~/modules/compare-urls';
 import { ParsedInputResult } from '~/modules/parse-search-input';
 import { LocalBookmark } from '~/modules/bookmarks';
 import styled from '~/styles';
-
+import { isBookmarkletCode } from '~/modules/bookmarklet';
 import Badge, { mapURLMatchToBadgeWeight } from '~/components/badge';
 import HighlightMarkup from '~/components/highlight-markup';
 import IconButton, { idealFeatherIconSize } from '~/components/icon-button';
 import ListItem from '~/components/list-item';
 import Tag from '~/components/tag';
 import Tooltip from '~/components/tooltip';
-
 import { Edit, Trash } from 'react-feather';
 
 const ControlsWrapper = styled.div`
@@ -51,6 +50,13 @@ const Name = styled.h1`
 const Desc = styled.p`
 	margin: .3rem 0;
 	font-size: 1.1rem;
+`;
+
+const BookmarkletCode = styled.code`
+	display: block;
+	margin: .3rem 0 0;
+	font-size: 1rem;
+	color: ${(props): string => props.theme.textColor};
 `;
 
 const URL = styled.h2`
@@ -163,12 +169,16 @@ const Bookmark = memo<Props>((props) => {
 					</Desc>
 				)}
 
-				<URL>
-					<HighlightMarkup
-						str={props.url}
-						match={props.parsedFilter && [...props.parsedFilter.url, ...props.parsedFilter.wildcard]}
-					/>
-				</URL>
+				{isBookmarkletCode(props.url) ? (
+					<BookmarkletCode>$bookmarklet</BookmarkletCode>
+				) : (
+					<URL>
+						<HighlightMarkup
+							str={props.url}
+							match={props.parsedFilter && [...props.parsedFilter.url, ...props.parsedFilter.wildcard]}
+						/>
+					</URL>
+				)}
 			</div>
 
 			<ControlsWrapper>
