@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flow, constVoid } from 'fp-ts/lib/function';
+import { flow, constVoid, constant } from 'fp-ts/lib/function';
 import * as T from 'fp-ts/lib/Task';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
@@ -17,7 +17,7 @@ import { setPage, setHasBinaryComms } from '~/store/user/actions';
 import { addPermanentError } from '~/store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from '~/store/selectors';
 import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from '~/modules/comms/native';
-import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab, executeCodeInActiveTab } from '~/modules/comms/browser';
+import { getStagedBookmarksGroupsFromLocalStorage, openBookmarkInAppropriateTab, executeCodeInActiveTab, closePopup } from '~/modules/comms/browser';
 import { untransform, transform, LocalBookmark, LocalBookmarkUnsaved } from '~/modules/bookmarks';
 import { StagedBookmarksGroup } from '~/modules/staged-groups';
 import { Page } from '~/store/user/types';
@@ -46,7 +46,7 @@ export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 export const openBookmarkAndExit = (
 	bmId: LocalBookmark['id'],
 	stagedBookmarksGroupId: Option<StagedBookmarksGroup['id']> = O.none,
-): ThunkAC => async (_, getState) => {
+): ThunkAC => (_, getState) => {
 	const { bookmarks: { bookmarks, stagedBookmarksGroups } } = getState();
 
 	const bookmark = O.fold(
@@ -64,28 +64,23 @@ export const openBookmarkAndExit = (
 		const action: Task<void> = pipe(
 			mkBookmarkletCode(url),
 			O.fold(
-				() => pipe(openBookmarkInAppropriateTab(true)(url), T.map(constVoid)),
+				() => pipe(openBookmarkInAppropriateTab(true)(url), T.chainIOK(constant(closePopup))),
 				flow(executeCodeInActiveTab, T.map(constVoid)),
 			),
 		);
 
-		await runTask(action);
-
-		window.close();
+		runTask(action);
 	}
 };
 
-export const openAllFilteredBookmarksAndExit = (): ThunkAC => async (_, getState) => {
-	await pipe(
-		getUnlimitedFilteredBookmarks(getState()),
-		values,
-		A.mapWithIndex((i, { url }) => openBookmarkInAppropriateTab(i === 0)(url)),
-		seqT,
-		runTask,
-	);
-
-	window.close();
-};
+export const openAllFilteredBookmarksAndExit = (): ThunkAC => (_, getState) => pipe(
+	getUnlimitedFilteredBookmarks(getState()),
+	values,
+	A.mapWithIndex((i, { url }) => openBookmarkInAppropriateTab(i === 0)(url)),
+	seqT,
+	T.chainIOK(constant(closePopup)),
+	runTask,
+);
 
 export const addAllBookmarksFromStagedGroup = (groupId: StagedBookmarksGroup['id']): ThunkAC<Promise<void>> => async (dispatch, getState) => {
 	const { bookmarks: { stagedBookmarksGroups } } = getState();

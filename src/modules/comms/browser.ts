@@ -19,6 +19,10 @@ import { BookmarkletCode, unBookmarkletCode } from '~/modules/bookmarklet';
 
 const sequenceTTE = sequenceT(TE.taskEither);
 
+export const closePopup: IO<void> = () => {
+	window.close();
+};
+
 const browserTabsQuery = (x: Tabs.QueryQueryInfoType): TaskOption<Array<Tabs.Tab>> =>
 	TO.tryCatch(() => browser.tabs.query(x));
 
