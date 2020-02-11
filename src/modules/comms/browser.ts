@@ -23,6 +23,14 @@ export const closePopup: IO<void> = () => {
 	window.close();
 };
 
+/**
+ * As of time of writing there's no use for this function in production, but
+ * calling it in dev can allow you to reset local storage and experience the
+ * WebExtension as a new user would; there doesn't appear to be any clean way
+ * of doing this within the browse either as a user or a dev.
+ */
+export const wipeLocalStorage: Task<void> = browser.storage.local.clear;
+
 const browserTabsQuery = (x: Tabs.QueryQueryInfoType): TaskOption<Array<Tabs.Tab>> =>
 	TO.tryCatch(() => browser.tabs.query(x));
 
