@@ -7,6 +7,7 @@ Bukubrow is a WebExtension for [Buku](https://github.com/jarun/Buku), a command-
 - Automatically save open tabs to the _staging area_ from the context menu, from which they can be optionally edited and saved
 - Filter bookmarks with any of the following syntax: `:url`, `>description`, `#tag`, `*wildcard`
 - Bookmarklet (arbitrary JavaScript scripting) support, simply prepend your "URL" with `javascript:`, for example: `javascript:document.body.style.background = 'red'`
+- Custom hotkeys are available - please read the instructions [here](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#Updating_shortcuts) to customise them in your browser
 
 ## Prerequisites
 
