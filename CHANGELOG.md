@@ -1,6 +1,15 @@
 # Change Log
 This project is versioned according to its compatibility with the [host](https://github.com/SamHH/bukubrow-host) from v4 onwards.
 
+## [5.0.2.0] - 2020-02-14
+### Added
+- Global configurable hotkeys.
+- Onboarding flow when no communication can be achieved with the host.
+
+### Changed
+- Stop closing popup after executing a bookmarklet.
+- Improved UI for bookmarklets.
+
 ## [5.0.1.0] - 2020-02-09
 ### Added
 - Support for bookmarklets. This is why the `activeTab` permission is being newly requested.
