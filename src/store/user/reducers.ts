@@ -5,7 +5,6 @@ import {
 	comms, activeTheme, displayOpenAllBookmarksConfirmation, page,
 } from './types';
 import { identity } from 'fp-ts/lib/function';
-import * as O from 'fp-ts/lib/Option';
 import { curryReducer } from '~/modules/redux';
 import { HostVersionCheckResult } from '~/modules/comms/native';
 
