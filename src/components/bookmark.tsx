@@ -34,7 +34,11 @@ const Wrapper = styled(ListItem)`
 	}
 `;
 
-const BookmarkletGraphic = styled(Code)<{ focused: boolean }>`
+// This weirdness seems to be necessary to prevent focused being passed down
+// to React as an attribute which in turn triggers a warning. And beware, we've
+// now somehow lost type safety. See here for more:
+// https://github.com/styled-components/styled-components/issues/2131
+const BookmarkletGraphic = styled(({ focused: _, ...rest }) => <Code {...rest} />)<{ focused: boolean }>`
 	position: absolute;
 	top: 50%;
 	right: 2rem;
