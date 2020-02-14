@@ -8,12 +8,15 @@ import { checkBinaryVersionFromNative, HostVersionCheckResult } from '~/modules/
 import { getActiveTheme, Theme } from '~/modules/settings';
 import { ThunkAC, initAutoStoreSync } from '~/store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from '~/store/bookmarks/actions';
-import { setActiveTheme, hostCheckResult } from '~/store/user/actions';
+import { setActiveTheme, hostCheckResult, setPage } from '~/store/user/actions';
 import { setSearchFilter } from '~/store/input/actions';
 import { addPermanentError } from '~/store/notices/epics';
 import { syncStagedBookmarksGroups, syncBookmarks } from '~/store/bookmarks/epics';
 import { syncBrowserInfo } from '~/store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks } from '~/store/selectors';
+import { listenForIsomorphicMessages, IsomorphicMessage } from '~/modules/comms/isomorphic';
+import { Page } from '~/store/user/types';
+import { runIO } from '~/modules/fp';
 
 const hostCheckErrMsg = (x: HostVersionCheckResult): Option<string> => {
 	switch (x) {
@@ -40,6 +43,14 @@ const onLoadPostComms = (): ThunkAC => (dispatch) => {
 };
 
 export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
+	runIO(listenForIsomorphicMessages((x) => {
+		switch (x) {
+			case IsomorphicMessage.OpenAddBookmarkCommand:
+				dispatch(setPage(Page.AddBookmark));
+				return;
+		}
+	}));
+
 	getActiveTheme()
 		.then(EO.getOrElse(constant<Theme>(Theme.Light)))
 		.then((theme) => {

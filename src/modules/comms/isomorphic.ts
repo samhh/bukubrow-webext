@@ -20,6 +20,7 @@ const sendMessage = (x: unknown): TaskEither<Error, unknown> =>
 export enum IsomorphicMessage {
 	BookmarksUpdatedInLocalStorage = 'bookmarks_updated_in_local_storage',
 	SettingsUpdated = 'settings_updated',
+	OpenAddBookmarkCommand = 'open_add_bookmark_command',
 }
 
 const isIsomorphicMessage: Refinement<unknown, IsomorphicMessage> = (x: unknown): x is IsomorphicMessage => pipe(

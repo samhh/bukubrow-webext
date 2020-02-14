@@ -30,6 +30,9 @@
 	"commands": {
 		"_execute_browser_action": {
 			"description": "Open Bukubrow"
+		},
+		"add_bookmark": {
+			"description": "Open Bukubrow and add a bookmark"
 		}
 	},
 	"minimum_chrome_version": "55",
