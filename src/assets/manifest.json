@@ -33,6 +33,15 @@
 		},
 		"add_bookmark": {
 			"description": "Open Bukubrow and add a bookmark"
+		},
+		"stage_all_tabs": {
+			"description": "Send all tabs to Bukubrow's staging area"
+		},
+		"stage_window_tabs": {
+			"description": "Send window tabs to Bukubrow's staging area"
+		},
+		"stage_active_tab": {
+			"description": "Send the active tab to Bukubrow's staging area"
 		}
 	},
 	"minimum_chrome_version": "55",

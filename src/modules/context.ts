@@ -20,7 +20,7 @@ const isContextMenuEntry: Refinement<unknown, ContextMenuEntry> = (x): x is Cont
 	flip(includes)(x),
 );
 
-enum ContextMenuEntry {
+export enum ContextMenuEntry {
 	SendAllTabs = 'send_all_tabs_to_bukubrow',
 	SendActiveWindowTabs = 'send_active_window_tabs_to_bukubrow',
 	SendActiveTab = 'send_active_tab_to_bukubrow',
@@ -53,7 +53,7 @@ const createContextMenuListener = <A>(g: (a: A) => IO<void>) => (f: (x: Menus.On
 		});
 	});
 
-const contextClickTabs = (u: Option<string>) => (c: ContextMenuEntry): TaskOption<NonEmptyArray<SufficientTab>> => {
+export const contextClickTabs = (u: Option<string>) => (c: ContextMenuEntry): TaskOption<NonEmptyArray<SufficientTab>> => {
 	switch (c) {
 		case ContextMenuEntry.SendAllTabs: return pipe(
 			getAllTabs,
@@ -91,7 +91,6 @@ const handleCtxClick = (x: Menus.OnClickData): TaskOption<NonEmptyArray<Sufficie
 	TO.fromOption,
 	TO.chain(contextClickTabs(O.fromNullable(x.pageUrl))),
 );
-
 
 /**
  * Initialise context menu items that each obtain various viable window tabs,
