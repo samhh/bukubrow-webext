@@ -2,10 +2,11 @@
 
 import { action } from 'typesafe-actions';
 import { UserActionTypes, Theme, Page } from './types';
+import { HostVersionCheckResult } from '~/modules/comms/native';
 
-export const setHasBinaryComms = (hasComms: boolean) => action(
-	UserActionTypes.SetHasBinaryComms,
-	hasComms,
+export const hostCheckResult = (comms: HostVersionCheckResult) => action(
+	UserActionTypes.HostCheckResult,
+	comms,
 );
 
 export const setActiveTheme = (theme: Theme) => action(
@@ -22,3 +23,4 @@ export const setPage = (page: Page) => action(
 	UserActionTypes.SetPage,
 	page,
 );
+

@@ -3,16 +3,18 @@ import * as O from 'fp-ts/lib/Option';
 import mount from '~/modules/connected-mount';
 import { useDispatch, useSelector } from '~/store';
 import styled from '~/styles';
-import { Page } from '~/store/user/types';
+import { Page, commsL } from '~/store/user/types';
 import { setPage } from '~/store/user/actions';
 import { getStagedGroupToEdit } from '~/store/selectors';
 import { formatStagedBookmarksGroupTitle } from '~/modules/bookmarks';
 import { runIO } from '~/modules/fp';
+import { HostVersionCheckResult } from '~/modules/comms/native';
 
 import BookmarkAddForm from '~/containers/bookmark-add-form';
 import BookmarkDeleteForm from '~/containers/bookmark-delete-form';
 import BookmarkEditForm from '~/containers/bookmark-edit-form';
 import ErrorMessages from '~/containers/error-messages';
+import Onboarding from '~/components/onboarding';
 import OpenAllBookmarksConfirmation from '~/containers/open-all-bookmarks-confirmation';
 import Search from '~/containers/search';
 import StagedGroupBookmarkEditForm from '~/containers/staged-group-bookmark-edit-form';
@@ -96,9 +98,12 @@ const MinHeightWrapper = styled.main`
 `;
 
 const ContentApp: FC = () => {
+	const comms = useSelector(commsL.get);
 	const activePage = useSelector(state => state.user.page);
 	const stagedGroupTitle = O.map(formatStagedBookmarksGroupTitle)(useSelector(getStagedGroupToEdit));
 	const dispatch = useDispatch();
+
+	const displayOnboarding = comms === HostVersionCheckResult.NoComms;
 
 	const page = pageMap({ activePage, stagedGroupTitle });
 
@@ -108,17 +113,24 @@ const ContentApp: FC = () => {
 
 			<OpenAllBookmarksConfirmation />
 
-			<ErrorMessages />
+			{!displayOnboarding && <ErrorMessages />}
 
 			<MinHeightWrapper>
-				{'nav' in page && (
-					<TitleMenu
-						title={page.nav.title}
-						onBack={(): void => void dispatch(setPage(page.nav.exitTarget))}
-					/>
-				)}
+				{displayOnboarding ? (
+					<Onboarding />
+				) : (
+					<>
+						{'nav' in page && (
+							<TitleMenu
+								title={page.nav.title}
+								onBack={(): void => void dispatch(setPage(page.nav.exitTarget))}
+							/>
+						)}
 
-				<page.component />
+						<page.component />
+
+					</>
+				)}
 			</MinHeightWrapper>
 		</>
 	);

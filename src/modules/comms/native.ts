@@ -95,6 +95,7 @@ const sendMessageToNative = <T extends NativeRequestMethod>(method: T, data: Nat
 );
 
 export enum HostVersionCheckResult {
+	Unchecked,
 	Okay,
 	HostOutdated,
 	HostTooNew,

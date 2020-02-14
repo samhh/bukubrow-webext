@@ -13,7 +13,7 @@ import {
 	setBookmarkEditId, setBookmarkDeleteId, setFocusedBookmarkIndex,
 	setDeleteBookmarkModalDisplay, setAllBookmarks,
 } from '~/store/bookmarks/actions';
-import { setPage, setHasBinaryComms } from '~/store/user/actions';
+import { setPage } from '~/store/user/actions';
 import { addPermanentError } from '~/store/notices/epics';
 import { getWeightedLimitedFilteredBookmarks, getUnlimitedFilteredBookmarks } from '~/store/selectors';
 import { saveBookmarksToNative, updateBookmarksToNative, deleteBookmarksFromNative, getBookmarksFromNative } from '~/modules/comms/native';
@@ -34,11 +34,9 @@ export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 
 		dispatch(setAllBookmarks(bms));
 		dispatch(setFocusedBookmarkIndex(bms.length ? O.some(0) : O.none));
-		dispatch(setHasBinaryComms(true));
 	} else {
 		const msg = 'Failed to sync bookmarks.';
 
-		dispatch(setHasBinaryComms(false));
 		dispatch(addPermanentError(msg));
 	}
 };

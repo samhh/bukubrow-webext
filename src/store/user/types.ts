@@ -1,21 +1,27 @@
 import { Lens } from 'monocle-ts';
+import { AppState } from '~/store/';
+import { HostVersionCheckResult } from '~/modules/comms/native';
 import { Theme } from '~/modules/settings';
 export { Theme };
 
 export interface UserState {
-	hasBinaryComms: boolean;
+	comms: HostVersionCheckResult;
 	activeTheme: Theme;
 	displayOpenAllBookmarksConfirmation: boolean;
 	page: Page;
 }
 
-export const hasBinaryComms = Lens.fromProp<UserState>()('hasBinaryComms');
+export const userL = Lens.fromProp<AppState>()('user');
+
+export const comms = Lens.fromProp<UserState>()('comms');
 export const activeTheme = Lens.fromProp<UserState>()('activeTheme');
 export const displayOpenAllBookmarksConfirmation = Lens.fromProp<UserState>()('displayOpenAllBookmarksConfirmation');
 export const page = Lens.fromProp<UserState>()('page');
 
+export const commsL = userL.compose(comms);
+
 export enum UserActionTypes {
-	SetHasBinaryComms = 'SET_HAS_BINARY_COMMS',
+	HostCheckResult = 'HOST_CHECK_RESULT',
 	SetActiveTheme = 'SET_ACTIVE_THEME',
 	SetDisplayOpenAllBookmarksConfirmation = 'SET_OPEN_ALL_BOOKMARKS_CONFIRMATION',
 	SetPage = 'SET_PAGE',
@@ -29,3 +35,4 @@ export enum Page {
 	StagedGroup,
 	EditStagedBookmark,
 }
+

@@ -2,15 +2,17 @@ import { ActionType } from 'typesafe-actions';
 import * as userActions from './actions';
 import {
 	UserState, UserActionTypes, Theme, Page,
-	hasBinaryComms, activeTheme, displayOpenAllBookmarksConfirmation, page,
+	comms, activeTheme, displayOpenAllBookmarksConfirmation, page,
 } from './types';
-import {identity} from 'fp-ts/lib/function';
+import { identity } from 'fp-ts/lib/function';
+import * as O from 'fp-ts/lib/Option';
 import { curryReducer } from '~/modules/redux';
+import { HostVersionCheckResult } from '~/modules/comms/native';
 
 export type UserActions = ActionType<typeof userActions>;
 
 const initialState: UserState = {
-	hasBinaryComms: false,
+	comms: HostVersionCheckResult.Unchecked,
 	activeTheme: Theme.Light,
 	displayOpenAllBookmarksConfirmation: false,
 	page: Page.Search,
@@ -19,8 +21,8 @@ const initialState: UserState = {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const userReducer = curryReducer<UserActions, UserState>((a) => (_s) => {
 	switch (a.type) {
-		case UserActionTypes.SetHasBinaryComms:
-			return hasBinaryComms.set(a.payload);
+		case UserActionTypes.HostCheckResult:
+			return comms.set(a.payload);
 
 		case UserActionTypes.SetActiveTheme:
 			return activeTheme.set(a.payload);

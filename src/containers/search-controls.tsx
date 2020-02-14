@@ -5,7 +5,7 @@ import * as R from 'fp-ts/lib/Record';
 import { setSearchFilterWithResets } from '~/store/epics';
 import { getUnlimitedFilteredBookmarks } from '~/store/selectors';
 import { setDisplayOpenAllBookmarksConfirmation, setPage } from '~/store/user/actions';
-import { Page } from '~/store/user/types';
+import { Page, commsL } from '~/store/user/types';
 import { scrollToTop } from '~/modules/scroll-window';
 import { matchesTerminology } from '~/modules/terminology';
 import useListenToKeydown from '~/hooks/listen-to-keydown';
@@ -14,6 +14,7 @@ import IconButton, { iconButtonSize, idealFeatherIconSize } from '~/components/i
 import TextInput from '~/components/text-input';
 import Tooltip from '~/components/tooltip';
 import { ArrowUpRight, Layers, Plus } from 'react-feather';
+import { HostVersionCheckResult } from '~/modules/comms/native';
 
 export const headerHeight = '50px';
 export const headerItemsMargin = '10px';
@@ -66,12 +67,13 @@ enum HoverState {
 
 const SearchControls: FC = () => {
 	const allBookmarks = useSelector(state => state.bookmarks.bookmarks);
-	const hasBinaryComms = useSelector(state => state.user.hasBinaryComms);
+	const comms = useSelector(commsL.get);
 	const stagedGroups = useSelector(state => state.bookmarks.stagedBookmarksGroups);
 	const filteredBookmarks = useSelector(getUnlimitedFilteredBookmarks);
 	const textFilter = useSelector(state => state.input.searchFilter);
 	const dispatch = useDispatch();
 
+	const hasBinaryComms = comms === HostVersionCheckResult.Okay;
 	const numFilteredBookmarks = R.size(filteredBookmarks);
 	const shouldEnableSearch = !R.isEmpty(allBookmarks);
 	const shouldEnableOpenStaged = hasBinaryComms && !A.isEmpty(stagedGroups);

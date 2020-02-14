@@ -15,7 +15,7 @@ const initialState: NoticesState = {
 const noticesReducer = curryReducer<NoticesActions, NoticesState>((a) => (_s) => {
 	switch (a.type) {
 		case NoticesActionTypes.AddError:
-			return errors.modify(R.insertAt<string, string | undefined>(a.payload.key, a.payload.value));
+			return errors.modify(R.insertAt(a.payload.key, a.payload.value));
 
 		case NoticesActionTypes.DeleteError:
 			return errors.modify(R.deleteAt(a.payload));

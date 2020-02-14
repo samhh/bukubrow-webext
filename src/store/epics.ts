@@ -8,19 +8,21 @@ import { checkBinaryVersionFromNative, HostVersionCheckResult } from '~/modules/
 import { getActiveTheme, Theme } from '~/modules/settings';
 import { ThunkAC, initAutoStoreSync } from '~/store';
 import { setLimitNumRendered, setFocusedBookmarkIndex } from '~/store/bookmarks/actions';
-import { setActiveTheme } from '~/store/user/actions';
+import { setActiveTheme, hostCheckResult } from '~/store/user/actions';
 import { setSearchFilter } from '~/store/input/actions';
 import { addPermanentError } from '~/store/notices/epics';
 import { syncStagedBookmarksGroups, syncBookmarks } from '~/store/bookmarks/epics';
 import { syncBrowserInfo } from '~/store/browser/epics';
 import { getWeightedLimitedFilteredBookmarks } from '~/store/selectors';
 
-const onLoadPreComms = (): ThunkAC => (dispatch) => {
-	getActiveTheme()
-		.then(EO.getOrElse(constant<Theme>(Theme.Light)))
-		.then((theme) => {
-			dispatch(setActiveTheme(theme));
-		});
+const hostCheckErrMsg = (x: HostVersionCheckResult): Option<string> => {
+	switch (x) {
+		case HostVersionCheckResult.HostTooNew: return O.some('The WebExtension is outdated relative to the host');
+		case HostVersionCheckResult.HostOutdated: return O.some('The host is outdated');
+		case HostVersionCheckResult.NoComms: return O.some('The host could not be found');
+		case HostVersionCheckResult.UnknownError: return O.some('An unknown error occurred');
+		default: return O.none;
+	}
 };
 
 const onLoadPostComms = (): ThunkAC => (dispatch) => {
@@ -38,31 +40,19 @@ const onLoadPostComms = (): ThunkAC => (dispatch) => {
 };
 
 export const onLoad = (): ThunkAC<Promise<void>> => async (dispatch) => {
-	dispatch(onLoadPreComms());
+	getActiveTheme()
+		.then(EO.getOrElse(constant<Theme>(Theme.Light)))
+		.then((theme) => {
+			dispatch(setActiveTheme(theme));
+		});
 
-	const versionRes = await checkBinaryVersionFromNative();
+	const res = await checkBinaryVersionFromNative()
+	dispatch(hostCheckResult(res));
 
-	switch (versionRes) {
-		case HostVersionCheckResult.Okay:
-			dispatch(onLoadPostComms());
-			break;
+	if (res === HostVersionCheckResult.Okay) dispatch(onLoadPostComms());
 
-		case HostVersionCheckResult.HostTooNew:
-			dispatch(addPermanentError('The WebExtension is outdated (relative to the host).'));
-			break;
-
-		case HostVersionCheckResult.HostOutdated:
-			dispatch(addPermanentError('The host is outdated.'));
-			break;
-
-		case HostVersionCheckResult.NoComms:
-			dispatch(addPermanentError('The host could not be found.'));
-			break;
-
-		case HostVersionCheckResult.UnknownError:
-			dispatch(addPermanentError('An unknown error occurred.'));
-			break;
-	}
+	const err = hostCheckErrMsg(res);
+	if (O.isSome(err)) dispatch(addPermanentError(err.value));
 };
 
 export const setSearchFilterWithResets = (filter: string): ThunkAC => (dispatch, getState) => {
