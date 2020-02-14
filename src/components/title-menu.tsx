@@ -32,6 +32,11 @@ const IconWrapper = styled.span`
 	left: ${padding}px;
 	transform: translateY(-50%);
 	cursor: pointer;
+
+	svg {
+		/* Overriding Sanitize for Feather */
+		fill: none !important;
+	}
 `;
 
 const Header = styled.header`
