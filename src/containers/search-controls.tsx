@@ -8,7 +8,6 @@ import { setDisplayOpenAllBookmarksConfirmation, setPage } from '~/store/user/ac
 import { Page, commsL } from '~/store/user/types';
 import { scrollToTop } from '~/modules/scroll-window';
 import { matchesTerminology } from '~/modules/terminology';
-import useListenToKeydown from '~/hooks/listen-to-keydown';
 import styled from '~/styles';
 import IconButton, { iconButtonSize, idealFeatherIconSize } from '~/components/icon-button';
 import TextInput from '~/components/text-input';
@@ -87,10 +86,6 @@ const SearchControls: FC = () => {
 		if (shouldEnableSearch && inputRef.current) inputRef.current.focus();
 	};
 	useEffect(focusInput, [shouldEnableSearch]);
-
-	useListenToKeydown((evt) => {
-		if (evt.ctrlKey && evt.key === 'l') focusInput();
-	});
 
 	const showTooltip = (state: HoverState) => (): void => {
 		setHoverState(state);
