@@ -19,6 +19,10 @@ import { BookmarkletCode, unBookmarkletCode } from '~/modules/bookmarklet';
 
 const sequenceTTE = sequenceT(TE.taskEither);
 
+export const openPopup: IO<void> = () => {
+	browser.browserAction.openPopup().catch(constVoid);
+};
+
 export const closePopup: IO<void> = () => {
 	window.close();
 };
