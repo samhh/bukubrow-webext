@@ -2,7 +2,7 @@ import React, { memo, forwardRef, Ref, MouseEvent, useState, ReactNode } from 'r
 import { URLMatch } from '~/modules/compare-urls';
 import { ParsedInputResult } from '~/modules/parse-search-input';
 import { LocalBookmark } from '~/modules/bookmarks';
-import styled from '~/styles';
+import styled, { css } from '~/styles';
 import { isBookmarkletCode } from '~/modules/bookmarklet';
 import Badge, { mapURLMatchToBadgeWeight } from '~/components/badge';
 import HighlightMarkup from '~/components/highlight-markup';
@@ -10,7 +10,7 @@ import IconButton, { idealFeatherIconSize } from '~/components/icon-button';
 import ListItem from '~/components/list-item';
 import Tag from '~/components/tag';
 import Tooltip from '~/components/tooltip';
-import { Edit, Trash } from 'react-feather';
+import { Edit, Trash, Code } from 'react-feather';
 
 const ControlsWrapper = styled.div`
 	display: flex;
@@ -24,10 +24,37 @@ const ControlsWrapper = styled.div`
 const Wrapper = styled(ListItem)`
 	display: flex;
 	justify-content: space-between;
+	position: relative;
+	z-index: 0; /* For BookmarkletGraphic */
+	margin: 0;
+	overflow: hidden;
 
 	&:hover ${ControlsWrapper} {
 		opacity: 1;
 	}
+`;
+
+const BookmarkletGraphic = styled(Code)<{ focused: boolean }>`
+	position: absolute;
+	top: 50%;
+	right: 2rem;
+	transform: translateY(-50%);
+	transform-origin: right;
+	z-index: -1;
+	/* Overriding Sanitize for Feather */
+	fill: none !important;
+	color: ${(props): string => props.theme.backgroundColorOffset};
+
+	${ListItem}:hover & {
+		transform: translateY(-50%) scale(4);
+		color: ${(props): string => props.theme.backgroundColorOffsetOffset};
+	}
+
+	${/* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */''}
+	${props => props.focused && css`
+		transform: translateY(-50%) scale(4);
+		color: ${props.theme.backgroundColorOffsetOffset};
+	`}
 `;
 
 const TagsList = styled.ul`
@@ -36,7 +63,7 @@ const TagsList = styled.ul`
 `;
 
 const SpacedBadge = styled(Badge)`
-	margin: 0 5px 0 0;
+	margin: 0 .5rem 0 0;
 `;
 
 const Name = styled.h1`
@@ -50,13 +77,6 @@ const Name = styled.h1`
 const Desc = styled.p`
 	margin: .3rem 0;
 	font-size: 1.1rem;
-`;
-
-const BookmarkletCode = styled.code`
-	display: block;
-	margin: .3rem 0 0;
-	font-size: 1rem;
-	color: ${(props): string => props.theme.textColor};
 `;
 
 const URL = styled.h2`
@@ -123,6 +143,8 @@ const Bookmark = memo<Props>((props) => {
 		setDisplayTooltip(false);
 	};
 
+	const isBookmarklet = isBookmarkletCode(props.url);
+
 	return (
 		<Wrapper
 			isFocused={props.isFocused}
@@ -169,9 +191,7 @@ const Bookmark = memo<Props>((props) => {
 					</Desc>
 				)}
 
-				{isBookmarkletCode(props.url) ? (
-					<BookmarkletCode>$bookmarklet</BookmarkletCode>
-				) : (
+				{!isBookmarklet && (
 					<URL>
 						<HighlightMarkup
 							str={props.url}
@@ -209,6 +229,10 @@ const Bookmark = memo<Props>((props) => {
 					visible={displayTooltip}
 				/>
 			</ControlsWrapper>
+
+			{isBookmarklet && (
+				<BookmarkletGraphic size={30} focused={props.isFocused ?? false} />
+			)}
 		</Wrapper>
 	);
 });
