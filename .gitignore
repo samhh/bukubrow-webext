@@ -1,5 +1,15 @@
+# Dependencies
 node_modules/
+
+# PureScript
+.spago/
+output/
+
+# Parcel
+.parcel-cache/
 dist/
+
+# Make
 .build/
-.cache/
 release/
+
