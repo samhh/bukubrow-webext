@@ -18,6 +18,8 @@ foreign import openPopup :: Effect Unit
 
 foreign import closePopup :: Effect Unit
 
+foreign import onTabActivity :: (Effect Unit) -> Effect Unit
+
 foreign import getActiveTabImpl :: Effect (Promise (Array Tab))
 
 getActiveTab :: Unit -> Aff (Maybe Tab)

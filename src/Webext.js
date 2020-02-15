@@ -16,3 +16,8 @@ exports.getActiveWindowTabsImpl = () => browser.tabs.query({ currentWindow: true
 
 exports.getAllTabsImpl = () => browser.tabs.query({});
 
+exports.onTabActivity = (cb) => () => {
+	browser.tabs.onActivated.addListener(cb);
+	browser.tabs.onUpdated.addListener(cb);
+};
+
