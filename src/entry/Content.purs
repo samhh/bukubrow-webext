@@ -3,11 +3,11 @@ module Content where
 import Prelude
 
 import Effect (Effect)
-import Effect.Console (log)
-import Webext (closePopup)
+import Effect.Aff (launchAff_)
+import Effect.Class.Console (log)
+import Webext (getActiveTab)
 
 main :: Effect Unit
-main = do
-  log "hodor"
-  closePopup
+main = launchAff_ do
+    (log <<< show) =<< getActiveTab unit
 

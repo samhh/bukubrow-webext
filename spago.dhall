@@ -1,7 +1,10 @@
 { name = "bukubrow-webext"
 , dependencies =
-    [ "console"
+    [ "aff"
+    , "aff-promise"
+    , "console"
     , "effect"
+    , "foreign"
     , "functions"
     , "psci-support"
     ]
