@@ -2,6 +2,7 @@
 , dependencies =
     [ "aff"
     , "aff-promise"
+    , "assert"
     , "console"
     , "effect"
     , "foreign"

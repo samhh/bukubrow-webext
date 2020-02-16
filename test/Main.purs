@@ -3,9 +3,11 @@ module Test.Main where
 import Prelude
 
 import Effect (Effect)
-import Effect.Class.Console (log)
+import Test.App.Bookmark as Bookmark
+import Test.App.Tab as Tab
 
 main :: Effect Unit
 main = do
-  log "🍝"
-  log "You should add some tests."
+    Bookmark.main
+    Tab.main
+
