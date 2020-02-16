@@ -2,13 +2,23 @@ module Test.App.Url where
 
 import Prelude
 
-import App.Url (UrlMatch(..))
+import App.Url (mkUrl, UrlMatch(..))
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
+import Test.Assert (assertEqual)
 import Test.Utils (assertEQ, assertGT, assertLT)
 
 main :: Effect Unit
 main = do
+    testMkUrl
     testUrlMatch
+
+testMkUrl :: Effect Unit
+testMkUrl = do
+    assertEqual { expected: Nothing, actual: mkUrl "" }
+    assertEqual { expected: Nothing, actual: mkUrl "samhh.com" }
+    let expectedUrl = { href: "https://samhh.com/", protocol: "https:", host: "samhh.com", hostname: "samhh.com", pathname: "/" }
+    assertEqual { expected: Just expectedUrl, actual: mkUrl "https://samhh.com" }
 
 testUrlMatch :: Effect Unit
 testUrlMatch = do
