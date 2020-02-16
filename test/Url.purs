@@ -1,17 +1,17 @@
-module Test.App.URLMatch where
+module Test.App.Url where
 
 import Prelude
 
-import App.URLMatch (URLMatch(..))
+import App.Url (UrlMatch(..))
 import Effect (Effect)
 import Test.Utils (assertEQ, assertGT, assertLT)
 
 main :: Effect Unit
 main = do
-    testURLMatch
+    testUrlMatch
 
-testURLMatch :: Effect Unit
-testURLMatch = do
+testUrlMatch :: Effect Unit
+testUrlMatch = do
     -- Ensure we're correctly interpreting the API
     assertGT $ compare 2 1
 

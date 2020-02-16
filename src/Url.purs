@@ -1,12 +1,12 @@
-module App.URLMatch where
+module App.Url where
 
 import Prelude
 
-data URLMatch = Exact | Domain | None
+data UrlMatch = Exact | Domain | None
 
-derive instance eqURLMatch :: Eq URLMatch
+derive instance eqUrlMatch :: Eq UrlMatch
 
-instance ordURLMatch :: Ord URLMatch where
+instance ordUrlMatch :: Ord UrlMatch where
     compare Exact Exact = EQ
     compare Domain Domain = EQ
     compare None None = EQ

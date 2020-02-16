@@ -5,7 +5,7 @@ module App.Bookmark where
 
 import Prelude
 
-import App.URLMatch (URLMatch)
+import App.Url (UrlMatch)
 import Data.Array (filter)
 import Data.Foldable (class Foldable, intercalate)
 import Data.List (List, fromFoldable)
@@ -63,7 +63,7 @@ type LocalBookmarkUnsaved = Record (Common Local)
 type LocalBookmark = Record (Saved (Common Local))
 
 type LocalBookmarkWeighted =
-    { weight :: URLMatch
+    { weight :: UrlMatch
     | Saved (Common Local)
     }
 
