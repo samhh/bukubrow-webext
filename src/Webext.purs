@@ -1,18 +1,14 @@
-module Webext where
+module App.Webext where
 
 import Prelude
 
+import App.Tab (Tab)
 import Control.Promise (Promise, toAff)
 import Data.List (List, fromFoldable, head)
 import Data.Maybe (Maybe)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
-
-type Tab =
-    { title :: String
-    , url :: String
-    }
 
 foreign import openPopup :: Effect Unit
 
