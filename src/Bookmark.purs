@@ -1,99 +1,101 @@
--- | The pairs `RemoteBookmarkUnsaved` and `LocalBookmarkUnsaved`, and
--- | `LocalBookmark` and `RemoteBookmark`, each form isomorphisms
+-- | "Local" and "Remote" bookmark variants all form isomorphisms with each
+-- | other, where the only interchanging values/formats are those of the
+-- | title/metadata and tags
 module App.Bookmark where
 
 import Prelude
 
+import App.URLMatch (URLMatch)
 import Data.Array (filter)
 import Data.Foldable (class Foldable, intercalate)
 import Data.List (List, fromFoldable)
 import Data.String (Pattern(..), split)
+import Data.Symbol (SProxy(..))
+import Record as R
+import Type.Row (class Lacks)
 
-type Saved a = { id :: Int | a } -- TODO which number type?
-
-type RemoteBookmarkBase =
-    ( metadata :: String
-    , desc :: String
-    , url :: String
-    , tags :: String
-    , flags :: Int -- TODO which number type?
+type Saved a =
+    ( id :: Int -- TODO which number type?
+    | a
     )
+
+type Common a =
+    ( desc :: String
+    , url :: String
+    , flags :: Int -- TODO which number type?
+    | a
+    )
+
+type Remote =
+    ( metadata :: String
+    , tags :: String
+    )
+
+type RemoteI a =
+    { metadata :: String
+    , tags :: String
+    | a
+    }
+
+type Local =
+    ( title :: String
+    , tags :: List String
+    )
+
+type LocalI a =
+    { title :: String
+    , tags :: List String
+    | a
+    }
 
 -- | A new bookmark ready to be inserted into a Buku database (where it will be
 -- | assigned its ID)
-type RemoteBookmarkUnsaved = Record RemoteBookmarkBase
+type RemoteBookmarkUnsaved = Record (Common Remote)
 
 -- | A bookmark as stored in a Buku database
-type RemoteBookmark = Saved RemoteBookmarkBase
-
-type LocalBookmarkBase =
-    ( title :: String
-    , desc :: String
-    , url :: String
-    , tags :: List String
-    , flags :: Int -- TODO which number type?
-    )
+type RemoteBookmark = Record (Saved (Common Remote))
 
 -- | A new locally-formatted bookmark ready to be transformed into a
 -- | `RemoteBookmarkUnsaved`
-type LocalBookmarkUnsaved = Record LocalBookmarkBase
+type LocalBookmarkUnsaved = Record (Common Local)
 
 -- | A locally-formatted bookmark
-type LocalBookmark = Saved LocalBookmarkBase
+type LocalBookmark = Record (Saved (Common Local))
 
--- TODO is this needed?
-{-- export interface LocalBookmarkWeighted extends LocalBookmark { --}
-{-- 	weight: URLMatch; --}
-{-- } --}
+type LocalBookmarkWeighted =
+    { weight :: URLMatch
+    | Saved (Common Local)
+    }
 
 bukuTagDelimiter :: String
 bukuTagDelimiter = ","
-
--- Tried with forall, record building, and Lacks class, but can't figure out
--- how to write the below in a more DRY way without tripping type-checker
 
 -- TODO will need to fix this: https://github.com/SamHH/bukubrow-webext/issues/139
 remoteTags :: forall f. Foldable f => f String -> String
 remoteTags xs = bukuTagDelimiter <> intercalate bukuTagDelimiter xs <> bukuTagDelimiter
 
-remoteUnsaved :: LocalBookmarkUnsaved -> RemoteBookmarkUnsaved
-remoteUnsaved x =
-    { metadata: x.title
-    , desc: x.desc
-    , url: x.url
-    , tags: remoteTags x.tags
-    , flags: x.flags
-    }
-
-remote :: LocalBookmark -> RemoteBookmark
-remote x =
-    { id: x.id
-    , metadata: x.title
-    , desc: x.desc
-    , url: x.url
-    , tags: remoteTags x.tags
-    , flags: x.flags
-    }
-
 localTags :: String -> Array String
 localTags = split (Pattern bukuTagDelimiter) >>> filter (_ /= "")
 
-localUnsaved :: RemoteBookmarkUnsaved -> LocalBookmarkUnsaved
-localUnsaved x =
-    { title: x.metadata
-    , desc: x.desc
-    , url: x.url
-    , tags: fromFoldable $ localTags x.tags
-    , flags: x.flags
-    }
+remote ::
+    forall a.
+    Lacks "title" a =>
+    Lacks "tags" a =>
+    LocalI a ->
+    RemoteI a
+remote x = x
+    # R.delete (SProxy :: SProxy "title")
+    # R.delete (SProxy :: SProxy "tags")
+    # R.union { metadata: x.title, tags: remoteTags x.tags }
 
-local :: RemoteBookmark -> LocalBookmark
-local x =
-    { id: x.id
-    , title: x.metadata
-    , desc: x.desc
-    , url: x.url
-    , tags: fromFoldable $ localTags x.tags
-    , flags: x.flags
-    }
+local ::
+    forall a.
+    Lacks "metadata" a =>
+    Lacks "tags" a =>
+    RemoteI a ->
+    LocalI a
+local x = x
+    # R.delete (SProxy :: SProxy "metadata")
+    # R.delete (SProxy :: SProxy "tags")
+    # R.union { title: x.metadata, tags: fromFoldable $ localTags x.tags }
 

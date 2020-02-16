@@ -8,6 +8,8 @@
     , "foreign"
     , "functions"
     , "psci-support"
+    , "record"
+    , "typelevel-prelude"
     ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
