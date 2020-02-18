@@ -2,13 +2,10 @@ module App.Url where
 
 import Prelude
 
+import Data.Array (takeEnd)
 import Data.Maybe (Maybe(..))
+import Data.String (Pattern(..), joinWith, split)
 import Foreign (Foreign, isNull, unsafeFromForeign)
-
-foreign import mkUrlImpl :: String -> Foreign
-
-mkUrl :: String -> Maybe Url
-mkUrl = mkUrlImpl >>> (\x -> if isNull x then Nothing else Just (unsafeFromForeign x))
 
 type Url =
     { href :: String
@@ -30,4 +27,15 @@ instance ordUrlMatch :: Ord UrlMatch where
     compare Exact None = GT
     compare Domain None = GT
     compare _ _ = LT
+
+foreign import mkUrlImpl :: String -> Foreign
+
+mkUrl :: String -> Maybe Url
+mkUrl = mkUrlImpl >>> (\x -> if isNull x then Nothing else Just (unsafeFromForeign x))
+
+domainFromHost :: String -> String
+domainFromHost = split (Pattern ".") >>> takeEnd 2 >>> joinWith "."
+
+domain :: Url -> String
+domain x = domainFromHost x.host
 

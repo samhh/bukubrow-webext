@@ -2,7 +2,7 @@ module Test.App.Url where
 
 import Prelude
 
-import App.Url (mkUrl, UrlMatch(..))
+import App.Url (mkUrl, UrlMatch(..), domainFromHost)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Test.Assert (assertEqual)
@@ -12,6 +12,7 @@ main :: Effect Unit
 main = do
     testMkUrl
     testUrlMatch
+    testDomain
 
 testMkUrl :: Effect Unit
 testMkUrl = do
@@ -34,4 +35,9 @@ testUrlMatch = do
     assertLT $ compare Domain Exact
     assertLT $ compare None Exact
     assertLT $ compare None Domain
+
+testDomain :: Effect Unit
+testDomain = do
+    assertEqual { expected: "samhh.com", actual: domainFromHost "samhh.com" }
+    assertEqual { expected: "samhh.com", actual: domainFromHost "sub.do.mains.samhh.com" }
 
