@@ -3,6 +3,7 @@ module App.Url where
 import Prelude
 
 import Data.Array (takeEnd)
+import Data.List (elem, fromFoldable)
 import Data.Maybe (Maybe(..))
 import Data.String (Pattern(..), joinWith, split)
 import Foreign (Foreign, isNull, unsafeFromForeign)
@@ -41,4 +42,10 @@ domain x = domainFromHost x.host
 
 hrefSansProtocol :: Url -> String
 hrefSansProtocol x = x.host <> x.pathname
+
+httpFromProtocol :: String -> Boolean
+httpFromProtocol = flip elem $ fromFoldable [ "http:", "https:" ]
+
+http :: Url -> Boolean
+http x = httpFromProtocol x.protocol
 
