@@ -18,7 +18,8 @@ A corresponding [native host](https://github.com/SamHH/bukubrow-host) is used to
 - Supported browser: Firefox, Chrome, or Chromium
 - _If building the WebExtension_:
 	- Node
-	- Yarn
+	- Yarn (or npm)
+    - [Spago](https://github.com/purescript/spago) (PureScript)
 
 ## Installation
 
@@ -37,4 +38,7 @@ Alternatively, you can build the WebExtension manually as follows:
 
 ## Contributing
 
-The WebExtension is written in strict TypeScript, utilising React for rendering and Redux with thunks for state management, and makes heavy use of the functional library `fp-ts` for ADT-driven data management and enhanced type safety. Yarn is used for dependency management and task running. Data is fetched from the host via native messaging.
+The WebExtension is written in PureScript, utilising React for rendering via [oak](https://github.com/ehrenmurdick/purescript-oak). Data is fetched from the host via native messaging.
+
+As referenced above Spago is the build tool of choice, thus the only scripts defined in the npm manifest are those for bundling Spago/PureScript's output for the browser. The typical development workflow is to run `yarn bundle-dev`, `spago build -w`, and `spago test -w` simultaneously.
+

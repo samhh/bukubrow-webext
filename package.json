@@ -1,8 +1,8 @@
 {
     "scripts": {
         "assets": "cp static/* dist/",
-        "dev": "yarn run assets && parcel watch entry/content.html entry/options.html entry/backend.js",
-        "build": "yarn run assets && parcel build entry/content.html entry/options.html entry/backend.js"
+        "bundle-dev": "yarn run assets && parcel watch entry/content.html entry/options.html entry/backend.js",
+        "bundle-prod": "yarn run assets && parcel build entry/content.html entry/options.html entry/backend.js"
     },
     "dependencies": {
         "webextension-polyfill-ts": "^0.12.0"
