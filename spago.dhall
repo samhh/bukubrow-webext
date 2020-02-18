@@ -7,6 +7,7 @@
     , "effect"
     , "foreign"
     , "functions"
+    , "generics-rep"
     , "psci-support"
     , "record"
     , "typelevel-prelude"
