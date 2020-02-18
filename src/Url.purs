@@ -39,3 +39,6 @@ domainFromHost = split (Pattern ".") >>> takeEnd 2 >>> joinWith "."
 domain :: Url -> String
 domain x = domainFromHost x.host
 
+hrefSansProtocol :: Url -> String
+hrefSansProtocol x = x.host <> x.pathname
+

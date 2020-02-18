@@ -2,7 +2,7 @@ module Test.App.Url where
 
 import Prelude
 
-import App.Url (mkUrl, UrlMatch(..), domainFromHost)
+import App.Url (mkUrl, UrlMatch(..), domainFromHost, hrefSansProtocol)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Test.Assert (assertEqual)
@@ -13,6 +13,7 @@ main = do
     testMkUrl
     testUrlMatch
     testDomain
+    testHrefSansProtocol
 
 testMkUrl :: Effect Unit
 testMkUrl = do
@@ -40,4 +41,9 @@ testDomain :: Effect Unit
 testDomain = do
     assertEqual { expected: "samhh.com", actual: domainFromHost "samhh.com" }
     assertEqual { expected: "samhh.com", actual: domainFromHost "sub.do.mains.samhh.com" }
+
+testHrefSansProtocol :: Effect Unit
+testHrefSansProtocol = do
+    let url = { href: "https://a.b.c.samhh.com/x/y/z.html", protocol: "https:", host: "a.b.c.samhh.com", hostname: "a.b.c.samhh.com", pathname: "/x/y/z.html" }
+    assertEqual { expected: "a.b.c.samhh.com/x/y/z.html", actual: hrefSansProtocol url }
 
