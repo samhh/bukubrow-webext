@@ -11,6 +11,7 @@
     , "psci-support"
     , "record"
     , "typelevel-prelude"
+    , "uuid"
     ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
