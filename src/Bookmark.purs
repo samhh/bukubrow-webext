@@ -1,11 +1,10 @@
 -- | "Local" and "Remote" bookmark variants all form isomorphisms with each
 -- | other, where the only interchanging values/formats are those of the
 -- | title/metadata and tags
-module App.Bookmark where
+module Bookmark where
 
 import Prelude
 
-import App.Url (UrlMatch)
 import Data.Array (filter)
 import Data.Foldable (class Foldable, intercalate)
 import Data.List (List, fromFoldable)
@@ -13,6 +12,7 @@ import Data.String (Pattern(..), split)
 import Data.Symbol (SProxy(..))
 import Record as R
 import Type.Row (class Lacks)
+import Url (UrlMatch)
 
 type Saved a =
     ( id :: Int -- TODO which number type?

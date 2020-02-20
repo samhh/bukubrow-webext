@@ -3,9 +3,9 @@ module Test.Main where
 import Prelude
 
 import Effect (Effect)
-import Test.App.Bookmark as Bookmark
-import Test.App.Tab as Tab
-import Test.App.Url as Url
+import Test.Bookmark as Bookmark
+import Test.Tab as Tab
+import Test.Url as Url
 import Test.Utils as Utils
 
 main :: Effect Unit

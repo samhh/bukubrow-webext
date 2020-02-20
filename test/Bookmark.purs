@@ -1,8 +1,8 @@
-module Test.App.Bookmark where
+module Test.Bookmark where
 
 import Prelude
 
-import App.Bookmark (localTags, remoteTags)
+import Bookmark (localTags, remoteTags)
 import Effect (Effect)
 import Test.Assert (assertEqual)
 

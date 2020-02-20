@@ -1,4 +1,4 @@
-module App.Tab where
+module Tab where
 
 import Prelude
 

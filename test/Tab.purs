@@ -1,9 +1,9 @@
-module Test.App.Tab where
+module Test.Tab where
 
 import Prelude
 
-import App.Tab (isNewTabPage)
 import Effect (Effect)
+import Tab (isNewTabPage)
 import Test.Assert (assert)
 
 main :: Effect Unit

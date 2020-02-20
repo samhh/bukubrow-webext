@@ -1,4 +1,4 @@
-module App.Url where
+module Url where
 
 import Prelude
 

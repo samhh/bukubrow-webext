@@ -1,9 +1,8 @@
-module App.Webext where
+module Webext where
 
 import Prelude
 
-import App.Bookmarklet (Bookmarklet, unBookmarklet)
-import App.Tab (Tab, isNewTabPage)
+import Bookmarklet (Bookmarklet, unBookmarklet)
 import Control.Promise (Promise, toAffE)
 import Data.Array as A
 import Data.List (List, fromFoldable, mapWithIndex)
@@ -11,6 +10,7 @@ import Data.Traversable (sequence_)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Foreign (Foreign)
+import Tab (Tab, isNewTabPage)
 
 foreign import openPopup :: Effect Unit
 

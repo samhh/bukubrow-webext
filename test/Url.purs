@@ -1,14 +1,14 @@
-module Test.App.Url where
+module Test.Url where
 
 import Prelude
 
-import App.Url (UrlMatch(..), Url, domainFromHost, hrefSansProtocol, httpFromProtocol, mkUrl, mkUrlImpl)
-import App.Url as URL
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Foreign (unsafeFromForeign)
 import Test.Assert (assert, assertEqual)
 import Test.Utils (assertEQ, assertGT, assertLT)
+import Url (UrlMatch(..), Url, domainFromHost, hrefSansProtocol, httpFromProtocol, mkUrl, mkUrlImpl)
+import Url as URL
 
 mkUrlUnsafe :: String -> Url
 mkUrlUnsafe = (mkUrlImpl >>> unsafeFromForeign)
