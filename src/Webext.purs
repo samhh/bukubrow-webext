@@ -2,13 +2,15 @@ module App.Webext where
 
 import Prelude
 
-import App.Tab (Tab)
-import Control.Promise (Promise, toAff)
-import Data.List (List, fromFoldable, head)
-import Data.Maybe (Maybe)
+import App.Bookmarklet (Bookmarklet, unBookmarklet)
+import App.Tab (Tab, isNewTabPage)
+import Control.Promise (Promise, toAffE)
+import Data.Array as A
+import Data.List (List, fromFoldable, mapWithIndex)
+import Data.Traversable (sequence_)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Effect.Class (liftEffect)
+import Foreign (Foreign)
 
 foreign import openPopup :: Effect Unit
 
@@ -16,18 +18,20 @@ foreign import closePopup :: Effect Unit
 
 foreign import onTabActivity :: (Effect Unit) -> Effect Unit
 
-foreign import getActiveTabImpl :: Effect (Promise (Array Tab))
+foreign import getActiveTabImpl :: Effect (Promise Tab)
 
-getActiveTab :: Unit -> Aff (Maybe Tab)
-getActiveTab _ = liftEffect getActiveTabImpl >>= toAff >>> map (fromFoldable >>> head)
+-- | Note that the active tab does not update very quickly, so this can't be
+-- | relied upon in a loop
+getActiveTab :: Unit -> Aff Tab
+getActiveTab _ = toAffE getActiveTabImpl
 
 foreign import getActiveWindowTabsImpl :: Effect (Promise (Array Tab))
 
 getActiveWindowTabs :: Unit -> Aff (List Tab)
-getActiveWindowTabs _ = liftEffect getActiveWindowTabsImpl >>= toAff >>> map fromFoldable
+getActiveWindowTabs _ = toAffE getActiveWindowTabsImpl <#> fromFoldable
 
 foreign import getAllTabsImpl :: Effect (Promise (Array Tab))
 
 getAllTabs :: Unit -> Aff (List Tab)
-getAllTabs _ = liftEffect getAllTabsImpl >>= toAff >>> map fromFoldable
+getAllTabs _ = toAffE getAllTabsImpl <#> fromFoldable
 
