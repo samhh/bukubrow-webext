@@ -6,9 +6,10 @@ import Data.Array (takeEnd)
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Show (genericShow)
 import Data.List (elem, fromFoldable)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe)
 import Data.String (Pattern(..), joinWith, split)
-import Foreign (Foreign, isNull, unsafeFromForeign)
+import Foreign (Foreign)
+import Foreign.Custom (unsafeFromNullable)
 
 type Url =
     { href :: String
@@ -37,7 +38,7 @@ instance ordUrlMatch :: Ord UrlMatch where
 foreign import mkUrlImpl :: String -> Foreign
 
 mkUrl :: String -> Maybe Url
-mkUrl = mkUrlImpl >>> (\x -> if isNull x then Nothing else Just (unsafeFromForeign x))
+mkUrl = mkUrlImpl >>> unsafeFromNullable
 
 domainFromHost :: String -> String
 domainFromHost = split (Pattern ".") >>> takeEnd 2 >>> joinWith "."
