@@ -9,6 +9,7 @@ import Test.Assert (assertEqual)
 main :: Effect Unit
 main = do
     testLocalTags
+    testRemoteTags
 
 testLocalTags :: Effect Unit
 testLocalTags = do
@@ -22,7 +23,7 @@ testLocalTags = do
 
 testRemoteTags :: Effect Unit
 testRemoteTags = do
-    assertEqual { expected: ",,", actual: remoteTags [] }
+    assertEqual { expected: ",", actual: remoteTags [] }
     assertEqual { expected: ",a,", actual: remoteTags ["a"] }
     assertEqual { expected: ",a,b,", actual: remoteTags ["a", "b"] }
 

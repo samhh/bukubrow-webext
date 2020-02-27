@@ -5,8 +5,9 @@ module Bookmark where
 
 import Prelude
 
+import Buku (bukuTagDelimiterS)
 import Data.Array (filter)
-import Data.Foldable (class Foldable, intercalate)
+import Data.Foldable (class Foldable, surround)
 import Data.List (List, fromFoldable)
 import Data.String (Pattern(..), split)
 import Data.Symbol (SProxy(..))
@@ -67,15 +68,11 @@ type LocalBookmarkWeighted =
     | Saved (Common Local)
     }
 
-bukuTagDelimiter :: String
-bukuTagDelimiter = ","
-
--- TODO will need to fix this: https://github.com/SamHH/bukubrow-webext/issues/139
 remoteTags :: forall f. Foldable f => f String -> String
-remoteTags xs = bukuTagDelimiter <> intercalate bukuTagDelimiter xs <> bukuTagDelimiter
+remoteTags = surround bukuTagDelimiterS
 
 localTags :: String -> Array String
-localTags = split (Pattern bukuTagDelimiter) >>> filter (_ /= "")
+localTags = split (Pattern bukuTagDelimiterS) >>> filter (_ /= "")
 
 remote ::
     forall a.
