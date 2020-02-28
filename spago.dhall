@@ -18,6 +18,7 @@
   , "spec-quickcheck"
   , "typelevel-prelude"
   , "uuid"
+  , "versions"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
