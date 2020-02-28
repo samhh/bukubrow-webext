@@ -23,3 +23,13 @@ exports.onTabActivity = (cb) => () => {
 	browser.tabs.onUpdated.addListener(cb);
 };
 
+exports.createTabImpl = (url) => () => browser.tabs.create({ url }).catch(noop);
+
+exports.updateActiveTabImpl = (url) => () => browser.tabs.update(undefined, { url }).catch(noop);
+
+exports.executeCodeInActiveTabImpl = (code) => () => browser.tabs.executeScript({ code }).catch(noop);
+
+exports.getSyncStorageImpl = (keys) => () => browser.storage.sync.get(keys).catch(() => ({}));
+
+exports.setSyncStorageImpl = (data) => () => browser.storage.sync.set(data).catch(noop);
+
