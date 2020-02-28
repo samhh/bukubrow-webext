@@ -44,12 +44,12 @@
 			"description": "Send the active tab to Bukubrow's staging area"
 		}
 	},
-	"minimum_chrome_version": "55",
+	"minimum_chrome_version": "73",
 	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlBitSfQLABNqlk6AQGcOfBgs8Y9u+Sq1GU5+7/jsqRz4E3WqZcEX/9AHxH8FS6SXLItrBuDd80MAy6kM19uE7XgRCK4vY/6lPcIgXIzGEeOTCtO0qkRIaMhgpgHjO/XBGHH789RQ4X3PXGHvKmMdu3Jz1E9yF0cCDSuXG0eh6RKk9Ox7AL0Ldbukm7xeTD6W4Y10Ge5vnGhlMv50waK5upXcr8qXJU0s6GqbKaRH4ELfMrXmo1dltROIT0kAIkKpNJ8q9bbJ+uTZmCsDqUAH9rxiYsgWqFJ+a0EnQf8MEbvGH3hRO8PR/7gm+BI0bcIFN7OHL3nrNxcB+V2duWtdYQIDAQAB",
 	"applications": {
 		"gecko": {
 			"id": "bukubrow@samhh.com",
-			"strict_min_version": "52.0"
+			"strict_min_version": "67.0"
 		}
 	}
 }
