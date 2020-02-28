@@ -1,29 +1,28 @@
-module Test.Bookmark where
+module Bookmark.Test where
 
 import Prelude
 
 import Bookmark (localTags, remoteTags)
-import Effect (Effect)
-import Test.Assert (assertEqual)
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
 
-main :: Effect Unit
-main = do
-    testLocalTags
-    testRemoteTags
+spec :: Spec Unit
+spec = describe "Bookmark" do
+    describe "localTags" do
+        it "deserialises ignoring \"empty\" delimiters" do
+            localTags ""   `shouldEqual` []
+            localTags ","  `shouldEqual` []
+            localTags ",," `shouldEqual` []
+        it "deserialises the same regardless of surrounding delimiters" do
+            localTags "a,b"   `shouldEqual` ["a", "b"]
+            localTags "a,b,"  `shouldEqual` ["a", "b"]
+            localTags ",a,b"  `shouldEqual` ["a", "b"]
+            localTags ",a,b," `shouldEqual` ["a", "b"]
 
-testLocalTags :: Effect Unit
-testLocalTags = do
-    assertEqual { expected: [], actual: localTags "" }
-    assertEqual { expected: [], actual: localTags "," }
-    assertEqual { expected: [], actual: localTags ",," }
-    assertEqual { expected: ["a", "b"], actual: localTags "a,b" }
-    assertEqual { expected: ["a", "b"], actual: localTags "a,b," }
-    assertEqual { expected: ["a", "b"], actual: localTags ",a,b" }
-    assertEqual { expected: ["a", "b"], actual: localTags ",a,b," }
-
-testRemoteTags :: Effect Unit
-testRemoteTags = do
-    assertEqual { expected: ",", actual: remoteTags [] }
-    assertEqual { expected: ",a,", actual: remoteTags ["a"] }
-    assertEqual { expected: ",a,b,", actual: remoteTags ["a", "b"] }
+    describe "remoteTags" do
+        it "serialises empty to a single delimiter as Buku does" do
+            remoteTags [] `shouldEqual` ","
+        it "serialises non-empty with surrounding delimiters" do
+            remoteTags ["a"] `shouldEqual` ",a,"
+            remoteTags ["a", "b"] `shouldEqual` ",a,b,"
 

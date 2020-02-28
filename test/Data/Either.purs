@@ -1,24 +1,23 @@
-module Text.Data.Either.Custom where
+module Data.Either.Custom.Test where
 
 import Prelude
 
 import Data.Either (Either(..))
 import Data.Either.Custom (fromLeft, fromRight)
-import Effect (Effect)
-import Test.Assert (assertEqual)
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
 
-main :: Effect Unit
-main = do
-    testFromLeft
-    testFromRight
+spec :: Spec Unit
+spec = describe "Data.Either" do
+    describe "fromLeft" do
+        it "prefers preexisting Left value" do
+            fromLeft 'x' (Left 'y')  `shouldEqual` 'y'
+        it "takes fallback Left value" do
+            fromLeft 'x' (Right 'y') `shouldEqual` 'x'
 
-testFromLeft :: Effect Unit
-testFromLeft = do
-    assertEqual $ { expected: 'x', actual: fromLeft 'x' (Right 'y') }
-    assertEqual $ { expected: 'y', actual: fromLeft 'x' (Left 'y') }
-
-testFromRight :: Effect Unit
-testFromRight = do
-    assertEqual $ { expected: 'x', actual: fromRight 'x' (Left 'y') }
-    assertEqual $ { expected: 'y', actual: fromRight 'x' (Right 'y') }
+    describe "fromRight" do
+        it "prefers preexisting Right value" do
+            fromRight 'x' (Right 'y') `shouldEqual` 'y'
+        it "takes fallback Right value" do
+            fromRight 'x' (Left 'y')  `shouldEqual` 'x'
 

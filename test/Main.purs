@@ -3,16 +3,11 @@ module Test.Main where
 import Prelude
 
 import Effect (Effect)
-import Test.Bookmark as Bookmark
-import Test.Tab as Tab
-import Test.Url as Url
-import Test.Utils as Utils
+import Effect.Aff (launchAff_)
+import Test.Spec.Discovery (discover)
+import Test.Spec.Reporter.Console (consoleReporter)
+import Test.Spec.Runner (runSpec)
 
 main :: Effect Unit
-main = do
-    Utils.main
-
-    Bookmark.main
-    Tab.main
-    Url.main
+main = discover "\\.Test$" >>= runSpec [consoleReporter] >>> launchAff_
 

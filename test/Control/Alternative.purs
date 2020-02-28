@@ -1,18 +1,17 @@
-module Test.Control.Alternative.Custom where
+module Control.Alternative.Custom.Test where
 
 import Prelude
 
 import Control.Alternative.Custom (ensure)
-import Data.Maybe (Maybe, isJust)
-import Effect (Effect)
-import Test.Assert (assert)
+import Data.Maybe (Maybe(..))
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
 
-main :: Effect Unit
-main = do
-    testEnsure
-
-testEnsure :: Effect Unit
-testEnsure = do
-    assert $       isJust (ensure (const true ) 'x' :: Maybe Char)
-    assert $ not $ isJust (ensure (const false) 'x' :: Maybe Char)
+spec :: Spec Unit
+spec = describe "Control.Alternative" do
+    describe "ensure" do
+        it "maintains for true predicate" do
+            ensure (const true)  'x' `shouldEqual` Just 'x'
+        it "empties for false predicate" do
+            ensure (const false) 'x' `shouldEqual` Nothing
 
