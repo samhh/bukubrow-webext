@@ -8,7 +8,6 @@ import Prelude
 import Buku (bukuTagDelimiterS)
 import Data.Array (filter)
 import Data.Foldable (class Foldable, surround)
-import Data.List (List, fromFoldable)
 import Data.String (Pattern(..), split)
 import Data.Symbol (SProxy(..))
 import Record as R
@@ -16,14 +15,14 @@ import Type.Row (class Lacks)
 import Url (UrlMatch)
 
 type Saved a =
-    ( id :: Int -- TODO which number type?
+    ( id :: Int
     | a
     )
 
 type Common a =
     ( desc :: String
     , url :: String
-    , flags :: Int -- TODO which number type?
+    , flags :: Int
     | a
     )
 
@@ -40,12 +39,12 @@ type RemoteI a =
 
 type Local =
     ( title :: String
-    , tags :: List String
+    , tags :: Array String
     )
 
 type LocalI a =
     { title :: String
-    , tags :: List String
+    , tags :: Array String
     | a
     }
 
@@ -94,5 +93,5 @@ local ::
 local x = x
     # R.delete (SProxy :: SProxy "metadata")
     # R.delete (SProxy :: SProxy "tags")
-    # R.union { title: x.metadata, tags: fromFoldable $ localTags x.tags }
+    # R.union { title: x.metadata, tags: localTags x.tags }
 

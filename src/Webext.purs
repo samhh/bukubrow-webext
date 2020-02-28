@@ -4,9 +4,8 @@ import Prelude
 
 import Bookmarklet (Bookmarklet, unBookmarklet)
 import Control.Promise (Promise, toAffE)
-import Data.Array as A
+import Data.Array (fromFoldable, mapWithIndex)
 import Data.Foldable (class Foldable)
-import Data.List (List, fromFoldable, mapWithIndex)
 import Data.Traversable (sequence_)
 import Effect (Effect)
 import Effect.Aff (Aff)
@@ -28,13 +27,13 @@ getActiveTab _ = toAffE getActiveTabImpl
 
 foreign import getActiveWindowTabsImpl :: Effect (Promise (Array Tab))
 
-getActiveWindowTabs :: Unit -> Aff (List Tab)
-getActiveWindowTabs _ = toAffE getActiveWindowTabsImpl <#> fromFoldable
+getActiveWindowTabs :: Unit -> Aff (Array Tab)
+getActiveWindowTabs _ = toAffE getActiveWindowTabsImpl
 
 foreign import getAllTabsImpl :: Effect (Promise (Array Tab))
 
-getAllTabs :: Unit -> Aff (List Tab)
-getAllTabs _ = toAffE getAllTabsImpl <#> fromFoldable
+getAllTabs :: Unit -> Aff (Array Tab)
+getAllTabs _ = toAffE getAllTabsImpl
 
 foreign import createTabImpl :: String -> Effect (Promise Unit)
 
@@ -70,7 +69,7 @@ executeCodeInActiveTab = unBookmarklet >>> executeCodeInActiveTabImpl >>> toAffE
 foreign import getSyncStorageImpl :: Array String -> Effect (Promise Foreign)
 
 getSyncStorage :: forall f. Foldable f => f String -> Aff Foreign
-getSyncStorage = A.fromFoldable >>> getSyncStorageImpl >>> toAffE
+getSyncStorage = fromFoldable >>> getSyncStorageImpl >>> toAffE
 
 foreign import setSyncStorageImpl :: Foreign -> Effect (Promise Unit)
 

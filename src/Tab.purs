@@ -2,7 +2,7 @@ module Tab where
 
 import Prelude
 
-import Data.List (elem, fromFoldable)
+import Data.Array (elem)
 
 type Tab =
     { title :: String
@@ -13,7 +13,7 @@ isNewTabPage :: Tab -> Boolean
 isNewTabPage x = knownNewTabUrl x.url || suspectedNewTabTitle x.title
     where
         knownNewTabUrl :: String -> Boolean
-        knownNewTabUrl = flip elem $ fromFoldable [ "about:blank", "chrome://newtab/" ]
+        knownNewTabUrl = flip elem [ "about:blank", "chrome://newtab/" ]
 
         -- | The href/url can change in some browsers if a new tab-changing extension
         -- | is in use, so this is a fallible test we can fall back to. As of time of

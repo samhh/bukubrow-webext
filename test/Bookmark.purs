@@ -3,11 +3,9 @@ module Bookmark.Test where
 import Prelude
 
 import Bookmark (localTags, remoteTags)
-import Data.Array (reverse)
 import Data.Foldable (any, foldr, length)
 import Data.String (Pattern(..), contains)
 import Data.String as S
-import Data.String.CodeUnits (fromCharArray, toCharArray)
 import Data.String.Custom as SS
 import Data.String.Unsafe (charAt)
 import Test.QuickCheck ((===))
