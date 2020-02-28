@@ -15,6 +15,7 @@
   , "record"
   , "spec"
   , "spec-discovery"
+  , "spec-quickcheck"
   , "typelevel-prelude"
   , "uuid"
   ]
