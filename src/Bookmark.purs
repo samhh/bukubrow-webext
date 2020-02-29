@@ -8,7 +8,7 @@ import Prelude
 import Buku (bukuTagDelimiterS)
 import Data.Array (filter)
 import Data.Foldable (class Foldable, surround)
-import Data.String (Pattern(..), split)
+import Data.String (Pattern(..), null, split)
 import Data.Symbol (SProxy(..))
 import Record as R
 import Type.Row (class Lacks)
@@ -71,7 +71,7 @@ remoteTags :: forall f. Foldable f => f String -> String
 remoteTags = surround bukuTagDelimiterS
 
 localTags :: String -> Array String
-localTags = split (Pattern bukuTagDelimiterS) >>> filter (_ /= "")
+localTags = split (Pattern bukuTagDelimiterS) >>> filter (not null)
 
 remote ::
     forall a.

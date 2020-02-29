@@ -5,6 +5,7 @@ import Prelude
 import Control.Monad.Custom (filter)
 import Data.Array.NonEmpty (NonEmptyArray, head)
 import Data.Maybe (Maybe(..))
+import Data.String (null)
 import Data.String.Regex (Regex, match)
 import Data.String.Regex.Custom (matchAllFirstGroups)
 import Data.String.Regex.Flags (global, noFlags)
@@ -38,7 +39,7 @@ empty = { name: Nothing, desc: Nothing, url: Nothing, tags: Nothing, wildcard: N
 
 parse :: String -> Result
 parse x =
-    { name: match nameR x >>= head >>> filter (_ /= "")
+    { name: match nameR x >>= head >>> filter (not null)
     , desc: matchAllFirstGroups descR x
     , url: matchAllFirstGroups urlR x
     , tags: matchAllFirstGroups tagsR x
