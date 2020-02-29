@@ -4,8 +4,10 @@ import Prelude
 
 import Bookmark (localTags, remoteTags)
 import Data.Foldable (any, foldr, length)
+import Data.Natural (intToNat)
 import Data.String (Pattern(..), contains)
 import Data.String as S
+import Data.String.Custom (repeat)
 import Data.String.Custom as SS
 import Data.String.Unsafe (charAt)
 import Test.QuickCheck ((===))
@@ -20,11 +22,13 @@ spec = describe "Bookmark" do
             localTags ""   `shouldEqual` []
             localTags ","  `shouldEqual` []
             localTags ",," `shouldEqual` []
+            quickCheck \(n :: Int) -> localTags (repeat (intToNat n) ",") === []
         it "deserialises the same regardless of surrounding delimiters" do
             localTags "a,b"   `shouldEqual` ["a", "b"]
             localTags "a,b,"  `shouldEqual` ["a", "b"]
             localTags ",a,b"  `shouldEqual` ["a", "b"]
             localTags ",a,b," `shouldEqual` ["a", "b"]
+            localTags ",,,a,,,b,,," `shouldEqual` ["a", "b"]
         it "does not deserialise any tag with a comma" do
             quickCheck \(x :: String) -> not $ any (contains (Pattern ",")) $ localTags x
 
