@@ -16,7 +16,7 @@ import Test.Spec.QuickCheck (quickCheck)
 spec :: Spec Unit
 spec = describe "Bookmark" do
     describe "localTags" do
-        it "deserialises ignoring \"empty\" delimiters" do
+        it """deserialises ignoring "empty" delimiters""" do
             localTags ""   `shouldEqual` []
             localTags ","  `shouldEqual` []
             localTags ",," `shouldEqual` []

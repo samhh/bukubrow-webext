@@ -11,19 +11,19 @@ import Data.String.Regex.Flags (global, noFlags)
 import Data.String.Regex.Unsafe (unsafeRegex)
 
 nameR :: Regex
-nameR = unsafeRegex     "^.*?(?:(?=^[#>:*].+)|(?= +[#>:*].+)|$)" noFlags
+nameR = unsafeRegex     """^.*?(?:(?=^[#>:*].+)|(?= +[#>:*].+)|$)""" noFlags
 
 descR :: Regex
-descR = unsafeRegex     "(?:^| )>(.+?)(?= +[#>:*]|$)"            global
+descR = unsafeRegex     """(?:^| )>(.+?)(?= +[#>:*]|$)"""            global
 
 urlR :: Regex
-urlR = unsafeRegex      "(?:^| ):(.+?)(?= +[#>:*]|$)"            global
+urlR = unsafeRegex      """(?:^| ):(.+?)(?= +[#>:*]|$)"""            global
 
 tagsR :: Regex
-tagsR = unsafeRegex     "(?:^| )#(.+?)(?= +[#>:*]|$)"            global
+tagsR = unsafeRegex     """(?:^| )#(.+?)(?= +[#>:*]|$)"""            global
 
 wildcardR :: Regex
-wildcardR = unsafeRegex "(?:^| )\\*(.+?)(?= +[#>:*]|$)"          global
+wildcardR = unsafeRegex """(?:^| )\*(.+?)(?= +[#>:*]|$)"""           global
 
 type Result =
     { name :: Maybe String
