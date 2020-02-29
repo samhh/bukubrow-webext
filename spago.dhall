@@ -11,6 +11,7 @@
   , "functions"
   , "generics-rep"
   , "halogen"
+  , "naturals"
   , "psci-support"
   , "record"
   , "spec"
