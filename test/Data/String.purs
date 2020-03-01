@@ -3,7 +3,7 @@ module Data.String.Custom.Test where
 import Prelude
 
 import Data.Array as A
-import Data.Natural (intToNat)
+import Data.Natural (sign)
 import Data.String (length)
 import Data.String.CodeUnits (toCharArray)
 import Data.String.Custom (repeat, reverse)
@@ -19,11 +19,10 @@ spec = describe "Data.String" do
             reverse "abc" `shouldEqual` "cba"
             quickCheck \(x :: String) -> A.reverse (toCharArray x) === toCharArray (reverse x)
     describe "repeat" do
-        let nat = intToNat
         it "returns empty string for zero" do
-            repeat (nat 0) "x" `shouldEqual` ""
+            repeat (sign 0) "x" `shouldEqual` ""
         it "repeats for naturals above zero" do
-            repeat (nat 1) "x" `shouldEqual` "x"
-            repeat (nat 3) "x" `shouldEqual` "xxx"
-            quickCheck \(x :: String) -> length (repeat (nat 5) x) === length x * 5
+            repeat (sign 1) "x" `shouldEqual` "x"
+            repeat (sign 3) "x" `shouldEqual` "xxx"
+            quickCheck \(x :: String) -> length (repeat (sign 5) x) === length x * 5
 
