@@ -9,8 +9,8 @@ import Test.Spec.Assertions (shouldEqual, shouldNotSatisfy, shouldSatisfy)
 import Url (UrlMatch(..), Url, domainFromHost, hrefSansProtocol, httpFromProtocol, mkUrl, mkUrlImpl)
 import Url as URL
 
-mkUrlUnsafe :: String -> Url
-mkUrlUnsafe = (mkUrlImpl >>> unsafeFromForeign)
+unsafeMkUrl :: String -> Url
+unsafeMkUrl = (mkUrlImpl >>> unsafeFromForeign)
 
 spec :: Spec Unit
 spec = describe "Url" do
@@ -44,7 +44,7 @@ spec = describe "Url" do
 
     describe "hrefSansProtocol" do
         it "strips protocol" do
-            hrefSansProtocol (mkUrlUnsafe "https://a.b.c.samhh.com/x/y/z.html") `shouldEqual` "a.b.c.samhh.com/x/y/z.html"
+            hrefSansProtocol (unsafeMkUrl "https://a.b.c.samhh.com/x/y/z.html") `shouldEqual` "a.b.c.samhh.com/x/y/z.html"
 
     describe "httpFromProtocol" do
         it "matches against http and https only" do
@@ -54,14 +54,14 @@ spec = describe "Url" do
 
     describe "compare" do
         it "matches exactly irrespective of http(s)" do
-            URL.compare (mkUrlUnsafe "http://samhh.com") (mkUrlUnsafe "http://samhh.com")                `shouldEqual` Exact
-            URL.compare (mkUrlUnsafe "http://samhh.com") (mkUrlUnsafe "https://samhh.com")               `shouldEqual` Exact
+            URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "http://samhh.com")                `shouldEqual` Exact
+            URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "https://samhh.com")               `shouldEqual` Exact
         it "matches domain if subdomain differs" do
-            URL.compare (mkUrlUnsafe "http://samhh.com") (mkUrlUnsafe "https://a.b.c.samhh.com")         `shouldEqual` Domain
+            URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "https://a.b.c.samhh.com")         `shouldEqual` Domain
         it "matches domain if path differs" do
-            URL.compare (mkUrlUnsafe "http://samhh.com") (mkUrlUnsafe "https://a.b.c.samhh.com/x/y/z")   `shouldEqual` Domain
+            URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "https://a.b.c.samhh.com/x/y/z")   `shouldEqual` Domain
         it "does not match different tlds" do
-            URL.compare (mkUrlUnsafe "http://samhh.com") (mkUrlUnsafe "https://a.b.c.samhh.co.uk/x/y/z") `shouldEqual` None
+            URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "https://a.b.c.samhh.co.uk/x/y/z") `shouldEqual` None
         it "does not match non-http(s)" do
-            URL.compare (mkUrlUnsafe "ftp://samhh.com")  (mkUrlUnsafe "ftp://samhh.com")                 `shouldEqual` None
+            URL.compare (unsafeMkUrl "ftp://samhh.com")  (unsafeMkUrl "ftp://samhh.com")                 `shouldEqual` None
 
