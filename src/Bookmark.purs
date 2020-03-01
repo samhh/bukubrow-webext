@@ -1,18 +1,27 @@
--- | "Local" and "Remote" bookmark variants all form isomorphisms with each
--- | other, where the only interchanging values/formats are those of the
--- | title/metadata and tags
+-- | "Local" and "remote" bookmarks can be thought of as loosely isomorphic,
+-- | however no formal isomorphism is defined as the handling of tags is not
+-- | strictly isomorphic (e.g. ",," -> [] -> ",").
+
 module Bookmark where
 
 import Prelude
 
 import Buku (bukuTagDelimiterS)
-import Data.Array (filter)
+import Data.Compactable (compact)
 import Data.Foldable (class Foldable, surround)
-import Data.String (Pattern(..), null, split)
+import Data.Lens (Iso', iso)
+import Data.String (Pattern(..), split)
+import Data.String.NonEmpty (NonEmptyString, fromString, toString)
+import Data.String.NonEmpty.Custom (NonEmptyStringN, mkNonEmptyStringN, unNonEmptyStringN)
 import Data.Symbol (SProxy(..))
 import Record as R
 import Type.Row (class Lacks)
 import Url (UrlMatch)
+
+isoLocalBookmarkD :: Iso' LocalBookmark LocalBookmarkD
+isoLocalBookmarkD = iso
+    (\x -> x { tags = map mkNonEmptyStringN x.tags })
+    (\x -> x { tags = map unNonEmptyStringN x.tags })
 
 type Saved a =
     ( id :: Int
@@ -39,14 +48,19 @@ type RemoteI a =
 
 type Local =
     ( title :: String
-    , tags :: Array String
+    , tags :: Array NonEmptyString
     )
 
 type LocalI a =
     { title :: String
-    , tags :: Array String
+    , tags :: Array NonEmptyString
     | a
     }
+
+type LocalD =
+    ( title :: String
+    , tags :: Array NonEmptyStringN
+    )
 
 -- | A new bookmark ready to be inserted into a Buku database (where it will be
 -- | assigned its ID)
@@ -62,16 +76,20 @@ type LocalBookmarkUnsaved = Record (Common Local)
 -- | A locally-formatted bookmark
 type LocalBookmark = Record (Saved (Common Local))
 
+-- | A decode-able locally-formatted bookmark (necessary to workaround orphan
+-- | instance restriction)
+type LocalBookmarkD = Record (Saved (Common LocalD))
+
 type LocalBookmarkWeighted =
     { weight :: UrlMatch
     | Saved (Common Local)
     }
 
-remoteTags :: forall f. Foldable f => f String -> String
-remoteTags = surround bukuTagDelimiterS
+remoteTags :: forall f. Functor f => Foldable f => f NonEmptyString -> String
+remoteTags = map toString >>> surround bukuTagDelimiterS
 
-localTags :: String -> Array String
-localTags = split (Pattern bukuTagDelimiterS) >>> filter (not null)
+localTags :: String -> Array NonEmptyString
+localTags = split (Pattern bukuTagDelimiterS) >>> map fromString >>> compact
 
 remote ::
     forall a.
