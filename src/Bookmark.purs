@@ -6,22 +6,15 @@ module Bookmark where
 
 import Prelude
 
-import Buku (bukuTagDelimiterS)
+import Buku (bukuTagDelimiterP, bukuTagDelimiterS)
 import Data.Compactable (compact)
 import Data.Foldable (class Foldable, surround)
-import Data.Lens (Iso', iso)
-import Data.String (Pattern(..), split)
-import Data.String.NonEmpty (NonEmptyString, fromString, toString)
-import Data.String.NonEmpty.Custom (NonEmptyStringN, mkNonEmptyStringN, unNonEmptyStringN)
+import Data.String (split)
 import Data.Symbol (SProxy(..))
 import Record as R
+import Tag (Tag, fromString, toString)
 import Type.Row (class Lacks)
 import Url (UrlMatch)
-
-isoLocalBookmarkD :: Iso' LocalBookmark LocalBookmarkD
-isoLocalBookmarkD = iso
-    (\x -> x { tags = map mkNonEmptyStringN x.tags })
-    (\x -> x { tags = map unNonEmptyStringN x.tags })
 
 type Saved a =
     ( id :: Int
@@ -48,18 +41,18 @@ type RemoteI a =
 
 type Local =
     ( title :: String
-    , tags :: Array NonEmptyString
+    , tags :: Array Tag
     )
 
 type LocalI a =
     { title :: String
-    , tags :: Array NonEmptyString
+    , tags :: Array Tag
     | a
     }
 
 type LocalD =
     ( title :: String
-    , tags :: Array NonEmptyStringN
+    , tags :: Array Tag
     )
 
 -- | A new bookmark ready to be inserted into a Buku database (where it will be
@@ -76,20 +69,16 @@ type LocalBookmarkUnsaved = Record (Common Local)
 -- | A locally-formatted bookmark
 type LocalBookmark = Record (Saved (Common Local))
 
--- | A decode-able locally-formatted bookmark (necessary to workaround orphan
--- | instance restriction)
-type LocalBookmarkD = Record (Saved (Common LocalD))
-
 type LocalBookmarkWeighted =
     { weight :: UrlMatch
     | Saved (Common Local)
     }
 
-remoteTags :: forall f. Functor f => Foldable f => f NonEmptyString -> String
+remoteTags :: forall f. Functor f => Foldable f => f Tag -> String
 remoteTags = map toString >>> surround bukuTagDelimiterS
 
-localTags :: String -> Array NonEmptyString
-localTags = split (Pattern bukuTagDelimiterS) >>> map fromString >>> compact
+localTags :: String -> Array Tag
+localTags = split bukuTagDelimiterP >>> map fromString >>> compact
 
 remote ::
     forall a.
