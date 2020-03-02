@@ -6,12 +6,11 @@ import Bookmark (localTags, remoteTags)
 import Buku (bukuTagDelimiter, bukuTagDelimiterP, bukuTagDelimiterS)
 import Data.Compactable (class Compactable, compact)
 import Data.Foldable (any, foldr, length)
-import Data.Natural (sign)
 import Data.String (contains)
 import Data.String as S
-import Data.String.Custom (repeat)
 import Data.String.Custom as SS
 import Data.String.Unsafe (charAt)
+import Data.String.Utils (unsafeRepeat)
 import Tag (Tag)
 import Tag as Tag
 import Test.QuickCheck ((===))
@@ -29,7 +28,7 @@ spec = describe "Bookmark" do
             localTags ""   `shouldEqual` []
             localTags ","  `shouldEqual` []
             localTags ",," `shouldEqual` []
-            quickCheck \(n :: Int) -> localTags (repeat (sign n) bukuTagDelimiterS) === []
+            quickCheck \(n :: Int) -> localTags (unsafeRepeat (max 0 n) bukuTagDelimiterS) === []
         it "deserialises the same regardless of surrounding delimiters" do
             localTags "a,b"         `shouldEqual` m ["a", "b"]
             localTags "a,b,"        `shouldEqual` m ["a", "b"]
