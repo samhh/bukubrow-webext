@@ -9,6 +9,7 @@ import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
 import Data.String.NonEmpty (NonEmptyString)
 import Data.String.NonEmpty as NES
+import Data.String.Utils as SU
 
 -- | A newtype wrapper intended exclusively for encoding/decoding, necessary
 -- | to avoid creating an orphan instance.
@@ -41,4 +42,7 @@ fromString = NES.fromString >>> map mkNonEmptyStringN
 
 toString :: NonEmptyStringN -> String
 toString = unNonEmptyStringN >>> NES.toString
+
+startsWith :: NonEmptyString -> NonEmptyString -> Boolean
+startsWith x y = NES.toString x `SU.startsWith` NES.toString y
 

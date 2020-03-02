@@ -18,6 +18,7 @@
   , "spec"
   , "spec-discovery"
   , "spec-quickcheck"
+  , "stringutils"
   , "typelevel-prelude"
   , "uuid"
   , "versions"
