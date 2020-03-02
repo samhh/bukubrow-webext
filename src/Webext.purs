@@ -2,7 +2,7 @@ module Webext where
 
 import Prelude
 
-import Bookmarklet (Bookmarklet, unBookmarklet)
+import Bookmarklet (Bookmarklet, toString)
 import Control.Promise (Promise, toAffE)
 import Data.Array (fromFoldable, mapWithIndex)
 import Data.Foldable (class Foldable)
@@ -64,7 +64,7 @@ openBookmarks xs = do
 foreign import executeCodeInActiveTabImpl :: String -> Effect (Promise Unit)
 
 executeCodeInActiveTab :: Bookmarklet -> Aff Unit
-executeCodeInActiveTab = unBookmarklet >>> executeCodeInActiveTabImpl >>> toAffE
+executeCodeInActiveTab = toString >>> executeCodeInActiveTabImpl >>> toAffE
 
 foreign import getSyncStorageImpl :: Array String -> Effect (Promise Foreign)
 
