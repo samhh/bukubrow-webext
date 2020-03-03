@@ -10,13 +10,14 @@ import Data.String.NonEmpty (NonEmptyString, nes)
 import Data.String.NonEmpty as NES
 import Data.String.NonEmpty.Custom (startsWith)
 import Data.Symbol (SProxy(..))
+import Types (Predicate)
 
 newtype Bookmarklet = Bookmarklet NonEmptyString
 
 prefix :: NonEmptyString
 prefix = nes (SProxy :: SProxy "javascript:")
 
-isBookmarklet :: NonEmptyString -> Boolean
+isBookmarklet :: Predicate NonEmptyString
 isBookmarklet = startsWith prefix
 
 bookmarkletPrism :: Prism' NonEmptyString Bookmarklet

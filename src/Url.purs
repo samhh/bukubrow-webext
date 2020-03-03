@@ -9,6 +9,7 @@ import Data.Maybe (Maybe)
 import Data.String (Pattern(..), joinWith, split)
 import Foreign (Foreign)
 import Foreign.Custom (unsafeFromNullable)
+import Types (Predicate, Endomorphism)
 
 type Url =
     { href :: String
@@ -39,20 +40,20 @@ foreign import mkUrlImpl :: String -> Foreign
 mkUrl :: String -> Maybe Url
 mkUrl = mkUrlImpl >>> unsafeFromNullable
 
-domainFromHost :: String -> String
+domainFromHost :: Endomorphism String
 domainFromHost = split (Pattern ".") >>> takeEnd 2 >>> joinWith "."
 
 domain :: Url -> String
-domain x = domainFromHost x.host
+domain = _.host >>> domainFromHost
 
 hrefSansProtocol :: Url -> String
 hrefSansProtocol x = x.host <> x.pathname
 
-httpFromProtocol :: String -> Boolean
+httpFromProtocol :: Predicate String
 httpFromProtocol = flip elem [ "http:", "https:" ]
 
-http :: Url -> Boolean
-http x = httpFromProtocol x.protocol
+http :: Predicate Url
+http = _.protocol >>> httpFromProtocol
 
 compare :: Url -> Url -> UrlMatch
 compare x y = do

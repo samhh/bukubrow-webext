@@ -9,6 +9,7 @@ import Data.Either (Either, note)
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
+import Types (Predicate)
 
 newtype Natural = Natural Int
 
@@ -22,7 +23,7 @@ instance decodeNatural :: DecodeJson Natural where
         int <- decodeJson json :: Either String Int
         note "Value is not a Natural" (fromInt int)
 
-isNatural :: Int -> Boolean
+isNatural :: Predicate Int
 isNatural = (_ >= 0)
 
 naturalPrism :: Prism' Int Natural

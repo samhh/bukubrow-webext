@@ -16,10 +16,11 @@ import Data.String.NonEmpty (NonEmptyString, contains)
 import Data.String.NonEmpty as NES
 import Test.QuickCheck (class Arbitrary, arbitrary)
 import Test.QuickCheck.Gen.Custom (suchThatMap)
+import Types (Predicate)
 
 newtype Tag = Tag NonEmptyString
 
-isTag :: NonEmptyString -> Boolean
+isTag :: Predicate NonEmptyString
 isTag = not $ contains bukuTagDelimiterP
 
 tagPrism :: Prism' NonEmptyString Tag
