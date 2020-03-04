@@ -2,9 +2,11 @@ module Url where
 
 import Prelude
 
+import Control.Monad.Custom (filter)
 import Data.Array (elem, takeEnd)
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Show (genericShow)
+import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.String (Pattern(..), joinWith, split)
 import Foreign (Foreign)
@@ -37,8 +39,14 @@ instance ordUrlMatch :: Ord UrlMatch where
 
 foreign import mkUrlImpl :: String -> Foreign
 
-mkUrl :: String -> Maybe Url
-mkUrl = mkUrlImpl >>> unsafeFromNullable
+urlPrism :: Prism' String Url
+urlPrism = prism' (_.href) (mkUrlImpl >>> unsafeFromNullable >>> filter http)
+
+fromString :: String -> Maybe Url
+fromString = preview urlPrism
+
+toString :: Url -> String
+toString = review urlPrism
 
 domainFromHost :: Endomorphism String
 domainFromHost = split (Pattern ".") >>> takeEnd 2 >>> joinWith "."
@@ -57,11 +65,9 @@ http = _.protocol >>> httpFromProtocol
 
 compare :: Url -> Url -> UrlMatch
 compare x y = do
-    -- Never match URLs with non-HTTP(S) protocols
-    if (not $ http x) || (not $ http y) then None else do
-        -- Match URLs as exact irrespective of protocol equality
-        if hrefSansProtocol x == hrefSansProtocol y then Exact else do
-            -- Check equality of domain (ignoring subdomain(s))
-            if domain x == domain y then Domain
-            else None
+    -- Match URLs as exact irrespective of protocol equality
+    if hrefSansProtocol x == hrefSansProtocol y then Exact else do
+        -- Check equality of domain (ignoring subdomain(s))
+        if domain x == domain y then Domain
+        else None
 

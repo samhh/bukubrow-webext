@@ -6,7 +6,7 @@ import Data.Maybe (Maybe(..))
 import Foreign (unsafeFromForeign)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual, shouldNotSatisfy, shouldSatisfy)
-import Url (UrlMatch(..), Url, domainFromHost, hrefSansProtocol, httpFromProtocol, mkUrl, mkUrlImpl)
+import Url (UrlMatch(..), Url, domainFromHost, hrefSansProtocol, httpFromProtocol, fromString, mkUrlImpl)
 import Url as URL
 
 unsafeMkUrl :: String -> Url
@@ -14,13 +14,15 @@ unsafeMkUrl = (mkUrlImpl >>> unsafeFromForeign)
 
 spec :: Spec Unit
 spec = describe "Url" do
-    describe "mkUrl" do
-       it "parses url with protocol" do
+    describe "fromString" do
+        it "parses url with http(s) protocol" do
             let expectedUrl = { href: "https://samhh.com/", protocol: "https:", host: "samhh.com", hostname: "samhh.com", pathname: "/" }
-            mkUrl "https://samhh.com" `shouldEqual` Just expectedUrl
-       it "does not parse url without protocol" do
-            mkUrl ""          `shouldEqual` Nothing
-            mkUrl "samhh.com" `shouldEqual` Nothing
+            fromString "https://samhh.com" `shouldEqual` Just expectedUrl
+        it "does not parse url with non-http(s) protocol" do
+            fromString "ftp://samhh.com" `shouldEqual` Nothing
+        it "does not parse url without protocol" do
+            fromString ""          `shouldEqual` Nothing
+            fromString "samhh.com" `shouldEqual` Nothing
 
     describe "UrlMatch ord instance" do
         it "is consistent with number comparison" do
@@ -53,7 +55,7 @@ spec = describe "Url" do
             "ftp:"   `shouldNotSatisfy` httpFromProtocol
 
     describe "compare" do
-        it "matches exactly irrespective of http(s)" do
+        it "matches exactly irrespective of tls" do
             URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "http://samhh.com")                `shouldEqual` Exact
             URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "https://samhh.com")               `shouldEqual` Exact
         it "matches domain if subdomain differs" do
@@ -62,6 +64,4 @@ spec = describe "Url" do
             URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "https://a.b.c.samhh.com/x/y/z")   `shouldEqual` Domain
         it "does not match different tlds" do
             URL.compare (unsafeMkUrl "http://samhh.com") (unsafeMkUrl "https://a.b.c.samhh.co.uk/x/y/z") `shouldEqual` None
-        it "does not match non-http(s)" do
-            URL.compare (unsafeMkUrl "ftp://samhh.com")  (unsafeMkUrl "ftp://samhh.com")                 `shouldEqual` None
 
