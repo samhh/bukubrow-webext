@@ -2,18 +2,13 @@ module Buku where
 
 import Data.String (Pattern(..))
 import Data.String.CodeUnits as SCU
-import Data.String.NonEmpty (NonEmptyString)
-import Data.String.NonEmpty.CodeUnits as NESCU
 
-bukuTagDelimiter :: Char
-bukuTagDelimiter = ','
+tagDelimiterC :: Char
+tagDelimiterC = ','
 
-bukuTagDelimiterS :: String
-bukuTagDelimiterS = SCU.singleton bukuTagDelimiter
+tagDelimiterS :: String
+tagDelimiterS = SCU.singleton tagDelimiterC
 
-bukuTagDelimiterNES :: NonEmptyString
-bukuTagDelimiterNES = NESCU.singleton bukuTagDelimiter
-
-bukuTagDelimiterP :: Pattern
-bukuTagDelimiterP = Pattern bukuTagDelimiterS
+tagDelimiter :: Pattern
+tagDelimiter = Pattern tagDelimiterS
 

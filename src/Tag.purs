@@ -4,7 +4,7 @@ module Tag where
 
 import Prelude
 
-import Buku (bukuTagDelimiterP)
+import Buku (tagDelimiter)
 import Control.Alternative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
@@ -21,7 +21,7 @@ import Types (Predicate)
 newtype Tag = Tag NonEmptyString
 
 isTag :: Predicate NonEmptyString
-isTag = not $ contains bukuTagDelimiterP
+isTag = not $ contains tagDelimiter
 
 tagPrism :: Prism' NonEmptyString Tag
 tagPrism = prism' (un Tag) (ensure isTag >>> map Tag)

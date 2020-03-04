@@ -2,7 +2,7 @@ module Tag.Test where
 
 import Prelude
 
-import Buku (bukuTagDelimiterP)
+import Buku (tagDelimiter)
 import Data.Lens (preview, review)
 import Data.Maybe (isJust)
 import Data.String.NonEmpty (NonEmptyString, contains)
@@ -17,5 +17,5 @@ spec = describe "Tag" do
         let f = preview tagPrism
         let g = review tagPrism
         it "accepts non-empty strings only without delimiter" do
-            quickCheck \(x :: NonEmptyString) -> isJust (f x) === not (contains bukuTagDelimiterP x)
+            quickCheck \(x :: NonEmptyString) -> isJust (f x) === not (contains tagDelimiter x)
 

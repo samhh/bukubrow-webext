@@ -4,7 +4,7 @@ import Prelude
 
 import Effect (Effect)
 
-foreign import openPopup :: Effect Unit
+foreign import open :: Effect Unit
 
-foreign import closePopup :: Effect Unit
+foreign import close :: Effect Unit
 

@@ -3,7 +3,7 @@ module Bookmark.Test where
 import Prelude
 
 import Bookmark (localTags, remoteTags)
-import Buku (bukuTagDelimiter, bukuTagDelimiterP, bukuTagDelimiterS)
+import Buku (tagDelimiter, tagDelimiterS)
 import Data.Compactable (class Compactable, compact)
 import Data.Foldable (any, foldr, length)
 import Data.String (contains)
@@ -28,7 +28,7 @@ spec = describe "Bookmark" do
             localTags ""   `shouldEqual` []
             localTags ","  `shouldEqual` []
             localTags ",," `shouldEqual` []
-            quickCheck \(n :: Int) -> localTags (unsafeRepeat (max 0 n) bukuTagDelimiterS) === []
+            quickCheck \(n :: Int) -> localTags (unsafeRepeat (max 0 n) tagDelimiterS) === []
         it "deserialises the same regardless of surrounding delimiters" do
             localTags "a,b"         `shouldEqual` m ["a", "b"]
             localTags "a,b,"        `shouldEqual` m ["a", "b"]
@@ -36,7 +36,7 @@ spec = describe "Bookmark" do
             localTags ",a,b,"       `shouldEqual` m ["a", "b"]
             localTags ",,,a,,,b,,," `shouldEqual` m ["a", "b"]
         it "does not deserialise any tag with a delimiter" do
-            quickCheck \(x :: String) -> not $ any (Tag.toString >>> contains bukuTagDelimiterP) $ localTags x
+            quickCheck \(x :: String) -> not $ any (Tag.toString >>> contains tagDelimiter) $ localTags x
 
     describe "remoteTags" do
         it "serialises empty to a single delimiter as Buku does" do
@@ -48,7 +48,7 @@ spec = describe "Bookmark" do
             let f = foldr (Tag.length >>> add) 0
             quickCheck \(xs :: Array Tag) -> S.length (remoteTags xs) === length xs + 1 + f xs
         it "always serialises with comma head" do
-            quickCheck \(xs :: Array Tag) -> charAt 0 (remoteTags xs) === bukuTagDelimiter
+            quickCheck \(xs :: Array Tag) -> charAt 0 (remoteTags xs) === ','
         it "always serialises with comma last" do
-            quickCheck \(xs :: Array Tag) -> charAt 0 (SS.reverse $ remoteTags xs) === bukuTagDelimiter
+            quickCheck \(xs :: Array Tag) -> charAt 0 (SS.reverse $ remoteTags xs) === ','
 

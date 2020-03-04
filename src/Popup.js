@@ -2,11 +2,11 @@ const { browser } = require('webextension-polyfill-ts');
 
 const noop = () => {};
 
-exports.openPopup = () => {
+exports.open = () => {
 	browser.browserAction.openPopup().catch(noop);
 };
 
-exports.closePopup = () => {
+exports.close = () => {
 	window.close();
 };
 

@@ -8,7 +8,7 @@ import Prelude
 
 import Bookmarklet (Bookmarklet)
 import Bookmarklet as Bml
-import Buku (bukuTagDelimiterP, bukuTagDelimiterS)
+import Buku (tagDelimiter, tagDelimiterS)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Compactable (compact)
 import Data.Foldable (class Foldable, surround)
@@ -97,10 +97,10 @@ type LocalBookmarkWeighted =
     }
 
 remoteTags :: forall f. Functor f => Foldable f => f Tag -> String
-remoteTags = map Tag.toString >>> surround bukuTagDelimiterS
+remoteTags = map Tag.toString >>> surround tagDelimiterS
 
 localTags :: String -> Array Tag
-localTags = split bukuTagDelimiterP >>> map Tag.fromString >>> compact
+localTags = split tagDelimiter >>> map Tag.fromString >>> compact
 
 remote ::
     forall a.

@@ -9,13 +9,13 @@ import Effect (Effect)
 import Effect.Aff (Aff)
 import Foreign (Foreign)
 
-foreign import getSyncStorageImpl :: Array String -> Effect (Promise Foreign)
+foreign import getImpl :: Array String -> Effect (Promise Foreign)
 
-getSyncStorage :: forall f. Foldable f => f String -> Aff Foreign
-getSyncStorage = fromFoldable >>> getSyncStorageImpl >>> toAffE
+get :: forall f. Foldable f => f String -> Aff Foreign
+get = fromFoldable >>> getImpl >>> toAffE
 
-foreign import setSyncStorageImpl :: Foreign -> Effect (Promise Unit)
+foreign import setImpl :: Foreign -> Effect (Promise Unit)
 
-setSyncStorage :: Foreign -> Aff Unit
-setSyncStorage = setSyncStorageImpl >>> toAffE
+set :: Foreign -> Aff Unit
+set = setImpl >>> toAffE
 

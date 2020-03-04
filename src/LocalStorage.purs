@@ -30,24 +30,24 @@ type LocalStorageState =
     , bookmarksSchemaVersion :: Maybe Int
     }
 
-emptyState :: LocalStorageState
-emptyState =
+empty :: LocalStorageState
+empty =
     { bookmarks: Nothing
     , bookmarksSchemaVersion: Nothing
     }
 
-foreign import getLocalStorageImpl :: Array String -> Effect (Promise Json)
+foreign import getImpl :: Array String -> Effect (Promise Json)
 
-getLocalStorage :: forall f. Foldable f => f LocalStorageKey -> Aff LocalStorageState
-getLocalStorage = fromFoldable >>> map key >>> getLocalStorageImpl >>> toAffE >>> map (decodeJson >>> fromRight emptyState)
+get :: forall f. Foldable f => f LocalStorageKey -> Aff LocalStorageState
+get = fromFoldable >>> map key >>> getImpl >>> toAffE >>> map (decodeJson >>> fromRight empty)
 
-foreign import setLocalStorageImpl :: LocalStorageState -> Effect (Promise Unit)
+foreign import setImpl :: LocalStorageState -> Effect (Promise Unit)
 
-setLocalStorage :: LocalStorageState -> Aff Unit
-setLocalStorage = setLocalStorageImpl >>> toAffE
+set :: LocalStorageState -> Aff Unit
+set = setImpl >>> toAffE
 
 getBookmarks :: Unit -> Aff (Maybe (NonEmptyArray LocalBookmark))
-getBookmarks _ = getLocalStorage ks <#> (ensure validSchema >=> _.bookmarks >=> fromArray)
+getBookmarks _ = get ks <#> (ensure validSchema >=> _.bookmarks >=> fromArray)
     where
         ks :: Array LocalStorageKey
         ks = [ Bookmarks, BookmarksSchemaVersion ]
@@ -58,5 +58,5 @@ getBookmarks _ = getLocalStorage ks <#> (ensure validSchema >=> _.bookmarks >=> 
             Nothing -> false
 
 setBookmarks :: forall f. Foldable f => f LocalBookmark -> Aff Unit
-setBookmarks xs = setLocalStorage { bookmarks: Just (fromFoldable xs), bookmarksSchemaVersion: Just bookmarkSchemaVer }
+setBookmarks xs = set { bookmarks: Just (fromFoldable xs), bookmarksSchemaVersion: Just bookmarkSchemaVer }
 
