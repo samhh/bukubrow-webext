@@ -13,13 +13,3 @@ foreign import openPopup :: Effect Unit
 
 foreign import closePopup :: Effect Unit
 
-foreign import getSyncStorageImpl :: Array String -> Effect (Promise Foreign)
-
-getSyncStorage :: forall f. Foldable f => f String -> Aff Foreign
-getSyncStorage = fromFoldable >>> getSyncStorageImpl >>> toAffE
-
-foreign import setSyncStorageImpl :: Foreign -> Effect (Promise Unit)
-
-setSyncStorage :: Foreign -> Aff Unit
-setSyncStorage = setSyncStorageImpl >>> toAffE
-
