@@ -4,36 +4,47 @@
 SHELL := /usr/bin/env bash
 
 # Vars
-TEMP_BUILD_DIR = .build
+BUILD_DIR = dist
 RELEASE_DIR = release
+BUILD_FILES = entry/content.html entry/options.html entry/backend.js
 
-# Prepare build and release dirs
-.PHONY: prepare
-prepare:
-	mkdir -p $(TEMP_BUILD_DIR) $(RELEASE_DIR)
+# Copy assets to build dir
+.PHONY: assets
+assets:
+	cp static/* $(BUILD_DIR)
 
-# Remove build dir
-.PHONY: clean
-clean:
-	rm -rf $(TEMP_BUILD_DIR)
+# Remove everything in build dir
+.PHONY: clean-build
+clean-build:
+	rm -rf $(BUILD_DIR)
+	mkdir $(BUILD_DIR)
 
-# Remove build and release dirs
-.PHONY: wipe
-wipe:
-	${MAKE} clean
-	rm -rf $(RELEASE_DIR)
+# Remove everything that's not source code (same as contents of gitignore)
+.PHONY: stateless
+stateless:
+	rm -rf node_modules/ .spago/ output/ .parcel-cache/ $(BUILD_DIR) $(RELEASE_DIR)
 
-# Wipe, and also remove node_modules/ and any cache directories
-.PHONY: nuke
-nuke:
-	${MAKE} wipe
-	rm -rf node_modules/ .cache/ dist/
+# Bundle and watch for dev
+.PHONY: bundle-dev
+bundle-dev:
+	yarn install
+	${MAKE} clean-build
+	${MAKE} assets
+	./node_modules/.bin/parcel watch $(BUILD_FILES)
 
+# Bundle for prod
+.PHONY: bundle-prod
+bundle-prod:
+	yarn install
+	${MAKE} clean-build
+	${MAKE} assets
+	./node_modules/.bin/parcel build $(BUILD_FILES)
 
-# Build WebExtension via Yarn and zip into release dir
-.PHONY: webext
-webext:
-	${MAKE} prepare
-	yarn && yarn build
-	cd dist && zip -r '../$(RELEASE_DIR)/webext' ./*
-	${MAKE} clean
+# Build and zip into release dir
+.PHONY: release
+release:
+	mkdir -p $(RELEASE_DIR)
+	${MAKE} bundle-prod
+	cd $(BUILD_DIR)
+	zip -r '../$(RELEASE_DIR)/webext' ./*
+

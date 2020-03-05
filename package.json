@@ -1,9 +1,4 @@
 {
-    "scripts": {
-        "assets": "cp static/* dist/",
-        "bundle-dev": "yarn run assets && parcel watch entry/content.html entry/options.html entry/backend.js",
-        "bundle-prod": "yarn run assets && parcel build entry/content.html entry/options.html entry/backend.js"
-    },
     "dependencies": {
         "uuid": "^3.4.0",
         "uuid-validate": "^0.0.3",

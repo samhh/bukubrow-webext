@@ -33,12 +33,12 @@ Install the WebExtension from the relevant addon store.
 Alternatively, you can build the WebExtension manually as follows:
 
 1. Clone the repo.
-2. Run `make webext`. Your zip file will be located within the `./release/` directory. This zip file is the exact structure expected by all compatible browsers.
-3. Load the extension in your browser. Please refer to the browser documentation.
+2. Run `make release`. Your zip file will be located within the `./release/` directory. This zip file is the exact structure expected by all compatible browsers.
+3. Load the extension in your browser. Please refer to your browser's documentation.
 
 ## Contributing
 
 The WebExtension is written in PureScript, utilising React for rendering via [oak](https://github.com/ehrenmurdick/purescript-oak). Data is fetched from the host via native messaging.
 
-As referenced above Spago is the build tool of choice, thus the only scripts defined in the npm manifest are those for bundling Spago/PureScript's output for the browser. The typical development workflow is to run `yarn bundle-dev`, `spago build -w`, and `spago test -w` simultaneously.
+As referenced above Spago is the build tool of choice, thus the only scripts defined in the makefile related to building are those for bundling Spago/PureScript's output for the browser. A typical development workflow is to run `make bundle-dev`, `spago build -w`, and `spago test -w` simultaneously.
 
