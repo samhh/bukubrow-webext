@@ -69,10 +69,11 @@ openBookmark x = do
 openBookmarks :: forall f. Foldable f => f String -> Aff Unit
 openBookmarks xs = do
     y <- activeTabIsNewTabPage unit
-    sequence_ $ mapWithIndex (\i x -> open (y && i == 0) x) $ fromFoldable xs
+    sequence_ $ mapWithIndex (\i -> open (y && i == 0)) $ fromFoldable xs
         where
             open :: Boolean -> String -> Aff Unit
-            open x y = if x then updateActiveTab y else createTab y
+            open true = updateActiveTab
+            open false = createTab
 
 foreign import executeCodeInActiveTabImpl :: String -> Effect (Promise Unit)
 

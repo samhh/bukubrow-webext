@@ -2,11 +2,11 @@ module Url where
 
 import Prelude
 
-import Control.Monad.Custom (filter)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (decodeJson)
 import Data.Array (elem, takeEnd)
 import Data.Either (hush)
+import Data.Filterable (filter)
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Show (genericShow)
 import Data.Lens (Prism', preview, prism', review)

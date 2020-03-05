@@ -2,8 +2,8 @@ module Search where
 
 import Prelude
 
-import Control.Monad.Custom (filter)
 import Data.Array.NonEmpty (NonEmptyArray, head)
+import Data.Filterable (filter)
 import Data.Maybe (Maybe(..))
 import Data.String (null)
 import Data.String.Regex (Regex, match)
