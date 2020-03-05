@@ -2,15 +2,17 @@ module Url.Test where
 
 import Prelude
 
+import Data.Argonaut.Decode (decodeJson)
+import Data.Either (fromRight)
 import Data.Maybe (Maybe(..))
-import Foreign (unsafeFromForeign)
+import Partial.Unsafe (unsafePartial)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual, shouldNotSatisfy, shouldSatisfy)
 import Url (UrlMatch(..), Url, domainFromHost, hrefSansProtocol, httpFromProtocol, fromString, mkUrlImpl)
 import Url as URL
 
 unsafeMkUrl :: String -> Url
-unsafeMkUrl = (mkUrlImpl >>> unsafeFromForeign)
+unsafeMkUrl = mkUrlImpl >>> decodeJson >>> unsafePartial fromRight
 
 spec :: Spec Unit
 spec = describe "Url" do

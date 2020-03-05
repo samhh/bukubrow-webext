@@ -3,19 +3,19 @@ module SyncStorage where
 import Prelude
 
 import Control.Promise (Promise, toAffE)
+import Data.Argonaut.Core (Json)
 import Data.Array (fromFoldable)
 import Data.Foldable (class Foldable)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Foreign (Foreign)
 
-foreign import getImpl :: Array String -> Effect (Promise Foreign)
+foreign import getImpl :: Array String -> Effect (Promise Json)
 
-get :: forall f. Foldable f => f String -> Aff Foreign
+get :: forall f. Foldable f => f String -> Aff Json
 get = fromFoldable >>> getImpl >>> toAffE
 
-foreign import setImpl :: Foreign -> Effect (Promise Unit)
+foreign import setImpl :: Json -> Effect (Promise Unit)
 
-set :: Foreign -> Aff Unit
+set :: Json -> Aff Unit
 set = setImpl >>> toAffE
 

@@ -3,14 +3,15 @@ module Url where
 import Prelude
 
 import Control.Monad.Custom (filter)
+import Data.Argonaut.Core (Json)
+import Data.Argonaut.Decode (decodeJson)
 import Data.Array (elem, takeEnd)
+import Data.Either (hush)
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Show (genericShow)
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.String (Pattern(..), joinWith, split)
-import Foreign (Foreign)
-import Foreign.Custom (unsafeFromNullable)
 import Types (Predicate, Endomorphism)
 
 type Url =
@@ -37,10 +38,10 @@ instance ordUrlMatch :: Ord UrlMatch where
     compare Domain None = GT
     compare _ _ = LT
 
-foreign import mkUrlImpl :: String -> Foreign
+foreign import mkUrlImpl :: String -> Json
 
 urlPrism :: Prism' String Url
-urlPrism = prism' (_.href) (mkUrlImpl >>> unsafeFromNullable >>> filter http)
+urlPrism = prism' (_.href) (mkUrlImpl >>> decodeJson >>> hush >>> filter http)
 
 fromString :: String -> Maybe Url
 fromString = preview urlPrism
