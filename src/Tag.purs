@@ -9,6 +9,7 @@ import Control.Alternative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either, note)
+import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
@@ -24,7 +25,7 @@ isTag :: Predicate NonEmptyString
 isTag = not $ contains tagDelimiter
 
 tagPrism :: Prism' NonEmptyString Tag
-tagPrism = prism' (un Tag) (ensure isTag >>> map Tag)
+tagPrism = prism' (un Tag) (ensure isTag >#> Tag)
 
 derive instance newtypeTag :: Newtype Tag _
 

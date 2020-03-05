@@ -3,6 +3,7 @@ module Bookmarklet where
 import Prelude
 
 import Control.Alternative.Custom (ensure)
+import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
@@ -21,7 +22,7 @@ isBookmarklet :: Predicate NonEmptyString
 isBookmarklet = startsWith prefix
 
 bookmarkletPrism :: Prism' NonEmptyString Bookmarklet
-bookmarkletPrism = prism' (un Bookmarklet) (ensure isBookmarklet >>> map Bookmarklet)
+bookmarkletPrism = prism' (un Bookmarklet) (ensure isBookmarklet >#> Bookmarklet)
 
 derive instance newtypeBookmarklet :: Newtype Bookmarklet _
 

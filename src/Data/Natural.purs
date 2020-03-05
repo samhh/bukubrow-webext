@@ -6,6 +6,7 @@ import Control.Alternative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either, note)
+import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
@@ -31,7 +32,7 @@ isNatural :: Predicate Int
 isNatural = (_ >= 0)
 
 naturalPrism :: Prism' Int Natural
-naturalPrism = prism' (un Natural) (ensure isNatural >>> map Natural)
+naturalPrism = prism' (un Natural) (ensure isNatural >#> Natural)
 
 sign :: Int -> Natural
 sign = max 0 >>> Natural

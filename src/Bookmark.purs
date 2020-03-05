@@ -12,6 +12,7 @@ import Buku (tagDelimiter, tagDelimiterS)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Compactable (compact)
 import Data.Foldable (class Foldable, surround)
+import Data.Functor.Custom ((>#>))
 import Data.Maybe (Maybe(..))
 import Data.Natural (Natural)
 import Data.String (split)
@@ -36,7 +37,7 @@ mkLink x = case Bml.fromString x of
         Nothing -> MiscLink x
 
 instance decodeLink :: DecodeJson Link where
-    decodeJson = decodeJson >>> map mkLink
+    decodeJson = decodeJson >#> mkLink
 
 type Saved a =
     ( id :: Natural
@@ -100,7 +101,7 @@ remoteTags :: forall f. Functor f => Foldable f => f Tag -> String
 remoteTags = map Tag.toString >>> surround tagDelimiterS
 
 localTags :: String -> Array Tag
-localTags = split tagDelimiter >>> map Tag.fromString >>> compact
+localTags = split tagDelimiter >#> Tag.fromString >>> compact
 
 remote ::
     forall a.

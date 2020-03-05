@@ -12,6 +12,7 @@ import Data.Array (fromFoldable)
 import Data.Array.NonEmpty (NonEmptyArray, fromArray)
 import Data.Either.Custom (fromRight)
 import Data.Foldable (class Foldable)
+import Data.Functor.Custom ((>#>))
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (Aff)
@@ -39,7 +40,7 @@ empty =
 foreign import getImpl :: Array String -> Effect (Promise Json)
 
 get :: forall f. Foldable f => f LocalStorageKey -> Aff LocalStorageState
-get = fromFoldable >>> map key >>> getImpl >>> toAffE >>> map (decodeJson >>> fromRight empty)
+get = fromFoldable >#> key >>> getImpl >>> toAffE >#> (decodeJson >>> fromRight empty)
 
 foreign import setImpl :: LocalStorageState -> Effect (Promise Unit)
 

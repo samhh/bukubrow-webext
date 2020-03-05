@@ -5,6 +5,7 @@ import Prelude
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either, note)
+import Data.Functor.Custom ((>#>))
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
 import Data.String.NonEmpty (NonEmptyString)
@@ -39,7 +40,7 @@ unNonEmptyStringN :: NonEmptyStringN -> NonEmptyString
 unNonEmptyStringN = un mkNonEmptyStringN
 
 fromString :: String -> Maybe NonEmptyStringN
-fromString = NES.fromString >>> map mkNonEmptyStringN
+fromString = NES.fromString >#> mkNonEmptyStringN
 
 toString :: NonEmptyStringN -> String
 toString = unNonEmptyStringN >>> NES.toString

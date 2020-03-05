@@ -10,6 +10,6 @@ import Tab (getActiveTab, onTabActivity)
 
 main :: Effect Unit
 main = launchAff_ do
-    (log <<< show) =<< getActiveTab unit
+    getActiveTab unit >>= (show >>> log)
     liftEffect $ onTabActivity (log "TAB ACTIVITY WOO")
 
