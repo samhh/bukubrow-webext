@@ -3,6 +3,7 @@ module Bookmarklet where
 import Prelude
 
 import Control.Applicative.Custom (ensure)
+import Data.Function (on)
 import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
@@ -30,7 +31,7 @@ instance showBookmarklet :: Show Bookmarklet where
     show = toString
 
 instance eqBookmarklet :: Eq Bookmarklet where
-    eq x y = toNonEmptyString x == toNonEmptyString y
+    eq = on eq toNonEmptyString
 
 fromNonEmptyString :: NonEmptyString -> Maybe Bookmarklet
 fromNonEmptyString = preview bookmarkletPrism

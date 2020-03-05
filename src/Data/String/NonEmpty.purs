@@ -5,6 +5,7 @@ import Prelude
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either, note)
+import Data.Function (on)
 import Data.Functor.Custom ((>#>))
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
@@ -23,7 +24,7 @@ instance showNonEmptyStringN :: Show NonEmptyStringN where
     show = toString
 
 instance eqNonEmptyStringN :: Eq NonEmptyStringN where
-    eq x y = unNonEmptyStringN x == unNonEmptyStringN y
+    eq = on eq unNonEmptyStringN
 
 instance encodeNonEmptyStringN :: EncodeJson NonEmptyStringN where
     encodeJson = toString >>> encodeJson

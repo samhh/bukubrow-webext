@@ -13,7 +13,7 @@ import Data.Array.NonEmpty (NonEmptyArray, fromArray)
 import Data.Either.Custom (fromRight)
 import Data.Foldable (class Foldable)
 import Data.Functor.Custom ((>#>))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), fromMaybe)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Types (Predicate)
@@ -54,9 +54,7 @@ getBookmarks _ = get ks <#> (ensure validSchema >=> _.bookmarks >=> fromArray)
         ks = [ Bookmarks, BookmarksSchemaVersion ]
 
         validSchema :: Predicate LocalStorageState
-        validSchema x = case x.bookmarksSchemaVersion of
-            Just v -> v == bookmarkSchemaVer
-            Nothing -> false
+        validSchema = _.bookmarksSchemaVersion >#> (_ == bookmarkSchemaVer) >>> fromMaybe false
 
 setBookmarks :: forall f. Foldable f => f LocalBookmark -> Aff Unit
 setBookmarks xs = set { bookmarks: Just (fromFoldable xs), bookmarksSchemaVersion: Just bookmarkSchemaVer }

@@ -9,11 +9,12 @@ import Prelude
 import Bookmarklet (Bookmarklet)
 import Bookmarklet as Bml
 import Buku (tagDelimiter, tagDelimiterS)
+import Control.Alt ((<|>))
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Compactable (compact)
 import Data.Foldable (class Foldable, surround)
 import Data.Functor.Custom ((>#>))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (fromMaybe)
 import Data.Natural (Natural)
 import Data.String (split)
 import Data.Symbol (SProxy(..))
@@ -29,15 +30,24 @@ data Link
     | UrlLink Url
     | MiscLink String
 
-mkLink :: String -> Link
-mkLink x = case Bml.fromString x of
-    Just bml -> BookmarkletLink bml
-    Nothing -> case Url.fromString x of
-        Just url -> UrlLink url
-        Nothing -> MiscLink x
+derive instance eqLink :: Eq Link
+
+instance showLink :: Show Link where
+    show = unLink
 
 instance decodeLink :: DecodeJson Link where
     decodeJson = decodeJson >#> mkLink
+
+mkLink :: String -> Link
+mkLink x =
+        (Bml.fromString x <#> BookmarkletLink)
+    <|> (Url.fromString x <#> UrlLink)
+      # fromMaybe (MiscLink x)
+
+unLink :: Link -> String
+unLink (BookmarkletLink x) = Bml.toString x
+unLink (UrlLink x) = Url.toString x
+unLink (MiscLink x) = x
 
 type Saved a =
     ( id :: Natural

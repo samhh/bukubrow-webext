@@ -9,6 +9,7 @@ import Control.Applicative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either, note)
+import Data.Function (on)
 import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
@@ -33,7 +34,7 @@ instance showTag :: Show Tag where
     show = toString
 
 instance eqTag :: Eq Tag where
-    eq x y = toNonEmptyString x == toNonEmptyString y
+    eq = on eq toNonEmptyString
 
 instance arbitraryTag :: Arbitrary Tag where
     arbitrary = arbitrary `suchThatMap` fromNonEmptyString

@@ -2,13 +2,18 @@ module Data.Functor.Custom where
 
 import Prelude
 
-composeMap :: forall a b c f. Functor f => (a -> f b) -> (b -> c) -> a -> f c
-composeMap f g = f >>> map g
+-- | The following are equivalent:
+-- | g <$< f == map g <<< f
+composeMap :: forall a b c f. Functor f => (b -> c) -> (a -> f b) -> a -> f c
+composeMap = map >>> map
 
-infixl 10 composeMap as >#>
+infixl 10 composeMap as <$<
 
-composeMapFlipped :: forall a b c f. Functor f => (b -> c) -> (a -> f b) -> a -> f c
+
+-- | The following are equivalent:
+-- | f >#> g == f >>> map g
+composeMapFlipped :: forall a b c f. Functor f => (a -> f b) -> (b -> c) -> a -> f c
 composeMapFlipped = flip composeMap
 
-infixl 10 composeMapFlipped as <$<
+infixl 10 composeMapFlipped as >#>
 
