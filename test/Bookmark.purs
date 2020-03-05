@@ -48,7 +48,7 @@ spec = describe "Bookmark" do
             localTags ""   `shouldEqual` []
             localTags ","  `shouldEqual` []
             localTags ",," `shouldEqual` []
-            quickCheck \(n :: Int) -> localTags (unsafeRepeat (max 0 n) tagDelimiterS) === []
+            quickCheck \(n :: Int) -> localTags (unsafeRepeat (clamp 0 50 n) tagDelimiterS) === []
         it "deserialises the same regardless of surrounding delimiters" do
             localTags "a,b"         `shouldEqual` m ["a", "b"]
             localTags "a,b,"        `shouldEqual` m ["a", "b"]
