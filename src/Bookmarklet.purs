@@ -2,7 +2,7 @@ module Bookmarklet where
 
 import Prelude
 
-import Control.Alternative.Custom (ensure)
+import Control.Applicative.Custom (ensure)
 import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)

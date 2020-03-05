@@ -5,7 +5,7 @@ module Tag where
 import Prelude
 
 import Buku (tagDelimiter)
-import Control.Alternative.Custom (ensure)
+import Control.Applicative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (Either, note)

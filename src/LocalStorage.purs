@@ -4,7 +4,7 @@ import Prelude
 
 import Bookmark (LocalBookmark)
 import Config (bookmarkSchemaVer)
-import Control.Alternative.Custom (ensure)
+import Control.Applicative.Custom (ensure)
 import Control.Promise (Promise, toAffE)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (decodeJson)
