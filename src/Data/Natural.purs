@@ -9,11 +9,15 @@ import Data.Either (Either, note)
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
+import Friendly (class Friendly)
 import Types (Predicate)
 
 newtype Natural = Natural Int
 
 derive instance newtypeNatural :: Newtype Natural _
+
+instance friendlyNatural :: Friendly Natural where
+    showf = toInt >>> show
 
 instance encodeNatural :: EncodeJson Natural where
     encodeJson = toInt >>> encodeJson
