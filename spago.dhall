@@ -20,7 +20,6 @@
   , "spec-quickcheck"
   , "stringutils"
   , "typelevel-prelude"
-  , "uuid"
   , "versions"
   ]
 , packages = ./packages.dhall
