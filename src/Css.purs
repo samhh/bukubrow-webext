@@ -1,11 +1,13 @@
-module CSS where
+module Css where
 
 import Prelude
 
-import Data.Tuple (Tuple(..))
+import Halogen (ClassName(..))
 import Types (Predicate)
 
 -- | Conditionally append a BEM modifier.
-modifier :: forall a. Tuple String String -> Predicate a -> a -> String
-modifier (Tuple c m) f x = if f x then c <> "--" <> m else c
+modifier :: forall a. ClassName -> String -> Predicate a -> a -> ClassName
+modifier (ClassName c) m f x = if f x
+    then ClassName (c <> "--" <> m)
+    else ClassName c
 
