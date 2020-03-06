@@ -24,7 +24,7 @@ instance showNonEmptyStringN :: Show NonEmptyStringN where
     show = toString
 
 instance eqNonEmptyStringN :: Eq NonEmptyStringN where
-    eq = on eq unNonEmptyStringN
+    eq = eq `on` unNonEmptyStringN
 
 instance encodeNonEmptyStringN :: EncodeJson NonEmptyStringN where
     encodeJson = toString >>> encodeJson
@@ -47,5 +47,5 @@ toString :: NonEmptyStringN -> String
 toString = unNonEmptyStringN >>> NES.toString
 
 startsWith :: NonEmptyString -> Predicate NonEmptyString
-startsWith x y = NES.toString x `SU.startsWith` NES.toString y
+startsWith = SU.startsWith `on` NES.toString
 

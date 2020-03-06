@@ -31,7 +31,7 @@ instance showBookmarklet :: Show Bookmarklet where
     show = toString
 
 instance eqBookmarklet :: Eq Bookmarklet where
-    eq = on eq toNonEmptyString
+    eq = eq `on` toNonEmptyString
 
 fromNonEmptyString :: NonEmptyString -> Maybe Bookmarklet
 fromNonEmptyString = preview bookmarkletPrism

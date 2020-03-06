@@ -63,13 +63,13 @@ activeTabIsNewTabPage _ = getActiveTab unit <#> isNewTabPage
 
 openBookmark :: String -> Aff Unit
 openBookmark x = do
-    y <- activeTabIsNewTabPage unit
-    if y then updateActiveTab x else createTab x
+    activeTabEmpty <- activeTabIsNewTabPage unit
+    if activeTabEmpty then updateActiveTab x else createTab x
 
 openBookmarks :: forall f. Foldable f => f String -> Aff Unit
 openBookmarks xs = do
-    y <- activeTabIsNewTabPage unit
-    sequence_ $ mapWithIndex (\i -> open (y && i == 0)) $ fromFoldable xs
+    activeTabEmpty <- activeTabIsNewTabPage unit
+    sequence_ $ mapWithIndex (\i -> open (activeTabEmpty && i == 0)) $ fromFoldable xs
         where
             open :: Boolean -> String -> Aff Unit
             open true = updateActiveTab

@@ -34,7 +34,7 @@ instance showTag :: Show Tag where
     show = toString
 
 instance eqTag :: Eq Tag where
-    eq = on eq toNonEmptyString
+    eq = eq `on` toNonEmptyString
 
 instance arbitraryTag :: Arbitrary Tag where
     arbitrary = arbitrary `suchThatMap` fromNonEmptyString

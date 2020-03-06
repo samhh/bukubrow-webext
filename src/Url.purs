@@ -71,5 +71,5 @@ compare x y
     | (eq `on` hrefSansProtocol) x y = Exact
     -- Check equality of domain (ignoring subdomain(s))
     | (eq `on` domain) x y           = Domain
-    | otherwise                  = None
+    | otherwise                      = None
 
