@@ -19,25 +19,35 @@ clean-build:
 	rm -rf $(BUILD_DIR)
 	mkdir $(BUILD_DIR)
 
+# Remove all build tool caches because they don't always behave well
+.PHONY: purge-caches
+purge-caches:
+	rm -rf .spago/ output/ .parcel-cache/
+
 # Remove everything that's not source code (same as contents of gitignore)
 .PHONY: stateless
 stateless:
-	rm -rf node_modules/ .spago/ output/ .parcel-cache/ $(BUILD_DIR) $(RELEASE_DIR)
+	${MAKE} purge-caches
+	rm -rf node_modules/ $(BUILD_DIR) $(RELEASE_DIR)
 
-# Bundle and watch for dev
+# Bundle and watch for dev, leaving alone secondary tasks
 .PHONY: bundle-dev
 bundle-dev:
-	yarn install
+	echo 'Remember to':
+	echo '1. Install dependencies with Yarn'
+	echo '2. Run a build with Spago'
 	${MAKE} clean-build
 	${MAKE} assets
 	./node_modules/.bin/parcel watch $(BUILD_FILES)
 
-# Bundle for prod
+# Bundle for prod, handling all dependent tasks
 .PHONY: bundle-prod
 bundle-prod:
+	${MAKE} purge-caches
 	yarn install
 	${MAKE} clean-build
 	${MAKE} assets
+	spago build
 	./node_modules/.bin/parcel build $(BUILD_FILES)
 
 # Build and zip into release dir
