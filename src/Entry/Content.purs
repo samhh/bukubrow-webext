@@ -1,4 +1,4 @@
-module Content where
+module Entry.Content where
 
 import Prelude
 

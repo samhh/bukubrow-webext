@@ -1,4 +1,4 @@
-module Options where
+module Entry.Options where
 
 import Prelude
 

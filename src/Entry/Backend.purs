@@ -1,4 +1,4 @@
-module Backend where
+module Entry.Backend where
 
 import Prelude
 

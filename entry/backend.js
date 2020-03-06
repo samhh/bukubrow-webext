@@ -1,2 +1,2 @@
-require('../output/Backend/index').main();
+require('../output/Entry.Backend/index').main();
 

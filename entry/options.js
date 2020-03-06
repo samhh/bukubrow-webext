@@ -1,2 +1,2 @@
-require('../output/Options/index').main();
+require('../output/Entry.Options/index').main();
 
