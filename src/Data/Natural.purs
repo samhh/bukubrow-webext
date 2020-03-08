@@ -5,7 +5,7 @@ import Prelude
 import Control.Applicative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
-import Data.Either (Either, note)
+import Data.Either (note)
 import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
@@ -24,9 +24,7 @@ instance encodeNatural :: EncodeJson Natural where
     encodeJson = toInt >>> encodeJson
 
 instance decodeNatural :: DecodeJson Natural where
-    decodeJson json = do
-        int <- decodeJson json :: Either String Int
-        note "Value is not a Natural" (fromInt int)
+    decodeJson = decodeJson >=> fromInt >>> note "Value is not a Natural"
 
 isNatural :: Predicate Int
 isNatural = (_ >= 0)

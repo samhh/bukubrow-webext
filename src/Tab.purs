@@ -58,18 +58,18 @@ foreign import updateActiveTabImpl :: String -> Effect (Promise Unit)
 updateActiveTab :: String -> Aff Unit
 updateActiveTab = updateActiveTabImpl >>> toAffE
 
-activeTabIsNewTabPage :: Unit -> Aff Boolean
-activeTabIsNewTabPage _ = getActiveTab unit <#> isNewTabPage
+activeTabEmpty :: Unit -> Aff Boolean
+activeTabEmpty _ = getActiveTab unit <#> isNewTabPage
 
 openBookmark :: String -> Aff Unit
 openBookmark x = do
-    activeTabEmpty <- activeTabIsNewTabPage unit
-    if activeTabEmpty then updateActiveTab x else createTab x
+    empty <- activeTabEmpty unit
+    if empty then updateActiveTab x else createTab x
 
 openBookmarks :: forall f. Foldable f => f String -> Aff Unit
 openBookmarks xs = do
-    activeTabEmpty <- activeTabIsNewTabPage unit
-    sequence_ $ mapWithIndex (\i -> open (activeTabEmpty && i == 0)) $ fromFoldable xs
+    empty <- activeTabEmpty unit
+    sequence_ $ mapWithIndex (\i -> open (empty && i == 0)) $ fromFoldable xs
         where
             open :: Boolean -> String -> Aff Unit
             open true = updateActiveTab

@@ -4,7 +4,7 @@ import Prelude
 
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
-import Data.Either (Either, note)
+import Data.Either (note)
 import Data.Function (on)
 import Data.Functor.Custom ((>#>))
 import Data.Maybe (Maybe)
@@ -30,9 +30,7 @@ instance encodeNonEmptyStringN :: EncodeJson NonEmptyStringN where
     encodeJson = toString >>> encodeJson
 
 instance decodeNonEmptyStringN :: DecodeJson NonEmptyStringN where
-    decodeJson json = do
-        str <- decodeJson json :: Either String String
-        note "Value is not a NonEmptyString" (NES.fromString str <#> mkNonEmptyStringN)
+    decodeJson = decodeJson >=> NES.fromString >#> mkNonEmptyStringN >>> note "Value is not a NonEmptyString"
 
 mkNonEmptyStringN :: NonEmptyString -> NonEmptyStringN
 mkNonEmptyStringN = NonEmptyStringN

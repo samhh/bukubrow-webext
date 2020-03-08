@@ -8,7 +8,7 @@ import Buku (tagDelimiter)
 import Control.Applicative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
-import Data.Either (Either, note)
+import Data.Either (note)
 import Data.Function (on)
 import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
@@ -43,9 +43,7 @@ instance encodeTag :: EncodeJson Tag where
     encodeJson = toString >>> encodeJson
 
 instance decodeTag :: DecodeJson Tag where
-    decodeJson json = do
-        str <- decodeJson json :: Either String String
-        note "Value is not a Tag" (fromString str)
+    decodeJson = decodeJson >=> fromString >>> note "Value is not a Tag"
 
 fromNonEmptyString :: NonEmptyString -> Maybe Tag
 fromNonEmptyString = preview tagPrism
