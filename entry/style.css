@@ -32,6 +32,54 @@ body {
     color: var(--text-color);
 }
 
+button {
+    padding: .5rem 1rem;
+	border: 1px solid var(--bg-color-offset);
+	border-radius: var(--border-radius);
+	font-size: 100%;
+	background: var(--bg-color-offset);
+	color: var(--text-color);
+	user-select: none;
+	transition: background-color .2s;
+}
+
+button,
+button:focus {
+    /* Has to be !important to override Firefox default */
+    outline: none !important;
+}
+
+button:disabled {
+	opacity: .25;
+}
+
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+button:not(:disabled):hover,
+button:not(:disabled):focus {
+    background-color: var(--bg-color-offset-offset);
+}
+
+button:not(:disabled):active {
+    transform: translateY(2px);
+}
+
+button[data-type="icon"] {
+    width: 25px;
+    height: 25px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+button[data-type="icon"] svg {
+    /* Override Sanitize for Feather icons */
+    fill: none !important;
+}
+
 .badge {
     width: 8px;
     height: 8px;
