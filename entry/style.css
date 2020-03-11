@@ -1,24 +1,24 @@
 @import 'sanitize.css';
 
 html {
-    --borderRadius: 3px;
+    --border-radius: 3px;
 
-    --bgColor: white;
-    --bgColorOffset: #eee;
-    --bgColorOffsetOffset: #ddd;
+    --bg-color: white;
+    --bg-color-offset: #eee;
+    --bg-color-offset-offset: #ddd;
 
-    --textColor: #282828;
-    --textColorOffset: #888;
+    --text-color: #282828;
+    --text-color-offset: #888;
 
     font-size: 62.5%;
 }
 
 html.theme-dark {
-    --bgColor: #282828;
-    --bgColorOffset: #383838;
-    --bgColorOffsetOffset: #484848;
+    --bg-color: #282828;
+    --bg-color-offset: #383838;
+    --bg-color-offset-offset: #484848;
 
-    --textColor: #eee;
+    --text-color: #eee;
 }
 
 body {
@@ -28,8 +28,8 @@ body {
     margin: 0;
     font-size: 1.6rem;
     font-family: sans-serif;
-    background: var(--bgColor);
-    color: var(--textColor);
+    background: var(--bg-color);
+    color: var(--text-color);
 }
 
 .badge {
