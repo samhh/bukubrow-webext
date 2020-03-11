@@ -32,6 +32,23 @@ body {
     color: var(--textColor);
 }
 
+.badge {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.badge--primary {
+    background-color: #4286f4;
+}
+
+.badge--secondary {
+    background-color: #a0c4ff;
+}
+
 .onboarding-wrapper {
     padding: 4rem 2rem;
     text-align: center;
