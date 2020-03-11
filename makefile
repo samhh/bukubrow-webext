@@ -11,7 +11,7 @@ BUILD_FILES = entry/content.html entry/options.html entry/backend.js
 # Copy assets to build dir
 .PHONY: assets
 assets:
-	cp static/* $(BUILD_DIR)
+	cp -r static/* $(BUILD_DIR)
 
 # Remove everything in build dir
 .PHONY: clean-build

@@ -1,0 +1,60 @@
+@import 'sanitize.css';
+
+html {
+    --borderRadius: 3px;
+
+    --bgColor: white;
+    --bgColorOffset: #eee;
+    --bgColorOffsetOffset: #ddd;
+
+    --textColor: #282828;
+    --textColorOffset: #888;
+
+    font-size: 62.5%;
+}
+
+html.theme-dark {
+    --bgColor: #282828;
+    --bgColorOffset: #383838;
+    --bgColorOffsetOffset: #484848;
+
+    --textColor: #eee;
+}
+
+body {
+    max-width: 100%;
+    width: 500px;
+    min-height: 100vh;
+    margin: 0;
+    font-size: 1.6rem;
+    font-family: sans-serif;
+    background: var(--bgColor);
+    color: var(--textColor);
+}
+
+.onboarding-wrapper {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.onboarding-heading {
+    margin: 0;
+    font-size: 2.6rem;
+}
+
+.onboarding-subheading {
+    font-size: 1.75rem;
+}
+
+.onboarding-hero {
+    width: 55px;
+    display: block;
+    margin: 4rem auto;
+}
+
+.onboarding-selection-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 1.75rem 0;
+}
+

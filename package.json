@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "sanitize.css": "^11.0.0",
         "uuid": "^7.0.2",
         "webextension-polyfill-ts": "^0.12.0"
     },
