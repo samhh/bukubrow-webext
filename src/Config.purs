@@ -1,13 +1,13 @@
 module Config where
 
-import Data.List (List(..))
-import Data.Version (Version, version)
+import Data.Natural (Natural(..))
+import Version (Version(..))
 
 appName :: String
 appName = "com.samhh.bukubrow"
 
 minHostVer :: Version
-minHostVer = version 5 0 0 Nil Nil
+minHostVer = Version (Natural 5) (Natural 0) (Natural 0)
 
 bookmarkSchemaVer :: Int
 bookmarkSchemaVer = 3

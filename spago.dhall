@@ -19,7 +19,6 @@
   , "spec-quickcheck"
   , "stringutils"
   , "typelevel-prelude"
-  , "versions"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

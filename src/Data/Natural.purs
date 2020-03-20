@@ -6,19 +6,32 @@ import Control.Applicative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (note)
+import Data.Function (on)
 import Data.Functor.Custom ((>#>))
+import Data.Int as Int
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype, un)
 import Friendly (class Friendly)
+import Test.QuickCheck (class Arbitrary, arbitrary)
+import Test.QuickCheck.Gen.Custom (suchThatMap)
 import Types (Predicate)
 
 newtype Natural = Natural Int
 
 derive instance newtypeNatural :: Newtype Natural _
 
+instance showNatural :: Show Natural where
+    show = toInt >>> show
+
 instance friendlyNatural :: Friendly Natural where
-    showf = toInt >>> show
+    showf = show
+
+instance eqNatural :: Eq Natural where
+    eq = eq `on` toInt
+
+instance arbitraryNatural :: Arbitrary Natural where
+    arbitrary = arbitrary `suchThatMap` fromInt
 
 instance encodeNatural :: EncodeJson Natural where
     encodeJson = toInt >>> encodeJson
@@ -40,4 +53,7 @@ fromInt = preview naturalPrism
 
 toInt :: Natural -> Int
 toInt = review naturalPrism
+
+fromString :: String -> Maybe Natural
+fromString = Int.fromString >=> fromInt
 
