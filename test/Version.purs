@@ -4,13 +4,13 @@ import Prelude
 
 import Data.Lens (preview, review)
 import Data.Maybe (Maybe(..))
-import Data.Natural (Natural(..))
+import Data.Natural (Natural(..), toInt)
 import Friendly (showf)
 import Test.QuickCheck ((===))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.QuickCheck (quickCheck)
-import Version (Version(..), versionArrNatPrism, versionStringPrism)
+import Version (Version(..), fromSigned, versionArrNatPrism, versionStringPrism)
 
 spec :: Spec Unit
 spec = describe "Version" do
@@ -43,4 +43,9 @@ spec = describe "Version" do
             pre "1.2.3" `shouldEqual` Just (Version (Natural 1) (Natural 2) (Natural 3))
             pre "0.15.3" `shouldEqual` Just (Version (Natural 0) (Natural 15) (Natural 3))
             pre "-1.15.3" `shouldEqual` Nothing
+
+    describe "fromSigned" do
+        it "signs and lifts" do
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> fromSigned (toInt x) (toInt y) (toInt z) === Version x y z
+            fromSigned (-1) 1 0 `shouldEqual` Version (Natural 0) (Natural 1) (Natural 0)
 

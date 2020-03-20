@@ -6,7 +6,7 @@ import Data.Function (on)
 import Data.Functor.Custom ((>#>))
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe(..))
-import Data.Natural (Natural, fromString)
+import Data.Natural (Natural, fromString, sign)
 import Data.String (Pattern(..), joinWith, split)
 import Data.Traversable (sequence)
 import Friendly (class Friendly, showf)
@@ -45,4 +45,6 @@ versionStringPrism f = prism' (toVia f) from
         toVia :: (Natural -> String) -> Version -> String
         toVia g = review versionArrNatPrism >#> g >>> joinWith "."
 
+fromSigned :: Int -> Int -> Int -> Version
+fromSigned x y z = Version (sign x) (sign y) (sign z)
 
