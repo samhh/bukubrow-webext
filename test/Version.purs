@@ -10,7 +10,7 @@ import Test.QuickCheck ((===))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.QuickCheck (quickCheck)
-import Version (Version(..), fromSigned, versionArrNatPrism, versionStringPrism)
+import Version (Compatible(..), Outdated(..), Version(..), compat, fromSigned, versionArrNatPrism, versionStringPrism)
 
 spec :: Spec Unit
 spec = describe "Version" do
@@ -48,4 +48,28 @@ spec = describe "Version" do
         it "signs and lifts" do
             quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> fromSigned (toInt x) (toInt y) (toInt z) === Version x y z
             fromSigned (-1) 1 0 `shouldEqual` Version (Natural 0) (Natural 1) (Natural 0)
+
+    describe "compat" do
+        let f = (_ + Natural 1)
+
+        it "okays exact matches" do
+            quickCheck \(x :: Version) -> compat x x === Okay
+
+        it "okays where second minor is newer" do
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version x (f y) z) === Okay
+
+        it "okays where second patch is newer" do
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version x y (f z)) === Okay
+
+        it "rejects first where its major is older" do
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version (f x) y z) === Incompatible FirstOutdated
+
+        it "rejects second where its major is older" do
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version (f x) y z) (Version x y z) === Incompatible SecondOutdated
+
+        it "rejects second where its minor is older" do
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x (f y) z) (Version x y z) === Incompatible SecondOutdated
+
+        it "rejects second where its patch is older" do
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y (f z)) (Version x y z) === Incompatible SecondOutdated
 

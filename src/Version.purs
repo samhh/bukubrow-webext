@@ -4,6 +4,8 @@ import Prelude
 
 import Data.Function (on)
 import Data.Functor.Custom ((>#>))
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Show (genericShow)
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe(..))
 import Data.Natural (Natural, fromString, sign)
@@ -47,4 +49,31 @@ versionStringPrism f = prism' (toVia f) from
 
 fromSigned :: Int -> Int -> Int -> Version
 fromSigned x y z = Version (sign x) (sign y) (sign z)
+
+data Outdated
+    = FirstOutdated
+    | SecondOutdated
+
+derive instance eqOutdated :: Eq Outdated
+derive instance genericOutdated :: Generic Outdated _
+instance showOutdated :: Show Outdated where
+  show = genericShow
+
+data Compatible
+    = Okay
+    | Incompatible Outdated
+    | Corrupt
+
+derive instance eqCompatible :: Eq Compatible
+derive instance genericCompatible :: Generic Compatible _
+instance showCompatible :: Show Compatible where
+  show = genericShow
+
+compat :: Version -> Version -> Compatible
+compat (Version a b c) (Version x y z)
+    | x > a     = Incompatible FirstOutdated
+    | x < a     = Incompatible SecondOutdated
+    | y < b     = Incompatible SecondOutdated
+    | z < c     = Incompatible SecondOutdated
+    | otherwise = Okay
 
