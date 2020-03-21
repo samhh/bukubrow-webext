@@ -53,8 +53,16 @@ unLink (BookmarkletLink x) = Bml.toString x
 unLink (UrlLink x) = Url.toString x
 unLink (MiscLink x) = x
 
+newtype BookmarkId = BookmarkId Natural
+
+instance encodeBookmarkId :: EncodeJson BookmarkId where
+    encodeJson (BookmarkId x) = encodeJson x
+
+instance decodeBookmarkId :: DecodeJson BookmarkId where
+    decodeJson = decodeJson >#> BookmarkId
+
 type Saved a =
-    ( id :: Natural
+    ( id :: BookmarkId
     | a
     )
 
