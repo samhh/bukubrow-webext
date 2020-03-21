@@ -11,6 +11,7 @@ import Bookmarklet as Bml
 import Buku (tagDelimiter, tagDelimiterS)
 import Control.Alt ((<|>))
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Compactable (compact)
 import Data.Foldable (class Foldable, surround)
 import Data.Functor.Custom ((>#>))
@@ -34,6 +35,9 @@ derive instance eqLink :: Eq Link
 
 instance showLink :: Show Link where
     show = unLink
+
+instance encodeLink :: EncodeJson Link where
+    encodeJson = unLink >>> encodeJson
 
 instance decodeLink :: DecodeJson Link where
     decodeJson = decodeJson >#> mkLink
