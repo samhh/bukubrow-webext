@@ -30,6 +30,15 @@ instance friendlyNatural :: Friendly Natural where
 instance eqNatural :: Eq Natural where
     eq = eq `on` toInt
 
+instance ordNatural :: Ord Natural where
+    compare = compare `on` toInt
+
+instance semiringNatural :: Semiring Natural where
+    zero = Natural 0
+    one = Natural 1
+    add x y = toInt x + toInt y # Natural
+    mul x y = toInt x * toInt y # Natural
+
 instance arbitraryNatural :: Arbitrary Natural where
     arbitrary = arbitrary `suchThatMap` fromInt
 
