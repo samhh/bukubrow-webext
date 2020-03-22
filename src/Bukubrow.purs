@@ -102,11 +102,11 @@ decodeResult :: Maybe Json -> Result
 decodeResult = map ((decodeJson' :: Decoder' BareResponse) >#> _.success) >>> fromMaybe
 
 insert :: forall f. Foldable f => EncodeJson (f RemoteBookmarkUnsaved) => f RemoteBookmarkUnsaved -> Aff Result
-insert = shape Insert >>> sendNativeMessage' >#> decodeResult
+insert = { bookmarks: _ } >>> shape Insert >>> sendNativeMessage' >#> decodeResult
 
 update :: forall f. Foldable f => EncodeJson (f RemoteBookmark) => f RemoteBookmark -> Aff Result
-update = shape Update >>> sendNativeMessage' >#> decodeResult
+update = { bookmarks: _ } >>> shape Update >>> sendNativeMessage' >#> decodeResult
 
 delete :: forall f. Foldable f => EncodeJson (f BookmarkId) => f BookmarkId -> Aff Result
-delete = shape Delete >>> sendNativeMessage' >#> decodeResult
+delete = { bookmark_ids: _ } >>> shape Delete >>> sendNativeMessage' >#> decodeResult
 
