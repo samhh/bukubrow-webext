@@ -3,26 +3,29 @@ module Bukubrow where
 import Prelude
 
 import Bookmark (BookmarkId, RemoteBookmark, RemoteBookmarkUnsaved)
-import Config (appName)
+import Config (appName, minHostVer)
 import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode (decodeJson)
-import Data.Argonaut.Decode.Custom (Decoder)
+import Data.Argonaut.Decode.Custom (Decoder', decodeJson')
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
-import Data.Either (hush)
+import Data.Either (Either(..), hush)
 import Data.Foldable (class Foldable)
 import Data.Functor.Custom ((>#>))
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
-import NativeMessaging (sendNativeMessage)
-import Result (Result, fromEither)
-import Version (Version)
+import NativeMessaging (Error(..))
+import NativeMessaging as NM
+import Result (Result, fromMaybe)
+import Version (Compatible(..), Outdated(..), Version, compat)
 
-sendNativeMessage' :: forall a. EncodeJson (Shaped a) => Shaped a -> Aff Json
-sendNativeMessage' = sendNativeMessage appName
+sendNativeMessage :: forall a. EncodeJson (Shaped a) => Shaped a -> Aff (Either Error Json)
+sendNativeMessage = NM.sendNativeMessage appName
+
+sendNativeMessage' :: forall a. EncodeJson (Shaped a) => Shaped a -> Aff (Maybe Json)
+sendNativeMessage' = sendNativeMessage >#> hush
 
 data Method
-    = Get
-    | Info
+    = Check
+    | Get
     | Insert
     | Update
     | Delete
@@ -31,8 +34,8 @@ instance encodeMethod :: EncodeJson Method where
     encodeJson = bukubrowMethod >>> encodeJson
 
 bukubrowMethod :: Method -> String
+bukubrowMethod Check  = "OPTIONS"
 bukubrowMethod Get    = "GET"
-bukubrowMethod Info   = "OPTIONS"
 bukubrowMethod Insert = "POST"
 bukubrowMethod Update = "PUT"
 bukubrowMethod Delete = "DELETE"
@@ -54,21 +57,49 @@ type GetResponse =
     }
 
 get :: Unit -> Aff (Maybe GetResponse)
-get = const (shape' Get) >>> sendNativeMessage' >#> decodeJson >#> hush
+get _ = do
+    res <- sendNativeMessage' (shape' Get)
+    pure $ res >>= decodeJson'
 
-type InfoResponse =
+type CheckResponse =
     { binaryVersion :: Version
     }
 
-info :: Unit -> Aff (Maybe Version)
-info = const (shape' Info) >>> sendNativeMessage' >#> ((decodeJson :: Decoder InfoResponse) >#> _.binaryVersion) >#> hush
+data HostStatus
+    = Connected
+    | HostOutdated
+    | WebExtOutdated
+    | NoHostComms
+    | UnknownError
+
+commsError :: Error -> HostStatus
+commsError NoComms = NoHostComms
+commsError Unknown = UnknownError
+
+compatible :: Compatible -> HostStatus
+compatible Compatible       = Connected
+compatible Corrupt          = UnknownError
+compatible (Incompatible x) = case x of
+    FirstOutdated -> WebExtOutdated
+    SecondOutdated -> HostOutdated
+
+check :: Unit -> Aff HostStatus
+check _ = do
+    res <- sendNativeMessage $ shape' Check
+    pure case res of
+        Left e -> commsError e
+        Right json -> do
+            let decoded = (decodeJson' :: Decoder' CheckResponse) json <#> _.binaryVersion
+            case decoded of
+                Just v -> compat minHostVer v # compatible
+                Nothing -> UnknownError
 
 type BareResponse =
     { success :: Result
     }
 
-decodeResult :: Json -> Result
-decodeResult = (decodeJson :: Decoder BareResponse) >#> _.success >>> fromEither
+decodeResult :: Maybe Json -> Result
+decodeResult = map ((decodeJson' :: Decoder' BareResponse) >#> _.success) >>> fromMaybe
 
 insert :: forall f. Foldable f => EncodeJson (f RemoteBookmarkUnsaved) => f RemoteBookmarkUnsaved -> Aff Result
 insert = shape Insert >>> sendNativeMessage' >#> decodeResult
