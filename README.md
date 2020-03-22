@@ -38,7 +38,7 @@ Alternatively, you can build the WebExtension manually as follows:
 
 ## Contributing
 
-The WebExtension is written in PureScript, utilising React for rendering via [oak](https://github.com/ehrenmurdick/purescript-oak). Data is fetched from the host via native messaging.
+The WebExtension is written in PureScript, utilising [Halogen](https://github.com/purescript-halogen/purescript-halogen) for UI rendering. Data is fetched from the host via native messaging.
 
 As referenced above Spago is the build tool of choice, thus the only scripts defined in the makefile related to building are those for bundling Spago/PureScript's output for the browser. A typical development workflow is to run `make -s bundle-dev`, `spago build -w`, and `spago test -w` simultaneously.
 
