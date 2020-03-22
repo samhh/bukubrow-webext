@@ -53,13 +53,13 @@ spec = describe "Version" do
         let f = (_ + Natural 1)
 
         it "okays exact matches" do
-            quickCheck \(x :: Version) -> compat x x === Okay
+            quickCheck \(x :: Version) -> compat x x === Compatible
 
         it "okays where second minor is newer" do
-            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version x (f y) z) === Okay
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version x (f y) z) === Compatible
 
         it "okays where second patch is newer" do
-            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version x y (f z)) === Okay
+            quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version x y (f z)) === Compatible
 
         it "rejects first where its major is older" do
             quickCheck \(x :: Natural) (y :: Natural) (z :: Natural) -> compat (Version x y z) (Version (f x) y z) === Incompatible FirstOutdated

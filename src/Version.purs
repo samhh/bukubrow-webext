@@ -65,7 +65,7 @@ instance showOutdated :: Show Outdated where
   show = genericShow
 
 data Compatible
-    = Okay
+    = Compatible
     | Incompatible Outdated
     | Corrupt
 
@@ -80,5 +80,5 @@ compat (Version a b c) (Version x y z)
     | x < a     = Incompatible SecondOutdated
     | y < b     = Incompatible SecondOutdated
     | z < c     = Incompatible SecondOutdated
-    | otherwise = Okay
+    | otherwise = Compatible
 
