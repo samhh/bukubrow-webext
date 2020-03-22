@@ -7,6 +7,7 @@ import Config (appName, minHostVer)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Custom (Decoder', decodeJson')
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
+import Data.Array (length)
 import Data.Either (Either(..), hush)
 import Data.Foldable (class Foldable)
 import Data.Functor.Custom ((>#>))
@@ -56,10 +57,19 @@ type GetResponse =
     , moreAvailable :: Boolean
     }
 
-get :: Unit -> Aff (Maybe GetResponse)
-get _ = do
-    res <- sendNativeMessage' (shape' Get)
-    pure $ res >>= decodeJson'
+get :: Unit -> Aff (Maybe (Array RemoteBookmark))
+get = const (f []) where
+    f :: Array RemoteBookmark -> Aff (Maybe (Array RemoteBookmark))
+    f xs = do
+        res <- sendNativeMessage' $ shape Get { offset: length xs }
+        let decoded = res >>= (decodeJson' :: Decoder' GetResponse)
+        case decoded of
+            Nothing -> pure Nothing
+            Just d  -> do
+                let ys = xs <> d.bookmarks
+                case d.moreAvailable of
+                    false -> pure $ Just ys
+                    true  -> f ys
 
 type CheckResponse =
     { binaryVersion :: Version
