@@ -41,7 +41,7 @@ render s =
         setOS a = const $ Just $ SetOS a
 
         content = case s.os of
-            Just (os) -> instructions os
+            Just os -> instructions os
             Nothing ->
                 HH.div_
                     [ HH.fieldset_
