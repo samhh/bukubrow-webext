@@ -3,14 +3,7 @@ let upstream =
 
 let overrides = {=}
 
-let additions =
-    { versions =
-        { repo = "https://github.com/hdgarrood/purescript-versions.git"
-        , version = "v5.0.1"
-        , dependencies =
-            [ "parsing"
-            ]
-        }
-    }
+let additions = {=}
 
 in upstream // overrides // additions
+

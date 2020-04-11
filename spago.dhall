@@ -17,6 +17,7 @@
   , "spec"
   , "spec-discovery"
   , "spec-quickcheck"
+  , "strings"
   , "stringutils"
   , "typelevel-prelude"
   ]
