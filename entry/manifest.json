@@ -20,6 +20,7 @@
 			"backend.js"
 		]
 	},
+    "web_accessible_resources": ["./img/zap-off.svg"],
 	"permissions": [
 		"nativeMessaging",
 		"storage",

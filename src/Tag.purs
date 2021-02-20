@@ -7,6 +7,7 @@ import Prelude
 import Buku (tagDelimiter)
 import Control.Applicative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (note)
 import Data.Function (on)
@@ -43,7 +44,7 @@ instance encodeTag :: EncodeJson Tag where
     encodeJson = toString >>> encodeJson
 
 instance decodeTag :: DecodeJson Tag where
-    decodeJson = decodeJson >=> fromString >>> note "Value is not a Tag"
+    decodeJson = decodeJson >=> fromString >>> note (TypeMismatch "Value is not a Tag")
 
 fromNonEmptyString :: NonEmptyString -> Maybe Tag
 fromNonEmptyString = preview tagPrism

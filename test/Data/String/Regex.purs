@@ -4,7 +4,7 @@ import Prelude
 
 import Data.Array.NonEmpty (fromArray)
 import Data.String.Regex.Custom (matchAllFirstGroups)
-import Data.String.Regex.Flags (global, noFlags)
+import Data.String.Regex.Flags (global)
 import Data.String.Regex.Unsafe (unsafeRegex)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)

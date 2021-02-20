@@ -5,9 +5,9 @@ import Prelude
 import Control.Bind (bindFlipped)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Decode.Custom (decodeJson')
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (note)
-import Data.Functor.Custom ((>#>))
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Show (genericShow)
 import Data.Lens (Prism', preview, prism', review)
@@ -36,7 +36,7 @@ instance showTheme :: Show Theme where
   show = genericShow
 
 instance decodeTheme :: DecodeJson Theme where
-    decodeJson = decodeJson >=> preview themePrism >>> note "Value is not a Theme"
+    decodeJson = decodeJson >=> preview themePrism >>> note (TypeMismatch "Value is not a Theme")
 
 instance encodeTheme :: EncodeJson Theme where
     encodeJson = review themePrism >>> encodeJson
@@ -62,7 +62,7 @@ data Badge
     | None
 
 instance decodeBadge :: DecodeJson Badge where
-    decodeJson = decodeJson >=> preview badgePrism >>> note "Value is not a Badge"
+    decodeJson = decodeJson >=> preview badgePrism >>> note (TypeMismatch "Value is not a Badge")
 
 instance encodeBadge :: EncodeJson Badge where
     encodeJson = review badgePrism >>> encodeJson

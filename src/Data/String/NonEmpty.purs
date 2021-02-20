@@ -3,6 +3,7 @@ module Data.String.NonEmpty.Custom where
 import Prelude
 
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (note)
 import Data.Function (on)
@@ -30,7 +31,7 @@ instance encodeNonEmptyStringN :: EncodeJson NonEmptyStringN where
     encodeJson = toString >>> encodeJson
 
 instance decodeNonEmptyStringN :: DecodeJson NonEmptyStringN where
-    decodeJson = decodeJson >=> NES.fromString >#> mkNonEmptyStringN >>> note "Value is not a NonEmptyString"
+    decodeJson = decodeJson >=> NES.fromString >#> mkNonEmptyStringN >>> note (TypeMismatch "Value is not a NonEmptyString")
 
 mkNonEmptyStringN :: NonEmptyString -> NonEmptyStringN
 mkNonEmptyStringN = NonEmptyStringN

@@ -5,6 +5,25 @@
         "webextension-polyfill-ts": "^0.12.0"
     },
     "devDependencies": {
-        "parcel": "^2.0.0-alpha.3.2"
+        "@parcel/config-webextension": "2.0.0-nightly.2227",
+        "@parcel/optimizer-cssnano": "2.0.0-nightly.605",
+        "@parcel/optimizer-htmlnano": "2.0.0-nightly.605",
+        "@parcel/packager-css": "2.0.0-nightly.605",
+        "@parcel/packager-html": "2.0.0-nightly.605",
+        "@parcel/transformer-css": "2.0.0-nightly.605",
+        "@parcel/transformer-html": "2.0.0-nightly.605",
+        "@parcel/transformer-postcss": "2.0.0-nightly.605",
+        "@parcel/transformer-posthtml": "2.0.0-nightly.605",
+        "parcel": "2.0.0-nightly.603",
+        "postcss": "^8.2.1"
+    },
+    "targets": {
+        "webext-dev": {
+            "sourceMap": {
+                "inline": true,
+                "inlineSources": true
+            }
+        },
+        "webext-prod": {}
     }
 }

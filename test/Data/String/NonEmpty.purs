@@ -4,6 +4,7 @@ import Prelude
 
 import Data.Argonaut.Core (fromString)
 import Data.Argonaut.Decode (decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError)
 import Data.Argonaut.Encode (encodeJson)
 import Data.Either (Either(..), isLeft)
 import Data.String.NonEmpty (NonEmptyString, toString)
@@ -21,7 +22,7 @@ spec = describe "Data.String.NonEmpty" do
         it "decodes non-empty strings" do
             quickCheck \(x :: NonEmptyString) -> decodeJson (fromString (toString x)) === Right (toString x)
         it "does not decode empty string" do
-            isLeft (decodeJson (fromString "") :: Either String NonEmptyStringN) `shouldEqual` true
+            isLeft (decodeJson (fromString "") :: Either JsonDecodeError NonEmptyStringN) `shouldEqual` true
 
     describe "startsWith" do
         it "matches identity" do

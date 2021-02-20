@@ -4,6 +4,7 @@ import Prelude
 
 import Control.Applicative.Custom (ensure)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (note)
 import Data.Function (on)
@@ -46,7 +47,7 @@ instance encodeNatural :: EncodeJson Natural where
     encodeJson = toInt >>> encodeJson
 
 instance decodeNatural :: DecodeJson Natural where
-    decodeJson = decodeJson >=> fromInt >>> note "Value is not a Natural"
+    decodeJson = decodeJson >=> fromInt >>> note (TypeMismatch "Value is not a Natural")
 
 isNatural :: Predicate Int
 isNatural = (_ >= 0)

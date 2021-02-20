@@ -3,6 +3,7 @@ module Version where
 import Prelude
 
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Either (note)
 import Data.Function (on)
 import Data.Functor.Custom ((>#>))
@@ -31,7 +32,7 @@ instance arbitraryVersion :: Arbitrary Version where
     arbitrary = Version <$> arbitrary <*> arbitrary <*> arbitrary
 
 instance decodeVersion :: DecodeJson Version where
-    decodeJson = decodeJson >=> preview (versionStringPrism show) >>> note "Value is not a Version"
+    decodeJson = decodeJson >=> preview (versionStringPrism show) >>> note (TypeMismatch "Value is not a Version")
 
 versionArrNatPrism :: Prism' (Array Natural) Version
 versionArrNatPrism = prism' to from

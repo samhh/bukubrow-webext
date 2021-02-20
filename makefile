@@ -6,12 +6,6 @@ SHELL := /usr/bin/env bash
 # Vars
 BUILD_DIR = dist
 RELEASE_DIR = release
-BUILD_FILES = entry/content.html entry/options.html entry/backend.js
-
-# Copy assets to build dir
-.PHONY: assets
-assets:
-	cp -r static/* $(BUILD_DIR)
 
 # Remove everything in build dir
 .PHONY: clean-build
@@ -37,8 +31,7 @@ bundle-dev:
 	echo '1. Install dependencies with Yarn'
 	echo '2. Run a build with Spago'
 	${MAKE} clean-build
-	${MAKE} assets
-	./node_modules/.bin/parcel watch $(BUILD_FILES)
+	./node_modules/.bin/parcel entry/manifest.json --host localhost --target webext-dev
 
 # Bundle for prod, handling all dependent tasks
 .PHONY: bundle-prod
@@ -46,15 +39,13 @@ bundle-prod:
 	${MAKE} purge-caches
 	yarn install
 	${MAKE} clean-build
-	${MAKE} assets
 	spago build
-	./node_modules/.bin/parcel build $(BUILD_FILES)
+	./node_modules/.bin/parcel build entry/manifest.json --target webext-prod
 
 # Build and zip into release dir
 .PHONY: release
 release:
-	mkdir -p $(RELEASE_DIR)
 	${MAKE} bundle-prod
-	cd $(BUILD_DIR)
-	zip -r '../$(RELEASE_DIR)/webext' ./*
+	mkdir -p $(RELEASE_DIR)
+	cd '$(BUILD_DIR)/webext-prod'; zip -r '../../$(RELEASE_DIR)/webext' ./*
 
