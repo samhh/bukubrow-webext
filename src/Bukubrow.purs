@@ -11,6 +11,8 @@ import Data.Array (length)
 import Data.Either (Either(..), hush)
 import Data.Foldable (class Foldable)
 import Data.Functor.Custom ((>#>))
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Show (genericShow)
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
 import NativeMessaging (Error(..))
@@ -57,8 +59,8 @@ type GetResponse =
     , moreAvailable :: Boolean
     }
 
-get :: Unit -> Aff (Maybe (Array RemoteBookmark))
-get = const (f []) where
+get :: Aff (Maybe (Array RemoteBookmark))
+get = f [] where
     f :: Array RemoteBookmark -> Aff (Maybe (Array RemoteBookmark))
     f xs = do
         res <- sendNativeMessage' $ shape Get { offset: length xs }
@@ -75,34 +77,37 @@ type CheckResponse =
     { binaryVersion :: Version
     }
 
-data HostStatus
-    = Connected
-    | HostOutdated
+data HostFailure
+    = HostOutdated
     | WebExtOutdated
     | NoHostComms
     | UnknownError
 
-commsError :: Error -> HostStatus
+derive instance genericHostFailure :: Generic HostFailure _
+derive instance eqHostFailure :: Eq HostFailure
+instance showHostFailure :: Show HostFailure where
+  show = genericShow
+
+commsError :: Error -> HostFailure
 commsError NoComms = NoHostComms
 commsError Unknown = UnknownError
 
-compatible :: Compatible -> HostStatus
-compatible Compatible       = Connected
-compatible Corrupt          = UnknownError
-compatible (Incompatible x) = case x of
-    FirstOutdated -> WebExtOutdated
-    SecondOutdated -> HostOutdated
+compatible :: Compatible -> Either HostFailure Unit
+compatible Compatible                    = Right unit
+compatible Corrupt                       = Left UnknownError
+compatible (Incompatible FirstOutdated)  = Left WebExtOutdated
+compatible (Incompatible SecondOutdated) = Left HostOutdated
 
-check :: Unit -> Aff HostStatus
-check _ = do
+check :: Aff (Either HostFailure Unit)
+check = do
     res <- sendNativeMessage $ shape' Check
     pure case res of
-        Left e -> commsError e
+        Left e -> Left $ commsError e
         Right json -> do
             let decoded = (decodeJson' :: Decoder' CheckResponse) json <#> _.binaryVersion
             case decoded of
-                Just v -> compat minHostVer v # compatible
-                Nothing -> UnknownError
+                Just v -> compatible $ compat minHostVer v
+                Nothing -> Left UnknownError
 
 type BareResponse =
     { success :: Result

@@ -14,9 +14,9 @@ data Rank
     | None
 
 cm :: Rank -> Maybe String
-cm Primary = Just "primary"
+cm Primary   = Just "primary"
 cm Secondary = Just "secondary"
-cm None = Nothing
+cm None      = Nothing
 
 cs :: Rank -> Array ClassName
 cs = modifierM (ClassName "badge") cm

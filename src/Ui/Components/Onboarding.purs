@@ -33,7 +33,7 @@ initialState = const { os: Nothing }
 
 handler :: forall o m. Action -> H.HalogenM State Action () o m Unit
 handler = case _ of
-    SetOS (os) -> H.modify_ \s -> s { os = Just os }
+    SetOS os -> H.modify_ \s -> s { os = Just os }
 
 render :: forall m. State -> H.ComponentHTML Action () m
 render s =

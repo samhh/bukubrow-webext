@@ -12,18 +12,14 @@ import Test.Spec.Assertions (shouldEqual)
 spec :: Spec Unit
 spec = describe "Data.String.Regex" do
     describe "matchAllFirstGroups" do
-        let r = unsafeRegex "(a.c)"
-        let rn = r noFlags
-        let rg = r global
+        let r = unsafeRegex "(a.c)" global
 
         it "matches none" do
-            matchAllFirstGroups rg "ab" `shouldEqual` fromArray []
+            matchAllFirstGroups r "ab" `shouldEqual` fromArray []
         it "matches one" do
-            matchAllFirstGroups rg "blah abc blah" `shouldEqual` fromArray ["abc"]
+            matchAllFirstGroups r "blah abc blah" `shouldEqual` fromArray ["abc"]
         it "matches many" do
-            matchAllFirstGroups rg "blah abc blah ayc blah" `shouldEqual` fromArray ["abc", "ayc"]
-        it "matches only first without global flag" do
-            matchAllFirstGroups rn "blah abc blah ayc blah" `shouldEqual` fromArray ["abc"]
+            matchAllFirstGroups r "blah abc blah ayc blah" `shouldEqual` fromArray ["abc", "ayc"]
         it "does not match non-capture groups" do
             let r2 = unsafeRegex "(?:X)(a.c)" global
             matchAllFirstGroups r2 "blah Xabc blah" `shouldEqual` fromArray ["abc"]

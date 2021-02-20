@@ -8,6 +8,8 @@ import Data.Argonaut.Decode.Custom (decodeJson')
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Either (note)
 import Data.Functor.Custom ((>#>))
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Show (genericShow)
 import Data.Lens (Prism', preview, prism', review)
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
@@ -18,8 +20,8 @@ type Settings =
     , badgeDisplay :: Maybe Badge
     }
 
-getAll :: Unit -> Aff (Maybe Settings)
-getAll _ = SS.get [ "theme", "badgeDisplay" ] <#> decodeJson'
+getAll :: Aff (Maybe Settings)
+getAll = SS.get [ "theme", "badgeDisplay" ] <#> decodeJson'
 
 setAll :: Settings -> Aff Unit
 setAll = encodeJson >>> SS.set
@@ -27,6 +29,11 @@ setAll = encodeJson >>> SS.set
 data Theme
     = Light
     | Dark
+
+derive instance genericTheme :: Generic Theme _
+derive instance eqTheme :: Eq Theme
+instance showTheme :: Show Theme where
+  show = genericShow
 
 instance decodeTheme :: DecodeJson Theme where
     decodeJson = decodeJson >=> preview themePrism >>> note "Value is not a Theme"
@@ -46,8 +53,8 @@ themePrism = prism' to from
         from "dark"  = Just Dark
         from _       = Nothing
 
-getTheme :: Unit -> Aff (Maybe Theme)
-getTheme = getAll >#> bindFlipped _.theme
+getTheme :: Aff (Maybe Theme)
+getTheme = getAll <#> bindFlipped _.theme
 
 data Badge
     = WithCount
@@ -73,6 +80,6 @@ badgePrism = prism' to from
         from "without_count" = Just WithoutCount
         from _               = Nothing
 
-getBadge :: Unit -> Aff (Maybe Badge)
-getBadge = getAll >#> bindFlipped _.badgeDisplay
+getBadge :: Aff (Maybe Badge)
+getBadge = getAll <#> bindFlipped _.badgeDisplay
 
