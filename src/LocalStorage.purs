@@ -47,8 +47,8 @@ foreign import setImpl :: LocalStorageState -> Effect (Promise Unit)
 set :: LocalStorageState -> Aff Unit
 set = setImpl >>> toAffE
 
-getBookmarks :: Unit -> Aff (Maybe (NonEmptyArray LocalBookmark))
-getBookmarks _ = get ks <#> (ensure validSchema >=> _.bookmarks >=> fromArray)
+getBookmarks :: Aff (Maybe (NonEmptyArray LocalBookmark))
+getBookmarks = get ks <#> (ensure validSchema >=> _.bookmarks >=> fromArray)
     where
         ks :: Array LocalStorageKey
         ks = [ Bookmarks, BookmarksSchemaVersion ]

@@ -35,18 +35,18 @@ foreign import getActiveTabImpl :: Effect (Promise Tab)
 
 -- | Note that the active tab does not update very quickly, so this can't be
 -- | relied upon in a loop
-getActiveTab :: Unit -> Aff Tab
-getActiveTab _ = toAffE getActiveTabImpl
+getActiveTab :: Aff Tab
+getActiveTab = toAffE getActiveTabImpl
 
 foreign import getActiveWindowTabsImpl :: Effect (Promise (Array Tab))
 
-getActiveWindowTabs :: Unit -> Aff (Array Tab)
-getActiveWindowTabs _ = toAffE getActiveWindowTabsImpl
+getActiveWindowTabs :: Aff (Array Tab)
+getActiveWindowTabs = toAffE getActiveWindowTabsImpl
 
 foreign import getAllTabsImpl :: Effect (Promise (Array Tab))
 
-getAllTabs :: Unit -> Aff (Array Tab)
-getAllTabs _ = toAffE getAllTabsImpl
+getAllTabs :: Aff (Array Tab)
+getAllTabs = toAffE getAllTabsImpl
 
 foreign import createTabImpl :: String -> Effect (Promise Unit)
 
@@ -58,17 +58,17 @@ foreign import updateActiveTabImpl :: String -> Effect (Promise Unit)
 updateActiveTab :: String -> Aff Unit
 updateActiveTab = updateActiveTabImpl >>> toAffE
 
-activeTabEmpty :: Unit -> Aff Boolean
-activeTabEmpty _ = getActiveTab unit <#> isNewTabPage
+activeTabEmpty :: Aff Boolean
+activeTabEmpty = getActiveTab <#> isNewTabPage
 
 openBookmark :: String -> Aff Unit
 openBookmark x = do
-    empty <- activeTabEmpty unit
+    empty <- activeTabEmpty
     if empty then updateActiveTab x else createTab x
 
 openBookmarks :: forall f. Foldable f => f String -> Aff Unit
 openBookmarks xs = do
-    empty <- activeTabEmpty unit
+    empty <- activeTabEmpty
     sequence_ $ mapWithIndex (\i -> open (empty && i == 0)) $ fromFoldable xs
         where
             open :: Boolean -> String -> Aff Unit
