@@ -1,4 +1,4 @@
-module Ui.Components.Onboarding (onboarding) where
+module UI.Components.Onboarding (onboarding) where
 
 import Prelude
 

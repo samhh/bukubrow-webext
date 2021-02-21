@@ -11,7 +11,7 @@ import Halogen (hoist)
 import Halogen.Aff (awaitBody)
 import Halogen.VDom.Driver (runUI)
 import Settings (getTheme)
-import Ui.Content (content)
+import UI.Content (content)
 
 -- | Get an initial env with anything attached that we want to fetch prior to
 -- | the page rendering.

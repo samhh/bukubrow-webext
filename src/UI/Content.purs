@@ -1,4 +1,4 @@
-module Ui.Content (content) where
+module UI.Content (content) where
 
 import Prelude
 
@@ -13,7 +13,7 @@ import Data.Symbol (SProxy(..))
 import Halogen as H
 import Halogen.HTML.Events as HE
 import Halogen.HTML as HH
-import Ui.Components.Onboarding (onboarding)
+import UI.Components.Onboarding (onboarding)
 
 type OpaqueSlot = H.Slot (Const Void) Void
 

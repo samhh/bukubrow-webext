@@ -1,4 +1,4 @@
-module Ui.Badge (badge, Rank(..)) where
+module UI.Badge (badge, Rank(..)) where
 
 import Prelude
 
