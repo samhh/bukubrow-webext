@@ -6,7 +6,11 @@ export const scrollToTop: IO<void> = () => {
 };
 
 export const scrollToEl = (el: HTMLElement): void => {
+	const elementRect = el.getBoundingClientRect();
 
-	window.scrollTo(0, el.getBoundingClientRect().top - document.documentElement.getBoundingClientRect().top - headerHeight);
+	if (elementRect.top - headerHeight < 0) {
+		window.scrollTo(0, elementRect.top - document.documentElement.getBoundingClientRect().top - headerHeight);
+	} else if (window.innerHeight - elementRect.bottom < 0) {
+		el.scrollIntoView(false);
+	}
 };
-
