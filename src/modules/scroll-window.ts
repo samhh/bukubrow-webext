@@ -5,7 +5,7 @@ export const scrollToTop: IO<void> = () => {
 	window.scrollTo(0, 0);
 };
 
-export const scrollToEl = (el: HTMLElement): IO<void> => (): void => {
+export const scrollToEl = (el: HTMLElement): void => {
 
 	window.scrollTo(0, el.getBoundingClientRect().top - document.documentElement.getBoundingClientRect().top - headerHeight);
 };
