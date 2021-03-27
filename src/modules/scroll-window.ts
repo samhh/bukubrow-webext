@@ -1,10 +1,16 @@
-export const scrollToTop: IO<void> = () => {
+import { headerHeight as headerHeightInPx } from '~/containers/search-controls';
+const headerHeight = parseInt(headerHeightInPx);
+
+export const scrollToTop: IO<void> = (): void => {
 	window.scrollTo(0, 0);
 };
 
 export const scrollToEl = (el: HTMLElement): IO<void> => (): void => {
-	const headerHeight = parseInt(window.getComputedStyle(document.body).getPropertyValue('--header-height'), 10);
+	const elementRect = el.getBoundingClientRect();
 
-	window.scrollTo(0, el.getBoundingClientRect().top - document.documentElement.getBoundingClientRect().top - headerHeight);
+	if (elementRect.top - headerHeight < 0) {
+		window.scrollTo(0, elementRect.top - document.documentElement.getBoundingClientRect().top - headerHeight);
+	} else if (window.innerHeight - elementRect.bottom < 0) {
+		el.scrollIntoView(false);
+	}
 };
-
