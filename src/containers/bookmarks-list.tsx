@@ -1,6 +1,7 @@
 import React, { useRef, FC } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
+import { runIO } from '~/modules/fp';
 import { useSelector, useDispatch } from '~/store';
 import { getFocusedBookmark, getParsedFilter, getWeightedLimitedFilteredBookmarks } from '~/store/selectors';
 import {
@@ -48,14 +49,14 @@ const BookmarksList: FC = () => {
 			evt.preventDefault();
 			dispatch(attemptFocusedBookmarkIndexDecrement());
 
-			if (activeBookmarkEl && activeBookmarkEl.current) scrollToEl(activeBookmarkEl.current);
+			if (activeBookmarkEl && activeBookmarkEl.current) runIO(scrollToEl(activeBookmarkEl.current));
 		}
 
 		if (evt.key === 'ArrowDown') {
 			evt.preventDefault();
 			dispatch(attemptFocusedBookmarkIndexIncrement());
 
-			if (activeBookmarkEl && activeBookmarkEl.current) scrollToEl(activeBookmarkEl.current);
+			if (activeBookmarkEl && activeBookmarkEl.current) runIO(scrollToEl(activeBookmarkEl.current));
 		}
 	});
 

@@ -1,11 +1,11 @@
 import { headerHeight as headerHeightInPx } from '~/containers/search-controls';
 const headerHeight = parseInt(headerHeightInPx);
 
-export const scrollToTop: IO<void> = () => {
+export const scrollToTop: IO<void> = (): void => {
 	window.scrollTo(0, 0);
 };
 
-export const scrollToEl = (el: HTMLElement): void => {
+export const scrollToEl = (el: HTMLElement): IO<void> => (): void => {
 	const elementRect = el.getBoundingClientRect();
 
 	if (elementRect.top - headerHeight < 0) {
