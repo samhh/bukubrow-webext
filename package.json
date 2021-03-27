@@ -5,8 +5,7 @@
 	"main": "webextension/backend.js",
 	"scripts": {
 		"prepare": "rm -rf ./dist/ && mkdir ./dist/ && cp ./src/assets/* ./dist/",
-		"check": "tsc --noEmit",
-		"watch": "tsc -w --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "eslint ./src/ --ext ts,tsx",
 		"dev": "yarn run prepare && parcel watch ./src/content.html ./src/options.html ./src/backend.ts",
 		"build": "yarn run prepare && parcel build ./src/content.html ./src/options.html ./src/backend.ts",
