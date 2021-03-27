@@ -1,5 +1,10 @@
 # Change Log
-This project is versioned according to its compatibility with the [host](https://github.com/SamHH/bukubrow-host) from v4 onwards.
+
+This project is versioned according to its compatibility with the [host](https://github.com/samhh/bukubrow-host) from v4 onwards.
+
+## [5.0.2.1] - 2021-03-27
+### Changed
+- Fix bookmarks list keyboard scroll navigation.
 
 ## [5.0.2.0] - 2020-02-14
 ### Added
