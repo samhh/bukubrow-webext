@@ -3,16 +3,16 @@ module Url.Test where
 import Prelude
 
 import Data.Argonaut.Decode (decodeJson)
-import Data.Either (fromRight)
+import Data.Either (fromRight')
 import Data.Maybe (Maybe(..))
-import Partial.Unsafe (unsafePartial)
+import Partial.Unsafe (unsafeCrashWith)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual, shouldNotSatisfy, shouldSatisfy)
 import Url (UrlMatch(..), Url, domainFromHost, hrefSansProtocol, httpFromProtocol, fromString, mkUrlImpl)
 import Url as URL
 
 unsafeMkUrl :: String -> Url
-unsafeMkUrl = mkUrlImpl >>> decodeJson >>> unsafePartial fromRight
+unsafeMkUrl = mkUrlImpl >>> decodeJson >>> fromRight' (unsafeCrashWith "failed to make URL")
 
 spec :: Spec Unit
 spec = describe "Url" do

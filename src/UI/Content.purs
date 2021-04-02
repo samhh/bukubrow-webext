@@ -9,7 +9,7 @@ import Data.Array (length)
 import Data.Const (Const)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Symbol (SProxy(..))
+import Type.Proxy (Proxy(..))
 import Halogen as H
 import Halogen.HTML.Events as HE
 import Halogen.HTML as HH
@@ -37,7 +37,7 @@ initialState =
     { bookmarks: Unbegun
     }
 
-content :: forall q i o m. RemoteData m => H.Component HH.HTML q i o m
+content :: forall q i o m. RemoteData m => H.Component q i o m
 content = H.mkComponent
     { initialState: const initialState
     , render
@@ -59,7 +59,7 @@ render s = case s.bookmarks of
     Unbegun     -> HH.div_ []
     Fetched res -> HH.div_
         [ case res of
-            Left _    -> HH.slot (SProxy :: _ "onboardingSlot") unit onboarding unit (const Nothing)
+            Left _    -> HH.slot (Proxy :: _ "onboardingSlot") unit onboarding unit (const Nothing)
             Right bms -> HH.text <<< (_ <> " bms") <<< show <<< length $ bms
         ]
 

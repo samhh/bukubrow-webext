@@ -8,7 +8,6 @@
   , "effect"
   , "filterable"
   , "functions"
-  , "generics-rep"
   , "halogen"
   , "newtype"
   , "profunctor-lenses"

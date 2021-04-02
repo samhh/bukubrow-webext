@@ -21,7 +21,7 @@ type State =
 data Action
     = SetOS OS
 
-onboarding :: forall q i o m. H.Component HH.HTML q i o m
+onboarding :: forall q i o m. H.Component q i o m
 onboarding = H.mkComponent
     { initialState
     , render
@@ -38,7 +38,7 @@ handler = case _ of
 render :: forall m. State -> H.ComponentHTML Action () m
 render s =
     let
-        setOS a = const $ Just $ SetOS a
+        setOS a = const $ SetOS a
 
         content = case s.os of
             Just os -> instructions os

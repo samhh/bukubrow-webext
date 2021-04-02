@@ -18,7 +18,7 @@ import Data.Functor.Custom ((>#>))
 import Data.Maybe (fromMaybe)
 import Data.Natural (Natural)
 import Data.String (split)
-import Data.Symbol (SProxy(..))
+import Type.Proxy (Proxy(..))
 import Record as R
 import Tag (Tag)
 import Tag as Tag
@@ -132,8 +132,8 @@ remote ::
     LocalI a ->
     RemoteI a
 remote x = x
-    # R.delete (SProxy :: SProxy "title")
-    # R.delete (SProxy :: SProxy "tags")
+    # R.delete (Proxy :: Proxy "title")
+    # R.delete (Proxy :: Proxy "tags")
     # R.union { metadata: x.title, tags: remoteTags x.tags }
 
 local ::
@@ -143,7 +143,7 @@ local ::
     RemoteI a ->
     LocalI a
 local x = x
-    # R.delete (SProxy :: SProxy "metadata")
-    # R.delete (SProxy :: SProxy "tags")
+    # R.delete (Proxy :: Proxy "metadata")
+    # R.delete (Proxy :: Proxy "tags")
     # R.union { title: x.metadata, tags: localTags x.tags }
 

@@ -11,13 +11,13 @@ import Data.Newtype (class Newtype, un)
 import Data.String.NonEmpty (NonEmptyString, nes)
 import Data.String.NonEmpty as NES
 import Data.String.NonEmpty.Custom (startsWith)
-import Data.Symbol (SProxy(..))
+import Type.Proxy (Proxy(..))
 import Types (Predicate)
 
 newtype Bookmarklet = Bookmarklet NonEmptyString
 
 prefix :: NonEmptyString
-prefix = nes (SProxy :: SProxy "javascript:")
+prefix = nes (Proxy :: Proxy "javascript:")
 
 isBookmarklet :: Predicate NonEmptyString
 isBookmarklet = startsWith prefix
