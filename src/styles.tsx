@@ -10,7 +10,7 @@ const {
 	css,
 	createGlobalStyle,
 	keyframes,
-} = styledComponents as styledComponents.ThemedStyledComponentsModule<StyledTheme>;
+} = styledComponents as unknown as styledComponents.ThemedStyledComponentsModule<StyledTheme>;
 
 const GlobalStyles = createGlobalStyle`
 	${styledSanitize}

@@ -3,7 +3,7 @@ import { PathReporter } from 'io-ts/lib/PathReporter';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { flow } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
-import { join } from '~/modules/array';
+import { join } from 'fp-ts-std/Array'
 import { error } from '~/modules/error';
 
 const report = (es: t.Errors): Array<string> => PathReporter.report(E.left(es));

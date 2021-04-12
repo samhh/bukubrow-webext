@@ -3,12 +3,13 @@ import { flow } from 'fp-ts/lib/function';
 import { ordString, contramap, Ord, getMonoid, fromCompare } from 'fp-ts/lib/Ord';
 import { invert } from 'fp-ts/lib/Ordering';
 import * as A from 'fp-ts/lib/Array';
+import * as S from 'fp-ts-std/String';
 import { Lens } from 'monocle-ts';
 import { isNonEmptyString } from 'newtype-ts/lib/NonEmptyString';
 import { formatDistanceToNow } from 'date-fns';
 import { ParsedInputResult } from '~/modules/parse-search-input';
 import { URLMatch, ordURLMatch } from '~/modules/compare-urls';
-import { includesCI, split } from '~/modules/string';
+import { includesCI } from '~/modules/string';
 import { StagedBookmarksGroup } from '~/modules/staged-groups';
 import { delimiter } from '~/modules/buku';
 
@@ -92,7 +93,7 @@ export const transform = (bookmark: RemoteBookmark): LocalBookmark => ({
 	title: bookmark.metadata,
 	// Buku uses commas as delimiters including at the start and end of the
 	// string, so filter those out
-	tags: pipe(bookmark.tags, split(delimiter), A.filter(isNonEmptyString)),
+	tags: pipe(bookmark.tags, S.split(delimiter), A.filter(isNonEmptyString)),
 	url: bookmark.url,
 	desc: bookmark.desc,
 	flags: bookmark.flags,

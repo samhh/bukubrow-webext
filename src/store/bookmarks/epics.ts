@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import { pipe } from 'fp-ts/lib/pipeable';
 import { flow, constVoid, constant } from 'fp-ts/lib/function';
@@ -23,7 +23,7 @@ import { StagedBookmarksGroup } from '~/modules/staged-groups';
 import { Page } from '~/store/user/types';
 import { runTask, seqT } from '~/modules/fp';
 import { mkBookmarkletCode } from '~/modules/bookmarklet';
-import { values } from '~/modules/record';
+import { values } from 'fp-ts-std/Record';
 
 export const syncBookmarks = (): ThunkAC<Promise<void>> => async (dispatch) => {
 	const res = await getBookmarksFromNative();

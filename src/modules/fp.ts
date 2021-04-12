@@ -27,15 +27,3 @@ export const seqT_ = flow(seqT, T.map(constVoid));
 
 export const runTask = <A>(x: Task<A>): Promise<A> => x();
 
-export const flip = <
-	A extends Array<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-	B extends Array<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-	C,
->(f: (...a: A) => (...b: B) => C) => (...b: B) => (...a: A): C => f(...a)(...b);
-
-export const tap = (m = '') => <A>(x: A): A => {
-	// eslint-disable-next-line no-console
-	console.log(m, x);
-	return x;
-};
-

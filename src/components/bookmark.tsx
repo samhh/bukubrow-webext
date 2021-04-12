@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
+
 import React, { memo, forwardRef, Ref, MouseEvent, useState, ReactNode } from 'react';
 import { URLMatch } from '~/modules/compare-urls';
 import { ParsedInputResult } from '~/modules/parse-search-input';
@@ -54,7 +56,7 @@ const BookmarkletGraphic = styled(({ focused: _, ...rest }) => <Code {...rest} /
 		color: ${(props): string => props.theme.backgroundColorOffsetOffset};
 	}
 
-	${/* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */''}
+	${/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types */''}
 	${props => props.focused && css`
 		transform: translateY(-50%) scale(4);
 		color: ${props.theme.backgroundColorOffsetOffset};

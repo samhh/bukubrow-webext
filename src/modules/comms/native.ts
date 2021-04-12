@@ -151,6 +151,5 @@ export const updateBookmarksToNative = (bookmarks: Array<RemoteBookmark>): TaskE
 	sendMessageToNative(NativeRequestMethod.PUT, { bookmarks });
 
 export const deleteBookmarksFromNative = (bookmarkIds: Array<RemoteBookmark['id']>): TaskEither<Error, NativeDELETEResponse> =>
-	// eslint-disable-next-line @typescript-eslint/camelcase
 	sendMessageToNative(NativeRequestMethod.DELETE, { bookmark_ids: bookmarkIds });
 

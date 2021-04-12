@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import * as O from 'fp-ts/lib/Option';
 import * as OT from '~/modules/optionTuple';

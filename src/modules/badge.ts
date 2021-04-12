@@ -14,7 +14,8 @@ import { fromString } from '~/modules/url';
 import { URLMatch, match, ordURLMatch } from '~/modules/compare-urls';
 import { getBookmarksFromLocalStorage, getActiveTab, onTabActivity } from '~/modules/comms/browser';
 import { snoc_ } from '~/modules/array';
-import { flip, _, runTask, runIO } from '~/modules/fp';
+import { _, runTask, runIO } from '~/modules/fp';
+import { flip } from 'fp-ts-std/Function';
 
 const setBadge = (color: string) => (text: string): IO<void> => (): void => {
 	browser.browserAction.setBadgeBackgroundColor({ color });

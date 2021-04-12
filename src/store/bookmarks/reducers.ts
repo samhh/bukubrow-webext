@@ -2,6 +2,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { identity, constant, flow, not } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
+import * as S from 'fp-ts-std/String';
 import { ActionType } from 'typesafe-actions';
 import * as bookmarksActions from './actions';
 import {
@@ -16,7 +17,6 @@ import { mapByPredicate } from '~/modules/array';
 import { id as bmId, id } from '~/modules/bookmarks';
 import { eqNumber } from '~/modules/eq';
 import { fromArray } from '~/modules/record';
-import { fromNumber } from '~/modules/string';
 
 export type BookmarksActions = ActionType<typeof bookmarksActions>;
 
@@ -36,7 +36,7 @@ const initialState: BookmarksState = {
 const bookmarksReducer = curryReducer<BookmarksActions, BookmarksState>((a) => (_s) => {
 	switch (a.type) {
 		case BookmarksActionTypes.SetAllBookmarks:
-			return pipe(a.payload, fromArray(flow(id.get, fromNumber)), bookmarks.set);
+			return pipe(a.payload, fromArray(flow(id.get, S.fromNumber)), bookmarks.set);
 
 		case BookmarksActionTypes.SetAllStagedBookmarksGroups:
 			return stagedBookmarksGroups.set(a.payload);

@@ -2,7 +2,7 @@ import { flow, not } from 'fp-ts/lib/function';
 import { ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { eqString } from 'fp-ts/lib/Eq';
 import { equal, mapBoth } from '~/modules/tuple'
-import { some } from '~/modules/array';
+import * as A from 'fp-ts/Array'
 import { hrefSansProtocol, isHttpOrHttps, domain } from '~/modules/url';
 
 export enum URLMatch {
@@ -22,7 +22,7 @@ export const match = (x: URL) => (y: URL): URLMatch => {
 	const zs: [URL, URL] = [x, y];
 
 	// Never match URLs with non-HTTP(S) protocols
-	if (some(not(isHttpOrHttps))(zs)) return URLMatch.None;
+	if (A.some(not(isHttpOrHttps))(zs)) return URLMatch.None;
 
 	// Match URLs as exact irrespective of protocol equality
 	if (eqHref(zs)) return URLMatch.Exact;

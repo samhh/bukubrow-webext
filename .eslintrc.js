@@ -22,6 +22,7 @@ module.exports = {
 		'@typescript-eslint/unbound-method': 0,
 		'@typescript-eslint/array-type': [1, { default: 'generic', readonly: 'generic' }],
 		'@typescript-eslint/no-unused-vars': [1, { argsIgnorePattern: '^_' } ],
+		'@typescript-eslint/no-floating-promises': 0,
 		'react/prop-types': 0,
 		'react/display-name': 0,
 		'no-console': 1,

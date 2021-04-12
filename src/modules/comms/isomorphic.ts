@@ -8,11 +8,11 @@
 import { pipe } from 'fp-ts/lib/pipeable';
 import { constVoid } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/lib/TaskEither';
+import * as A from 'fp-ts/Array';
 import { browser } from 'webextension-polyfill-ts';
 import { asError } from '~/modules/error';
-import { values } from '~/modules/record';
-import { includes } from '~/modules/array';
-import { flip } from '~/modules/fp';
+import { values } from 'fp-ts-std/Record';
+import { eqStrict } from 'fp-ts/lib/Eq';
 
 const sendMessage = (x: unknown): TaskEither<Error, unknown> =>
 	TE.tryCatch(() => browser.runtime.sendMessage(x), asError);
@@ -25,7 +25,7 @@ export enum IsomorphicMessage {
 
 const isIsomorphicMessage: Refinement<unknown, IsomorphicMessage> = (x: unknown): x is IsomorphicMessage => pipe(
 	values(IsomorphicMessage),
-	flip(includes)(x),
+	A.elem(eqStrict)(x),
 );
 
 export const sendIsomorphicMessage = (x: IsomorphicMessage): TaskEither<Error, void> => pipe(

@@ -2,9 +2,10 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { flow } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
+import * as S from 'fp-ts-std/String'
 import { Lens } from 'monocle-ts';
-import { includes, join } from '~/modules/array';
-import { split } from '~/modules/string';
+import { elemFlipped, join } from 'fp-ts-std/Array';
+import { eqString } from 'fp-ts/lib/Eq';
 
 export const fromString = (url: string): Either<DOMException, URL> => E.tryCatch(
 	() => new URL(url),
@@ -22,12 +23,12 @@ export const pathname = Lens.fromProp<URL>()('pathname');
  */
 export const domain = (x: URL): string => pipe(
 	host.get(x),
-	split('.'),
+	S.split('.'),
 	A.takeRight(2),
 	join('.'),
 );
 
 export const hrefSansProtocol = (x: URL): string => host.get(x) + pathname.get(x);
 
-export const isHttpOrHttps: Predicate<URL> = flow(protocol.get, includes(['http:', 'https:']));
+export const isHttpOrHttps: Predicate<URL> = flow(protocol.get, elemFlipped(eqString)(['http:', 'https:']));
 

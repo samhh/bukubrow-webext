@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import { pipe } from 'fp-ts/lib/pipeable';
 import { constant, identity, flow } from 'fp-ts/lib/function';
@@ -14,8 +14,8 @@ import { MAX_BOOKMARKS_TO_RENDER } from '~/modules/config';
 import { URLMatch, match } from '~/modules/compare-urls';
 import { fromString } from '~/modules/url';
 import { StagedBookmarksGroup, ordStagedBookmarksGroup, bookmarks } from '~/modules/staged-groups';
-import { values } from '~/modules/record';
-import { fromNumber } from '~/modules/string';
+import { values } from 'fp-ts-std/Record';
+import * as S from 'fp-ts-std/String';
 
 const addBookmarkWeight = (activeTabURL: Option<URL>) => (bookmark: LocalBookmark): LocalBookmarkWeighted => ({
 	...bookmark,
@@ -90,14 +90,14 @@ export const getFocusedBookmark = createSelector(getWeightedLimitedFilteredBookm
 export const getBookmarkToEdit = createSelector(getBookmarks, getBookmarkEditId,
 	(bookmarks, editId) => pipe(
 		editId,
-		O.map(fromNumber),
+		O.map(S.fromNumber),
 		O.chain(eid => R.lookup(eid, bookmarks)),
 	));
 
 export const getBookmarkToDelete = createSelector(getBookmarks, getBookmarkDeleteId,
 	(bookmarks, deleteId) => pipe(
 		deleteId,
-		O.map(fromNumber),
+		O.map(S.fromNumber),
 		O.chain(did => R.lookup(did, bookmarks)),
 	));
 

@@ -17,7 +17,7 @@ const initialState: UserState = {
 	page: Page.Search,
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const userReducer = curryReducer<UserActions, UserState>((a) => (_s) => {
 	switch (a.type) {
 		case UserActionTypes.HostCheckResult:

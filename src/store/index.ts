@@ -5,7 +5,7 @@ import { useSelector as useSelectorUntyped, useDispatch as useDispatchRaw, Typed
 import { onLoad } from '~/store/epics';
 import { saveStagedBookmarksGroupsToLocalStorage, saveBookmarksToLocalStorage } from '~/modules/comms/browser';
 import { runTask } from '~/modules/fp';
-import { values } from '~/modules/record';
+import { values } from 'fp-ts-std/Record';
 
 import bookmarksReducer, { BookmarksActions } from './bookmarks/reducers';
 import browserReducer, { BrowserActions } from './browser/reducers';
@@ -43,7 +43,7 @@ store.dispatch(onLoad());
 
 // Re-export appropriately typed hooks
 export const useSelector: TypedUseSelectorHook<AppState> = useSelectorUntyped;
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useDispatch = () => useDispatchRaw<typeof store.dispatch>();
 
 // Keep store in sync with local cache

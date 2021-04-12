@@ -1,7 +1,7 @@
 import { Newtype, prism } from 'newtype-ts';
-import { startsWith } from '~/modules/string';
+import * as S from 'fp-ts-std/String'
 
-export const isBookmarkletCode: Predicate<string> = startsWith('javascript:');
+export const isBookmarkletCode: Predicate<string> = S.startsWith('javascript:');
 
 export type BookmarkletCode = Newtype<{ readonly BookmarkletCode: unique symbol }, string>;
 export const {

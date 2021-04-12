@@ -43,7 +43,7 @@ interface PageMapArg {
 	stagedGroupTitle: Option<string>;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const pageMap = ({ activePage, stagedGroupTitle }: PageMapArg) => {
 	const map: PageInfo = {
 		[Page.Search]: {
