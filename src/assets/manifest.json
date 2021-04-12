@@ -1,55 +1,53 @@
 {
-	"name": "Bukubrow",
-	"version": "5.0.2.1",
-	"manifest_version": 2,
-	"description": "Synchronise your browser bookmarks with Buku",
-	"icons": {
-		"128": "icon-128.png",
-		"256": "icon-256.png"
-	},
-	"homepage_url": "https://github.com/samhh/bukubrow",
-	"browser_action": {
-		"default_icon": "icon-256.png",
-		"default_popup": "content.html"
-	},
-	"options_ui": {
-		"page": "options.html"
-	},
-	"background": {
-		"scripts": [
-			"backend.js"
-		]
-	},
-	"permissions": [
-		"nativeMessaging",
-		"storage",
-		"tabs",
-		"contextMenus",
-		"activeTab"
-	],
-	"commands": {
-		"_execute_browser_action": {
-			"description": "Open Bukubrow"
-		},
-		"add_bookmark": {
-			"description": "Open Bukubrow and add a bookmark"
-		},
-		"stage_all_tabs": {
-			"description": "Send all tabs to Bukubrow's staging area"
-		},
-		"stage_window_tabs": {
-			"description": "Send window tabs to Bukubrow's staging area"
-		},
-		"stage_active_tab": {
-			"description": "Send the active tab to Bukubrow's staging area"
-		}
-	},
-	"minimum_chrome_version": "55",
-	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlBitSfQLABNqlk6AQGcOfBgs8Y9u+Sq1GU5+7/jsqRz4E3WqZcEX/9AHxH8FS6SXLItrBuDd80MAy6kM19uE7XgRCK4vY/6lPcIgXIzGEeOTCtO0qkRIaMhgpgHjO/XBGHH789RQ4X3PXGHvKmMdu3Jz1E9yF0cCDSuXG0eh6RKk9Ox7AL0Ldbukm7xeTD6W4Y10Ge5vnGhlMv50waK5upXcr8qXJU0s6GqbKaRH4ELfMrXmo1dltROIT0kAIkKpNJ8q9bbJ+uTZmCsDqUAH9rxiYsgWqFJ+a0EnQf8MEbvGH3hRO8PR/7gm+BI0bcIFN7OHL3nrNxcB+V2duWtdYQIDAQAB",
-	"applications": {
-		"gecko": {
-			"id": "bukubrow@samhh.com",
-			"strict_min_version": "52.0"
-		}
-	}
+  "name": "Bukubrow",
+  "version": "5.0.2.1",
+  "manifest_version": 2,
+  "description": "Synchronise your browser bookmarks with Buku",
+  "icons": {
+    "128": "icon-128.png",
+    "256": "icon-256.png"
+  },
+  "homepage_url": "https://github.com/samhh/bukubrow",
+  "browser_action": {
+    "default_icon": "icon-256.png",
+    "default_popup": "content.html"
+  },
+  "options_ui": {
+    "page": "options.html"
+  },
+  "background": {
+    "scripts": ["backend.js"]
+  },
+  "permissions": [
+    "nativeMessaging",
+    "storage",
+    "tabs",
+    "contextMenus",
+    "activeTab"
+  ],
+  "commands": {
+    "_execute_browser_action": {
+      "description": "Open Bukubrow"
+    },
+    "add_bookmark": {
+      "description": "Open Bukubrow and add a bookmark"
+    },
+    "stage_all_tabs": {
+      "description": "Send all tabs to Bukubrow's staging area"
+    },
+    "stage_window_tabs": {
+      "description": "Send window tabs to Bukubrow's staging area"
+    },
+    "stage_active_tab": {
+      "description": "Send the active tab to Bukubrow's staging area"
+    }
+  },
+  "minimum_chrome_version": "55",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlBitSfQLABNqlk6AQGcOfBgs8Y9u+Sq1GU5+7/jsqRz4E3WqZcEX/9AHxH8FS6SXLItrBuDd80MAy6kM19uE7XgRCK4vY/6lPcIgXIzGEeOTCtO0qkRIaMhgpgHjO/XBGHH789RQ4X3PXGHvKmMdu3Jz1E9yF0cCDSuXG0eh6RKk9Ox7AL0Ldbukm7xeTD6W4Y10Ge5vnGhlMv50waK5upXcr8qXJU0s6GqbKaRH4ELfMrXmo1dltROIT0kAIkKpNJ8q9bbJ+uTZmCsDqUAH9rxiYsgWqFJ+a0EnQf8MEbvGH3hRO8PR/7gm+BI0bcIFN7OHL3nrNxcB+V2duWtdYQIDAQAB",
+  "applications": {
+    "gecko": {
+      "id": "bukubrow@samhh.com",
+      "strict_min_version": "52.0"
+    }
+  }
 }

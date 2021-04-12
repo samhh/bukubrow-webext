@@ -1,25 +1,25 @@
 name: Publish
 
 on:
-    push:
-        tags: ["v[0-9].[0-9].[0-9].[0-9]"]
+  push:
+    tags: ["v[0-9].[0-9].[0-9].[0-9]"]
 
 jobs:
-    publish:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/cache@v2
-              env:
-                cache-name: cache-yarn
-              with:
-                path: ~/.cache/yarn/
-                key: yarn-${{ hashFiles('./yarn.lock') }}
-            - name: Build & prepare
-              run: make webext
-            - name: Publish
-              uses: svenstaro/upload-release-action@v2
-              with:
-                repo_token: ${{ secrets.GITHUB_TOKEN }}
-                file: release/webext.zip
-                tag: ${{ github.ref }}
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        env:
+          cache-name: cache-yarn
+        with:
+          path: ~/.cache/yarn/
+          key: yarn-${{ hashFiles('./yarn.lock') }}
+      - name: Build & prepare
+        run: make webext
+      - name: Publish
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: release/webext.zip
+          tag: ${{ github.ref }}

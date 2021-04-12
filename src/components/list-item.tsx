@@ -1,28 +1,32 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import styled, { css } from '~/styles';
+import styled, { css } from "~/styles"
 
 const ListItem = styled.li<{ isFocused?: boolean }>`
-	padding: 1rem;
+  padding: 1rem;
 
-  ${props => props.onClick && css`
-    cursor: pointer;
+  ${props =>
+    props.onClick &&
+    css`
+      cursor: pointer;
 
-    &:hover {
+      &:hover {
+        background: ${(props): string => props.theme.backgroundColorOffset};
+      }
+    `}
+
+  ${props =>
+    props.isFocused &&
+    css`
       background: ${(props): string => props.theme.backgroundColorOffset};
-    }
-  `}
-
-	${props => props.isFocused && css`
-		background: ${(props): string => props.theme.backgroundColorOffset};
-  `}
+    `}
 
   & + & {
     position: relative;
     margin-top: 1px;
 
     &::before {
-      content: '';
+      content: "";
       width: 100%;
       height: 1px;
       position: absolute;
@@ -31,7 +35,6 @@ const ListItem = styled.li<{ isFocused?: boolean }>`
       background: ${(props): string => props.theme.backgroundColorOffset};
     }
   }
-`;
+`
 
-export default ListItem;
-
+export default ListItem

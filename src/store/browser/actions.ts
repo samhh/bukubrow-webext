@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { action } from 'typesafe-actions';
-import { BrowserActionTypes } from './types';
+import { action } from "typesafe-actions"
+import { BrowserActionTypes } from "./types"
 
-export const setPageMeta = (pageTitle: string, pageUrl: string) => action(
-	BrowserActionTypes.SyncBrowser,
-	{ pageTitle, pageUrl },
-);
-
+export const setPageMeta = (pageTitle: string, pageUrl: string) =>
+  action(BrowserActionTypes.SyncBrowser, { pageTitle, pageUrl })

@@ -1,26 +1,31 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import sleep from '~/modules/sleep';
-import { ThunkAC } from '~/store';
-import { addError, deleteError } from './actions';
-import { NoticeId, NoticeMsg } from './types';
-import { createUuid } from '~/modules/uuid';
-import { runTask } from '~/modules/fp';
+import sleep from "~/modules/sleep"
+import { ThunkAC } from "~/store"
+import { addError, deleteError } from "./actions"
+import { NoticeId, NoticeMsg } from "./types"
+import { createUuid } from "~/modules/uuid"
+import { runTask } from "~/modules/fp"
 
-export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (dispatch, getState) => {
-	const errorIds = Object.keys(getState().notices.errors);
-	const newId = String(createUuid(errorIds.map(Number)));
+export const addPermanentError = (errorMsg: NoticeMsg): ThunkAC<NoticeId> => (
+  dispatch,
+  getState,
+) => {
+  const errorIds = Object.keys(getState().notices.errors)
+  const newId = String(createUuid(errorIds.map(Number)))
 
-	dispatch(addError(newId, errorMsg));
+  dispatch(addError(newId, errorMsg))
 
-	return newId;
-};
+  return newId
+}
 
-export const addTransientError = (errorMsg: NoticeMsg, timeout = 5000): ThunkAC<Promise<void>> => async (dispatch) => {
-	const id = dispatch(addPermanentError(errorMsg));
+export const addTransientError = (
+  errorMsg: NoticeMsg,
+  timeout = 5000,
+): ThunkAC<Promise<void>> => async dispatch => {
+  const id = dispatch(addPermanentError(errorMsg))
 
-	await runTask(sleep(timeout));
+  await runTask(sleep(timeout))
 
-	dispatch(deleteError(id));
-};
-
+  dispatch(deleteError(id))
+}

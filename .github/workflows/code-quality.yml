@@ -24,3 +24,5 @@ jobs:
         run: yarn lint
       - name: Test
         run: yarn test
+      - name: Check formatting
+        run: yarn fmt-check

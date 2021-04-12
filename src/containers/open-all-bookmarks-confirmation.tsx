@@ -1,46 +1,57 @@
-import React, { FC } from 'react';
-import { useDispatch, useSelector } from '~/store';
-import * as R from 'fp-ts/lib/Record';
-import { matchesTerminology } from '~/modules/terminology';
-import { setDisplayOpenAllBookmarksConfirmation } from '~/store/user/actions';
-import { openAllFilteredBookmarksAndExit } from '~/store/bookmarks/epics';
-import { getUnlimitedFilteredBookmarks } from '~/store/selectors';
-import Button from '~/components/button';
+import React, { FC } from "react"
+import { useDispatch, useSelector } from "~/store"
+import * as R from "fp-ts/lib/Record"
+import { matchesTerminology } from "~/modules/terminology"
+import { setDisplayOpenAllBookmarksConfirmation } from "~/store/user/actions"
+import { openAllFilteredBookmarksAndExit } from "~/store/bookmarks/epics"
+import { getUnlimitedFilteredBookmarks } from "~/store/selectors"
+import Button from "~/components/button"
 
-import Modal from '~/components/modal';
-import styled from '~/styles';
+import Modal from "~/components/modal"
+import styled from "~/styles"
 
 const Heading = styled.h1`
-	margin: 0 0 1rem;
-	font-size: 2rem;
-`;
+  margin: 0 0 1rem;
+  font-size: 2rem;
+`
 
 const ConfirmationButton = styled(Button)`
-	margin: 0 0 0 .5rem;
-`;
+  margin: 0 0 0 0.5rem;
+`
 
 const OpenAllBookmarksConfirmation: FC = () => {
-	const display = useSelector(state => state.user.displayOpenAllBookmarksConfirmation);
-	const filteredBookmarks = useSelector(getUnlimitedFilteredBookmarks);
-	const dispatch = useDispatch();
+  const display = useSelector(
+    state => state.user.displayOpenAllBookmarksConfirmation,
+  )
+  const filteredBookmarks = useSelector(getUnlimitedFilteredBookmarks)
+  const dispatch = useDispatch()
 
-	const numFilteredBookmarks = R.size(filteredBookmarks);
+  const numFilteredBookmarks = R.size(filteredBookmarks)
 
-	return (
-		<>
-			{display && (
-				<Modal>
-					<header>
-						<Heading>{matchesTerminology(numFilteredBookmarks)}?</Heading>
-					</header>
+  return (
+    <>
+      {display && (
+        <Modal>
+          <header>
+            <Heading>{matchesTerminology(numFilteredBookmarks)}?</Heading>
+          </header>
 
-					<Button onClick={(): void => void dispatch(setDisplayOpenAllBookmarksConfirmation(false))}>Cancel</Button>
-					<ConfirmationButton onClick={(): void => dispatch(openAllFilteredBookmarksAndExit())}>Open</ConfirmationButton>
-				</Modal>
-			)}
-		</>
-	);
-};
+          <Button
+            onClick={(): void =>
+              void dispatch(setDisplayOpenAllBookmarksConfirmation(false))
+            }
+          >
+            Cancel
+          </Button>
+          <ConfirmationButton
+            onClick={(): void => dispatch(openAllFilteredBookmarksAndExit())}
+          >
+            Open
+          </ConfirmationButton>
+        </Modal>
+      )}
+    </>
+  )
+}
 
-export default OpenAllBookmarksConfirmation;
-
+export default OpenAllBookmarksConfirmation

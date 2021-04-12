@@ -1,2 +1,1 @@
-export const delimiter = ',';
-
+export const delimiter = ","

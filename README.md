@@ -1,5 +1,4 @@
-Bukubrow
-===
+# Bukubrow
 
 Bukubrow is a WebExtension for [Buku](https://github.com/jarun/Buku), a command-line bookmark manager.
 
@@ -17,8 +16,8 @@ A corresponding [native host](https://github.com/SamHH/bukubrow-host) is used to
 - Bukubrow Host
 - Supported browser: Firefox, Chrome, or Chromium
 - _If building the WebExtension_:
-	- Node
-	- Yarn
+  - Node
+  - Yarn
 
 ## Installation
 

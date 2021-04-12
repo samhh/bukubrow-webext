@@ -1,70 +1,73 @@
 {
-	"name": "bukubrow",
-	"version": "5.0.2.1",
-	"description": "WebExtension for Buku",
-	"main": "webextension/backend.js",
-	"scripts": {
-		"prepare": "rm -rf ./dist/ && mkdir ./dist/ && cp ./src/assets/* ./dist/",
-		"typecheck": "tsc --noEmit",
-		"lint": "eslint ./src/ --ext ts,tsx",
-		"dev": "yarn run prepare && parcel watch ./src/content.html ./src/options.html ./src/backend.ts",
-		"build": "yarn run prepare && parcel build ./src/content.html ./src/options.html ./src/backend.ts",
-		"test": "jest"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/SamHH/bukubrow.git"
-	},
-	"author": "Sam A. Horvath-Hunt <git@samhh.com> (https://samhh.com)",
-	"license": "GPL-3.0",
-	"bugs": {
-		"url": "https://github.com/SamHH/bukubrow/issues"
-	},
-	"homepage": "https://github.com/SamHH/bukubrow",
-	"browserslist": [
-		"last 2 Chrome versions",
-		"last 2 Firefox versions"
-	],
-	"dependencies": {
-		"date-fns": "^2.6.0",
-		"fp-ts": "^2.0.2",
-		"fp-ts-contrib": "^0.1.6",
-		"fp-ts-std": "^0.9.0",
-		"io-ts": "^2.0.1",
-		"io-ts-types": "^0.5.3",
-		"monocle-ts": "^2.0.0",
-		"newtype-ts": "^0.3.2",
-		"react": "^17.0.2",
-		"react-dom": "^17.0.2",
-		"react-feather": "^2.0.3",
-		"react-highlight-words": "^0.17.0",
-		"react-redux": "^7.0.2",
-		"redux": "^4.0.1",
-		"redux-thunk": "^2.3.0",
-		"remote-redux-devtools": "^0.5.16",
-		"reselect": "^4.0.0",
-		"styled-components": "^5.0.1",
-		"styled-sanitize": "^1.1.1",
-		"typesafe-actions": "^5.1.0",
-		"webextension-polyfill-ts": "^0.25.0"
-	},
-	"devDependencies": {
-		"@types/jest": "^26.0.22",
-		"@types/react": "^17.0.3",
-		"@types/react-dom": "^17.0.3",
-		"@types/react-highlight-words": "^0.16.0",
-		"@types/react-redux": "^7.0.0",
-		"@types/remote-redux-devtools": "^0.5.3",
-		"@types/styled-components": "5.1.9",
-		"@typescript-eslint/eslint-plugin": "^4.22.0",
-		"@typescript-eslint/parser": "^4.22.0",
-		"eslint": "^7.24.0",
-		"eslint-plugin-jest": "^24.3.5",
-		"eslint-plugin-react": "^7.12.4",
-		"jest": "^26.6.3",
-		"jest-webextension-mock": "^3.5.0",
-		"parcel-bundler": "^1.12.4",
-		"ts-jest": "^26.5.4",
-		"typescript": "^4.2.4"
-	}
+  "name": "bukubrow",
+  "version": "5.0.2.1",
+  "description": "WebExtension for Buku",
+  "main": "webextension/backend.js",
+  "scripts": {
+    "prepare": "rm -rf ./dist/ && mkdir ./dist/ && cp ./src/assets/* ./dist/",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ./src/ --ext ts,tsx",
+    "dev": "yarn run prepare && parcel watch ./src/content.html ./src/options.html ./src/backend.ts",
+    "build": "yarn run prepare && parcel build ./src/content.html ./src/options.html ./src/backend.ts",
+    "test": "jest",
+    "fmt": "prettier --write .",
+    "fmt-check": "prettier --check ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SamHH/bukubrow.git"
+  },
+  "author": "Sam A. Horvath-Hunt <git@samhh.com> (https://samhh.com)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/SamHH/bukubrow/issues"
+  },
+  "homepage": "https://github.com/SamHH/bukubrow",
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions"
+  ],
+  "dependencies": {
+    "date-fns": "^2.6.0",
+    "fp-ts": "^2.0.2",
+    "fp-ts-contrib": "^0.1.6",
+    "fp-ts-std": "^0.9.0",
+    "io-ts": "^2.0.1",
+    "io-ts-types": "^0.5.3",
+    "monocle-ts": "^2.0.0",
+    "newtype-ts": "^0.3.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-feather": "^2.0.3",
+    "react-highlight-words": "^0.17.0",
+    "react-redux": "^7.0.2",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "remote-redux-devtools": "^0.5.16",
+    "reselect": "^4.0.0",
+    "styled-components": "^5.0.1",
+    "styled-sanitize": "^1.1.1",
+    "typesafe-actions": "^5.1.0",
+    "webextension-polyfill-ts": "^0.25.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
+    "@types/react-highlight-words": "^0.16.0",
+    "@types/react-redux": "^7.0.0",
+    "@types/remote-redux-devtools": "^0.5.3",
+    "@types/styled-components": "5.1.9",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-plugin-jest": "^24.3.5",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^26.6.3",
+    "jest-webextension-mock": "^3.5.0",
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.4",
+    "typescript": "^4.2.4"
+  }
 }
