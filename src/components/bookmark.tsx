@@ -271,7 +271,7 @@ const Bookmark = memo<Props>(props => {
       </ControlsWrapper>
 
       {isBookmarklet && (
-        <BookmarkletGraphic size={30} focused={props.isFocused ?? false} />
+        <BookmarkletGraphic size={30} focused={props.isFocused || false} />
       )}
     </Wrapper>
   )
