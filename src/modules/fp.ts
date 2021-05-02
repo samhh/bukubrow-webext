@@ -28,3 +28,5 @@ export const seqT = A.array.sequence(T.task)
 export const seqT_ = flow(seqT, T.map(constVoid))
 
 export const runTask = <A>(x: Task<A>): Promise<A> => x()
+
+export const runTask_ = _(runTask)
