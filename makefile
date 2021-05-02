@@ -5,17 +5,18 @@ SHELL := /usr/bin/env bash
 
 # Vars
 TEMP_BUILD_DIR = .build
+TEMP_CLONE_DIR = .clone
 RELEASE_DIR = release
 
-# Prepare build and release dirs
+# Prepare temp and release dirs
 .PHONY: prepare
 prepare:
-	mkdir -p $(TEMP_BUILD_DIR) $(RELEASE_DIR)
+	mkdir -p $(TEMP_BUILD_DIR) $(TEMP_CLONE_DIR) $(RELEASE_DIR)
 
-# Remove build dir
+# Remove temp dirs
 .PHONY: clean
 clean:
-	rm -rf $(TEMP_BUILD_DIR)
+	rm -rf $(TEMP_BUILD_DIR) $(TEMP_CLONE_DIR)
 
 # Remove build and release dirs
 .PHONY: wipe
@@ -36,4 +37,12 @@ webext:
 	${MAKE} prepare
 	yarn && yarn build
 	cd dist && zip -r '../$(RELEASE_DIR)/webext' ./*
+	${MAKE} clean
+
+# Produce a zip of the source code for the Firefox Addon Store
+.PHONY: webext-src
+webext-src:
+	${MAKE} prepare
+	git clone git@github.com:samhh/bukubrow-webext.git $(TEMP_CLONE_DIR)
+	zip -r $(RELEASE_DIR)/bukubrow-src $(TEMP_CLONE_DIR)/*
 	${MAKE} clean
