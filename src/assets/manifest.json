@@ -25,6 +25,9 @@
     "contextMenus",
     "activeTab"
   ],
+  "omnibox": {
+    "keyword": "buku"
+  },
   "commands": {
     "_execute_browser_action": {
       "description": "Open Bukubrow"
