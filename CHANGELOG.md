@@ -2,6 +2,12 @@
 
 This project is versioned according to its compatibility with the [host](https://github.com/samhh/bukubrow-host) from v4 onwards.
 
+## [5.0.3.0] - 2021-05-02
+
+### Added
+
+- Omnibox (address bar suggestions) support.
+
 ## [5.0.2.1] - 2021-03-27
 
 ### Changed

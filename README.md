@@ -3,6 +3,7 @@
 Bukubrow is a WebExtension for [Buku](https://github.com/jarun/Buku), a command-line bookmark manager.
 
 - Display, open, add, edit, and delete bookmarks
+- Quickly search for and open bookmarks from the address bar
 - Automatically save open tabs to the _staging area_ from the context menu, from which they can be optionally edited and saved
 - Filter bookmarks with any of the following syntax: `:url`, `>description`, `#tag`, `*wildcard`
 - Bookmarklet (arbitrary JavaScript scripting) support, simply prepend your "URL" with `javascript:`, for example: `javascript:document.body.style.background = 'red'`
