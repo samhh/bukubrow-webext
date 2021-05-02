@@ -28,7 +28,7 @@ import { onOmniboxInput, onOmniboxSubmit } from "~/modules/omnibox"
 import { includesCI } from "~modules/string"
 import { mkBookmarkletCode } from "~modules/bookmarklet"
 
-export const omniboxSubmitHandler = (url: string) => (
+const omniboxSubmitHandler = (url: string) => (
   d: Omnibox.OnInputEnteredDisposition,
 ): IO<void> => () =>
   pipe(
