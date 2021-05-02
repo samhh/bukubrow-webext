@@ -150,6 +150,14 @@ export const getBookmarksFromLocalStorage: TaskEither<
   ),
 )
 
+export const getBookmarksFromLocalStorageInfallible: Task<
+  Array<LocalBookmark>
+> = pipe(
+  getBookmarksFromLocalStorage,
+  TE.map(O.getOrElse(constant<Array<LocalBookmark>>(A.empty))),
+  TE.getOrElse(constant(T.of<Array<LocalBookmark>>(A.empty))),
+)
+
 export const saveBookmarksToLocalStorage = (
   bookmarks: Array<LocalBookmark>,
 ): TaskEither<Error, void> =>
