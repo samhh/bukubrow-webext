@@ -2,24 +2,29 @@ module UI.Content (content) where
 
 import Prelude
 
-import Bookmark (RemoteBookmark)
+import Bookmark (RemoteBookmark, local)
 import Bukubrow (HostFailure)
 import Capability.RemoteData (class RemoteData, checkConnection, getRemoteBookmarks)
-import Data.Array (length)
-import Data.Const (Const)
 import Data.Either (Either(..))
+import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (Maybe(..), fromMaybe)
-import Type.Proxy (Proxy(..))
+import Effect.Console (log)
 import Halogen as H
-import Halogen.HTML.Events as HE
 import Halogen.HTML as HH
+import Halogen.HTML.Events as HE
+import Type.Proxy (Proxy(..))
+import UI.Components.Bookmark (bookmark, Output(..))
+import UI.Components.Bookmark as Bookmark
 import UI.Components.Onboarding (onboarding)
 
-type OpaqueSlot = H.Slot (Const Void) Void
-
+        -- Left _    -> HH.slot (Proxy :: _ "onboardingSlot") unit onboarding unit (const Nothing)
 type Slots =
-    ( onboardingSlot :: OpaqueSlot Unit
+    ( onboardingSlot :: forall q. H.Slot q Void Unit
+    , bookmarkSlot :: forall q. H.Slot q Bookmark.Output Int
     )
+
+_onboarding = Proxy :: Proxy "onboardingSlot"
+_bookmark = Proxy :: Proxy "bookmarkSlot"
 
 data Bookmarks
     = Unbegun
@@ -31,6 +36,7 @@ type State =
 
 data Action
     = Init
+    | BookmarkLinkClicked
 
 initialState :: State
 initialState =
@@ -53,13 +59,18 @@ handler = case _ of
        status <- checkConnection
        bms <- getRemoteBookmarks
        H.modify_ \s -> s { bookmarks = Fetched $ const (fromMaybe [] bms) <$> status }
+    BookmarkLinkClicked -> H.modify_ (\s -> s { bookmarks = Fetched (Right []) }) -- TEMP TODO
+
+handleBookmarkClick :: Bookmark.Output -> Action
+handleBookmarkClick LinkClicked = BookmarkLinkClicked
 
 render :: forall m. State -> H.ComponentHTML Action Slots m
 render s = case s.bookmarks of
     Unbegun     -> HH.div_ []
-    Fetched res -> HH.div_
-        [ case res of
-            Left _    -> HH.slot (Proxy :: _ "onboardingSlot") unit onboarding unit (const Nothing)
-            Right bms -> HH.text <<< (_ <> " bms") <<< show <<< length $ bms
-        ]
+    Fetched res -> case res of
+        Left _    -> HH.slot_ _onboarding unit onboarding unit
+
+        Right bms -> HH.div_ $ mapWithIndex (\i rembm ->
+            HH.slot _bookmark i bookmark { bookmark: local rembm } handleBookmarkClick
+        ) bms
 

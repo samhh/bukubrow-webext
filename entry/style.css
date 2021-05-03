@@ -123,3 +123,105 @@ button[data-type="icon"] svg {
     margin: 1.75rem 0;
 }
 
+.bm {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 0; /* For .bmlet-graphic */
+    margin: 0;
+    padding: 1rem;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.bm:hover,
+.bm--focused {
+    background: #eee;
+}
+
+.bm + .bm {
+    position: relative;
+    margin-top: 1px;
+}
+
+.bm + .bm::before {
+    content: '';
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: #eee;
+}
+
+
+.bm:hover .bm-ctrls {
+    opacity: 1;
+}
+
+.bm-ctrls {
+    display: flex;
+    position: relative;
+    white-space: nowrap;
+    align-self: flex-start;
+    opacity: 0;
+    margin: 0 0 0 1rem;
+}
+
+.bmlet-graphic {
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translateY(-50%);
+    transform-origin: right;
+    z-index: -1;
+    font-size: 2rem;
+    color: #eee;
+}
+
+.bmlet-graphic--focused,
+.bm:hover .bmlet-graphic {
+    transform: translateY(-50%) scale(2);
+    color: #ccc;
+}
+
+.bm-tags {
+    display: inline;
+    padding: 0;
+}
+
+.bm-spaced-badge {
+    margin: 0 .5rem 0 0;
+}
+
+.bm-name {
+    display: inline-block;
+	margin: 0;
+	font-size: 1.4rem;
+	font-weight: normal;
+    color: #282828;
+}
+
+.bm-desc {
+    margin: .3rem 0;
+    font-size: 1.1rem;
+}
+
+.bm-url {
+    margin: .3rem 0 0;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #888;
+}
+
+.bm-ctrl-btn:not(:last-child) {
+    margin-right: .5rem;
+}
+
+.bm-ctrl-btn-tooltip {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + .5rem);
+    transform: translateY(-50%);
+}
+
