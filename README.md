@@ -36,9 +36,3 @@ Alternatively, you can build the WebExtension manually as follows:
 2. Run `make release`. Your zip file will be located within the `./release/` directory. This zip file is the exact structure expected by all compatible browsers.
 3. Load the extension in your browser. Please refer to your browser's documentation.
 
-## Contributing
-
-The WebExtension is written in PureScript, utilising [Halogen](https://github.com/purescript-halogen/purescript-halogen) for UI rendering. Data is fetched from the host via native messaging.
-
-As referenced above Spago is the build tool of choice, thus the only scripts defined in the makefile related to building are those for bundling Spago/PureScript's output for the browser. A typical development workflow is to run `make -s bundle-dev`, `spago build -w`, and `spago test -w` simultaneously.
-
