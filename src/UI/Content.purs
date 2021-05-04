@@ -8,16 +8,13 @@ import Capability.RemoteData (class RemoteData, checkConnection, getRemoteBookma
 import Data.Either (Either(..))
 import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (Maybe(..), fromMaybe)
-import Effect.Console (log)
 import Halogen as H
 import Halogen.HTML as HH
-import Halogen.HTML.Events as HE
 import Type.Proxy (Proxy(..))
 import UI.Components.Bookmark (bookmark, Output(..))
 import UI.Components.Bookmark as Bookmark
 import UI.Components.Onboarding (onboarding)
 
-        -- Left _    -> HH.slot (Proxy :: _ "onboardingSlot") unit onboarding unit (const Nothing)
 type Slots =
     ( onboardingSlot :: forall q. H.Slot q Void Unit
     , bookmarkSlot :: forall q. H.Slot q Bookmark.Output Int
