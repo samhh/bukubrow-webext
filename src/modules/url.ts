@@ -25,7 +25,7 @@ export const pathname = Lens.fromProp<URL>()("pathname")
 export const domain = (x: URL): string =>
   pipe(host.get(x), S.split("."), A.takeRight(2), join("."))
 
-export const hrefSansProtocol = (x: URL): string =>
+export const hostAndPath = (x: URL): string =>
   host.get(x) + pathname.get(x)
 
 export const isHttpOrHttps: Predicate<URL> = flow(

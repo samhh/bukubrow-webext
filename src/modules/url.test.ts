@@ -1,4 +1,4 @@
-import { domain, hrefSansProtocol } from "~/modules/url"
+import { domain, hostAndPath } from "~/modules/url"
 
 describe("~/modules/url", () => {
   test("domain", () => {
@@ -7,13 +7,16 @@ describe("~/modules/url", () => {
     expect(domain(new URL("http://samhh.com/abc"))).toEqual("samhh.com")
   })
 
-  test("hrefSansProtocol", () => {
-    expect(hrefSansProtocol(new URL("https://samhh.com"))).toEqual("samhh.com/")
-    expect(hrefSansProtocol(new URL("http://samhh.com/a/path.html"))).toEqual(
+  test("hostAndPath", () => {
+    expect(hostAndPath(new URL("https://samhh.com"))).toEqual("samhh.com/")
+    expect(hostAndPath(new URL("http://samhh.com/a/path.html"))).toEqual(
       "samhh.com/a/path.html",
     )
     expect(
-      hrefSansProtocol(new URL("https://subdomain.samhh.com/some/other/path")),
+      hostAndPath(new URL("https://subdomain.samhh.com/some/other/path")),
     ).toEqual("subdomain.samhh.com/some/other/path")
+    expect(
+      hostAndPath(new URL("https://subdomain.samhh.com/path?foo=bar#baz")),
+    ).toEqual("subdomain.samhh.com/path")
   })
 })

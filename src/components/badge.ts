@@ -5,6 +5,7 @@ import { colors } from "~/modules/badge"
 export enum BadgeWeight {
   Primary,
   Secondary,
+  Tertiary,
   None,
 }
 
@@ -12,8 +13,10 @@ export const mapURLMatchToBadgeWeight = (urlMatch: URLMatch): BadgeWeight => {
   switch (urlMatch) {
     case URLMatch.Exact:
       return BadgeWeight.Primary
-    case URLMatch.Domain:
+    case URLMatch.Path:
       return BadgeWeight.Secondary
+    case URLMatch.Domain:
+      return BadgeWeight.Tertiary
     default:
       return BadgeWeight.None
   }
@@ -36,6 +39,8 @@ const Badge = styled.span<Props>`
       case BadgeWeight.Primary:
         return colors[URLMatch.Exact]
       case BadgeWeight.Secondary:
+        return colors[URLMatch.Path]
+      case BadgeWeight.Tertiary:
         return colors[URLMatch.Domain]
       case BadgeWeight.None:
         return "transparent"
