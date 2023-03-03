@@ -7,6 +7,7 @@ import {
   Page,
   comms,
   activeTheme,
+  normalizeTags,
   displayOpenAllBookmarksConfirmation,
   page,
 } from "./types"
@@ -19,6 +20,7 @@ export type UserActions = ActionType<typeof userActions>
 const initialState: UserState = {
   comms: HostVersionCheckResult.Unchecked,
   activeTheme: Theme.Light,
+  normalizeTags: false,
   displayOpenAllBookmarksConfirmation: false,
   page: Page.Search,
 }
@@ -31,6 +33,9 @@ const userReducer = curryReducer<UserActions, UserState>(a => _s => {
 
     case UserActionTypes.SetActiveTheme:
       return activeTheme.set(a.payload)
+
+    case UserActionTypes.SetNormalizeTags:
+      return normalizeTags.set(a.payload)
 
     case UserActionTypes.SetDisplayOpenAllBookmarksConfirmation:
       return displayOpenAllBookmarksConfirmation.set(a.payload)

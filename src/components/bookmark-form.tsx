@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, FormEvent, FC } from "react"
+import { useSelector } from "react-redux"
 import { pipe } from "fp-ts/lib/pipeable"
 import * as O from "fp-ts/lib/Option"
 import styled from "~/styles"
@@ -66,6 +67,7 @@ type KeyofStringValues<T> = {
 }[keyof T]
 
 const BookmarkForm: FC<Props> = props => {
+  const normalizeTags = useSelector(state => state.user.normalizeTags)
   const firstInputRef = useRef<HTMLInputElement>(null)
 
   const [bookmarkInput, setBookmarkInput] = useState<BookmarkInput>({
@@ -103,23 +105,34 @@ const BookmarkForm: FC<Props> = props => {
     setInputBookmarkPartial({ [key]: input })
   }
 
+  const inputNormalizedTags = (changedTags: string[]): void => {
+    const tags = changedTags.map(s => s.trim().toLowerCase()).filter(Boolean)
+    setInputBookmarkPartial({ tags: Array.from(new Set(tags)).sort() })
+  }
+
   const handleTagAddition = (evt: FormEvent<HTMLFormElement>): void => {
     evt.preventDefault()
     evt.stopPropagation()
 
     const newTag = tagInput.trim()
+    if (normalizeTags) {
+      inputNormalizedTags([...bookmarkInput.tags, ...newTag.split(",")])
+    } else {
+      // Disallow adding an empty tag or the same tag twice
+      if (!newTag || bookmarkInput.tags.includes(newTag)) return
 
-    // Disallow adding an empty tag or the same tag twice
-    if (!newTag || bookmarkInput.tags.includes(newTag)) return
-
-    setInputBookmarkPartial({ tags: [...bookmarkInput.tags, newTag] })
+      setInputBookmarkPartial({ tags: [...bookmarkInput.tags, newTag] })
+    }
     setTagInput("")
   }
 
   const handleTagRemoval = (tagToRemove: string): void => {
-    setInputBookmarkPartial({
-      tags: bookmarkInput.tags.filter(tag => tag !== tagToRemove),
-    })
+    const tags = bookmarkInput.tags.filter(tag => tag !== tagToRemove)
+    if (normalizeTags) {
+      inputNormalizedTags(tags)
+    } else {
+      setInputBookmarkPartial({ tags })
+    }
   }
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
@@ -179,7 +192,7 @@ const BookmarkForm: FC<Props> = props => {
             value={tagInput}
             onInput={setTagInput}
             form="tags"
-            label="Tags"
+            label={"Tags" + (!normalizeTags ? "" : " [normalized]")}
           />
 
           <AddTagButton type="submit" form="tags" tabIndex={-1}>

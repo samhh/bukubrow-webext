@@ -8,6 +8,7 @@ const TagItem = styled.li<{ removable: boolean }>`
   font-size: 1.3rem;
   font-weight: normal;
   color: ${(props): string => props.theme.textColorOffset};
+  white-space: pre-wrap;
 
   ${(props): FlattenSimpleInterpolation | false =>
     props.removable &&
