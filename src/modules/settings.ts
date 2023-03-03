@@ -41,9 +41,15 @@ const badgeDisplayCodec = fromRefinement<BadgeDisplay>(
   (x): x is BadgeDisplay => t.string.is(x) && isBadgeDisplayOpt(x),
 )
 
+export const isBool: Refinement<unknown, boolean> =
+  (x): x is boolean => typeof x === 'boolean'
+
+const normalizeTagsCodec = fromRefinement<boolean>("normalizeTags", isBool)
+
 const settingsCodec = t.type({
   theme: optionFromNullable(themeCodec),
   badgeDisplay: optionFromNullable(badgeDisplayCodec),
+  normalizeTags: optionFromNullable(normalizeTagsCodec),
 })
 
 export type Settings = t.TypeOf<typeof settingsCodec>
@@ -52,15 +58,17 @@ type SaveableSettings = Partial<UnwrapOptions<Settings>>
 const saveableSettings = (x: Settings): SaveableSettings => ({
   theme: O.toUndefined(x.theme),
   badgeDisplay: O.toUndefined(x.badgeDisplay),
+  normalizeTags: O.toUndefined(x.normalizeTags),
 })
 
 const theme = Lens.fromProp<Settings>()("theme")
 const badgeDisplay = Lens.fromProp<Settings>()("badgeDisplay")
+const normalizeTags = Lens.fromProp<Settings>()("normalizeTags")
 
 export const saveSettings = flow(saveableSettings, setSyncStorage)
 
 const getSettings: TaskEither<Error, Settings> = pipe(
-  getSyncStorage(["theme", "badgeDisplay"]),
+  getSyncStorage(["theme", "badgeDisplay", "normalizeTags"]),
   T.map(E.chain(decode(settingsCodec))),
 )
 
@@ -73,5 +81,12 @@ export const getBadgeDisplayOpt: TaskEither<Error, Option<BadgeDisplay>> = pipe(
   getSettings,
   T.map(
     E.map(flow(badgeDisplay.get, O.chain(O.fromPredicate(isBadgeDisplayOpt)))),
+  ),
+)
+
+export const getNormalizeTags: TaskEither<Error, Option<boolean>> = pipe(
+  getSettings,
+  T.map(
+    E.map(flow(normalizeTags.get, O.chain(O.fromPredicate(isBool)))),
   ),
 )

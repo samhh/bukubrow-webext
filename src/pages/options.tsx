@@ -25,10 +25,12 @@ const Page = styled.main`
 
 const OptionsPage: FC = () => {
   const activeTheme = useSelector(state => state.user.activeTheme)
+  const normalizeTags = useSelector(state => state.user.normalizeTags)
   const dispatch = useDispatch()
 
   const [themeOpt, setThemeOpt] = useState(activeTheme)
   const [badgeOpt, setBadgeOpt] = useState(BadgeDisplay.WithCount)
+  const [normTagsOpt, setNormTagsOpt] = useState(normalizeTags)
 
   useEffect(() => {
     getBadgeDisplayOpt().then(res => {
@@ -41,6 +43,10 @@ const OptionsPage: FC = () => {
   useEffect(() => {
     setThemeOpt(activeTheme)
   }, [activeTheme])
+
+  useEffect(() => {
+    setNormTagsOpt(normalizeTags)
+  }, [normalizeTags])
 
   const handleThemeOptChange = (evt: FormEvent<HTMLSelectElement>): void => {
     const themeOpt = evt.currentTarget.value
@@ -56,13 +62,18 @@ const OptionsPage: FC = () => {
     setBadgeOpt(badgeOpt)
   }
 
+  const handleNormTagsOptChange = (evt: FormEvent<HTMLInputElement>): void => {
+    setNormTagsOpt(evt.currentTarget.checked)
+  }
+
   const handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
     evt.preventDefault()
 
     dispatch(setActiveTheme(themeOpt))
     runTask(sendIsomorphicMessage(IsomorphicMessage.SettingsUpdated))
     runTask(
-      saveSettings({ theme: O.some(themeOpt), badgeDisplay: O.some(badgeOpt) }),
+      saveSettings({ theme: O.some(themeOpt), badgeDisplay: O.some(badgeOpt),
+                     normalizeTags: O.some(normTagsOpt) }),
     )
   }
 
@@ -82,6 +93,12 @@ const OptionsPage: FC = () => {
           <option value={BadgeDisplay.WithoutCount}>Badge without count</option>
           <option value={BadgeDisplay.None}>No badge</option>
         </select>
+        <br />
+        <br />
+        <label title="Split by comma, trim spaces, lowercase, sort, remove duplicates">
+          <input type="checkbox" checked={normTagsOpt} onChange={handleNormTagsOptChange}/>
+          &nbsp;Normalize tags on edit (reproduce buku behaviour)
+        </label>
         <br />
         <br />
         <Button type="submit">Save Settings</Button>

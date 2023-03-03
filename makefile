@@ -36,6 +36,7 @@ nuke:
 webext:
 	${MAKE} prepare
 	yarn && yarn build
+	rm -f '$(RELEASE_DIR)/webext.zip'
 	cd dist && zip -r '../$(RELEASE_DIR)/webext' ./*
 	${MAKE} clean
 

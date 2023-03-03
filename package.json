@@ -9,6 +9,7 @@
     "lint": "eslint ./src/ --ext ts,tsx",
     "dev": "yarn run prepare && parcel watch ./src/content.html ./src/options.html ./src/backend.ts",
     "build": "yarn run prepare && parcel build ./src/content.html ./src/options.html ./src/backend.ts",
+    "make": "make",
     "test": "jest",
     "fmt": "prettier --write .",
     "fmt-check": "prettier --check ."

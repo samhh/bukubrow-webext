@@ -8,13 +8,18 @@ import {
   checkBinaryVersionFromNative,
   HostVersionCheckResult,
 } from "~/modules/comms/native"
-import { getActiveTheme, Theme } from "~/modules/settings"
+import { getActiveTheme, getNormalizeTags, Theme } from "~/modules/settings"
 import { ThunkAC, initAutoStoreSync } from "~/store"
 import {
   setLimitNumRendered,
   setFocusedBookmarkIndex,
 } from "~/store/bookmarks/actions"
-import { setActiveTheme, hostCheckResult, setPage } from "~/store/user/actions"
+import {
+  setActiveTheme,
+  setNormalizeTags,
+  hostCheckResult,
+  setPage,
+} from "~/store/user/actions"
 import { setSearchFilter } from "~/store/input/actions"
 import { addPermanentError } from "~/store/notices/epics"
 import {
@@ -74,6 +79,12 @@ export const onLoad = (): ThunkAC<Promise<void>> => async dispatch => {
     .then(EO.getOrElse(constant<Theme>(Theme.Light)))
     .then(theme => {
       dispatch(setActiveTheme(theme))
+    })
+
+  getNormalizeTags()
+    .then(EO.getOrElse(constant<boolean>(false)))
+    .then(normTags => {
+      dispatch(setNormalizeTags(normTags))
     })
 
   const res = await checkBinaryVersionFromNative()

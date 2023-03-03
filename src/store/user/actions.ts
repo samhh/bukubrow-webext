@@ -10,6 +10,9 @@ export const hostCheckResult = (comms: HostVersionCheckResult) =>
 export const setActiveTheme = (theme: Theme) =>
   action(UserActionTypes.SetActiveTheme, theme)
 
+export const setNormalizeTags = (value: boolean) =>
+  action(UserActionTypes.SetNormalizeTags, value)
+
 export const setDisplayOpenAllBookmarksConfirmation = (display: boolean) =>
   action(UserActionTypes.SetDisplayOpenAllBookmarksConfirmation, display)
 
