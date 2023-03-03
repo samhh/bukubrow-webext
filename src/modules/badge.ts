@@ -33,6 +33,7 @@ const disableBadge: IO<void> = () => {
 
 export const colors = {
   [URLMatch.Exact]: "#4286f4",
+  [URLMatch.Path]:  "#71a5f8",
   [URLMatch.Domain]: "#a0c4ff",
 }
 
@@ -100,6 +101,10 @@ const updateBadge = (
     switch (result) {
       case URLMatch.Exact:
         runIO(setBadge(colors[URLMatch.Exact])(text))
+        break
+
+      case URLMatch.Path:
+        runIO(setBadge(colors[URLMatch.Path])(text))
         break
 
       case URLMatch.Domain:

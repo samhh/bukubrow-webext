@@ -9,10 +9,22 @@ describe("~/modules/compare-urls", () => {
       expect(match(url1)(url2)).toBe(URLMatch.Exact)
     })
 
-    test("matches exact URL even if HTTP(S) protocol differs", () => {
+    test("matches host and path if query differs", () => {
+      const url1 = new URL("https://samhh.com/path?foo=bar#baz")
+      const url2 = new URL("https://samhh.com/path?foo=baz#baz")
+      expect(match(url1)(url2)).toBe(URLMatch.Path)
+    })
+
+    test("matches host and path if hash differs", () => {
+      const url1 = new URL("https://samhh.com/path?foo=bar#baz")
+      const url2 = new URL("https://samhh.com/path?foo=bar#bar")
+      expect(match(url1)(url2)).toBe(URLMatch.Path)
+    })
+
+    test("matches host and path even if HTTP(S) protocol differs", () => {
       const url1 = new URL("https://samhh.com")
       const url2 = new URL("http://samhh.com/")
-      expect(match(url1)(url2)).toBe(URLMatch.Exact)
+      expect(match(url1)(url2)).toBe(URLMatch.Path)
     })
 
     test("matches domain", () => {
@@ -52,7 +64,8 @@ describe("~/modules/compare-urls", () => {
 
   test("ordURLMatch", () => {
     expect(ordNumber.compare(10, 5)).toBe(1) // for reference
-    expect(ordURLMatch.compare(URLMatch.Exact, URLMatch.Domain)).toBe(1)
+    expect(ordURLMatch.compare(URLMatch.Exact, URLMatch.Path)).toBe(1)
+    expect(ordURLMatch.compare(URLMatch.Path, URLMatch.Domain)).toBe(1)
     expect(ordURLMatch.compare(URLMatch.Domain, URLMatch.None)).toBe(1)
     expect(ordURLMatch.compare(URLMatch.None, URLMatch.Exact)).toBe(-1)
   })
